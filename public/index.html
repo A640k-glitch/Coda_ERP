@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Coda — Enterprise Fintech ERP</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    /* Modal styles */
+    .modal-overlay {
+      position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px); display: none;
+      align-items: center; justify-content: center; z-index: 1000;
+    }
+    .modal-overlay.active { display: flex; }
+    .legal-modal {
+      background: #fff; width: 100%; max-width: 500px;
+      border-radius: var(--radius-lg); padding: 32px;
+      position: relative; max-height: 80vh; overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+    }
+    .legal-modal-close {
+      position: absolute; top: 24px; right: 24px;
+      background: none; border: none; cursor: pointer; color: var(--text-muted);
+    }
+    .legal-modal-logo {
+      display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 18px; color: var(--slate-900); margin-bottom: 24px;
+    }
+    .legal-modal h2 { font-size: 20px; margin-bottom: 16px; }
+    .legal-modal p { font-size: 14px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 12px; }
+    
+    /* 21stdev Inspired KPI Cards for landing page features */
+    .premium-kpi-grid {
+      display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin-top: 40px;
+    }
+    .premium-kpi-card {
+      background: #fff; border: 1px solid var(--border-color); border-radius: var(--radius-lg);
+      padding: 24px; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; gap: 16px;
+    }
+    .premium-kpi-header {
+      display: flex; justify-content: space-between; align-items: flex-start;
+    }
+    .premium-kpi-title { font-size: 14px; font-weight: 600; color: var(--text-secondary); }
+    .premium-kpi-val { font-size: 32px; font-weight: 800; color: var(--slate-900); letter-spacing: -0.02em; }
+    .premium-kpi-badge {
+      display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px; border-radius: 100px; font-size: 12px; font-weight: 600;
+    }
+    .badge-up { background: var(--success-bg); color: var(--success); }
+    .badge-down { background: var(--error-bg); color: var(--error); }
+
+    /* SVGs for Partners */
+    .trusted-svg { height: 28px; width: auto; opacity: 0.6; filter: grayscale(100%); transition: all 0.3s; cursor: pointer; }
+    .trusted-svg:hover { filter: grayscale(0%); opacity: 1; }
+
+    /* Static Non-Scrollable Dashboard Mockup */
+    .hero-mockup-scaler {
+      width: 100%;
+      max-width: 900px;
+      margin: 64px auto 0;
+      position: relative;
+      overflow: visible; /* Let scale happen cleanly */
+    }
+    .mockup-card {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 900px !important;
+      min-width: 900px !important;
+      height: 600px !important;
+      overflow: hidden; 
+      display: flex; 
+      background: var(--bg-app); 
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg); 
+      box-shadow: var(--shadow-lg); 
+      text-align: left;
+      transform-origin: top left;
+    }
+    .mockup-body { overflow: hidden; padding: 24px; flex: 1; display: flex; flex-direction: column; }
+    .mockup-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; flex: 1; margin-top: 24px;}
+    .mockup-col { display: flex; flex-direction: column; gap: 24px; }
+  </style>
+</head>
+<body>
+
+  <!-- Mockup Auto-Scaler Script -->
+  <script>
+    function scaleMockup() {
+      const scaler = document.querySelector('.hero-mockup-scaler');
+      const card = document.querySelector('.mockup-card');
+      if (!scaler || !card) return;
+      const width = scaler.getBoundingClientRect().width || scaler.clientWidth;
+      // Subtract 32px to ensure a professional 16px gutter on both sides
+      const scale = Math.min(1, (width - 32) / 900);
+      card.style.transform = `scale(${scale})`;
+      // Center the scaled card perfectly within the parent container
+      card.style.left = `${(width - (900 * scale)) / 2}px`;
+      scaler.style.height = `${600 * scale}px`;
+    }
+    window.addEventListener('resize', scaleMockup);
+    document.addEventListener('DOMContentLoaded', scaleMockup);
+    // Trigger immediately if script loads after DOM
+    setTimeout(scaleMockup, 50);
+  </script>
+
+  <!-- Navigation -->
+  <nav class="nav" id="navbar">
+    <div class="nav-inner">
+      <a href="/" class="nav-brand">
+        <span class="brand-icon-box"><span class="material-symbols-outlined">finance</span></span>
+        <span>Coda</span>
+      </a>
+      <button class="nav-mobile-toggle" id="mobileMenuToggle" aria-label="Toggle menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 12L20 12" class="top-line"/>
+          <path d="M4 12H20" class="mid-line"/>
+          <path d="M4 12H20" class="bot-line"/>
+        </svg>
+      </button>
+      <div class="nav-links" id="navLinks">
+        <a href="#features">Platform</a>
+        <a href="#pricing">Pricing</a>
+        <a href="api.html" class="nav-api-link">API Docs</a>
+        <div class="nav-auth" id="navAuthArea">
+          <!-- Populated by JS based on session -->
+          <a href="login.html" class="btn btn-ghost btn-sm">Sign in</a>
+          <a href="signup.html" class="btn btn-primary btn-sm">Get started</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero" id="hero">
+    <div class="hero-bg"></div>
+    <div class="hero-layout">
+      <div class="hero-badge">
+        <span class="material-symbols-outlined" style="font-size:14px; color: var(--teal-600)">verified_user</span>
+        Next-Generation ERP for Enterprise
+      </div>
+      <h1 class="hero-title">
+        The definitive financial operating system for <span class="text-accent">high-growth business</span>
+      </h1>
+      <p class="hero-subtitle">
+        Unify your accounting, payroll, tax compliance, and inventory in one state-of-the-art platform. Built for performance and reliability.
+      </p>
+      <div class="hero-actions">
+        <a href="signup.html" class="btn btn-primary btn-lg">
+          Start your free trial
+        </a>
+        <a href="login.html" class="btn btn-secondary btn-lg">View Live Demo</a>
+      </div>
+      
+      <div class="trusted-row" style="margin-top: 48px;">
+        <span class="trusted-label">Trusted by industry leaders</span>
+        <div class="trusted-logos">
+          <!-- Real SVG Logos -->
+          <svg class="trusted-svg" viewBox="0 0 160 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M21.5 12.3c0-3.3-2.6-5.9-5.9-5.9s-5.9 2.6-5.9 5.9 2.6 5.9 5.9 5.9 5.9-2.6 5.9-5.9zm-2.8 0c0 1.7-1.4 3.1-3.1 3.1s-3.1-1.4-3.1-3.1 1.4-3.1 3.1-3.1 3.1 1.4 3.1 3.1zM34.9 11.1h-2.6V6.6h-2.9v11.6h2.9v-4.9h2.6c2.8 0 5-2.2 5-5.1 0-2.8-2.2-5.1-5-5.1zm.1 7.3h-2.7V9.4h2.7c1.3 0 2.2.9 2.2 2.2 0 1.3-.9 2.2-2.2 2.2z" fill="#0A0A0A"/>
+            <text x="0" y="24" font-family="Inter" font-weight="800" font-size="20" fill="#0f172a">Flutterwave</text>
+          </svg>
+          <svg class="trusted-svg" viewBox="0 0 140 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <text x="0" y="24" font-family="Inter" font-weight="800" font-size="20" fill="#0f172a">Paystack</text>
+          </svg>
+          <svg class="trusted-svg" viewBox="0 0 150 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <text x="0" y="24" font-family="Inter" font-weight="800" font-size="20" fill="#0f172a">Interswitch</text>
+          </svg>
+        </div>
+      </div>
+
+      <!-- Static Non-Scrollable Dashboard Mockup -->
+      <div class="hero-mockup-scaler">
+        <div class="mockup-card reveal">
+        <div class="mockup-sidebar" style="background: var(--slate-950);">
+          <div class="mockup-logo-mark" style="background: var(--slate-800);">
+            <span class="material-symbols-outlined">finance</span>
+          </div>
+          <div class="mockup-nav-item active"><span class="material-symbols-outlined">dashboard</span></div>
+          <div class="mockup-nav-item"><span class="material-symbols-outlined">receipt_long</span></div>
+          <div class="mockup-nav-item"><span class="material-symbols-outlined">groups</span></div>
+          <div class="mockup-nav-item"><span class="material-symbols-outlined">settings</span></div>
+        </div>
+        <div class="mockup-body">
+          <div class="mockup-topbar">
+            <span class="mockup-title">Overview</span>
+            <div style="display:flex; gap:12px; align-items:center;">
+              <span style="font-size:12px; color:var(--text-muted);">Last updated: Just now</span>
+              <div class="mockup-avatar" style="background:var(--teal-100); color:var(--teal-700);">JD</div>
+            </div>
+          </div>
+          
+          <div class="premium-kpi-grid" style="margin-top:0; margin-bottom:0; grid-template-columns: repeat(3, 1fr);">
+            <div class="premium-kpi-card" style="padding:16px;">
+              <div class="premium-kpi-header">
+                <span class="premium-kpi-title">Total Revenue</span>
+                <span class="material-symbols-outlined" style="color:var(--text-muted); font-size:18px;">more_horiz</span>
+              </div>
+              <div class="premium-kpi-val">₦45.2M</div>
+              <div><span class="premium-kpi-badge badge-up"><span class="material-symbols-outlined" style="font-size:14px;">arrow_upward</span> 12.5%</span> <span style="font-size:12px; color:var(--text-muted);">vs last month</span></div>
+            </div>
+            <div class="premium-kpi-card" style="padding:16px;">
+              <div class="premium-kpi-header">
+                <span class="premium-kpi-title">Active Customers</span>
+                <span class="material-symbols-outlined" style="color:var(--text-muted); font-size:18px;">more_horiz</span>
+              </div>
+              <div class="premium-kpi-val">1,248</div>
+              <div><span class="premium-kpi-badge badge-up"><span class="material-symbols-outlined" style="font-size:14px;">arrow_upward</span> 4.2%</span> <span style="font-size:12px; color:var(--text-muted);">vs last month</span></div>
+            </div>
+            <div class="premium-kpi-card" style="padding:16px;">
+              <div class="premium-kpi-header">
+                <span class="premium-kpi-title">Churn Rate</span>
+                <span class="material-symbols-outlined" style="color:var(--text-muted); font-size:18px;">more_horiz</span>
+              </div>
+              <div class="premium-kpi-val">1.2%</div>
+              <div><span class="premium-kpi-badge badge-down"><span class="material-symbols-outlined" style="font-size:14px;">arrow_downward</span> -0.4%</span> <span style="font-size:12px; color:var(--text-muted);">vs last month</span></div>
+            </div>
+          </div>
+
+          <div class="mockup-grid">
+            <div class="mockup-col">
+              <div style="background:#fff; border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:20px; flex:1;">
+                <div style="font-size:14px; font-weight:600; margin-bottom:16px;">Recent Transactions</div>
+                <div class="mockup-tx">
+                  <span class="mockup-tx-name">Invoice #1042 — Enterprise Sub</span>
+                  <span class="mockup-tx-amount">₦845,000</span>
+                </div>
+                <div class="mockup-tx">
+                  <span class="mockup-tx-name">Cloud Hosting Services</span>
+                  <span class="mockup-tx-amount expense">-₦120,000</span>
+                </div>
+                <div class="mockup-tx">
+                  <span class="mockup-tx-name">Invoice #1043 — API Access</span>
+                  <span class="mockup-tx-amount">₦450,000</span>
+                </div>
+              </div>
+            </div>
+            <div class="mockup-col">
+              <div style="background:#fff; border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:20px; flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center;">
+                <div style="width:120px; height:120px; border-radius:50%; border:16px solid var(--slate-100); border-top-color:var(--teal-600); border-right-color:var(--bronze-500); transform:rotate(-45deg);"></div>
+                <div style="margin-top:24px; font-size:12px; color:var(--text-muted); font-weight:600;">Expense Distribution</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Premium Features Showcase -->
+  <section class="section" id="features">
+    <div class="section-header reveal">
+      <h2 class="section-title">Enterprise grade, without the complexity.</h2>
+      <p class="section-desc">
+        We've engineered Coda from the ground up to provide unparalleled financial clarity. 
+        Advanced tools, beautiful interfaces, and uncompromising accuracy.
+      </p>
+    </div>
+    
+    <div class="premium-kpi-grid reveal">
+      <div class="premium-kpi-card">
+        <div class="feature-icon-wrap" style="margin-bottom: 16px; background: var(--teal-50); color: var(--teal-600);">
+          <span class="material-symbols-outlined">sync_alt</span>
+        </div>
+        <h3 style="font-size: 18px; margin-bottom: 8px;">Automated Reconciliation</h3>
+        <p style="font-size: 14px; color: var(--text-secondary); line-height: 1.6;">
+          Connect your bank accounts securely and let Coda automatically match transactions to invoices and expenses with 99.9% accuracy.
+        </p>
+      </div>
+
+      <div class="premium-kpi-card">
+        <div class="feature-icon-wrap" style="margin-bottom: 16px; background: var(--bronze-50); color: var(--bronze-600);">
+          <span class="material-symbols-outlined">domain</span>
+        </div>
+        <h3 style="font-size: 18px; margin-bottom: 8px;">Multi-Entity Management</h3>
+        <p style="font-size: 14px; color: var(--text-secondary); line-height: 1.6;">
+          Manage multiple businesses or subsidiaries under a single login. Consolidated reporting and inter-company transfers handled seamlessly.
+        </p>
+      </div>
+
+      <div class="premium-kpi-card">
+        <div class="feature-icon-wrap" style="margin-bottom: 16px; background: var(--slate-100); color: var(--slate-800);">
+          <span class="material-symbols-outlined">shield_locked</span>
+        </div>
+        <h3 style="font-size: 18px; margin-bottom: 8px;">Bank-Level Security</h3>
+        <p style="font-size: 14px; color: var(--text-secondary); line-height: 1.6;">
+          Your data is encrypted at rest and in transit. Granular role-based access control ensures employees only see what they need to see.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing Section -->
+  <section class="section" id="pricing" style="background: var(--slate-50); border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);">
+    <div class="section-header reveal">
+      <h2 class="section-title">Simple, transparent pricing</h2>
+      <p class="section-desc">Choose a plan that scales with your business. No hidden fees.</p>
+    </div>
+
+    <div class="pricing-grid reveal">
+      <!-- Starter -->
+      <div class="pricing-card">
+        <div class="pricing-header">
+          <h3>Starter</h3>
+          <p class="text-muted" style="font-size: 13px;">For early-stage operations</p>
+          <div class="pricing-price">₦15,000<span>/month</span></div>
+        </div>
+        <ul class="pricing-features">
+          <li><span class="material-symbols-outlined" style="color:var(--success); font-size:18px;">check_circle</span> Up to 5 active users</li>
+          <li><span class="material-symbols-outlined" style="color:var(--success); font-size:18px;">check_circle</span> General Ledger Accounting</li>
+          <li><span class="material-symbols-outlined" style="color:var(--success); font-size:18px;">check_circle</span> Sales Invoices</li>
+        </ul>
+        <a href="signup.html" class="btn btn-secondary" style="width:100%;">Start Trial</a>
+      </div>
+
+      <!-- Professional -->
+      <div class="pricing-card premium">
+        <div class="popular-tag">Most Popular</div>
+        <div class="pricing-header">
+          <h3>Professional</h3>
+          <p class="text-muted" style="font-size: 13px;">For scaling organizations</p>
+          <div class="pricing-price">₦45,000<span>/month</span></div>
+        </div>
+        <ul class="pricing-features">
+          <li><span class="material-symbols-outlined" style="color:var(--success); font-size:18px;">check_circle</span> Up to 25 active users</li>
+          <li><span class="material-symbols-outlined" style="color:var(--success); font-size:18px;">check_circle</span> Double-Entry System</li>
+          <li><span class="material-symbols-outlined" style="color:var(--success); font-size:18px;">check_circle</span> Tax Calculations & Reports</li>
+          <li><span class="material-symbols-outlined" style="color:var(--success); font-size:18px;">check_circle</span> Automated Payroll Sheets</li>
+        </ul>
+        <a href="signup.html" class="btn btn-primary" style="width:100%;">Get Started</a>
+      </div>
+
+      <!-- Enterprise -->
+      <div class="pricing-card">
+        <div class="pricing-header">
+          <h3>Enterprise</h3>
+          <p class="text-muted" style="font-size: 13px;">For high-volume commerce</p>
+          <div class="pricing-price">Custom</div>
+        </div>
+        <ul class="pricing-features">
+          <li><span class="material-symbols-outlined" style="color:var(--success); font-size:18px;">check_circle</span> Unlimited users</li>
+          <li><span class="material-symbols-outlined" style="color:var(--success); font-size:18px;">check_circle</span> Multi-entity support</li>
+          <li><span class="material-symbols-outlined" style="color:var(--success); font-size:18px;">check_circle</span> Dedicated Success Manager</li>
+          <li><span class="material-symbols-outlined" style="color:var(--success); font-size:18px;">check_circle</span> Custom integrations</li>
+        </ul>
+        <a href="mailto:sales@coda.com" class="btn btn-secondary" style="width:100%;">Contact Sales</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Legal Modals -->
+  <div class="modal-overlay" id="termsModal">
+    <div class="legal-modal">
+      <button class="legal-modal-close" onclick="document.body.classList.remove('no-scroll'); document.getElementById('termsModal').classList.remove('active')"><span class="material-symbols-outlined">close</span></button>
+      <div class="legal-modal-logo">
+        <span class="brand-icon-box brand-icon-sm" style="background: var(--slate-900); color: #fff;"><span class="material-symbols-outlined" style="font-size: 18px;">finance</span></span>
+        <span>Coda</span>
+      </div>
+      <h2>Terms of Service</h2>
+      <p>By accessing and using Coda's enterprise financial systems, you agree to be bound by these terms of service, all applicable laws and regulations, and agree that you are responsible for compliance with any applicable local laws.</p>
+      <p>Your access to and use of the Service is conditioned on your acceptance of and compliance with these Terms. By accessing or using the Service you agree to be bound by these Terms.</p>
+      <button class="btn btn-primary" style="width:100%; margin-top:16px;" onclick="document.body.classList.remove('no-scroll'); document.getElementById('termsModal').classList.remove('active')">Acknowledge</button>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="privacyModal">
+    <div class="legal-modal">
+      <button class="legal-modal-close" onclick="document.body.classList.remove('no-scroll'); document.getElementById('privacyModal').classList.remove('active')"><span class="material-symbols-outlined">close</span></button>
+      <div class="legal-modal-logo">
+        <span class="brand-icon-box brand-icon-sm" style="background: var(--slate-900); color: #fff;"><span class="material-symbols-outlined" style="font-size: 18px;">finance</span></span>
+        <span>Coda</span>
+      </div>
+      <h2>Privacy Policy</h2>
+      <p>Your privacy is important to us. It is Coda's policy to respect your privacy regarding any information we may collect from you across our website, platform, and other sites we own and operate.</p>
+      <p>We only ask for personal information when we truly need it to provide a service to you. We collect it by fair and lawful means, with your knowledge and consent. We also let you know why we’re collecting it and how it will be used. We don't share any personally identifying information publicly or with third-parties, except when required to by law.</p>
+      <p>While we use commercially acceptable means to protect your Personal Data, we cannot guarantee its absolute security.</p>
+      <button class="btn btn-primary" style="width:100%; margin-top:16px;" onclick="document.body.classList.remove('no-scroll'); document.getElementById('privacyModal').classList.remove('active')">Acknowledge</button>
+    </div>
+  </div>
+
+  <!-- Shared Footer -->
+  <footer style="border-top: 1px solid var(--border-color); background: #ffffff; padding: 48px 0 24px;">
+    <div style="max-width: var(--max-width); margin: 0 auto; padding: 0 24px;">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 48px; flex-wrap: wrap; gap: 32px;">
+        <div>
+          <div style="display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 20px; color: var(--slate-900); margin-bottom: 16px;">
+            <span class="brand-icon-box brand-icon-sm" style="background: var(--slate-900); color: #fff;"><span class="material-symbols-outlined" style="font-size: 18px;">finance</span></span>
+            <span>Coda</span>
+          </div>
+          <p style="color: var(--text-secondary); max-width: 240px; font-size: 14px;">The definitive financial operating system for high-growth enterprise businesses.</p>
+        </div>
+        
+        <div style="display: flex; gap: 48px;">
+          <div>
+            <h4 style="font-size: 14px; margin-bottom: 16px; color: var(--slate-900);">Product</h4>
+            <ul style="list-style: none; display: flex; flex-direction: column; gap: 12px; font-size: 14px; color: var(--text-secondary);">
+              <li><a href="#features" style="transition: color 0.2s;">Features</a></li>
+              <li><a href="#pricing" style="transition: color 0.2s;">Pricing</a></li>
+              <li><a href="api.html" style="transition: color 0.2s;">API Documentation</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4 style="font-size: 14px; margin-bottom: 16px; color: var(--slate-900);">Legal</h4>
+            <ul style="list-style: none; display: flex; flex-direction: column; gap: 12px; font-size: 14px; color: var(--text-secondary);">
+              <li><a href="#" onclick="event.preventDefault(); document.body.classList.add('no-scroll'); document.getElementById('termsModal').classList.add('active')" style="transition: color 0.2s;">Terms of Service</a></li>
+              <li><a href="#" onclick="event.preventDefault(); document.body.classList.add('no-scroll'); document.getElementById('privacyModal').classList.add('active')" style="transition: color 0.2s;">Privacy Policy</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div style="border-top: 1px solid var(--border-color); padding-top: 24px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--text-muted);">
+        <div>&copy; 2026 Coda Technologies Ltd. All rights reserved.</div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+  <script>
+    // Reveal animations
+    const revealObserver = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.style.transition = 'opacity 600ms ease, transform 600ms ease';
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+          revealObserver.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.reveal').forEach(el => {
+      el.style.opacity = '0';
+      el.style.transform = 'translateY(24px)';
+      revealObserver.observe(el);
+    });
+
+    // Session Check — shows user initials + dashboard, admin link only for admins
+    async function checkSession() {
+      try {
+        const res = await fetch('/api/v1/auth/me', { credentials: 'include' });
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.user) {
+            const navAuth = document.getElementById('navAuthArea');
+            if (navAuth) {
+              const userName = data.user.name || data.user.email || 'User';
+              const initials = userName.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase();
+              
+              const profileTag = data.isAdmin ? 'a' : 'div';
+              const profileHref = data.isAdmin ? ' href="/admin" style="text-decoration:none;" title="Admin Dashboard"' : '';
+              
+              navAuth.innerHTML = `
+                <${profileTag} class="nav-user-profile"${profileHref}>
+                  <div class="user-avatar">${initials}</div>
+                  <div class="user-name">${userName}</div>
+                </${profileTag}>
+                <a href="/dashboard" class="btn btn-primary btn-sm nav-dashboard-btn">
+                  Dashboard
+                </a>
+              `;
+            }
+          }
+        }
+      } catch (e) {
+        // silently continue — user not logged in, default buttons show
+      }
+    }
+
+    const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+    const navLinks = document.getElementById('navLinks');
+    if (mobileMenuToggle && navLinks) {
+      mobileMenuToggle.addEventListener('click', () => {
+        mobileMenuToggle.classList.toggle('open');
+        navLinks.classList.toggle('open');
+        if (mobileMenuToggle.classList.contains('open')) {
+          document.body.classList.add('no-scroll');
+        } else {
+          document.body.classList.remove('no-scroll');
+        }
+      });
+      navLinks.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+          mobileMenuToggle.classList.remove('open');
+          navLinks.classList.remove('open');
+          document.body.classList.remove('no-scroll');
+        });
+      });
+      document.addEventListener('click', (e) => {
+        if (navLinks.classList.contains('open') && !navLinks.contains(e.target) && !mobileMenuToggle.contains(e.target)) {
+          mobileMenuToggle.classList.remove('open');
+          navLinks.classList.remove('open');
+          document.body.classList.remove('no-scroll');
+        }
+      });
+    }
+
+    checkSession();
+  </script>
+</body>
+</html>

@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Start Free Trial – Coda</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+    }
+    .auth-container {
+      display: flex;
+      width: 100%;
+      min-height: 100vh;
+    }
+    .auth-form-panel {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 48px;
+      max-width: 620px;
+      background: var(--bg-card);
+      border-right: 1px solid var(--border-color);
+      overflow-y: auto;
+    }
+    .auth-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--text-secondary);
+      font-weight: 600;
+      font-size: 13px;
+      margin-bottom: 24px;
+      width: fit-content;
+    }
+    .auth-back:hover {
+      color: var(--slate-900);
+    }
+    .auth-form-wrap {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      width: 100%;
+    }
+    .auth-form-wrap h1 {
+      font-size: 30px;
+      font-weight: 800;
+      margin-bottom: 4px;
+      letter-spacing: -0.03em;
+    }
+    .auth-form-wrap p.sub {
+      color: var(--text-secondary);
+      font-size: 14px;
+      margin-bottom: 24px;
+    }
+    .auth-brand-panel {
+      flex: 1.2;
+      background: var(--slate-950);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 64px;
+      position: relative;
+    }
+    .auth-brand-panel::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(rgba(20, 184, 166, 0.1) 1px, transparent 1px);
+      background-size: 24px 24px;
+      opacity: 0.5;
+    }
+    .auth-brand-content {
+      position: relative;
+      z-index: 1;
+      max-width: 440px;
+      text-align: left;
+    }
+    .auth-brand-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 800;
+      font-size: 24px;
+      color: #ffffff;
+      margin-bottom: 40px;
+    }
+    .auth-brand-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: var(--radius-sm);
+      background: var(--teal-600);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #fff;
+    }
+    .auth-brand-quote {
+      font-size: 22px;
+      font-weight: 600;
+      color: #ffffff;
+      line-height: 1.5;
+      margin-bottom: 16px;
+      letter-spacing: -0.02em;
+    }
+    .auth-brand-attribution {
+      font-size: 14px;
+      color: var(--slate-400);
+      font-weight: 500;
+    }
+    .auth-brand-features {
+      display: flex;
+      gap: 32px;
+      margin-top: 56px;
+    }
+    .auth-brand-feat {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .auth-brand-feat .material-symbols-outlined {
+      font-size: 24px;
+      color: var(--teal-600);
+    }
+    .auth-brand-feat span:last-child {
+      font-size: 12px;
+      color: var(--slate-400);
+    }
+    .field-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+    .auth-alt {
+      text-align: center;
+      font-size: 13.5px;
+      color: var(--text-secondary);
+      margin-top: 20px;
+    }
+    .auth-alt a {
+      color: var(--slate-900);
+      font-weight: 600;
+    }
+    .auth-result {
+      background: var(--slate-900);
+      color: #ffffff;
+      border-radius: var(--radius-sm);
+      padding: 12px 16px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      margin-top: 16px;
+      display: none;
+    }
+    .auth-result.show {
+      display: block;
+    }
+    .auth-result.error {
+      border-left: 3px solid var(--error);
+      background: #fef2f2;
+      color: var(--error);
+    }
+    .auth-result.success {
+      border-left: 3px solid var(--success);
+      background: #ecfdf5;
+      color: var(--success);
+    }
+    @media (max-width: 900px) {
+      .auth-brand-panel { display: none; }
+      .auth-form-panel { max-width: 100%; padding: 32px 24px; }
+      .auth-form-wrap { max-width: 100%; }
+      .field-row { grid-template-columns: 1fr; gap: 0; }
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-container">
+    <div class="auth-form-panel">
+      <a href="/" class="auth-back">
+        <span class="material-symbols-outlined" style="font-size: 16px;">arrow_back</span>
+        Back to Coda
+      </a>
+      <div class="auth-form-wrap">
+        <h1>Start your free trial</h1>
+        <p class="sub">14 days trial account, no card details needed.</p>
+
+        <form id="signupForm" autocomplete="off">
+          <input type="hidden" id="signupTier" value="professional">
+          
+          <div class="form-group">
+            <label class="form-label" for="signupTierSelect">Plan Tier</label>
+            <select class="form-control" id="signupTierSelect">
+              <option value="starter">Starter — ₦15,000/mo</option>
+              <option value="professional" selected>Business Suite — ₦45,000/mo (Popular)</option>
+              <option value="enterprise">Enterprise — ₦150,000/mo</option>
+            </select>
+          </div>
+
+          <div class="field-row">
+            <div class="form-group">
+              <label class="form-label" for="signupName">Full Name</label>
+              <input class="form-control" type="text" id="signupName" placeholder="Adebayo Ogundele" required autocomplete="name">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="signupEmail">Email Address</label>
+              <input class="form-control" type="email" id="signupEmail" placeholder="hello@firm.com" required autocomplete="email">
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="signupPassword">Password</label>
+            <input class="form-control" type="password" id="signupPassword" placeholder="Minimum 8 characters" required minlength="8" autocomplete="new-password">
+          </div>
+
+          <div class="field-row">
+            <div class="form-group">
+              <label class="form-label" for="signupBusinessName">Business Name</label>
+              <input class="form-control" type="text" id="signupBusinessName" placeholder="Reni Mercantile Ltd" required autocomplete="organization">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="signupPhone">Phone Number</label>
+              <input class="form-control" type="tel" id="signupPhone" placeholder="080 1234 5678" autocomplete="tel">
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="form-group">
+              <label class="form-label" for="signupCAC">CAC Reg Number</label>
+              <input class="form-control" type="text" id="signupCAC" placeholder="RC1234567" autocomplete="organization">
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="signupType">Business Type</label>
+              <select class="form-control" id="signupType">
+                <option value="sole_proprietorship">Sole Proprietorship</option>
+                <option value="partnership">Partnership</option>
+                <option value="limited" selected>Limited Liability Company</option>
+              </select>
+            </div>
+          </div>
+
+          <button type="submit" class="btn btn-primary" id="signupSubmit" style="width: 100%; margin-top: 8px;">
+            <span class="material-symbols-outlined" style="font-size:18px">rocket_launch</span>
+            Create Account
+          </button>
+        </form>
+
+        <div class="auth-result" id="signupResult"></div>
+        <div class="auth-alt">
+          Already have an account? <a href="login.html">Sign In</a>
+        </div>
+      </div>
+      <div style="margin-top: 32px; display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted);">
+        <span>&copy; 2026 Coda Technologies</span>
+        <div style="display: flex; gap: 12px;">
+          <a href="#" onclick="event.preventDefault(); document.body.classList.add('no-scroll'); document.getElementById('privacyModal').style.display='flex'">Privacy</a>
+          <a href="#" onclick="event.preventDefault(); document.body.classList.add('no-scroll'); document.getElementById('termsModal').style.display='flex'">Terms</a>
+        </div>
+      </div>
+    </div>
+    <div class="auth-brand-panel">
+      <div class="auth-brand-content">
+        <div class="auth-brand-logo">
+          <span class="auth-brand-icon"><span class="material-symbols-outlined">finance</span></span>
+          <span>Coda</span>
+        </div>
+        <p class="auth-brand-quote">"We cut our accounting workload by 70% and got FIRS-compliant in one week. Coda is built for how Nigeria does business."</p>
+        <p class="auth-brand-attribution">— Chidi Okonkwo, CFO at Best Foods Ltd</p>
+        <div class="auth-brand-features">
+          <div class="auth-brand-feat">
+            <span class="material-symbols-outlined">verified</span>
+            <span>NDPR Compliant</span>
+          </div>
+          <div class="auth-brand-feat">
+            <span class="material-symbols-outlined">payments</span>
+            <span>Naira Native</span>
+          </div>
+          <div class="auth-brand-feat">
+            <span class="material-symbols-outlined">receipt_long</span>
+            <span>FIRS Ready</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      'use strict';
+
+      const tierInput = document.getElementById('signupTier');
+      const tierSelect = document.getElementById('signupTierSelect');
+      tierSelect.addEventListener('change', () => {
+        tierInput.value = tierSelect.value;
+      });
+
+      const params = new URLSearchParams(window.location.search);
+      const urlTier = params.get('tier');
+      if (urlTier && ['starter', 'professional', 'enterprise'].includes(urlTier)) {
+        tierSelect.value = urlTier;
+        tierInput.value = urlTier;
+      }
+
+      const form = document.getElementById('signupForm');
+      const submitBtn = document.getElementById('signupSubmit');
+      const resultEl = document.getElementById('signupResult');
+
+      form.addEventListener('submit', async e => {
+        e.preventDefault();
+        const userName = document.getElementById('signupName').value.trim();
+        const email = document.getElementById('signupEmail').value.trim();
+        const password = document.getElementById('signupPassword').value;
+        const businessName = document.getElementById('signupBusinessName').value.trim();
+        const phone = document.getElementById('signupPhone').value.trim();
+        const cac = document.getElementById('signupCAC').value.trim();
+        const type = document.getElementById('signupType').value;
+        const tier = tierInput.value;
+
+        if (!userName || !email || !password || !businessName) {
+          resultEl.textContent = 'Please fill in all required fields';
+          resultEl.className = 'auth-result show error';
+          return;
+        }
+        if (password.length < 8) {
+          resultEl.textContent = 'Password must be at least 8 characters';
+          resultEl.className = 'auth-result show error';
+          return;
+        }
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+          resultEl.textContent = 'Invalid email address';
+          resultEl.className = 'auth-result show error';
+          return;
+        }
+        if (cac && !/^(RC|BN)\d{6,8}$/i.test(cac)) {
+          resultEl.textContent = 'Invalid CAC registration number (e.g. RC1234567)';
+          resultEl.className = 'auth-result show error';
+          return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.innerHTML = 'Creating account...';
+        resultEl.classList.remove('show', 'success', 'error');
+        resultEl.textContent = '';
+
+        try {
+          const res = await fetch('/api/v1/auth/signup', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              name: userName, email, password, businessName,
+              cacNumber: cac || undefined, phone: phone || undefined,
+              businessType: type, tier
+            })
+          });
+          const data = await res.json();
+
+          if (!res.ok) {
+            resultEl.textContent = data.error || 'Something went wrong';
+            resultEl.className = 'auth-result show error';
+            return;
+          }
+
+          resultEl.textContent = 'Account created! Redirecting to dashboard...';
+          resultEl.className = 'auth-result show success';
+          form.reset();
+
+          if (data.token) {
+            localStorage.setItem('coda_token', data.token);
+            localStorage.setItem('coda_user', JSON.stringify(data.user));
+          }
+
+          setTimeout(() => window.location.href = '/dashboard', 800);
+        } catch (err) {
+          resultEl.textContent = 'Network error. Please try again.';
+          resultEl.className = 'auth-result show error';
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size:18px">rocket_launch</span> Start Free Trial';
+        }
+      });
+    })();
+  </script>
+<div class="modal-overlay" id="termsModal" style="position:fixed;inset:0;background:rgba(15,23,42,0.6);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:1000;">
+  <div style="background:#fff;width:100%;max-width:500px;border-radius:14px;padding:32px;position:relative;max-height:80vh;overflow-y:auto;box-shadow:0 20px 25px -5px rgba(15,23,42,0.06);">
+    <button onclick="document.body.classList.remove('no-scroll'); document.getElementById('termsModal').style.display='none'" style="position:absolute;top:24px;right:24px;background:none;border:none;cursor:pointer;color:#64748b;"><span class="material-symbols-outlined">close</span></button>
+    <div style="display:flex;align-items:center;gap:8px;font-weight:800;font-size:18px;color:#0f172a;margin-bottom:24px;">
+      <span style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:6px;background:#0f172a;color:#fff;"><span class="material-symbols-outlined" style="font-size:18px;">finance</span></span>
+      <span>Coda</span>
+    </div>
+    <h2 style="font-size:20px;margin-bottom:16px;">Terms of Service</h2>
+    <p style="font-size:14px;color:#475569;line-height:1.6;margin-bottom:12px;">By accessing and using Coda's enterprise financial systems, you agree to be bound by these terms of service, all applicable laws and regulations, and agree that you are responsible for compliance with any applicable local laws.</p>
+    <p style="font-size:14px;color:#475569;line-height:1.6;margin-bottom:12px;">Our platform is provided "as is". Coda makes no warranties, expressed or implied, and hereby disclaims and negates all other warranties including, without limitation, implied warranties or conditions of merchantability, fitness for a particular purpose, or non-infringement of intellectual property or other violation of rights.</p>
+    <button onclick="document.body.classList.remove('no-scroll'); document.getElementById('termsModal').style.display='none'" style="display:inline-flex;align-items:center;justify-content:center;font-family:Inter,sans-serif;font-weight:600;font-size:13px;padding:10px 20px;border-radius:6px;border:1px solid #0f172a;background:#0f172a;color:#fff;cursor:pointer;width:100%;margin-top:16px;height:40px;">Acknowledge</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="privacyModal" style="position:fixed;inset:0;background:rgba(15,23,42,0.6);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:1000;">
+  <div style="background:#fff;width:100%;max-width:500px;border-radius:14px;padding:32px;position:relative;max-height:80vh;overflow-y:auto;box-shadow:0 20px 25px -5px rgba(15,23,42,0.06);">
+    <button onclick="document.body.classList.remove('no-scroll'); document.getElementById('privacyModal').style.display='none'" style="position:absolute;top:24px;right:24px;background:none;border:none;cursor:pointer;color:#64748b;"><span class="material-symbols-outlined">close</span></button>
+    <div style="display:flex;align-items:center;gap:8px;font-weight:800;font-size:18px;color:#0f172a;margin-bottom:24px;">
+      <span style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:6px;background:#0f172a;color:#fff;"><span class="material-symbols-outlined" style="font-size:18px;">finance</span></span>
+      <span>Coda</span>
+    </div>
+    <h2 style="font-size:20px;margin-bottom:16px;">Privacy Policy</h2>
+    <p style="font-size:14px;color:#475569;line-height:1.6;margin-bottom:12px;">Your privacy is important to us. It is Coda's policy to respect your privacy regarding any information we may collect from you across our website, platform, and other sites we own and operate.</p>
+    <p style="font-size:14px;color:#475569;line-height:1.6;margin-bottom:12px;">We only ask for personal information when we truly need it to provide a service to you. We collect it by fair and lawful means, with your knowledge and consent. We also let you know why we're collecting it and how it will be used. We don't share any personally identifying information publicly or with third-parties, except when required to by law.</p>
+    <button onclick="document.body.classList.remove('no-scroll'); document.getElementById('privacyModal').style.display='none'" style="display:inline-flex;align-items:center;justify-content:center;font-family:Inter,sans-serif;font-weight:600;font-size:13px;padding:10px 20px;border-radius:6px;border:1px solid #0f172a;background:#0f172a;color:#fff;cursor:pointer;width:100%;margin-top:16px;height:40px;">Acknowledge</button>
+  </div>
+</div>
+
+</body>
+</html>

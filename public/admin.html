@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel – Coda</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+  <style>
+    :root { --admin-sidebar-w: 260px; --admin-topbar-h: 64px; }
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: flex;
+    }
+    .admin-shell {
+      display: flex;
+      width: 100%;
+      min-height: 100vh;
+    }
+    .admin-sidebar {
+      width: var(--admin-sidebar-w);
+      min-height: 100vh;
+      background: var(--slate-950);
+      color: var(--slate-300);
+      display: flex;
+      flex-direction: column;
+      position: fixed;
+      top: 0;
+      left: 0;
+      z-index: 100;
+      transition: transform 0.2s ease;
+      border-right: 1px solid rgba(255,255,255,0.08);
+    }
+    .sidebar-header {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 16px 20px;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+    }
+    .sidebar-brand {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-weight: 800;
+      font-size: 20px;
+      color: #ffffff;
+    }
+    .sidebar-brand .brand-icon-box {
+      width: 30px;
+      height: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: var(--radius-sm);
+      background: var(--teal-600);
+    }
+    .sidebar-brand .brand-icon-box .material-symbols-outlined {
+      font-size: 18px;
+      color: #ffffff;
+    }
+    .sidebar-close {
+      display: none;
+      background: none;
+      border: none;
+      cursor: pointer;
+      margin-left: auto;
+      color: var(--slate-400);
+    }
+    .admin-nav {
+      flex: 1;
+      overflow-y: auto;
+      padding: 16px 12px;
+    }
+    .nav-section-title {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--slate-500);
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      padding: 8px 12px 6px;
+    }
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      border-radius: var(--radius-sm);
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--slate-400);
+      cursor: pointer;
+      transition: all var(--transition);
+      text-decoration: none;
+      width: 100%;
+      border: none;
+      background: none;
+      text-align: left;
+      font-family: inherit;
+    }
+    .nav-item:hover {
+      background: rgba(255,255,255,0.05);
+      color: #ffffff;
+    }
+    .nav-item.active {
+      background: var(--teal-600);
+      color: #ffffff;
+      font-weight: 600;
+    }
+    .sidebar-footer {
+      padding: 16px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .user-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--teal-600);
+      color: #fff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 700;
+      font-size: 13px;
+    }
+    .user-details .user-name {
+      font-size: 13px;
+      font-weight: 600;
+      color: #ffffff;
+    }
+    .user-details .user-role {
+      font-size: 11px;
+      color: var(--slate-400);
+    }
+    .admin-main {
+      margin-left: var(--admin-sidebar-w);
+      width: calc(100% - var(--admin-sidebar-w));
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      transition: margin-left 0.2s ease, width 0.2s ease;
+    }
+    .admin-topbar {
+      height: var(--admin-topbar-h);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 32px;
+      background: var(--bg-card);
+      border-bottom: 1px solid var(--border-color);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+    }
+    .admin-topbar h1 {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--slate-900);
+      margin: 0;
+    }
+    .admin-content {
+      padding: 24px 32px;
+      flex: 1;
+    }
+    .kpi-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 16px;
+      margin-bottom: 24px;
+    }
+    .kpi-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow-sm);
+    }
+    .kpi-card .kpi-label {
+      font-size: 11px;
+      color: var(--text-muted);
+      font-weight: 600;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+    .kpi-card .kpi-value {
+      font-size: 26px;
+      font-weight: 800;
+      color: var(--slate-900);
+      letter-spacing: -0.02em;
+    }
+    .kpi-card .kpi-sub {
+      font-size: 11px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+    .admin-tabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 20px;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .admin-tab {
+      padding: 10px 20px;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all var(--transition);
+      margin-bottom: -1px;
+    }
+    .admin-tab:hover {
+      color: var(--slate-900);
+    }
+    .admin-tab.active {
+      color: var(--slate-900);
+      border-bottom-color: var(--slate-900);
+    }
+    .admin-panel {
+      display: none;
+    }
+    .admin-panel.active {
+      display: block;
+    }
+    .admin-table-wrap {
+      overflow-x: auto;
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow-sm);
+    }
+    .admin-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13px;
+      min-width: 600px;
+      text-align: left;
+    }
+    .admin-table thead {
+      background: var(--slate-50);
+    }
+    .admin-table th {
+      padding: 12px 16px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    .admin-table td {
+      padding: 12px 16px;
+      border-top: 1px solid var(--border-light);
+      color: var(--text-secondary);
+    }
+    .admin-table tr:hover td {
+      background: var(--slate-50);
+    }
+    .badge {
+      display: inline-block;
+      padding: 2px 10px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 600;
+    }
+    .badge-trial { background: var(--bronze-50); color: var(--bronze-700); }
+    .badge-active { background: var(--teal-50); color: var(--teal-700); }
+    .badge-inactive { background: var(--error-bg); color: var(--error); }
+    .badge-paid { background: var(--teal-50); color: var(--teal-700); }
+    .badge-pending { background: var(--warning-bg); color: var(--warning); }
+    .chart-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-bottom: 24px;
+    }
+    .chart-card {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow-sm);
+    }
+    .chart-card h3 {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--slate-900);
+      margin-bottom: 16px;
+    }
+    .chart-canvas-wrap {
+      position: relative;
+      height: 280px;
+    }
+    .pagination {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      font-size: 12px;
+      color: var(--text-muted);
+    }
+    .pagination button {
+      background: var(--bg-card);
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-sm);
+      padding: 6px 14px;
+      font-size: 12px;
+      cursor: pointer;
+      font-family: inherit;
+    }
+    .pagination button:hover:not(:disabled) {
+      background: var(--slate-50);
+    }
+    .pagination button:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+    .mobile-toggle {
+      display: flex;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-secondary);
+      align-items: center;
+      justify-content: center;
+      padding: 8px;
+      margin-right: 8px;
+    }
+    .sidebar-close {
+      display: none;
+    }
+    @media (min-width: 1025px) {
+      .admin-sidebar.collapsed {
+        transform: translateX(-100%);
+      }
+      .admin-sidebar.collapsed ~ .admin-main,
+      .admin-sidebar.collapsed + .admin-main {
+        margin-left: 0;
+        width: 100%;
+      }
+    }
+    @media (max-width: 1024px) {
+      .admin-sidebar { transform: translateX(-100%); }
+      .admin-sidebar.open { transform: translateX(0); }
+      .sidebar-close { display: block; }
+      .admin-main { margin-left: 0; width: 100%; }
+      .admin-topbar { padding: 0 20px !important; }
+      .admin-content { padding: 16px; }
+      .kpi-row { grid-template-columns: repeat(2, 1fr); }
+      .chart-row { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 600px) {
+      .admin-topbar { padding: 0 16px !important; }
+      .kpi-row { grid-template-columns: 1fr; }
+      .kpi-row .kpi-card { grid-column: span 1 !important; }
+    }
+  </style>
+</head>
+<body>
+  <div class="admin-shell">
+    <!-- Sidebar -->
+    <aside class="admin-sidebar" id="adminSidebar">
+      <div class="sidebar-header">
+        <a href="/" class="sidebar-brand">
+          <span class="brand-icon-box"><span class="material-symbols-outlined">finance</span></span>
+          <span>Coda</span>
+        </a>
+        <span class="badge-role" style="font-size:9px; padding:2px 8px; border-radius:100px; background:var(--bronze-600); color:#fff; font-weight:600; margin-left:8px;">Admin</span>
+        <button class="sidebar-close" id="sidebarClose" aria-label="Close"><span class="material-symbols-outlined">close</span></button>
+      </div>
+      
+      <nav class="admin-nav">
+        <div class="nav-section">
+          <div class="nav-section-title">Management</div>
+          <button class="nav-item active" data-tab="users">
+            <span class="material-symbols-outlined">people</span>
+            <span>Users</span>
+          </button>
+          <button class="nav-item" data-tab="businesses">
+            <span class="material-symbols-outlined">business</span>
+            <span>Businesses</span>
+          </button>
+        </div>
+        <div class="nav-section">
+          <div class="nav-section-title">Analytics</div>
+          <button class="nav-item" data-tab="analytics">
+            <span class="material-symbols-outlined">monitoring</span>
+            <span>Analytics</span>
+          </button>
+          <button class="nav-item" data-tab="audit">
+            <span class="material-symbols-outlined">history</span>
+            <span>Audit Log</span>
+          </button>
+        </div>
+        <div class="nav-section">
+          <div class="nav-section-title">Quick Links</div>
+          <a href="/dashboard" class="nav-item">
+            <span class="material-symbols-outlined">dashboard</span>
+            <span>Back to Dashboard</span>
+          </a>
+        </div>
+      </nav>
+      
+      <div class="sidebar-footer">
+        <div class="user-info" id="adminUserInfo"></div>
+        <button class="nav-item" id="btnAdminLogout" style="padding:8px 12px; font-size:12px; margin-top:4px;">
+          <span class="material-symbols-outlined" style="font-size:16px">logout</span>
+          <span>Sign Out</span>
+        </button>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="admin-main">
+      <div class="admin-topbar">
+        <div style="display:flex; align-items:center; gap:12px;">
+          <button class="mobile-toggle" id="sidebarToggle" aria-label="Toggle menu">
+            <span class="material-symbols-outlined">menu</span>
+          </button>
+          <h1>Platform Operations</h1>
+        </div>
+        <div>
+          <span style="font-size:12px; color:var(--text-muted);" id="adminLastUpdated"></span>
+        </div>
+      </div>
+
+      <div class="admin-content">
+        <!-- KPIs -->
+        <div class="kpi-row" id="kpiRow">
+          <!-- Total Users -->
+          <div class="kpi-card green">
+            <div class="kpi-card-header">
+              <span class="kpi-icon"><span class="material-symbols-outlined">groups</span></span>
+            </div>
+            <div class="kpi-label">Total Users</div>
+            <div class="kpi-value" id="kpiUsers">-</div>
+          </div>
+
+          <!-- Total Businesses -->
+          <div class="kpi-card copper">
+            <div class="kpi-card-header">
+              <span class="kpi-icon"><span class="material-symbols-outlined">business</span></span>
+            </div>
+            <div class="kpi-label">Total Businesses</div>
+            <div class="kpi-value" id="kpiBusinesses">-</div>
+          </div>
+
+          <!-- Active Subscriptions -->
+          <div class="kpi-card teal">
+            <div class="kpi-card-header">
+              <span class="kpi-icon"><span class="material-symbols-outlined">card_membership</span></span>
+            </div>
+            <div class="kpi-label">Active Subscriptions</div>
+            <div class="kpi-value" id="kpiActiveSubs">-</div>
+          </div>
+
+          <!-- Month Signups -->
+          <div class="kpi-card green">
+            <div class="kpi-card-header">
+              <span class="kpi-icon"><span class="material-symbols-outlined">person_add</span></span>
+            </div>
+            <div class="kpi-label">Month Signups</div>
+            <div class="kpi-value" id="kpiSignups">-</div>
+          </div>
+
+          <!-- Total Paid Revenue -->
+          <div class="kpi-card dark" style="grid-column: span 2;">
+            <div class="kpi-card-header">
+              <span class="kpi-icon"><span class="material-symbols-outlined">payments</span></span>
+            </div>
+            <div class="kpi-label">Total Paid Revenue</div>
+            <div class="kpi-value" id="kpiRevenue">-</div>
+            <div class="kpi-sub" id="kpiRevenueSub"></div>
+          </div>
+        </div>
+
+        <!-- Tabs -->
+        <div class="admin-tabs">
+          <button class="admin-tab active" data-tab="users">Users</button>
+          <button class="admin-tab" data-tab="businesses">Businesses</button>
+          <button class="admin-tab" data-tab="analytics">Analytics</button>
+          <button class="admin-tab" data-tab="audit">Audit Log</button>
+        </div>
+
+        <!-- Users Panel -->
+        <div class="admin-panel active" id="panel-users">
+          <div class="admin-table-wrap">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Email</th>
+                  <th>Business</th>
+                  <th>Role</th>
+                  <th>Tier</th>
+                  <th>Joined</th>
+                </tr>
+              </thead>
+              <tbody id="usersBody">
+                <tr><td colspan="6" style="text-align:center; padding:40px; color:var(--text-muted);">Loading users...</td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="pagination" id="usersPagination" style="display:none;">
+            <span id="usersPageInfo"></span>
+            <div style="display:flex; gap:8px;">
+              <button id="usersPrev" disabled>Previous</button>
+              <button id="usersNext">Next</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Businesses Panel -->
+        <div class="admin-panel" id="panel-businesses">
+          <div class="admin-table-wrap">
+            <div class="table-wrap">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Business Name</th>
+                    <th>Tier</th>
+                    <th>Subscription</th>
+                    <th>Users</th>
+                    <th>Payments</th>
+                    <th>Created</th>
+                  </tr>
+                </thead>
+                <tbody id="businessesBody">
+                  <tr><td colspan="6" style="text-align:center; padding:40px; color:var(--text-muted);">Loading businesses...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="pagination" id="businessesPagination" style="display:none;">
+            <span id="businessesPageInfo"></span>
+            <div style="display:flex; gap:8px;">
+              <button id="businessesPrev" disabled>Previous</button>
+              <button id="businessesNext">Next</button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Analytics Panel -->
+        <div class="admin-panel" id="panel-analytics">
+          <div class="chart-row">
+            <div class="chart-card">
+              <h3>Monthly Signups</h3>
+              <div class="chart-canvas-wrap"><canvas id="signupsChart"></canvas></div>
+            </div>
+            <div class="chart-card">
+              <h3>Revenue Growth Statement</h3>
+              <div class="chart-canvas-wrap"><canvas id="revenueChart"></canvas></div>
+            </div>
+          </div>
+          <div class="chart-row">
+            <div class="chart-card">
+              <h3>Tier Ratio</h3>
+              <div class="chart-canvas-wrap"><canvas id="tierChart"></canvas></div>
+            </div>
+            <div class="chart-card">
+              <h3>Revenue Distribution per Tier</h3>
+              <div class="chart-canvas-wrap"><canvas id="revenueTierChart"></canvas></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Audit Panel -->
+        <div class="admin-panel" id="panel-audit">
+          <div class="admin-table-wrap">
+            <div class="table-wrap">
+              <table class="admin-table">
+                <thead>
+                  <tr>
+                    <th>Action</th>
+                    <th>User</th>
+                    <th>Business</th>
+                    <th>Details</th>
+                    <th>Timestamp</th>
+                  </tr>
+                </thead>
+                <tbody id="auditBody">
+                  <tr><td colspan="5" style="text-align:center; padding:40px; color:var(--text-muted);">Loading audit entries...</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+          <div class="pagination" id="auditPagination" style="display:none;">
+            <span id="auditPageInfo"></span>
+            <div style="display:flex; gap:8px;">
+              <button id="auditPrev" disabled>Previous</button>
+              <button id="auditNext">Next</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <!-- Shared Auth/Trial Modal Frame -->
+  <div class="modal-overlay" id="authModal" style="display: none;">
+    <div class="modal" style="position: relative;">
+      <!-- Added close button to go home -->
+      <button onclick="window.location.href='/'" style="position:absolute; top:12px; right:12px; background:none; border:none; color:var(--text-muted); cursor:pointer;">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+      <h2 style="font-size: 18px; margin-bottom: 8px;">Switch accounts</h2>
+      <p class="sub" style="margin-bottom:20px">Your session needs validation.</p>
+      <a href="/login" class="btn btn-primary" style="width:100%; justify-content:center; text-decoration:none;">
+        <span class="material-symbols-outlined">login</span>
+        Sign in to Coda
+      </a>
+      <div style="margin-top: 16px; text-align:center;">
+        <p style="font-size:13px; color:var(--text-secondary);">Don't have an account? <a href="/signup" style="color:var(--teal-600); font-weight:600;">Create trial account</a></p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      'use strict';
+
+      let currentUser = null;
+      let usersPage = 1, businessesPage = 1, auditPage = 1;
+      let signupsChart = null, revenueChart = null, tierChart = null, revenueTierChart = null;
+
+      function formatCurrency(amount) {
+        return new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN', minimumFractionDigits: 0 }).format(amount);
+      }
+
+      function formatDate(d) {
+        return new Date(d).toLocaleDateString('en-NG', { day: '2-digit', month: 'short', year: 'numeric' });
+      }
+
+      async function fetchWithAuth(url) {
+        const res = await fetch(url, { credentials: 'include' });
+        if (res.status === 401) { window.location.href = '/login'; return null; }
+        if (res.status === 403) { window.location.href = '/dashboard'; return null; }
+        return res.ok ? res.json() : null;
+      }
+
+      function switchTab(tab) {
+        document.querySelectorAll('.admin-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
+        document.querySelectorAll('.admin-panel').forEach(p => p.classList.toggle('active', p.id === 'panel-' + tab));
+        document.querySelectorAll('.admin-nav .nav-item[data-tab]').forEach(n => n.classList.toggle('active', n.dataset.tab === tab));
+      }
+
+      document.querySelectorAll('.admin-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          const t = tab.dataset.tab;
+          switchTab(t);
+          if (t === 'analytics') loadAnalytics();
+          if (t === 'audit') loadAuditLog(1);
+        });
+      });
+      
+      document.querySelectorAll('.admin-nav .nav-item[data-tab]').forEach(item => {
+        item.addEventListener('click', () => {
+          switchTab(item.dataset.tab);
+          if (item.dataset.tab === 'analytics') loadAnalytics();
+          if (item.dataset.tab === 'audit') loadAuditLog(1);
+        });
+      });
+
+      document.getElementById('sidebarToggle')?.addEventListener('click', () => {
+        const s = document.getElementById('adminSidebar');
+        if (window.innerWidth <= 1024) {
+          s.classList.toggle('open');
+          if (s.classList.contains('open')) {
+            document.body.classList.add('no-scroll');
+          } else {
+            document.body.classList.remove('no-scroll');
+          }
+        } else {
+          s.classList.toggle('collapsed');
+        }
+      });
+      document.getElementById('sidebarClose')?.addEventListener('click', () => {
+        document.getElementById('adminSidebar').classList.remove('open');
+        document.body.classList.remove('no-scroll');
+      });
+
+      document.getElementById('btnAdminLogout')?.addEventListener('click', async () => {
+        await fetch('/api/v1/auth/logout', { method: 'POST', credentials: 'include' });
+        localStorage.removeItem('coda_token');
+        localStorage.removeItem('coda_user');
+        
+        document.body.style.overflow = 'hidden';
+        const s = document.getElementById('adminSidebar');
+        if (s) s.classList.remove('open');
+        const authModal = document.getElementById('authModal');
+        if (authModal) authModal.style.display = 'flex';
+      });
+
+      async function loadOverview() {
+        const data = await fetchWithAuth('/api/v1/admin/analytics/overview');
+        if (!data) return;
+        const o = data.overview;
+        document.getElementById('kpiUsers').textContent = o.totalUsers.toLocaleString();
+        document.getElementById('kpiBusinesses').textContent = o.totalBusinesses.toLocaleString();
+        document.getElementById('kpiActiveSubs').textContent = o.activeSubscriptions.toLocaleString();
+        document.getElementById('kpiRevenue').textContent = formatCurrency(o.paidRevenue);
+        document.getElementById('kpiRevenueSub').textContent = o.totalBusinesses > 0 ? formatCurrency(Math.round(o.paidRevenue / o.totalBusinesses)) + ' avg/business' : '';
+        document.getElementById('kpiSignups').textContent = o.signupsThisMonth.toLocaleString();
+        document.getElementById('adminLastUpdated').textContent = 'Updated ' + new Date().toLocaleString('en-NG');
+      }
+
+      async function loadUsers(page) {
+        const data = await fetchWithAuth('/api/v1/admin/users?page=' + page + '&limit=20');
+        if (!data) return;
+        const tbody = document.getElementById('usersBody');
+        if (!data.users.length) {
+          tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--text-muted);">No users found.</td></tr>';
+          document.getElementById('usersPagination').style.display = 'none';
+          return;
+        }
+        tbody.innerHTML = data.users.map(u => '<tr><td>' + (u.name || '-') + '</td><td class="email-cell" title="' + u.email + '">' + u.email + '</td><td>' + (u.business_name || '-') + '</td><td>' + u.role + '</td><td>' + (u.business_tier || '-') + '</td><td>' + formatDate(u.created_at) + '</td></tr>').join('');
+        const p = data.pagination;
+        document.getElementById('usersPagination').style.display = 'flex';
+        document.getElementById('usersPageInfo').textContent = 'Page ' + p.page + ' of ' + p.pages + ' (' + p.total + ' users)';
+        document.getElementById('usersPrev').disabled = p.page <= 1;
+        document.getElementById('usersNext').disabled = p.page >= p.pages;
+        document.getElementById('usersPrev').onclick = () => loadUsers(--usersPage);
+        document.getElementById('usersNext').onclick = () => loadUsers(++usersPage);
+      }
+
+      async function loadBusinesses(page) {
+        const data = await fetchWithAuth('/api/v1/admin/businesses?page=' + page + '&limit=20');
+        if (!data) return;
+        const tbody = document.getElementById('businessesBody');
+        if (!data.businesses.length) {
+          tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--text-muted);">No businesses found.</td></tr>';
+          document.getElementById('businessesPagination').style.display = 'none';
+          return;
+        }
+        tbody.innerHTML = data.businesses.map(b => {
+          const statusClass = b.subscription_status === 'active' || b.subscription_status === 'paid' ? 'badge-active' : b.subscription_status === 'trial' ? 'badge-trial' : 'badge-inactive';
+          return '<tr><td><strong>' + b.name + '</strong></td><td>' + (b.tier || '-') + '</td><td><span class="badge ' + statusClass + '">' + b.subscription_status + '</span></td><td>' + b.user_count + '</td><td>' + b.payment_count + '</td><td>' + formatDate(b.created_at) + '</td></tr>';
+        }).join('');
+        const p = data.pagination;
+        document.getElementById('businessesPagination').style.display = 'flex';
+        document.getElementById('businessesPageInfo').textContent = 'Page ' + p.page + ' of ' + p.pages + ' (' + p.total + ' businesses)';
+        document.getElementById('businessesPrev').disabled = p.page <= 1;
+        document.getElementById('businessesNext').disabled = p.page >= p.pages;
+        document.getElementById('businessesPrev').onclick = () => loadBusinesses(--businessesPage);
+        document.getElementById('businessesNext').onclick = () => loadBusinesses(++businessesPage);
+      }
+
+      async function loadAnalytics() {
+        const [signupData, revenueData] = await Promise.all([
+          fetchWithAuth('/api/v1/admin/analytics/signups'),
+          fetchWithAuth('/api/v1/admin/analytics/revenue'),
+        ]);
+        if (!signupData || !revenueData) return;
+
+        const colors = { green: '#0d9488', copper: '#d97706', bgLight: '#f1f5f9', border: '#e2e8f0' };
+
+        if (signupsChart) signupsChart.destroy();
+        const sCtx = document.getElementById('signupsChart')?.getContext('2d');
+        if (sCtx && signupData.signups) {
+          signupsChart = new Chart(sCtx, {
+            type: 'bar',
+            data: {
+              labels: signupData.signups.labels,
+              datasets: [{ label: 'Signups', data: signupData.signups.values, backgroundColor: colors.green, borderRadius: 4 }]
+            },
+            options: {
+              responsive: true, maintainAspectRatio: false,
+              plugins: { legend: { display: false } },
+              scales: {
+                x: { grid: { display: false } },
+                y: { grid: { color: colors.border }, beginAtZero: true }
+              }
+            }
+          });
+        }
+
+        if (revenueChart) revenueChart.destroy();
+        const rCtx = document.getElementById('revenueChart')?.getContext('2d');
+        if (rCtx && revenueData.revenueTrend) {
+          revenueChart = new Chart(rCtx, {
+            type: 'line',
+            data: {
+              labels: revenueData.revenueTrend.labels,
+              datasets: [{
+                label: 'Revenue', data: revenueData.revenueTrend.values,
+                borderColor: colors.copper, backgroundColor: 'rgba(217,119,6,0.08)',
+                fill: true, tension: 0.4, pointRadius: 0, pointHoverRadius: 6
+              }]
+            },
+            options: {
+              responsive: true, maintainAspectRatio: false,
+              plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => formatCurrency(ctx.raw) } } },
+              scales: {
+                x: { grid: { display: false } },
+                y: { grid: { color: colors.border }, ticks: { callback: v => '₦' + (v/1000).toFixed(0) + 'k' }, beginAtZero: true }
+              }
+            }
+          });
+        }
+
+        if (tierChart) tierChart.destroy();
+        const tCtx = document.getElementById('tierChart')?.getContext('2d');
+        if (tCtx && revenueData.revenueByTier) {
+          const tiers = revenueData.revenueByTier;
+          tierChart = new Chart(tCtx, {
+            type: 'doughnut',
+            data: {
+              labels: tiers.map(t => t.tier || 'unknown'),
+              datasets: [{ data: tiers.map(t => t.total), backgroundColor: ['#0d9488', '#d97706', '#0f172a'], borderWidth: 0, cutout: '65%' }]
+            },
+            options: {
+              responsive: true, maintainAspectRatio: false,
+              plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, pointStyle: 'circle', padding: 16 } } }
+            }
+          });
+        }
+
+        if (revenueTierChart) revenueTierChart.destroy();
+        const rtCtx = document.getElementById('revenueTierChart')?.getContext('2d');
+        if (rtCtx && revenueData.revenueByTier) {
+          const tiers = revenueData.revenueByTier;
+          revenueTierChart = new Chart(rtCtx, {
+            type: 'bar',
+            data: {
+              labels: tiers.map(t => t.tier || 'unknown'),
+              datasets: [{ label: 'Revenue', data: tiers.map(t => t.total), backgroundColor: ['#0d9488', '#d97706', '#0f172a'], borderRadius: 4 }]
+            },
+            options: {
+              responsive: true, maintainAspectRatio: false,
+              plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => formatCurrency(ctx.raw) } } },
+              scales: {
+                x: { grid: { display: false } },
+                y: { grid: { color: colors.border }, ticks: { callback: v => '₦' + (v/1000).toFixed(0) + 'k' }, beginAtZero: true }
+              }
+            }
+          });
+        }
+      }
+
+      async function loadAuditLog(page) {
+        const data = await fetchWithAuth('/api/v1/admin/audit-log?page=' + page + '&limit=50');
+        if (!data) return;
+        const tbody = document.getElementById('auditBody');
+        if (!data.entries.length) {
+          tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:40px;color:var(--text-muted);">No audit entries.</td></tr>';
+          document.getElementById('auditPagination').style.display = 'none';
+          return;
+        }
+        tbody.innerHTML = data.entries.map(e => {
+          let details = '';
+          try { const d = JSON.parse(e.details); details = Object.values(d).join(', '); } catch (_) { details = e.details || ''; }
+          return '<tr><td><code style="background:var(--slate-100);padding:2px 8px;border-radius:4px;font-size:11px;">' + e.action + '</code></td><td class="email-cell" title="' + (e.user_email || '') + '">' + (e.user_name || e.user_email || '-') + '</td><td>' + (e.business_name || '-') + '</td><td style="max-width:250px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="' + details + '">' + details + '</td><td>' + formatDate(e.created_at) + '</td></tr>';
+        }).join('');
+        const p = data.pagination;
+        document.getElementById('auditPagination').style.display = 'flex';
+        document.getElementById('auditPageInfo').textContent = 'Page ' + p.page + ' of ' + p.pages + ' (' + p.total + ' entries)';
+        document.getElementById('auditPrev').disabled = p.page <= 1;
+        document.getElementById('auditNext').disabled = p.page >= p.pages;
+        document.getElementById('auditPrev').onclick = () => loadAuditLog(--auditPage);
+        document.getElementById('auditNext').onclick = () => loadAuditLog(++auditPage);
+      }
+
+      async function init() {
+        const me = await fetchWithAuth('/api/v1/auth/me');
+        if (!me) return;
+        currentUser = me.user;
+
+        const ui = document.getElementById('adminUserInfo');
+        if (ui && currentUser) {
+          ui.innerHTML = '<div class="user-avatar">' + (currentUser.name?.charAt(0)?.toUpperCase() || 'A') + '</div><div class="user-details"><div class="user-name">' + (currentUser.name || '') + '</div><div class="user-role">Platform Admin</div></div>';
+        }
+
+        await Promise.all([
+          loadOverview(),
+          loadUsers(1),
+          loadBusinesses(1),
+        ]);
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+      } else {
+        init();
+      }
+    })();
+  </script>
+</body>
+</html>

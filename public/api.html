@@ -1,0 +1,466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>API Docs – Coda</title>
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .api-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      max-width: var(--max-width);
+      margin: 80px auto 40px;
+      gap: 32px;
+      padding: 0 24px;
+    }
+    .api-docs-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+    .api-code-panel {
+      position: sticky;
+      top: 96px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      align-self: start;
+    }
+    .api-header {
+      margin-bottom: 8px;
+    }
+    .api-header h1 {
+      font-size: 32px;
+      font-weight: 800;
+      margin-bottom: 8px;
+      letter-spacing: -0.03em;
+    }
+    .api-header p {
+      color: var(--text-secondary);
+      font-size: 15px;
+    }
+    .api-card-wrapper {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+    }
+    .api-card-wrapper h3 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .method-badge {
+      font-size: 10px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+    .method-post {
+      background: var(--teal-50);
+      color: var(--teal-700);
+    }
+    .method-get {
+      background: var(--info-bg);
+      color: var(--info);
+    }
+    .api-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      margin-top: 16px;
+      text-align: left;
+    }
+    .api-table th {
+      padding: 8px 12px 8px 0;
+      border-bottom: 1px solid var(--border-color);
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-size: 10px;
+      letter-spacing: 0.05em;
+    }
+    .api-table td {
+      padding: 10px 12px 10px 0;
+      border-bottom: 1px solid var(--border-light);
+      color: var(--text-secondary);
+    }
+    .api-table td code {
+      font-family: var(--font-mono);
+      background: var(--slate-100);
+      color: var(--slate-900);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    .code-console {
+      background: var(--slate-950);
+      border-radius: var(--radius);
+      padding: 24px;
+      color: var(--slate-200);
+      font-family: var(--font-mono);
+      font-size: 12.5px;
+      line-height: 1.6;
+      box-shadow: var(--shadow-md);
+      overflow-x: auto;
+    }
+    .code-console-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      color: var(--slate-500);
+      font-weight: 700;
+      margin-bottom: 12px;
+      letter-spacing: 0.08em;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      padding-bottom: 8px;
+    }
+    .try-console {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+    }
+    .try-console h3 {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .result-display {
+      background: var(--slate-950);
+      color: #38bdf8;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      padding: 16px;
+      border-radius: var(--radius-sm);
+      min-height: 80px;
+      white-space: pre-wrap;
+      margin-top: 12px;
+    }
+    @media (max-width: 900px) {
+      .api-container { grid-template-columns: 1fr; }
+      .api-code-panel { position: static; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-brand">
+        <span class="brand-icon-box"><span class="material-symbols-outlined">finance</span></span>
+        <span>Coda</span>
+      </a>
+      <button class="nav-mobile-toggle" id="mobileMenuToggle" aria-label="Toggle menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 12L20 12" class="top-line"/>
+          <path d="M4 12H20" class="mid-line"/>
+          <path d="M4 12H20" class="bot-line"/>
+        </svg>
+      </button>
+      <div class="nav-links" id="navLinks">
+        <div class="nav-auth" id="apiNavAuth">
+          <a href="login.html" class="btn btn-ghost btn-sm">Sign in</a>
+          <a href="signup.html" class="btn btn-primary btn-sm">Start Trial</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="api-container">
+    <!-- Left Panel: Endpoint Documentation -->
+    <div class="api-docs-panel">
+      <div class="api-header">
+        <a href="/" class="btn btn-ghost btn-sm" style="padding: 0; margin-bottom: 8px;">
+          <span class="material-symbols-outlined" style="font-size: 16px;">arrow_back</span>
+          Back to site
+        </a>
+        <h1>API Reference</h1>
+        <p>Integrate Coda directly into your operations using our RESTful JSON endpoints.</p>
+      </div>
+
+      <!-- Endpoint 1 -->
+      <div class="api-card-wrapper">
+        <h3>
+          <span class="method-badge method-post">POST</span>
+          <span>Business Onboarding</span>
+        </h3>
+        <p style="font-size: 13px; color: var(--text-secondary);">Onboard a new business branch or subsidiary to the ERP platform.</p>
+        <table class="api-table">
+          <thead>
+            <tr>
+              <th>Field</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>businessName</code></td>
+              <td>string</td>
+              <td>Registered name of the company</td>
+            </tr>
+            <tr>
+              <td><code>registrationNumber</code></td>
+              <td>string</td>
+              <td>CAC number (e.g. RC1234567)</td>
+            </tr>
+            <tr>
+              <td><code>businessType</code></td>
+              <td>string</td>
+              <td><code>sole_proprietorship</code>, <code>limited</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Endpoint 2 -->
+      <div class="api-card-wrapper">
+        <h3>
+          <span class="method-badge method-post">POST</span>
+          <span>Record Ledger Entry</span>
+        </h3>
+        <p style="font-size: 13px; color: var(--text-secondary);">Direct post a double-entry transaction to accounts ledger.</p>
+        <table class="api-table">
+          <thead>
+            <tr>
+              <th>Field</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>amount</code></td>
+              <td>number</td>
+              <td>Amount in Naira (NGN)</td>
+            </tr>
+            <tr>
+              <td><code>accountFrom</code></td>
+              <td>string</td>
+              <td>Source general ledger account</td>
+            </tr>
+            <tr>
+              <td><code>accountTo</code></td>
+              <td>string</td>
+              <td>Destination account</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Endpoint 3 -->
+      <div class="api-card-wrapper">
+        <h3>
+          <span class="method-badge method-post">POST</span>
+          <span>Calculate Tax Liabilities</span>
+        </h3>
+        <p style="font-size: 13px; color: var(--text-secondary);">Programmatic payroll tax computation using 2026 guidelines.</p>
+        <table class="api-table">
+          <thead>
+            <tr>
+              <th>Field</th>
+              <th>Type</th>
+              <th>Description</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><code>amount</code></td>
+              <td>number</td>
+              <td>Naira amount base</td>
+            </tr>
+            <tr>
+              <td><code>taxType</code></td>
+              <td>string</td>
+              <td><code>vat</code> (7.5%), <code>wht</code> (10%), <code>paye</code></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Right Panel: Code Console & Live Try-it -->
+    <div class="api-code-panel">
+      <div class="code-console">
+        <div class="code-console-title">Request Example</div>
+        <div style="color: #60a5fa;">curl -X POST http://localhost:3100/api/v1/tax/calculate \</div>
+        <div style="color: #60a5fa;">  -H "Content-Type: application/json" \</div>
+        <div style="color: #34d399;">  -d '{"amount": 100000, "taxType": "vat"}'</div>
+      </div>
+
+      <div class="try-console">
+        <h3>Try Request Live</h3>
+        <div class="form-group">
+          <label class="form-label" for="api-amount">Transaction Base Amount (₦)</label>
+          <input class="form-control" type="number" id="api-amount" value="100000">
+        </div>
+        <div class="form-group">
+          <label class="form-label" for="api-tax-type">Tax Bracket</label>
+          <select class="form-control" id="api-tax-type">
+            <option value="vat">Value Added Tax (VAT 7.5%)</option>
+            <option value="wht">Withholding Tax (WHT 10%)</option>
+            <option value="paye">Pay As You Earn (PAYE brackets)</option>
+          </select>
+        </div>
+        <button class="btn btn-primary" id="api-try-btn" style="width: 100%; margin-top: 8px;">
+          <span class="material-symbols-outlined" style="font-size: 16px;">send</span>
+          Send Request
+        </button>
+        <div class="result-display" id="api-result">{ "status": "idle_waiting" }</div>
+      </div>
+    </div>
+  </div>
+
+  <footer style="border-top: 1px solid var(--border-color); background: #ffffff; padding: 48px 0 24px; margin-top: 80px;">
+    <div style="max-width: var(--max-width); margin: 0 auto; padding: 0 24px;">
+      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 48px; flex-wrap: wrap; gap: 32px;">
+        <div>
+          <div style="display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 20px; color: var(--slate-900); margin-bottom: 16px;">
+            <span class="brand-icon-box" style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:6px;background:var(--slate-900);color:#fff;"><span class="material-symbols-outlined" style="font-size:18px;">finance</span></span>
+            <span>Coda</span>
+          </div>
+          <p style="color: var(--text-secondary); max-width: 240px; font-size: 14px;">The definitive financial operating system for high-growth enterprise businesses.</p>
+        </div>
+        <div style="display: flex; gap: 48px;">
+          <div>
+            <h4 style="font-size: 14px; margin-bottom: 16px; color: var(--slate-900);">Product</h4>
+            <ul style="list-style: none; display: flex; flex-direction: column; gap: 12px; font-size: 14px; color: var(--text-secondary);">
+              <li><a href="/#features">Features</a></li>
+              <li><a href="/#pricing">Pricing</a></li>
+              <li><a href="api.html">API Documentation</a></li>
+            </ul>
+          </div>
+          <div>
+            <h4 style="font-size: 14px; margin-bottom: 16px; color: var(--slate-900);">Legal</h4>
+            <ul style="list-style: none; display: flex; flex-direction: column; gap: 12px; font-size: 14px; color: var(--text-secondary);">
+              <li><a href="#" onclick="event.preventDefault(); document.body.classList.add('no-scroll'); document.getElementById('termsModal').style.display='flex'">Terms of Service</a></li>
+              <li><a href="#" onclick="event.preventDefault(); document.body.classList.add('no-scroll'); document.getElementById('privacyModal').style.display='flex'">Privacy Policy</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div style="border-top: 1px solid var(--border-color); padding-top: 24px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: var(--text-muted);">
+        <div>&copy; 2026 Coda Technologies Ltd. All rights reserved.</div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    (function() {
+      const navAuth = document.getElementById('apiNavAuth');
+      if (!navAuth) return;
+      fetch('/api/v1/auth/me', { credentials: 'include' })
+        .then(res => res.ok ? res.json() : null)
+        .then(data => {
+          if (data && data.user) {
+            const u = data.user;
+            const initials = u.name ? u.name.charAt(0).toUpperCase() : 'U';
+            const userName = u.name || u.email || 'User';
+            
+            const profileTag = data.isAdmin ? 'a' : 'div';
+            const profileHref = data.isAdmin ? ' href="/admin" style="text-decoration:none;" title="Admin Dashboard"' : '';
+            
+            navAuth.innerHTML = `
+              <${profileTag} class="nav-user-profile"${profileHref}>
+                <div class="user-avatar">${initials}</div>
+                <div class="user-name">${userName}</div>
+              </${profileTag}>
+              <a href="/dashboard" class="btn btn-primary btn-sm nav-dashboard-btn">
+                Dashboard
+              </a>
+            `;
+          }
+        })
+        .catch(() => {});
+    })();
+
+    document.getElementById('api-try-btn')?.addEventListener('click', async function() {
+      const amount = parseFloat(document.getElementById('api-amount').value);
+      const taxType = document.getElementById('api-tax-type').value;
+      const resultEl = document.getElementById('api-result');
+
+      if (isNaN(amount) || amount <= 0) {
+        resultEl.textContent = JSON.stringify({ error: 'Enter a valid amount' }, null, 2);
+        return;
+      }
+
+      resultEl.textContent = JSON.stringify({ status: 'sending_request...' });
+      this.disabled = true;
+
+      try {
+        const res = await fetch('/api/v1/tax/calculate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ amount, taxType })
+        });
+        const data = await res.json();
+        resultEl.textContent = JSON.stringify(data, null, 2);
+      } catch (err) {
+        resultEl.textContent = JSON.stringify({ error: err.message }, null, 2);
+      } finally {
+        this.disabled = false;
+        this.innerHTML = '<span class="material-symbols-outlined" style="font-size: 16px;">send</span> Send Request';
+      }
+    });
+
+    const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+    const navLinks = document.getElementById('navLinks');
+    if (mobileMenuToggle && navLinks) {
+      mobileMenuToggle.addEventListener('click', () => {
+        mobileMenuToggle.classList.toggle('open');
+        navLinks.classList.toggle('open');
+        if (mobileMenuToggle.classList.contains('open')) {
+          document.body.classList.add('no-scroll');
+        } else {
+          document.body.classList.remove('no-scroll');
+        }
+      });
+      navLinks.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+          mobileMenuToggle.classList.remove('open');
+          navLinks.classList.remove('open');
+          document.body.classList.remove('no-scroll');
+        });
+      });
+      document.addEventListener('click', (e) => {
+        if (navLinks.classList.contains('open') && !navLinks.contains(e.target) && !mobileMenuToggle.contains(e.target)) {
+          mobileMenuToggle.classList.remove('open');
+          navLinks.classList.remove('open');
+          document.body.classList.remove('no-scroll');
+        }
+      });
+    }
+  </script>
+<div id="termsModal" style="position:fixed;inset:0;background:rgba(15,23,42,0.6);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:1000;">
+  <div style="background:#fff;width:100%;max-width:500px;border-radius:14px;padding:32px;position:relative;max-height:80vh;overflow-y:auto;box-shadow:0 20px 25px -5px rgba(15,23,42,0.06);">
+    <button onclick="document.body.classList.remove('no-scroll'); document.getElementById('termsModal').style.display='none'" style="position:absolute;top:24px;right:24px;background:none;border:none;cursor:pointer;color:#64748b;"><span class="material-symbols-outlined">close</span></button>
+    <div style="display:flex;align-items:center;gap:8px;font-weight:800;font-size:18px;color:#0f172a;margin-bottom:24px;"><span style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:6px;background:#0f172a;color:#fff;"><span class="material-symbols-outlined" style="font-size:18px;">finance</span></span><span>Coda</span></div>
+    <h2 style="font-size:20px;margin-bottom:16px;">Terms of Service</h2>
+    <p style="font-size:14px;color:#475569;line-height:1.6;margin-bottom:12px;">By accessing and using Coda's enterprise financial systems, you agree to be bound by these terms of service, all applicable laws and regulations, and agree that you are responsible for compliance with any applicable local laws.</p>
+    <p style="font-size:14px;color:#475569;line-height:1.6;margin-bottom:12px;">Our platform is provided "as is". Coda makes no warranties, expressed or implied, and hereby disclaims and negates all other warranties.</p>
+    <button onclick="document.body.classList.remove('no-scroll'); document.getElementById('termsModal').style.display='none'" style="display:inline-flex;align-items:center;justify-content:center;font-family:Inter,sans-serif;font-weight:600;font-size:13px;padding:10px 20px;border-radius:6px;border:1px solid #0f172a;background:#0f172a;color:#fff;cursor:pointer;width:100%;margin-top:16px;height:40px;">Acknowledge</button>
+  </div>
+</div>
+<div id="privacyModal" style="position:fixed;inset:0;background:rgba(15,23,42,0.6);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:1000;">
+  <div style="background:#fff;width:100%;max-width:500px;border-radius:14px;padding:32px;position:relative;max-height:80vh;overflow-y:auto;box-shadow:0 20px 25px -5px rgba(15,23,42,0.06);">
+    <button onclick="document.body.classList.remove('no-scroll'); document.getElementById('privacyModal').style.display='none'" style="position:absolute;top:24px;right:24px;background:none;border:none;cursor:pointer;color:#64748b;"><span class="material-symbols-outlined">close</span></button>
+    <div style="display:flex;align-items:center;gap:8px;font-weight:800;font-size:18px;color:#0f172a;margin-bottom:24px;"><span style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:6px;background:#0f172a;color:#fff;"><span class="material-symbols-outlined" style="font-size:18px;">finance</span></span><span>Coda</span></div>
+    <h2 style="font-size:20px;margin-bottom:16px;">Privacy Policy</h2>
+    <p style="font-size:14px;color:#475569;line-height:1.6;margin-bottom:12px;">Your privacy is important to us. It is Coda's policy to respect your privacy regarding any information we may collect from you across our website, platform, and other sites we own and operate.</p>
+    <p style="font-size:14px;color:#475569;line-height:1.6;margin-bottom:12px;">We only ask for personal information when we truly need it to provide a service to you. We collect it by fair and lawful means, with your knowledge and consent.</p>
+    <button onclick="document.body.classList.remove('no-scroll'); document.getElementById('privacyModal').style.display='none'" style="display:inline-flex;align-items:center;justify-content:center;font-family:Inter,sans-serif;font-weight:600;font-size:13px;padding:10px 20px;border-radius:6px;border:1px solid #0f172a;background:#0f172a;color:#fff;cursor:pointer;width:100%;margin-top:16px;height:40px;">Acknowledge</button>
+  </div>
+</div>
+</body>
+</html>

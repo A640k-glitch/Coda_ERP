@@ -1,0 +1,130 @@
+// Authentication: bcryptjs + cookie session, plus API key for programmatic access
+const bcrypt = require('bcryptjs');
+const { db } = require('./db');
+const { generateId, generateApiKey, asyncHandler } = require('./utils');
+const config = require('./config');
+
+const SESSION_DAYS = 14;
+const SESSION_TTL_MS = SESSION_DAYS * 24 * 60 * 60 * 1000;
+
+function hashPassword(plain) {
+  return bcrypt.hashSync(plain, 10);
+}
+
+function verifyPassword(plain, hash) {
+  return bcrypt.compareSync(plain, hash);
+}
+
+function createSession(userId) {
+  const id = generateId('sess');
+  const expires = new Date(Date.now() + SESSION_TTL_MS).toISOString();
+  db.prepare('INSERT INTO sessions (id, user_id, expires_at) VALUES (?, ?, ?)').run(id, userId, expires);
+  return { id, expires };
+}
+
+function destroySession(id) {
+  if (!id) return;
+  db.prepare('DELETE FROM sessions WHERE id = ?').run(id);
+}
+
+function userFromSession(id) {
+  if (!id) return null;
+  const row = db
+    .prepare(
+      `SELECT s.id AS sid, s.expires_at, u.*
+       FROM sessions s
+       JOIN users u ON u.id = s.user_id
+       WHERE s.id = ?`
+    )
+    .get(id);
+  if (!row) return null;
+  if (new Date(row.expires_at) < new Date()) {
+    destroySession(id);
+    return null;
+  }
+  return row;
+}
+
+function userFromApiKey(key) {
+  if (!key) return null;
+  return db.prepare('SELECT * FROM users WHERE api_key = ?').get(key);
+}
+
+function setSessionCookie(res, id, expiresIso) {
+  const maxAge = Math.max(0, Math.floor((new Date(expiresIso) - Date.now()) / 1000));
+  res.setHeader(
+    'Set-Cookie',
+    `coda_sid=${id}; HttpOnly; Path=/; SameSite=Lax; Max-Age=${maxAge}`
+  );
+}
+
+function clearSessionCookie(res) {
+  res.setHeader('Set-Cookie', 'coda_sid=; HttpOnly; Path=/; SameSite=Lax; Max-Age=0');
+}
+
+function readSessionCookie(req) {
+  const raw = req.headers.cookie || '';
+  const m = raw.match(/(?:^|;\s*)coda_sid=([^;]+)/);
+  return m ? decodeURIComponent(m[1]) : null;
+}
+
+// Middleware: load current user from session OR X-API-Key
+function attachUser(req, res, next) {
+  const sid = readSessionCookie(req);
+  const apiKey = req.headers['x-api-key'];
+  const user = sid ? userFromSession(sid) : null;
+  const apiUser = !user && apiKey ? userFromApiKey(apiKey) : null;
+  req.user = user || apiUser || null;
+  req.sessionId = sid;
+  next();
+}
+
+function requireAuth(req, res, next) {
+  if (!req.user) {
+    return res.status(401).json({ error: 'Authentication required' });
+  }
+  next();
+}
+
+function requireBusiness(req, res, next) {
+  if (!req.user || !req.user.business_id) {
+    return res.status(403).json({ error: 'No business associated with this account' });
+  }
+  req.businessId = req.user.business_id;
+  next();
+}
+
+function requireAdmin(req, res, next) {
+  if (!req.user) {
+    return res.status(401).json({ error: 'Authentication required' });
+  }
+  if (req.user.email !== config.adminEmail) {
+    return res.status(403).json({ error: 'Admin access required' });
+  }
+  next();
+}
+
+function logAudit(businessId, userId, action, details) {
+  try {
+    db.prepare(
+      'INSERT INTO audit_log (business_id, user_id, action, details) VALUES (?, ?, ?, ?)'
+    ).run(businessId || null, userId || null, action, details ? JSON.stringify(details) : null);
+  } catch (e) {
+    // best-effort
+  }
+}
+
+module.exports = {
+  hashPassword,
+  verifyPassword,
+  createSession,
+  destroySession,
+  setSessionCookie,
+  clearSessionCookie,
+  attachUser,
+  requireAuth,
+  requireBusiness,
+  requireAdmin,
+  logAudit,
+  asyncHandler,
+};

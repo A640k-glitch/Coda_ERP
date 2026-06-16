@@ -1,0 +1,227 @@
+====================================================================
+                     ABOUT THIS PROJECT
+                     "CODA" — Premium Fintech ERP
+                     for Nigerian Small Businesses
+====================================================================
+
+1. WHAT IS CODA?
+----------------
+Coda is a financial management app (called an "ERP") made for small
+and medium businesses (SMEs) in Nigeria. It helps business owners
+handle things like accounting, inventory, customer management,
+employee payroll, taxes, and subscriptions — all in one place.
+
+Think of it as the Nigerian version of QuickBooks or Xero, but
+tailored to local rules like Nigerian taxes (VAT, WHT, PAYE),
+CAC business registration numbers, and Naira pricing.
+
+
+2. THE FULL STACK (How the App is Built)
+-----------------------------------------
+The app has three layers:
+
+  A) FRONTEND (what you see in the browser)
+     - Regular HTML, CSS, and JavaScript files in the "public" folder
+     - index.html  → the landing/login/signup page
+     - dashboard.html  → the main app screen after you log in
+     - dashboard.js  → the JavaScript that makes the dashboard work
+     - styles.css  → the styling/look of the app
+     - No fancy framework like React or Vue — just plain HTML/JS/CSS
+
+  B) BACKEND (the brains behind the scenes — Node.js)
+     - app.js  → the main file (entry point). It starts the server.
+     - src/routes/  → files that handle API requests
+       (e.g., when the app asks "give me all customers", the
+       customer route handles that request)
+     - src/modules/  → files with the actual business logic
+       (e.g., calculating taxes, processing payroll)
+     - src/auth.js  → handles login, passwords, and security
+     - src/config.js  → settings like prices, tax rates, features
+
+  C) DATABASE (where data is stored — SQLite)
+     - src/db.js  → sets up the database and defines the tables
+     - data/coda.db  → the actual database file on your computer
+     - SQLite is a file-based database (one file holds everything)
+
+
+3. NODE.JS vs SQL — What's the Difference?
+------------------------------------------
+This is a very common confusion, so here is the simple explanation:
+
+  NODE.JS is the "middleman" (the BACKEND code)
+  ─────────────────────────────────────────────
+  - Node.js is a program that runs JavaScript on the server
+    (not in the browser). When you visit the app in your browser,
+    your browser talks to Node.js, and Node.js decides what to do.
+  - Node.js handles things like:
+      • Checking your password when you log in
+      • Deciding what to do when you click "Add Product"
+      • Sending the right web pages back to your browser
+      • Talking to the database to save or fetch data
+  - In this project, Node.js + Express (a helper library) is what
+    makes the app respond to your clicks and requests.
+
+  SQL is the "filing cabinet" (the DATABASE language)
+  ───────────────────────────────────────────────────
+  - SQL is a language used to talk to databases. The database
+    (SQLite in this case) stores all the information permanently.
+  - SQL handles things like:
+      • Saving a new user's email and password into a table
+      • Finding all customers for a specific business
+      • Adding up total sales for the month
+      • Updating a product's price
+  - SQL queries look like:
+      "INSERT INTO users (email, password) VALUES ('a@b.com', '...')"
+      "SELECT * FROM customers WHERE business_id = 'BIZ_123'"
+
+  THE KEY DIFFERENCE:
+  ───────────────────
+  Think of it like a restaurant:
+
+  - NODE.JS is the waiter. You tell the waiter what you want
+    ("I'd like to see my sales report"). The waiter takes your
+    order, goes to the kitchen, and brings back your food.
+
+  - SQL is the kitchen database. The waiter asks the kitchen
+    ("How many chickens do we have?"), the kitchen checks the
+    records and tells the waiter, and the waiter brings you
+    the answer.
+
+  - The DATABASE (SQLite) is the kitchen's filing cabinet —
+    it's where all the ingredients and recipes are stored.
+
+  WITHOUT NODE.JS, you'd have to write raw SQL queries directly
+  to get data — there'd be no web page, no buttons to click,
+  no login system. It would just be a database file sitting there.
+
+  WITHOUT SQL (the DATABASE), Node.js would have no way to save
+  anything permanently. Every time the server restarts, all data
+  would disappear. The database is what makes your data "stick."
+
+  So in this project:
+    - Node.js (in app.js and src/) is the backend code that
+      runs the server, handles requests, and makes decisions.
+    - SQLite (in data/coda.db via src/db.js) is the database
+      that stores all the businesses, users, transactions, etc.
+    - They work together: Node.js sends SQL commands to the
+      database, and the database sends results back to Node.js,
+      which then sends them to your browser.
+
+
+4. HOW TO RUN THE APP
+----------------------
+  - The server is currently running at http://localhost:3100
+  - To start it again later, run: node app.js
+  - The app listens on port 3100 by default
+  - If you need a different port, set the PORT environment variable
+
+
+5. TECHNICAL SUMMARY
+--------------------
+  ┌───────────────┬────────────────────────────────────────────┐
+  │ Part          │ What it uses                               │
+  ├───────────────┼────────────────────────────────────────────┤
+  │ Frontend      │ Plain HTML, CSS, JavaScript                │
+  │ Backend       │ Node.js with Express                       │
+  │ Database      │ SQLite (via better-sqlite3 library)        │
+  │ Auth/Security │ bcryptjs (password hashing), sessions      │
+  │ Payments      │ Paystack, Flutterwave, Monnify, Remita     │
+  │ Currency      │ Nigerian Naira (NGN)                       │
+  │ API Style     │ REST API with JSON responses               │
+  └───────────────┴────────────────────────────────────────────┘
+
+  Main Modules:
+    - Accounting (double-entry bookkeeping, journal entries)
+    - Inventory (products, stock levels, sales)
+    - CRM (customers, leads)
+    - HR (employees, attendance, payroll)
+    - Tax (VAT, WHT, PAYE, CIT)
+    - Subscriptions (tiered pricing — Starter/Professional/Enterprise)
+
+
+6. SUMMARY — WHAT THIS APP DOES
+--------------------------------
+Coda is an all-in-one business management app for Nigerian SMEs.
+It lets a business owner:
+
+  - Create an account for their business
+  - Record sales, track inventory, and manage customers
+  - Do proper accounting (debits, credits, journal entries)
+  - Run payroll and track employee attendance
+  - Calculate Nigerian taxes (VAT, WHT, PAYE)
+  - Accept payments via Paystack, Flutterwave, etc.
+  - Upgrade between Starter (₦5k), Professional (₦15k), or
+    Enterprise (₦45k) plans
+
+It is a "full-stack" app because it has all three layers working
+together:
+
+  BROWSER (frontend) ↔ SERVER (Node.js backend) ↔ DATABASE (SQLite)
+
+The browser shows the pages. The server processes your clicks and
+runs the logic. The database stores everything permanently.
+
+
+7. WHAT YOU WOULD HAVE LEARNED USING NODE.JS FOR THE FIRST TIME
+----------------------------------------------------------------
+If this is your first Node.js project, here is what you would have
+picked up by working on Coda:
+
+  A) How a SERVER works
+     - Node.js lets JavaScript run outside the browser. Instead
+       of making stuff happen on a webpage, it runs on your
+       computer and listens for incoming requests.
+     - You learn that "localhost:3100" means your computer is now
+       acting like a real server, just like the ones that power
+       Instagram or Twitter.
+
+  B) How EXPRESS (the framework) works
+     - Express is a library that makes it easy to handle different
+       URLs and actions. You learn about:
+         • GET requests (fetching data / showing pages)
+         • POST requests (submitting forms / creating records)
+         • Routes (/api/v1/auth/login, /api/v1/inventory, etc.)
+         • Middleware (tiny functions that run on every request,
+           like checking if someone is logged in)
+     - app.js shows all of this in action.
+
+  C) How an API works
+     - An API is how the frontend (browser) talks to the backend
+       (server). The browser sends a request like "GET /api/v1/crm/customers"
+       and gets back JSON data (a list of customers).
+     - You learn that the frontend and backend are separate —
+       the HTML/JS pages just fetch data from the backend.
+
+  D) How DATABASES and SQL work
+     - You learn that data doesn't just live in variables — it
+       needs to be saved permanently in a database.
+     - You see real SQL queries: INSERT to save, SELECT to read,
+       UPDATE to change, DELETE to remove.
+     - You learn that the backend (Node.js) sends these SQL
+       commands on your behalf.
+
+  E) How AUTHENTICATION and SECURITY work
+     - Passwords are not stored as plain text — they are "hashed"
+       using bcryptjs (scrambled so even the developer can't read
+       them).
+     - Sessions and cookies keep you logged in across page loads.
+     - Rate limiting stops bots from guessing passwords.
+
+  F) How MODULAR code is organized
+     - Instead of one giant file, the code is split into routes
+       (handle requests), modules (business logic), and config
+       (settings). This is how real professional apps are built.
+
+  G) What an ERP actually does
+     - You learn how real businesses manage accounting, inventory,
+       HR, CRM, and taxes — and how software ties it all together.
+
+  H) How to READ and FOLLOW someone else's code
+     - Tracing a request from browser → route → module → database
+       is a skill. This project teaches you to follow the flow.
+
+  IN SHORT: This project teaches you the ENTIRE web development
+  pipeline — frontend, backend, database, security, and business
+  logic — all in one real-world app. You don't just learn Node.js
+  syntax; you learn how the internet actually works behind the
+  scenes.
