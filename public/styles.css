@@ -2586,37 +2586,180 @@ input:checked + .slider:before {
 /* ==========================================================================
    Dark Footer (Clean Code & Containerless Logo Integration)
    ========================================================================== */
+/* ==========================================================================
+   Premium Editorial Footer (Inspired by Glyphs Design)
+   ========================================================================== */
 .dark-footer {
-  border-top: 1px solid var(--slate-800) !important;
-  background: var(--slate-900) !important;
+  background-color: #051614 !important; /* Deep dark teal brand background */
   color: #ffffff !important;
-  padding: 48px 0 24px !important;
+  border-top: 1px solid rgba(20, 184, 166, 0.15) !important;
+  padding: 80px 0 0 0 !important;
+  position: relative;
+  overflow: hidden;
 }
-.dark-footer .brand-name, .dark-footer h4 {
+
+.dark-footer-container {
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+.dark-footer-top {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr auto 2fr;
+  gap: 48px;
+  align-items: start;
+  padding-bottom: 16px; /* Reduced to pull bottom section up closer to top elements */
+}
+
+/* For responsiveness */
+@media (max-width: 991px) {
+  .dark-footer-top {
+    grid-template-columns: 1fr 1fr;
+    gap: 32px;
+  }
+  .footer-vertical-divider {
+    display: none;
+  }
+  .footer-description-column {
+    grid-column: span 2;
+  }
+}
+
+@media (max-width: 576px) {
+  .dark-footer-top {
+    grid-template-columns: 1fr;
+  }
+  .footer-description-column {
+    grid-column: span 1;
+  }
+}
+
+/* Column Styles */
+.footer-brand-column {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.brand-tagline {
+  font-size: 13px;
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.6) !important;
+  max-width: 240px;
+}
+
+.footer-links-column h4 {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
   color: #ffffff !important;
+  margin-bottom: 20px;
+  margin-top: 0;
 }
-.dark-footer p {
-  color: var(--slate-400) !important;
+
+.footer-links-column ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
 }
-.dark-footer a {
-  color: var(--slate-400) !important;
-  transition: color 0.2s;
+
+.footer-links-column a {
+  font-size: 14px;
+  color: rgba(255, 255, 255, 0.65) !important;
+  transition: color 0.2s ease, transform 0.2s ease;
+  display: inline-block;
   text-decoration: none;
 }
-.dark-footer a:hover {
+
+.footer-links-column a:hover {
   color: #ffffff !important;
+  transform: translateX(2px);
 }
-.dark-footer .link-accent {
+
+.footer-links-column .link-accent {
   color: var(--teal-500) !important;
   font-weight: 600;
 }
-.dark-footer .link-accent:hover {
+
+.footer-links-column .link-accent:hover {
   color: var(--teal-400) !important;
 }
-.dark-footer .footer-bottom {
-  border-top: 1px solid var(--slate-800) !important;
-  padding-top: 24px;
-  color: var(--slate-500) !important;
+
+/* Vertical Divider */
+.footer-vertical-divider {
+  width: 1px;
+  height: 110px;
+  background-color: rgba(255, 255, 255, 0.12);
+  align-self: start;
+  margin-top: 10px;
+}
+
+/* Editorial Description */
+.footer-description-column p {
+  font-family: var(--font);
+  font-style: italic;
+  font-size: 13px; /* Slightly increased to make it readable but still elegant */
+  line-height: 1.6;
+  color: rgba(255, 255, 255, 0.75) !important;
+  max-width: 280px;
+}
+
+/* Bottom Section */
+.dark-footer-bottom {
+  position: relative;
+  width: 100%;
+  height: clamp(60px, 12vw, 180px); /* Increased to show more of the tall text */
+  display: flex;
+  align-items: flex-start;
+  overflow: hidden;
+}
+
+.giant-coda-text {
+  font-family: var(--font);
+  font-size: clamp(80px, 17vw, 260px);
+  font-weight: 800; /* Matching logo font-weight 800 exactly */
+  color: #ffffff;
+  line-height: 1;
+  margin-left: 360px; /* Shifted further right to prevent overlap */
+  letter-spacing: -0.03em; /* Matching logo letter-spacing exactly */
+  pointer-events: none;
+  white-space: nowrap;
+  user-select: none;
+  clip-path: inset(0 0 32% 0); /* Clipped less (32% instead of 44%) to bring the text up and show more of the letters */
+  margin-bottom: -0.32em; /* Pull bottom of layout box up to match clip-path */
+}
+
+.footer-copyright-info {
+  position: absolute;
+  left: 24px;
+  bottom: 24px;
+  font-size: 12px;
+  color: rgba(255, 255, 255, 0.5) !important;
+  z-index: 10;
+  pointer-events: none;
+}
+
+@media (max-width: 768px) {
+  .dark-footer-bottom {
+    height: auto !important;
+    flex-direction: column-reverse;
+    align-items: flex-start;
+    overflow: visible;
+    padding-bottom: 0 !important;
+  }
+  .giant-coda-text {
+    margin-left: 0 !important;
+    margin-bottom: -0.32em !important;
+  }
+  .footer-copyright-info {
+    position: static !important;
+    margin-top: 16px;
+  }
 }
 
 /* Batch Action Bar */

@@ -60,7 +60,7 @@
     /* Static Non-Scrollable Dashboard Mockup */
     .hero-mockup-scaler {
       width: 100%;
-      max-width: 900px;
+      max-width: 100%;
       margin: 64px auto 0;
       position: relative;
       overflow: visible; /* Let scale happen cleanly */
@@ -84,6 +84,686 @@
     .mockup-body { overflow: hidden; padding: 24px; flex: 1; display: flex; flex-direction: column; }
     .mockup-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; flex: 1; margin-top: 24px;}
     .mockup-col { display: flex; flex-direction: column; gap: 24px; }
+
+    /* Interactive Live Demo Mockup CSS */
+    .mockup-card {
+      cursor: default; /* Keep standard cursor when hovering manually */
+      display: flex;
+      flex: 1;
+      height: 100%;
+      background: var(--bg-app);
+      border-radius: 6px;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .hero-layout {
+      max-width: 1440px !important; /* Widescreen breakout margin */
+      width: 100%;
+    }
+    .hero-text-container {
+      max-width: 900px;
+      margin: 0 auto;
+    }
+    /* MacBook Mockup Device Frame Styles */
+    .macbook-wrapper {
+      width: 1400px; /* Designed width for scaling */
+      margin: 48px auto 0;
+      position: relative;
+      background: none;
+    }
+    
+    .macbook-screen {
+      background: #0c0c0e; /* Matte black bezel */
+      border-radius: 20px 20px 0 0;
+      padding: 20px 20px 28px 20px; /* Bezel padding */
+      position: relative;
+      box-shadow: 
+        inset 0 0 0 1px rgba(255,255,255,0.08),
+        0 20px 50px rgba(0,0,0,0.5),
+        0 6px 20px rgba(0,0,0,0.35);
+      border: 3px solid #1a1a1c;
+    }
+    
+    /* Screen Camera */
+    .macbook-screen::before {
+      content: '';
+      position: absolute;
+      top: 7px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 6px;
+      height: 6px;
+      background: #040404;
+      border-radius: 50%;
+      border: 1.5px solid #2d2d30;
+    }
+    
+    /* Screen sheen overlay */
+    .macbook-screen::after {
+      content: '';
+      position: absolute;
+      top: 0; right: 0; bottom: 0; left: 0;
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0) 50%);
+      pointer-events: none;
+      border-radius: 17px 17px 0 0;
+      z-index: 12;
+    }
+
+    /* Inner display content */
+    .macbook-display-content {
+      background: var(--bg-app);
+      border-radius: 6px;
+      overflow: hidden;
+      width: 100%;
+      height: 760px; /* Taller display area for the bigger dashboard */
+      position: relative;
+      display: flex;
+    }
+
+    /* MacBook Keyboard Base */
+    .macbook-base {
+      height: 14px;
+      background: linear-gradient(to bottom, #d4d4d8 0%, #71717a 100%);
+      border-radius: 0 0 14px 14px;
+      position: relative;
+      width: 104%;
+      margin-left: -2%;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.35);
+      z-index: 20;
+    }
+    
+    /* Open notch */
+    .macbook-base::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 110px;
+      height: 6px;
+      background: #18181b;
+      border-radius: 0 0 8px 8px;
+    }
+
+    .mockup-sidebar {
+      width: 260px;
+      background: var(--slate-950);
+      display: flex;
+      flex-direction: column;
+      align-items: stretch;
+      padding: 0;
+      z-index: 10;
+      border-right: 1px solid rgba(255,255,255,0.05);
+      transition: width 0.3s cubic-bezier(0.25, 1, 0.5, 1);
+      flex-shrink: 0;
+    }
+
+    /* Simulated Custom Arrow Cursor */
+    .mockup-cursor {
+      position: absolute;
+      width: 14px;
+      height: 20px;
+      pointer-events: none;
+      z-index: 9999;
+      transition: top 0.7s cubic-bezier(0.25, 1, 0.5, 1), left 0.7s cubic-bezier(0.25, 1, 0.5, 1), transform 0.15s ease, opacity 0.3s ease;
+      transform-origin: top left;
+      opacity: 1;
+    }
+    .mockup-cursor.clicking {
+      transform: scale(0.8);
+    }
+    .mockup-nav-item {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start !important;
+      gap: 12px !important;
+      padding: 10px 16px !important;
+      border-radius: var(--radius-sm) !important;
+      color: var(--slate-400);
+      cursor: pointer;
+      transition: background 0.2s ease, color 0.2s ease;
+      width: 100% !important;
+      height: auto !important;
+      text-align: left;
+    }
+    .mockup-nav-item:hover {
+      background: rgba(255, 255, 255, 0.06) !important;
+      color: #ffffff !important;
+    }
+    .mockup-nav-item.active {
+      background: var(--teal-600) !important;
+      color: #ffffff !important;
+    }
+    /* Mockup Views Container & Views */
+    .mockup-views-container {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      overflow: hidden;
+    }
+    .mockup-view {
+      display: none;
+      flex-direction: column;
+      flex: 1;
+      animation: fadeMockupView 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+    .mockup-view.active {
+      display: flex;
+    }
+    @keyframes fadeMockupView {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    /* Mockup Table Styling */
+    .mockup-table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 11px;
+      margin-top: 4px;
+    }
+    .mockup-table th {
+      padding: 8px 12px;
+      color: var(--text-muted);
+      font-weight: 600;
+      border-bottom: 1px solid var(--border-color);
+      text-transform: uppercase;
+      font-size: 9px;
+      letter-spacing: 0.05em;
+    }
+    .mockup-table td {
+      padding: 8px 12px;
+      border-bottom: 1px solid #f1f5f9;
+      color: var(--slate-700);
+      vertical-align: middle;
+    }
+    .mockup-table tr:last-child td {
+      border-bottom: none;
+    }
+    .mockup-badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-size: 9px;
+      font-weight: 600;
+      line-height: 1;
+    }
+    .mockup-badge.badge-pending {
+      background: #fef3c7;
+      color: #d97706;
+    }
+    .mockup-badge.badge-success {
+      background: #dcfce7;
+      color: #16a34a;
+    }
+    .mockup-badge.badge-danger {
+      background: #fee2e2;
+      color: #dc2626;
+    }
+
+    /* Responsive Sidebar within Macbook display */
+    @media (max-width: 768px) {
+      .mockup-sidebar {
+        width: 56px !important;
+        align-items: center !important;
+      }
+      .sidebar-logo-text, .nav-section-title, .nav-text {
+        display: none !important;
+      }
+      .sidebar-header {
+        padding: 16px 0 !important;
+        justify-content: center !important;
+        width: 100% !important;
+      }
+      .mockup-sidebar .sidebar-nav {
+        padding: 16px 0 !important;
+      }
+      .mockup-sidebar .nav-section {
+        margin-bottom: 12px !important;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .mockup-nav-item {
+        justify-content: center !important;
+        padding: 0 !important;
+        width: 40px !important;
+        height: 40px !important;
+        border-radius: 8px !important;
+        gap: 0 !important;
+      }
+    }
+
+    /* Premium Pricing Section (Light Theme) */
+    .pricing-section-light {
+      background: #ffffff !important;
+      position: relative;
+      padding: 100px 0 !important;
+      border-top: 1px solid var(--border-color) !important;
+      border-bottom: 1px solid var(--border-color) !important;
+      max-width: none !important;
+      width: 100% !important;
+    }
+
+    .pricing-grid-glass {
+      display: grid !important;
+      grid-template-columns: repeat(3, 1fr) !important;
+      gap: 32px;
+      max-width: 1200px;
+      margin: 48px auto 0;
+      padding: 0 24px;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* Light Theme Cards */
+    .pricing-card-glass {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: 24px;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      color: var(--slate-900);
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.03), 0 1px 3px rgba(0, 0, 0, 0.01);
+      position: relative;
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease, box-shadow 0.4s ease;
+    }
+    
+    .pricing-card-glass:hover {
+      transform: translateY(-8px);
+      border-color: rgba(20, 184, 166, 0.4);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.06);
+    }
+
+    /* Professional Tinted Light Card (Recommended) */
+    .pricing-card-glass.recommended {
+      background: rgba(20, 184, 166, 0.04);
+      border: 1.5px solid rgba(20, 184, 166, 0.35);
+      box-shadow: 0 15px 35px rgba(20, 184, 166, 0.04), 0 5px 15px rgba(0, 0, 0, 0.01);
+    }
+    
+    .pricing-card-glass.recommended:hover {
+      border-color: rgba(20, 184, 166, 0.65);
+      box-shadow: 0 25px 45px rgba(20, 184, 166, 0.08);
+    }
+
+    /* Enterprise Solid Dark Card (Complete) */
+    .pricing-card-glass.dark-glass {
+      background: var(--slate-950) !important;
+      border: 1px solid var(--slate-900) !important;
+      color: #ffffff !important;
+      box-shadow: 0 20px 45px rgba(0, 0, 0, 0.15) !important;
+    }
+    
+    .pricing-card-glass.dark-glass:hover {
+      border-color: rgba(255, 255, 255, 0.2) !important;
+      box-shadow: 0 30px 60px rgba(0, 0, 0, 0.25) !important;
+    }
+
+    /* Pricing Card Header elements */
+    .pricing-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+    
+    .pricing-icon-wrap {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: rgba(20, 184, 166, 0.1);
+      border: 1px solid rgba(20, 184, 166, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #0d9488;
+    }
+    
+    .pricing-icon-wrap .material-symbols-outlined {
+      font-size: 24px;
+    }
+    
+    .pricing-badge-capsule {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--slate-500) !important;
+      padding: 0 !important;
+      background: none !important;
+      border: none !important;
+      border-radius: 0 !important;
+    }
+    
+    .pricing-card-glass.recommended .pricing-badge-capsule {
+      color: #0d9488 !important;
+      background: none !important;
+      border: none !important;
+    }
+    
+    .pricing-card-glass.dark-glass .pricing-badge-capsule {
+      color: #2dd4bf !important;
+      background: none !important;
+      border: none !important;
+    }
+
+    .pricing-card-title {
+      font-size: 28px;
+      font-weight: 800;
+      margin-bottom: 8px;
+      letter-spacing: -0.02em;
+    }
+    .pricing-card-glass:not(.dark-glass) h3.pricing-card-title {
+      color: var(--slate-900) !important;
+    }
+    .pricing-card-glass.dark-glass h3.pricing-card-title,
+    .pricing-card-glass.dark-glass .pricing-card-title,
+    .dark-glass h3 {
+      color: #2dd4bf !important; /* Brand green/teal */
+    }
+    
+    .pricing-card-desc {
+      font-size: 14px;
+      line-height: 1.5;
+      color: var(--text-secondary) !important;
+      margin-bottom: 28px;
+      min-height: 42px;
+    }
+    .pricing-card-glass.dark-glass .pricing-card-desc {
+      color: rgba(255, 255, 255, 0.7) !important;
+    }
+
+    .pricing-price-wrap {
+      display: flex;
+      flex-direction: column;
+      margin-bottom: 32px;
+    }
+    
+    .pricing-price-large {
+      font-size: 40px;
+      font-weight: 850;
+      color: var(--slate-900) !important;
+      letter-spacing: -0.03em;
+      display: flex;
+      align-items: baseline;
+    }
+    .pricing-card-glass.dark-glass .pricing-price-large {
+      color: #ffffff !important;
+    }
+    
+    .pricing-price-large span {
+      font-size: 14px;
+      color: var(--text-muted) !important;
+      font-weight: 500;
+      margin-left: 4px;
+    }
+    .pricing-card-glass.dark-glass .pricing-price-large span {
+      color: rgba(255, 255, 255, 0.5) !important;
+    }
+
+    .pricing-price-sub {
+      font-size: 12.5px;
+      color: var(--text-muted) !important;
+      margin-top: 4px;
+    }
+    .pricing-card-glass.dark-glass .pricing-price-sub {
+      color: rgba(255, 255, 255, 0.5) !important;
+    }
+
+    .btn-pricing {
+      width: 100%;
+      height: 46px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 10px;
+      font-weight: 700;
+      font-size: 14px;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+    .btn-pricing-secondary {
+      background: var(--slate-900);
+      border: 1px solid var(--slate-900);
+      color: #ffffff;
+    }
+    .btn-pricing-secondary:hover {
+      background: var(--slate-800);
+      border-color: var(--slate-800);
+    }
+    .btn-pricing-primary {
+      background: var(--slate-900);
+      border: 1px solid var(--slate-900);
+      color: #ffffff;
+    }
+    .btn-pricing-primary:hover {
+      background: var(--slate-800);
+      border-color: var(--slate-800);
+    }
+    .btn-pricing-white {
+      background: #ffffff;
+      border: 1px solid #ffffff;
+      color: var(--slate-950);
+    }
+    .btn-pricing-white:hover {
+      background: rgba(255, 255, 255, 0.9);
+      border-color: rgba(255, 255, 255, 0.9);
+    }
+
+    /* List section styles */
+    .pricing-features-section {
+      margin-top: 32px;
+      border-top: 1px solid var(--border-color);
+      padding-top: 24px;
+    }
+    .pricing-card-glass.dark-glass .pricing-features-section {
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+    
+    .pricing-features-header {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: #0d9488 !important;
+      margin-bottom: 16px;
+    }
+    .pricing-card-glass.dark-glass .pricing-features-header {
+      color: #2dd4bf !important;
+    }
+    .pricing-features-header.add-on-header {
+      color: var(--text-muted) !important;
+      margin-top: 24px;
+    }
+    .pricing-card-glass.dark-glass .pricing-features-header.add-on-header {
+      color: rgba(255, 255, 255, 0.5) !important;
+    }
+
+    .pricing-features-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .pricing-features-list li {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 13.5px;
+      color: var(--text-secondary) !important;
+      line-height: 1.4;
+    }
+    .pricing-card-glass.dark-glass .pricing-features-list li {
+      color: rgba(255, 255, 255, 0.85) !important;
+    }
+
+    .pricing-features-list li .check-icon {
+      font-size: 18px;
+      color: #0d9488 !important;
+      font-weight: 700;
+    }
+    .pricing-card-glass.dark-glass .pricing-features-list li .check-icon {
+      color: #2dd4bf !important;
+    }
+    .pricing-features-list li .add-icon {
+      font-size: 18px;
+      color: var(--text-muted) !important;
+    }
+    .pricing-card-glass.dark-glass .pricing-features-list li .add-icon {
+      color: rgba(255, 255, 255, 0.4) !important;
+    }
+    .pricing-features-list li.muted-feature {
+      color: var(--text-muted) !important;
+    }
+    .pricing-card-glass.dark-glass .pricing-features-list li.muted-feature {
+      color: rgba(255, 255, 255, 0.4) !important;
+    }
+
+    /* Premium Features Showcase (End to End Dark Section) */
+    .features-section-dark {
+      background: radial-gradient(circle at top, #061e1b 0%, #020908 100%) !important;
+      color: #ffffff !important;
+      padding: 100px 0 !important;
+      border-top: 1px solid rgba(20, 184, 166, 0.15) !important;
+      border-bottom: 1px solid rgba(20, 184, 166, 0.15) !important;
+      position: relative;
+      overflow: hidden;
+      max-width: none !important;
+      width: 100% !important;
+    }
+    .features-section-dark::before {
+      content: '';
+      position: absolute;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(13, 148, 136, 0.08) 0%, transparent 70%);
+      top: -100px;
+      left: 10%;
+      pointer-events: none;
+      z-index: 1;
+    }
+    .features-section-dark::after {
+      content: '';
+      position: absolute;
+      width: 500px;
+      height: 500px;
+      background: radial-gradient(circle, rgba(20, 184, 166, 0.05) 0%, transparent 70%);
+      bottom: -150px;
+      right: 5%;
+      pointer-events: none;
+      z-index: 1;
+    }
+    .features-section-dark .section-header {
+      max-width: 600px;
+      margin: 0 auto 56px;
+      padding: 0 24px;
+    }
+    .features-section-dark .section-title {
+      color: #ffffff !important;
+    }
+    .features-section-dark .section-desc {
+      color: rgba(255, 255, 255, 0.6) !important;
+    }
+    .features-section-dark .premium-kpi-grid {
+      display: grid !important;
+      grid-template-columns: repeat(3, 1fr) !important;
+      gap: 32px !important;
+      max-width: var(--max-width);
+      margin: 0 auto;
+      padding: 0 24px;
+      position: relative;
+      z-index: 2;
+    }
+    .features-section-dark .feature-card-soft {
+      background: rgba(10, 30, 27, 0.75) !important;
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.08) !important;
+      color: #ffffff !important;
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease, box-shadow 0.4s ease;
+    }
+    .features-section-dark .feature-card-soft:hover {
+      transform: translateY(-6px) !important;
+      border-color: rgba(20, 184, 166, 0.4) !important;
+      box-shadow: 0 30px 60px rgba(20, 184, 166, 0.15), 0 20px 40px rgba(0, 0, 0, 0.3) !important;
+    }
+    .features-section-dark .feature-card-soft .fc-title {
+      color: #ffffff !important;
+      font-size: 20px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .features-section-dark .feature-card-soft .fc-desc {
+      color: rgba(255, 255, 255, 0.7) !important;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    /* Adapt illustration elements inside dark feature cards */
+    .features-section-dark .fc-illus-container {
+      background: rgba(15, 23, 42, 0.4) !important;
+      border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    }
+    .features-section-dark .recon-item,
+    .features-section-dark .entity-center,
+    .features-section-dark .entity-node,
+    .features-section-dark .sec-shield {
+      background: rgba(15, 23, 42, 0.9) !important;
+      border: 1px solid rgba(255, 255, 255, 0.15) !important;
+      color: #ffffff !important;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.2) !important;
+    }
+    .features-section-dark .recon-item-line {
+      background: rgba(255, 255, 255, 0.15) !important;
+    }
+    .features-section-dark .recon-item-line.amount {
+      background: rgba(20, 184, 166, 0.25) !important;
+    }
+    .features-section-dark .recon-line {
+      background: rgba(255, 255, 255, 0.1) !important;
+    }
+    .features-section-dark .entity-line {
+      background: rgba(255, 255, 255, 0.1) !important;
+    }
+    .features-section-dark .sec-ring {
+      border-color: rgba(255, 255, 255, 0.1) !important;
+    }
+    .features-section-dark .sec-data-dot {
+      background: rgba(20, 184, 166, 0.5) !important;
+    }
+    .features-section-dark .entity-center {
+      color: #2dd4bf !important;
+    }
+    .features-section-dark .feature-card-soft:hover .entity-node {
+      color: #2dd4bf !important;
+      border-color: rgba(20, 184, 166, 0.4) !important;
+      background: rgba(20, 184, 166, 0.1) !important;
+    }
+    
+    /* Responsive grids - prevent single card orphan wrap on tablet */
+    @media (max-width: 1024px) {
+      .pricing-grid-glass,
+      .features-section-dark .premium-kpi-grid {
+        grid-template-columns: 1fr !important;
+        gap: 32px !important;
+        max-width: 480px !important;
+        margin-left: auto !important;
+        margin-right: auto !important;
+      }
+      .pricing-card-glass {
+        padding: 32px !important;
+      }
+    }
   </style>
 </head>
 <body>
@@ -92,15 +772,21 @@
   <script>
     function scaleMockup() {
       const scaler = document.querySelector('.hero-mockup-scaler');
-      const card = document.querySelector('.mockup-card');
-      if (!scaler || !card) return;
+      const wrapper = document.querySelector('.macbook-wrapper');
+      if (!scaler || !wrapper) return;
       const width = scaler.getBoundingClientRect().width || scaler.clientWidth;
-      // Subtract 32px to ensure a professional 16px gutter on both sides
-      const scale = Math.min(1, (width - 32) / 900);
-      card.style.transform = `scale(${scale})`;
-      // Center the scaled card perfectly within the parent container
-      card.style.left = `${(width - (900 * scale)) / 2}px`;
-      scaler.style.height = `${600 * scale}px`;
+      
+      // Laptop mockup is designed at 1400px wide
+      const scale = Math.min(1, (width - 32) / 1400);
+      
+      wrapper.style.transform = `scale(${scale})`;
+      wrapper.style.transformOrigin = `top left`;
+      
+      // Center the scaled wrapper
+      wrapper.style.left = `${(width - (1400 * scale)) / 2}px`;
+      
+      // Macbook designed height is ~822px (760px viewport + 48px bezels + 14px keyboard base)
+      scaler.style.height = `${822 * scale}px`;
     }
     window.addEventListener('resize', scaleMockup);
     document.addEventListener('DOMContentLoaded', scaleMockup);
@@ -140,100 +826,1105 @@
     <div class="hero-bg"></div>
     <div class="hero-layout">
 
-      <h1 class="hero-title">
-        The definitive financial operating system for <span class="text-accent">high-growth business</span>
-      </h1>
-      <p class="hero-subtitle">
-        Unify your accounting, payroll, tax compliance, and inventory in one state-of-the-art platform. Built for performance and reliability.
-      </p>
-      <div class="hero-actions">
-        <a href="signup.html" class="btn btn-primary btn-lg">
-          Start your free trial
-        </a>
-        <a href="login.html" class="btn btn-secondary btn-lg">View Live Demo</a>
+      <div class="hero-text-container">
+        <h1 class="hero-title">
+          The definitive financial operating system for <span class="text-accent">high-growth business</span>
+        </h1>
+        <p class="hero-subtitle">
+          Unify your accounting, payroll, tax compliance, and inventory in one state-of-the-art platform. Built for performance and reliability.
+        </p>
+        <div class="hero-actions">
+          <a href="signup.html" class="btn btn-primary btn-lg">
+            Start your free trial
+          </a>
+          <a href="login.html" class="btn btn-secondary btn-lg">View Live Demo</a>
+        </div>
       </div>
 
-      <!-- Static Non-Scrollable Dashboard Mockup -->
+      <!-- Interactive MacBook Live-Demo Dashboard Mockup -->
       <div class="hero-mockup-scaler">
-        <div class="mockup-card reveal">
-        <div class="mockup-sidebar" style="background: var(--slate-950);">
-          <div class="mockup-logo-mark">
-            <svg viewBox="20 20 54 58" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="38" y="22" width="34" height="14" rx="3" fill="#0d9488"/><rect x="22" y="32" width="18" height="38" rx="3.5" fill="currentColor"/><rect x="34" y="62" width="38" height="14" rx="3" fill="currentColor"/></svg>
-          </div>
-          <div class="mockup-nav-item active"><span class="material-symbols-outlined">dashboard</span></div>
-          <div class="mockup-nav-item"><span class="material-symbols-outlined">receipt_long</span></div>
-          <div class="mockup-nav-item"><span class="material-symbols-outlined">groups</span></div>
-          <div class="mockup-nav-item"><span class="material-symbols-outlined">settings</span></div>
-        </div>
-        <div class="mockup-body">
-          <div class="mockup-topbar">
-            <span class="mockup-title">Overview</span>
-            <div style="display:flex; gap:12px; align-items:center;">
-              <span style="font-size:12px; color:var(--text-muted);">Last updated: Just now</span>
-              <div class="mockup-avatar" style="background:var(--teal-100); color:var(--teal-700);">JD</div>
-            </div>
-          </div>
-          
-          <div class="premium-kpi-grid" style="margin-top:0; margin-bottom:0; grid-template-columns: repeat(3, 1fr);">
-            <div class="premium-kpi-card" style="padding:16px;">
-              <div class="premium-kpi-header">
-                <span class="premium-kpi-title">Total Revenue</span>
-                <span class="material-symbols-outlined" style="color:var(--text-muted); font-size:18px;">more_horiz</span>
+        <div class="macbook-wrapper">
+          <div class="macbook-screen">
+            <div class="macbook-display-content" id="hero-mockup-card">
+              <!-- Simulated Custom Arrow Cursor -->
+              <div class="mockup-cursor" id="mockup-simulated-cursor">
+                <svg width="14" height="20" viewBox="0 0 14 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block; filter: drop-shadow(0 2px 2.5px rgba(0,0,0,0.35));">
+                  <path d="M0 0V19L4.8 14.2H13.2L0 0Z" fill="black" stroke="white" stroke-width="1.5" stroke-linejoin="miter"/>
+                </svg>
               </div>
-              <div class="premium-kpi-val">₦45.2M</div>
-              <div><span class="premium-kpi-badge badge-up"><span class="material-symbols-outlined" style="font-size:14px;">arrow_upward</span> 12.5%</span> <span style="font-size:12px; color:var(--text-muted);">vs last month</span></div>
-            </div>
-            <div class="premium-kpi-card" style="padding:16px;">
-              <div class="premium-kpi-header">
-                <span class="premium-kpi-title">Active Customers</span>
-                <span class="material-symbols-outlined" style="color:var(--text-muted); font-size:18px;">more_horiz</span>
-              </div>
-              <div class="premium-kpi-val">1,248</div>
-              <div><span class="premium-kpi-badge badge-up"><span class="material-symbols-outlined" style="font-size:14px;">arrow_upward</span> 4.2%</span> <span style="font-size:12px; color:var(--text-muted);">vs last month</span></div>
-            </div>
-            <div class="premium-kpi-card" style="padding:16px;">
-              <div class="premium-kpi-header">
-                <span class="premium-kpi-title">Churn Rate</span>
-                <span class="material-symbols-outlined" style="color:var(--text-muted); font-size:18px;">more_horiz</span>
-              </div>
-              <div class="premium-kpi-val">1.2%</div>
-              <div><span class="premium-kpi-badge badge-down"><span class="material-symbols-outlined" style="font-size:14px;">arrow_downward</span> -0.4%</span> <span style="font-size:12px; color:var(--text-muted);">vs last month</span></div>
-            </div>
-          </div>
 
-          <div class="mockup-grid">
-            <div class="mockup-col">
-              <div style="background:#fff; border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:20px; flex:1;">
-                <div style="font-size:14px; font-weight:600; margin-bottom:16px;">Recent Transactions</div>
-                <div class="mockup-tx">
-                  <span class="mockup-tx-name">Invoice #1042 — Enterprise Sub</span>
-                  <span class="mockup-tx-amount">₦845,000</span>
-                </div>
-                <div class="mockup-tx">
-                  <span class="mockup-tx-name">Cloud Hosting Services</span>
-                  <span class="mockup-tx-amount expense">-₦120,000</span>
-                </div>
-                <div class="mockup-tx">
-                  <span class="mockup-tx-name">Invoice #1043 — API Access</span>
-                  <span class="mockup-tx-amount">₦450,000</span>
-                </div>
+              <!-- Sidebar matching Coda ERP dashboard -->
+              <div class="mockup-sidebar">
+                <aside class="app-sidebar" style="height: 100%;">
+                  <div class="sidebar-header">
+                    <a href="#!" class="sidebar-brand" style="text-decoration: none;">
+                      <span class="brand-icon-box">
+                        <svg viewBox="20 20 54 58" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="38" y="22" width="34" height="14" rx="3" fill="#0d9488"/><rect x="22" y="32" width="18" height="38" rx="3.5" fill="currentColor"/><rect x="34" y="62" width="38" height="14" rx="3" fill="currentColor"/></svg>
+                      </span>
+                      <span class="sidebar-logo-text">Coda ERP</span>
+                      <span class="badge-subscription sidebar-logo-text">Pro</span>
+                    </a>
+                  </div>
+                  
+                  <nav class="sidebar-nav">
+                    <div class="nav-section">
+                      <div class="nav-section-title">Overview</div>
+                      <button class="nav-item mockup-nav-item active" data-view-idx="0">
+                        <span class="material-symbols-outlined">dashboard</span>
+                        <span class="nav-text">Dashboard</span>
+                      </button>
+                    </div>
+                    
+                    <div class="nav-section">
+                      <div class="nav-section-title">Core Modules</div>
+                      <button class="nav-item mockup-nav-item" data-view-idx="1">
+                        <span class="material-symbols-outlined">account_balance</span>
+                        <span class="nav-text">Accounting</span>
+                      </button>
+                      <button class="nav-item mockup-nav-item" data-view-idx="4">
+                        <span class="material-symbols-outlined">sync_alt</span>
+                        <span class="nav-text">Reconciliation</span>
+                      </button>
+                      <button class="nav-item mockup-nav-item" data-view-idx="2">
+                        <span class="material-symbols-outlined">inventory_2</span>
+                        <span class="nav-text">Inventory</span>
+                      </button>
+                      <button class="nav-item mockup-nav-item" data-view-idx="5">
+                        <span class="material-symbols-outlined">groups</span>
+                        <span class="nav-text">CRM</span>
+                      </button>
+                      <button class="nav-item mockup-nav-item" data-view-idx="6">
+                        <span class="material-symbols-outlined">badge</span>
+                        <span class="nav-text">HR &amp; Payroll</span>
+                      </button>
+                      <button class="nav-item mockup-nav-item" data-view-idx="3">
+                        <span class="material-symbols-outlined">receipt_long</span>
+                        <span class="nav-text">Tax Center</span>
+                      </button>
+                    </div>
+                    
+                    <div class="nav-section">
+                      <div class="nav-section-title">Analytics</div>
+                      <button class="nav-item mockup-nav-item" data-view-idx="7">
+                        <span class="material-symbols-outlined">monitoring</span>
+                        <span class="nav-text">Reports</span>
+                      </button>
+                    </div>
+                  </nav>
+                </aside>
               </div>
-            </div>
-            <div class="mockup-col">
-              <div style="background:#fff; border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:20px; flex:1; display:flex; flex-direction:column; justify-content:center; align-items:center;">
-                <div style="width:120px; height:120px; border-radius:50%; border:16px solid var(--slate-100); border-top-color:var(--teal-600); border-right-color:var(--bronze-500); transform:rotate(-45deg);"></div>
-                <div style="margin-top:24px; font-size:12px; color:var(--text-muted); font-weight:600;">Expense Distribution</div>
+
+              <!-- Mockup Main Body -->
+              <div class="mockup-body" style="z-index: 5; background: var(--bg-app); flex: 1; display: flex; flex-direction: column; height: 100%; overflow: hidden;">
+                <div class="mockup-topbar" style="margin-bottom: 18px; flex-shrink: 0;">
+                  <span class="mockup-title" id="mockup-topbar-title">Dashboard Overview</span>
+                  <div style="display:flex; gap:12px; align-items:center;">
+                    <span style="font-size:12px; color:var(--text-muted);">Last updated: Just now</span>
+                    <div class="mockup-avatar" style="background:var(--teal-100); color:var(--teal-700);">JD</div>
+                  </div>
+                </div>
+
+                <!-- Views Container -->
+                <div class="mockup-views-container">
+
+                  <!-- View 0: Overview -->
+                  <div class="mockup-view active" id="mockup-view-0">
+                    <div class="premium-kpi-grid" style="margin-top:0; margin-bottom:0; grid-template-columns: repeat(4, 1fr); gap: 16px;">
+                      <div class="premium-kpi-card" style="padding:16px;" id="mockup-kpi-revenue">
+                        <div class="premium-kpi-header">
+                          <span class="premium-kpi-title">Total Revenue</span>
+                          <span class="material-symbols-outlined" style="color:var(--text-muted); font-size:18px;">more_horiz</span>
+                        </div>
+                        <div class="premium-kpi-val" style="font-size:24px;">₦45.2M</div>
+                        <div><span class="premium-kpi-badge badge-up" style="font-size:10px; padding:2px 6px;"><span class="material-symbols-outlined" style="font-size:12px;">arrow_upward</span> 12.5%</span> <span style="font-size:11px; color:var(--text-muted);">vs last month</span></div>
+                      </div>
+                      <div class="premium-kpi-card" style="padding:16px;">
+                        <div class="premium-kpi-header">
+                          <span class="premium-kpi-title">Active Customers</span>
+                          <span class="material-symbols-outlined" style="color:var(--text-muted); font-size:18px;">more_horiz</span>
+                        </div>
+                        <div class="premium-kpi-val" style="font-size:24px;">1,248</div>
+                        <div><span class="premium-kpi-badge badge-up" style="font-size:10px; padding:2px 6px;"><span class="material-symbols-outlined" style="font-size:12px;">arrow_upward</span> 4.2%</span> <span style="font-size:11px; color:var(--text-muted);">vs last month</span></div>
+                      </div>
+                      <div class="premium-kpi-card" style="padding:16px;">
+                        <div class="premium-kpi-header">
+                          <span class="premium-kpi-title">Churn Rate</span>
+                          <span class="material-symbols-outlined" style="color:var(--text-muted); font-size:18px;">more_horiz</span>
+                        </div>
+                        <div class="premium-kpi-val" style="font-size:24px;">1.2%</div>
+                        <div><span class="premium-kpi-badge badge-down" style="font-size:10px; padding:2px 6px;"><span class="material-symbols-outlined" style="font-size:12px;">arrow_downward</span> -0.4%</span> <span style="font-size:11px; color:var(--text-muted);">vs last month</span></div>
+                      </div>
+                      <div class="premium-kpi-card" style="padding:16px;">
+                        <div class="premium-kpi-header">
+                          <span class="premium-kpi-title">Net Profit</span>
+                          <span class="material-symbols-outlined" style="color:var(--text-muted); font-size:18px;">more_horiz</span>
+                        </div>
+                        <div class="premium-kpi-val" style="font-size:24px; color:var(--teal-600);">₦12.8M</div>
+                        <div><span class="premium-kpi-badge badge-up" style="font-size:10px; padding:2px 6px;"><span class="material-symbols-outlined" style="font-size:12px;">arrow_upward</span> 8.7%</span> <span style="font-size:11px; color:var(--text-muted);">Calculated</span></div>
+                      </div>
+                    </div>
+
+                    <!-- Operations Summary Row -->
+                    <div style="margin-top: 16px; margin-bottom: 0; background: rgba(13,148,136,0.03); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 12px 18px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; z-index: 5; position: relative;">
+                      <div>
+                        <div style="font-size: 9px; color: var(--text-muted); font-weight:700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 2px;">Inventory Stock</div>
+                        <div style="font-size: 14px; font-weight:800; color: var(--slate-900);">148 Products</div>
+                        <div style="font-size: 9px; color: var(--error); font-weight: 500;">3 Low stock items</div>
+                      </div>
+                      <div style="border-left: 1px solid var(--border-color); padding-left: 16px;">
+                        <div style="font-size: 9px; color: var(--text-muted); font-weight:700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 2px;">CRM &amp; Customers</div>
+                        <div style="font-size: 14px; font-weight:800; color: var(--slate-900);">248 Customers</div>
+                        <div style="font-size: 9px; color: var(--teal-600); font-weight: 500;">14 Open sales leads</div>
+                      </div>
+                      <div style="border-left: 1px solid var(--border-color); padding-left: 16px;">
+                        <div style="font-size: 9px; color: var(--text-muted); font-weight:700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 2px;">Workforce (HR)</div>
+                        <div style="font-size: 14px; font-weight:800; color: var(--slate-900);">32 Employees</div>
+                        <div style="font-size: 9px; color: var(--text-muted); font-weight: 500;">Active payroll roster</div>
+                      </div>
+                      <div style="border-left: 1px solid var(--border-color); padding-left: 16px;">
+                        <div style="font-size: 9px; color: var(--text-muted); font-weight:700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 2px;">Taxes Reserve</div>
+                        <div style="font-size: 14px; font-weight:800; color: var(--copper-600);">Calculated</div>
+                        <div style="font-size: 9px; color: var(--text-muted); font-weight: 500;">Nigerian FIRS compliant</div>
+                      </div>
+                    </div>
+
+                    <div class="mockup-grid" style="margin-top: 16px; gap: 16px; flex: 1;">
+                      <div class="mockup-col">
+                        <div style="background:#fff; border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:16px; flex:1; display:flex; flex-direction:column; justify-content:space-between;">
+                          <div style="font-size:13px; font-weight:600; margin-bottom:12px;">Recent Transactions</div>
+                          <div style="display:flex; flex-direction:column; gap:4px; flex:1;">
+                            <div class="mockup-tx" style="padding:10px 14px; font-size:11px;">
+                              <span class="mockup-tx-name">Invoice #1042 — Enterprise Sub</span>
+                              <span class="mockup-tx-amount">₦845,000</span>
+                            </div>
+                            <div class="mockup-tx" style="padding:10px 14px; font-size:11px;">
+                              <span class="mockup-tx-name">Cloud Hosting Services</span>
+                              <span class="mockup-tx-amount expense">-₦120,000</span>
+                            </div>
+                            <div class="mockup-tx" style="padding:10px 14px; font-size:11px;">
+                              <span class="mockup-tx-name">Invoice #1043 — API Access</span>
+                              <span class="mockup-tx-amount">₦450,000</span>
+                            </div>
+                            <div class="mockup-tx" style="padding:10px 14px; font-size:11px;">
+                              <span class="mockup-tx-name">POS Clearing Settlement</span>
+                              <span class="mockup-tx-amount">₦250,000</span>
+                            </div>
+                            <div class="mockup-tx" style="padding:10px 14px; font-size:11px;">
+                              <span class="mockup-tx-name">Office Stationery Purchase</span>
+                              <span class="mockup-tx-amount expense">-₦45,000</span>
+                            </div>
+                            <div class="mockup-tx" style="padding:10px 14px; font-size:11px;">
+                              <span class="mockup-tx-name">Invoice #1041 — Consulting Fee</span>
+                              <span class="mockup-tx-amount">₦350,000</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="mockup-col">
+                        <div style="background:#fff; border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:16px; flex:1; display:flex; flex-direction:column; justify-content:space-between;">
+                          <div style="font-size:13px; font-weight:600; margin-bottom:12px;">Expense Distribution</div>
+                          <div class="chart-canvas-wrap" style="padding: 16px; position:relative; width:100%; height:130px; display:flex; align-items:center; justify-content:center; flex:1;">
+                            <canvas id="mockupExpenseChart" style="max-height: 120px;"></canvas>
+                            <div style="position:absolute; display:flex; flex-direction:column; align-items:center; justify-content:center; pointer-events:none; top:50%; left:50%; transform:translate(-50%, -50%);">
+                              <div style="font-size:12px; font-weight:700; color:var(--slate-800);">₦8.45M</div>
+                            </div>
+                          </div>
+                          <div style="display:flex; flex-direction:column; gap:8px; font-size:10px; margin-top:8px;">
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                              <div style="display:flex; align-items:center; gap:6px;"><span style="width:8px; height:8px; border-radius:50%; background:#2A8566; display:inline-block;"></span><span>Staff Payroll</span></div>
+                              <span style="font-weight:600;">₦7.33M (86%)</span>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                              <div style="display:flex; align-items:center; gap:6px;"><span style="width:8px; height:8px; border-radius:50%; background:#B8652E; display:inline-block;"></span><span>Office Infrastructure</span></div>
+                              <span style="font-weight:600;">₦920k (11%)</span>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                              <div style="display:flex; align-items:center; gap:6px;"><span style="width:8px; height:8px; border-radius:50%; background:#94A3B8; display:inline-block;"></span><span>Miscellaneous</span></div>
+                              <span style="font-weight:600;">₦200k (3%)</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- View 1: Accounting -->
+                  <div class="mockup-view" id="mockup-view-1">
+                    <div class="premium-kpi-grid" style="margin-top:0; margin-bottom:0; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+                      <div class="premium-kpi-card" style="padding:16px;" id="mockup-kpi-union">
+                        <div class="premium-kpi-header">
+                          <span class="premium-kpi-title" style="color:var(--text-secondary);">Union Bank · 1024***89</span>
+                          <span class="mockup-badge badge-success" style="font-size: 8px;">Active</span>
+                        </div>
+                        <div class="premium-kpi-val" style="font-size:24px;">₦14.8M</div>
+                        <div style="font-size:11px; color:var(--text-muted);">Naira Current Account</div>
+                      </div>
+                      <div class="premium-kpi-card" style="padding:16px;">
+                        <div class="premium-kpi-header">
+                          <span class="premium-kpi-title" style="color:var(--text-secondary);">Access Bank · Dom FX</span>
+                          <span class="mockup-badge badge-success" style="font-size: 8px;">Active</span>
+                        </div>
+                        <div class="premium-kpi-val" style="font-size:24px; color:var(--teal-600);">$42,500</div>
+                        <div style="font-size:11px; color:var(--text-muted);">USD Account Value</div>
+                      </div>
+                      <div class="premium-kpi-card" style="padding:16px;">
+                        <div class="premium-kpi-header">
+                          <span class="premium-kpi-title" style="color:var(--text-secondary);">Trade Receivables</span>
+                          <span class="mockup-badge badge-pending" style="font-size: 8px;">Review</span>
+                        </div>
+                        <div class="premium-kpi-val" style="font-size:24px;">₦3.12M</div>
+                        <div style="font-size:11px; color:var(--text-muted);">Unpaid Invoices Total</div>
+                      </div>
+                    </div>
+
+                    <div class="mockup-grid" style="margin-top: 16px; gap: 16px; flex: 1; overflow: hidden;">
+                      <div class="mockup-col">
+                        <div style="background:#fff; border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:16px; flex:1; display:flex; flex-direction:column; justify-content:space-between; overflow:hidden;">
+                          <div style="font-size:13px; font-weight:600; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
+                            <span>Double-Entry General Ledger</span>
+                            <span style="font-size:10px; color:var(--text-muted); font-weight:normal;">Real-time GAAP Reconciliation</span>
+                          </div>
+                          <div style="flex:1; overflow:hidden;">
+                            <table class="mockup-table">
+                              <thead>
+                                <tr>
+                                  <th>Date</th>
+                                  <th>Journal Description</th>
+                                  <th>Classification</th>
+                                  <th style="text-align: right;">Amount</th>
+                                  <th>Status</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                  <td>18 Jun 2026</td>
+                                  <td>Invoice #1043 — API Access</td>
+                                  <td>Trade Receivables</td>
+                                  <td style="text-align: right; font-weight: 600; color: var(--success);">+₦450,000</td>
+                                  <td><span class="mockup-badge badge-success">Active</span></td>
+                                </tr>
+                                <tr>
+                                  <td>17 Jun 2026</td>
+                                  <td>Web Hosting Service Billing</td>
+                                  <td>Operating Expense</td>
+                                  <td style="text-align: right; font-weight: 600; color: var(--error);">-₦120,000</td>
+                                  <td><span class="mockup-badge badge-success">Paid</span></td>
+                                </tr>
+                                <tr>
+                                  <td>16 Jun 2026</td>
+                                  <td>Invoice #1042 — Enterprise Sub</td>
+                                  <td>Trade Receivables</td>
+                                  <td style="text-align: right; font-weight: 600; color: var(--success);">+₦845,000</td>
+                                  <td><span class="mockup-badge badge-success">Active</span></td>
+                                </tr>
+                                <tr>
+                                  <td>15 Jun 2026</td>
+                                  <td>Office Supplies Procurement</td>
+                                  <td>Operating Expense</td>
+                                  <td style="text-align: right; font-weight: 600; color: var(--error);">-₦45,000</td>
+                                  <td><span class="mockup-badge badge-success">Paid</span></td>
+                                </tr>
+                                <tr>
+                                  <td>14 Jun 2026</td>
+                                  <td>Invoice #1041 — Consulting Fee</td>
+                                  <td>Trade Receivables</td>
+                                  <td style="text-align: right; font-weight: 600; color: var(--success);">+₦350,000</td>
+                                  <td><span class="mockup-badge badge-success">Active</span></td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="mockup-col">
+                        <div style="background:#fff; border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:16px; flex:1; display:flex; flex-direction:column; gap:16px;">
+                          <div style="font-size:13px; font-weight:600;">Account Balance Ledger</div>
+                          <div style="display:flex; flex-direction:column; gap:12px; font-size:11px; flex:1;">
+                            <div style="display:flex; justify-content:space-between; border-bottom: 1px solid var(--border-color); padding-bottom:6px;">
+                              <span style="color:var(--text-secondary);">Petty Cash Account</span>
+                              <span style="font-weight:700;">₦150,000</span>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; border-bottom: 1px solid var(--border-color); padding-bottom:6px;">
+                              <span style="color:var(--text-secondary);">Tax Compliance Reserve</span>
+                              <span style="font-weight:700; color:var(--copper-600);">₦1,340,000</span>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; border-bottom: 1px solid var(--border-color); padding-bottom:6px;">
+                              <span style="color:var(--text-secondary);">Retained Earnings</span>
+                              <span style="font-weight:700; color:var(--teal-600);">₦12,450,000</span>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; border-bottom: 1px solid var(--border-color); padding-bottom:6px;">
+                              <span style="color:var(--text-secondary);">Share Capital Account</span>
+                              <span style="font-weight:700;">₦5,000,000</span>
+                            </div>
+                          </div>
+                          
+                          <div style="font-size:12px; font-weight:600; margin-top:8px;">Upcoming Payables</div>
+                          <div style="display:flex; flex-direction:column; gap:10px; font-size:10px;">
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                              <span style="color:var(--text-muted);">Rent Billing</span>
+                              <span class="mockup-badge badge-pending">12 days (₦1.2M)</span>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; align-items:center;">
+                              <span style="color:var(--text-muted);">FIRS VAT Filing</span>
+                              <span class="mockup-badge badge-danger">5 days (₦930k)</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- View 2: Inventory -->
+                  <div class="mockup-view" id="mockup-view-2">
+                    <div class="premium-kpi-grid" style="margin-top:0; margin-bottom:0; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+                      <div class="premium-kpi-card" style="padding:16px;" id="mockup-kpi-inventory">
+                        <div class="premium-kpi-header">
+                          <span class="premium-kpi-title" style="color:var(--text-secondary);">Total Stock Valuation</span>
+                          <span class="material-symbols-outlined" style="color:var(--text-muted); font-size:18px;">warehouse</span>
+                        </div>
+                        <div class="premium-kpi-val" style="font-size:24px;">₦22.4M</div>
+                        <div style="font-size:11px; color:var(--text-muted);">Across 3 Depots</div>
+                      </div>
+                      <div class="premium-kpi-card" style="padding:16px;">
+                        <div class="premium-kpi-header">
+                          <span class="premium-kpi-title" style="color:var(--text-secondary);">Low Stock Warnings</span>
+                          <span class="mockup-badge badge-danger" style="font-size: 8px;">Reorder</span>
+                        </div>
+                        <div class="premium-kpi-val" style="font-size:24px; color:var(--error);">3 Items</div>
+                        <div style="font-size:11px; color:var(--text-muted);">Requires purchase action</div>
+                      </div>
+                      <div class="premium-kpi-card" style="padding:16px;">
+                        <div class="premium-kpi-header">
+                          <span class="premium-kpi-title" style="color:var(--text-secondary);">Active Products</span>
+                          <span class="material-symbols-outlined" style="color:var(--text-muted); font-size:18px;">category</span>
+                        </div>
+                        <div class="premium-kpi-val" style="font-size:24px;">148 SKUs</div>
+                        <div style="font-size:11px; color:var(--text-muted);">Live in system</div>
+                      </div>
+                    </div>
+
+                    <div class="mockup-grid" style="margin-top: 16px; gap: 16px; flex: 1; overflow: hidden;">
+                      <div class="mockup-col">
+                        <div style="background:#fff; border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:16px; flex:1; display:flex; flex-direction:column; justify-content:space-between; overflow:hidden;">
+                          <div style="font-size:13px; font-weight:600; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
+                            <span>Active Inventory Stock Levels</span>
+                            <span style="font-size:10px; color:var(--text-muted); font-weight:normal;">Real-time Depot Tracking</span>
+                          </div>
+                          <div style="flex:1; overflow:hidden;">
+                            <table class="mockup-table">
+                              <thead>
+                                <tr>
+                                  <th>SKU Code</th>
+                                  <th>Product Description</th>
+                                  <th style="text-align: right;">Unit Cost</th>
+                                  <th style="text-align: right;">Selling Price</th>
+                                  <th style="text-align: right;">In Stock</th>
+                                  <th>Status</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                  <td>PROD-001</td>
+                                  <td>MacBook Pro M3 Max</td>
+                                  <td style="text-align: right;">₦1,850,000</td>
+                                  <td style="text-align: right;">₦2,200,000</td>
+                                  <td style="text-align: right; font-weight: 600;">42 units</td>
+                                  <td><span class="mockup-badge badge-success">Optimal</span></td>
+                                </tr>
+                                <tr>
+                                  <td>PROD-002</td>
+                                  <td>Dell UltraSharp 32" 4K</td>
+                                  <td style="text-align: right;">₦620,000</td>
+                                  <td style="text-align: right;">₦750,000</td>
+                                  <td style="text-align: right; font-weight: 600;">15 units</td>
+                                  <td><span class="mockup-badge badge-success">Optimal</span></td>
+                                </tr>
+                                <tr>
+                                  <td>PROD-003</td>
+                                  <td>Ergonomic Office Desk</td>
+                                  <td style="text-align: right;">₦280,000</td>
+                                  <td style="text-align: right;">₦350,000</td>
+                                  <td style="text-align: right; font-weight: 600; color: var(--error);">8 units</td>
+                                  <td><span class="mockup-badge badge-danger">Low Stock</span></td>
+                                </tr>
+                                <tr>
+                                  <td>PROD-004</td>
+                                  <td>iPhone 15 Pro Max 256GB</td>
+                                  <td style="text-align: right;">₦1,250,000</td>
+                                  <td style="text-align: right;">₦1,450,000</td>
+                                  <td style="text-align: right; font-weight: 600;">28 units</td>
+                                  <td><span class="mockup-badge badge-success">Optimal</span></td>
+                                </tr>
+                                <tr>
+                                  <td>PROD-005</td>
+                                  <td>Logitech MX Master 3S</td>
+                                  <td style="text-align: right;">₦85,000</td>
+                                  <td style="text-align: right;">₦110,000</td>
+                                  <td style="text-align: right; font-weight: 600; color: var(--error);">3 units</td>
+                                  <td><span class="mockup-badge badge-danger">Low Stock</span></td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="mockup-col">
+                        <div style="background:#fff; border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:16px; flex:1; display:flex; flex-direction:column; gap:16px;">
+                          <div style="font-size:13px; font-weight:600;">Depot Asset Valuations</div>
+                          <div style="display:flex; flex-direction:column; gap:12px; font-size:11px; flex:1;">
+                            <div>
+                              <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                                <span style="color:var(--text-secondary);">Depot A (Ikeja Main)</span>
+                                <span style="font-weight:700;">₦14.2M</span>
+                              </div>
+                              <div style="width:100%; height:6px; background:var(--slate-100); border-radius:3px; overflow:hidden;"><div style="width:65%; height:100%; background:var(--teal-600);"></div></div>
+                              <div style="font-size:9px; color:var(--text-muted); margin-top:2px;">Capacity: 65% utilization</div>
+                            </div>
+                            <div>
+                              <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                                <span style="color:var(--text-secondary);">Depot B (Lekki Hub)</span>
+                                <span style="font-weight:700;">₦6.1M</span>
+                              </div>
+                              <div style="width:100%; height:6px; background:var(--slate-100); border-radius:3px; overflow:hidden;"><div style="width:40%; height:100%; background:var(--teal-600);"></div></div>
+                              <div style="font-size:9px; color:var(--text-muted); margin-top:2px;">Capacity: 40% utilization</div>
+                            </div>
+                            <div>
+                              <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                                <span style="color:var(--text-secondary);">Depot C (Port Harcourt)</span>
+                                <span style="font-weight:700;">₦2.1M</span>
+                              </div>
+                              <div style="width:100%; height:6px; background:var(--slate-100); border-radius:3px; overflow:hidden;"><div style="width:15%; height:100%; background:var(--teal-600);"></div></div>
+                              <div style="font-size:9px; color:var(--text-muted); margin-top:2px;">Capacity: 15% utilization</div>
+                            </div>
+                          </div>
+                          
+                          <div style="font-size:12px; font-weight:600; margin-top:8px;">Fast Moving Items</div>
+                          <div style="display:flex; flex-direction:column; gap:8px; font-size:10px;">
+                            <div style="display:flex; justify-content:space-between;">
+                              <span style="color:var(--text-muted);">MacBook Pro M3 Max</span>
+                              <span style="font-weight:600; color:var(--teal-600);">22 sold (MTD)</span>
+                            </div>
+                            <div style="display:flex; justify-content:space-between;">
+                              <span style="color:var(--text-muted);">Dell UltraSharp 32"</span>
+                              <span style="font-weight:600; color:var(--teal-600);">12 sold (MTD)</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- View 3: Tax Center -->
+                  <div class="mockup-view" id="mockup-view-3">
+                    <div class="premium-kpi-grid" style="margin-top:0; margin-bottom:0; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+                      <div class="premium-kpi-card" style="padding:16px;" id="mockup-kpi-tax">
+                        <div class="premium-kpi-header">
+                          <span class="premium-kpi-title" style="color:var(--text-secondary);">VAT Liability (June)</span>
+                          <span class="mockup-badge badge-pending" style="font-size: 8px;">Draft</span>
+                        </div>
+                        <div class="premium-kpi-val" style="font-size:24px;">₦930,000</div>
+                        <div style="font-size:11px; color:var(--text-muted);">Due for filing soon</div>
+                      </div>
+                      <div class="premium-kpi-card" style="padding:16px;">
+                        <div class="premium-kpi-header">
+                          <span class="premium-kpi-title" style="color:var(--text-secondary);">CIT Estimator (May)</span>
+                          <span class="mockup-badge badge-success" style="font-size: 8px;">Settled</span>
+                        </div>
+                        <div class="premium-kpi-val" style="font-size:24px; color:var(--success);">₦2.55M</div>
+                        <div style="font-size:11px; color:var(--text-muted);">Remitted to FIRS</div>
+                      </div>
+                      <div class="premium-kpi-card" style="padding:16px;">
+                        <div class="premium-kpi-header">
+                          <span class="premium-kpi-title" style="color:var(--text-secondary);">WHT Reserve (May)</span>
+                          <span class="mockup-badge badge-success" style="font-size: 8px;">Settled</span>
+                        </div>
+                        <div class="premium-kpi-val" style="font-size:24px;">₦410,000</div>
+                        <div style="font-size:11px; color:var(--text-muted);">Fully filed &amp; cleared</div>
+                      </div>
+                    </div>
+
+                    <div class="mockup-grid" style="margin-top: 16px; gap: 16px; flex: 1; overflow: hidden;">
+                      <div class="mockup-col">
+                        <div style="background:#fff; border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:16px; flex:1; display:flex; flex-direction:column; justify-content:space-between; overflow:hidden;">
+                          <div style="font-size:13px; font-weight:600; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
+                            <span>Calculated Tax Reserve Liability</span>
+                            <span style="font-size:10px; color:var(--text-muted); font-weight:normal;">Nigerian FIRS Compliance</span>
+                          </div>
+                          <div style="flex:1; overflow:hidden;">
+                            <table class="mockup-table">
+                              <thead>
+                                <tr>
+                                  <th>Reporting Period</th>
+                                  <th>Tax Bracket Type</th>
+                                  <th style="text-align: right;">Calculated Base</th>
+                                  <th style="text-align: right;">Deducted Liability</th>
+                                  <th>Remittance Status</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                  <td>June 2026</td>
+                                  <td>Value Added Tax (VAT 7.5%)</td>
+                                  <td style="text-align: right;">₦12,400,000</td>
+                                  <td style="text-align: right; font-weight: 600;">₦930,000</td>
+                                  <td><span class="mockup-badge badge-pending">Pending Filing</span></td>
+                                </tr>
+                                <tr>
+                                  <td>May 2026</td>
+                                  <td>Company Income Tax (CIT)</td>
+                                  <td style="text-align: right;">₦8,500,000</td>
+                                  <td style="text-align: right; font-weight: 600;">₦2,550,000</td>
+                                  <td><span class="mockup-badge badge-success">Filed &amp; Paid</span></td>
+                                </tr>
+                                <tr>
+                                  <td>May 2026</td>
+                                  <td>Withholding Tax (WHT)</td>
+                                  <td style="text-align: right;">₦4,100,000</td>
+                                  <td style="text-align: right; font-weight: 600;">₦410,000</td>
+                                  <td><span class="mockup-badge badge-success">Filed &amp; Paid</span></td>
+                                </tr>
+                                <tr>
+                                  <td>April 2026</td>
+                                  <td>Value Added Tax (VAT 7.5%)</td>
+                                  <td style="text-align: right;">₦10,800,000</td>
+                                  <td style="text-align: right; font-weight: 600;">₦810,000</td>
+                                  <td><span class="mockup-badge badge-success">Filed &amp; Paid</span></td>
+                                </tr>
+                                <tr>
+                                  <td>April 2026</td>
+                                  <td>Education Tax (EDT 2.5%)</td>
+                                  <td style="text-align: right;">₦8,500,000</td>
+                                  <td style="text-align: right; font-weight: 600;">₦212,500</td>
+                                  <td><span class="mockup-badge badge-success">Filed &amp; Paid</span></td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="mockup-col">
+                        <div style="background:#fff; border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:16px; flex:1; display:flex; flex-direction:column; gap:16px;">
+                          <div style="font-size:13px; font-weight:600;">Tax Compliance Calendar</div>
+                          <div style="display:flex; flex-direction:column; gap:12px; font-size:11px; flex:1;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom:6px;">
+                              <div>
+                                <div style="font-weight:700;">CAC Annual Returns</div>
+                                <div style="font-size:9px; color:var(--text-muted);">Due Dec 2026</div>
+                              </div>
+                              <span class="mockup-badge badge-success">Compliant</span>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom:6px;">
+                              <div>
+                                <div style="font-weight:700;">VAT Remittance</div>
+                                <div style="font-size:9px; color:var(--text-muted);">Due 21 Jun 2026</div>
+                              </div>
+                              <span class="mockup-badge badge-pending">Pending</span>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom:6px;">
+                              <div>
+                                <div style="font-weight:700;">WHT Remittance</div>
+                                <div style="font-size:9px; color:var(--text-muted);">Due 30 Jun 2026</div>
+                              </div>
+                              <span class="mockup-badge badge-success">Filed &amp; Paid</span>
+                            </div>
+                          </div>
+                          
+                          <div style="font-size:12px; font-weight:600; margin-top:8px;">FIRS API Integration</div>
+                          <div style="background:var(--slate-50); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:10px; display:flex; align-items:center; gap:8px;">
+                            <span style="width:8px; height:8px; border-radius:50%; background:var(--success); display:inline-block;"></span>
+                            <div style="font-size:10px; font-weight:500;">Gateway Status: Connected</div>
+                          </div>
+                          <div style="font-size:9px; color:var(--text-muted); line-height:1.4;">Automated TIN query and direct tax credit posting enabled. Compliant under FIRS e-filing v2.</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- View 4: Reconciliation -->
+                  <div class="mockup-view" id="mockup-view-4">
+                    <div class="premium-kpi-grid" style="margin-top:0; margin-bottom:0; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+                      <div class="premium-kpi-card" style="padding:16px;" id="mockup-kpi-recon">
+                        <div class="premium-kpi-header">
+                          <span class="premium-kpi-title" style="color:var(--text-secondary);">Unreconciled Feed</span>
+                          <span class="material-symbols-outlined" style="color:var(--text-muted); font-size:18px;">sync_alt</span>
+                        </div>
+                        <div class="premium-kpi-val" style="font-size:24px;">₦1.45M</div>
+                        <div style="font-size:11px; color:var(--text-muted);">2 bank feeds pending</div>
+                      </div>
+                      <div class="premium-kpi-card" style="padding:16px;">
+                        <div class="premium-kpi-header">
+                          <span class="premium-kpi-title" style="color:var(--text-secondary);">Auto Match Rate</span>
+                          <span class="mockup-badge badge-success" style="font-size: 8px;">98.2%</span>
+                        </div>
+                        <div class="premium-kpi-val" style="font-size:24px; color:var(--teal-600);">98.2%</div>
+                        <div style="font-size:11px; color:var(--text-muted);">Direct Plaid syncing</div>
+                      </div>
+                      <div class="premium-kpi-card" style="padding:16px;">
+                        <div class="premium-kpi-header">
+                          <span class="premium-kpi-title" style="color:var(--text-secondary);">Reconciled (MTD)</span>
+                          <span class="material-symbols-outlined" style="color:var(--text-muted); font-size:18px;">done_all</span>
+                        </div>
+                        <div class="premium-kpi-val" style="font-size:24px;">1,048 tx</div>
+                        <div style="font-size:11px; color:var(--text-muted);">Fully balanced</div>
+                      </div>
+                    </div>
+
+                    <div class="mockup-grid" style="margin-top: 16px; gap: 16px; flex: 1; overflow: hidden;">
+                      <div class="mockup-col">
+                        <div style="background:#fff; border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:16px; flex:1; display:flex; flex-direction:column; justify-content:space-between; overflow:hidden;">
+                          <div style="font-size:13px; font-weight:600; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
+                            <span>Bank Reconciliation Simulator</span>
+                            <span style="font-size:10px; color:var(--text-muted); font-weight:normal;">AI-Powered Ledger Match</span>
+                          </div>
+                          <div style="flex:1; overflow:hidden;">
+                            <table class="mockup-table">
+                              <thead>
+                                <tr>
+                                  <th>Date</th>
+                                  <th>Bank Transaction Description</th>
+                                  <th>Suggested Ledger Match</th>
+                                  <th style="text-align: right;">Confidence</th>
+                                  <th>Action</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                  <td>18 Jun 2026</td>
+                                  <td>Union Bank Dep ₦450,000</td>
+                                  <td>Invoice #1043 — API Access</td>
+                                  <td style="text-align: right; font-weight: 600; color: var(--success);">99% Match</td>
+                                  <td><span class="mockup-badge badge-success">Match &amp; Clear</span></td>
+                                </tr>
+                                <tr>
+                                  <td>17 Jun 2026</td>
+                                  <td>Wthdwl - Cloud Host ₦120,000</td>
+                                  <td>Operating Expenses</td>
+                                  <td style="text-align: right; font-weight: 600; color: var(--success);">95% Match</td>
+                                  <td><span class="mockup-badge badge-success">Match &amp; Clear</span></td>
+                                </tr>
+                                <tr>
+                                  <td>16 Jun 2026</td>
+                                  <td>Union Bank Dep ₦845,000</td>
+                                  <td>Invoice #1042 — Enterprise Sub</td>
+                                  <td style="text-align: right; font-weight: 600; color: var(--success);">99% Match</td>
+                                  <td><span class="mockup-badge badge-success">Match &amp; Clear</span></td>
+                                </tr>
+                                <tr>
+                                  <td>15 Jun 2026</td>
+                                  <td>POS Deposit ₦250,000</td>
+                                  <td>Sales Clearing Account</td>
+                                  <td style="text-align: right; font-weight: 600; color: var(--success);">92% Match</td>
+                                  <td><span class="mockup-badge badge-success">Match &amp; Clear</span></td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="mockup-col">
+                        <div style="background:#fff; border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:16px; flex:1; display:flex; flex-direction:column; gap:16px;">
+                          <div style="font-size:13px; font-weight:600;">Connected Bank Accounts</div>
+                          <div style="display:flex; flex-direction:column; gap:12px; font-size:11px; flex:1;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom:6px;">
+                              <div>
+                                <div style="font-weight:700;">Union Bank Current</div>
+                                <div style="font-size:9px; color:var(--text-muted);">Synced: 5m ago</div>
+                              </div>
+                              <span class="mockup-badge badge-success">Online</span>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom:6px;">
+                              <div>
+                                <div style="font-weight:700;">Access Bank Dom FX</div>
+                                <div style="font-size:9px; color:var(--text-muted);">Synced: 1h ago</div>
+                              </div>
+                              <span class="mockup-badge badge-success">Online</span>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom:6px;">
+                              <div>
+                                <div style="font-weight:700;">GTBank checking</div>
+                                <div style="font-size:9px; color:var(--text-muted);">Credentials expired</div>
+                              </div>
+                              <span class="mockup-badge badge-pending">Plaid Auth</span>
+                            </div>
+                          </div>
+                          
+                          <div style="font-size:12px; font-weight:600; margin-top:8px;">AI Reconciliation Settings</div>
+                          <div style="display:flex; flex-direction:column; gap:8px; font-size:10px;">
+                            <div style="display:flex; justify-content:space-between;">
+                              <span style="color:var(--text-muted);">Auto Match Threshold</span>
+                              <span style="font-weight:600; color:var(--teal-600);">90% Confidence</span>
+                            </div>
+                            <div style="display:flex; justify-content:space-between;">
+                              <span style="color:var(--text-muted);">Automated Clearing</span>
+                              <span style="font-weight:600; color:var(--teal-600);">Enabled</span>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- View 5: CRM -->
+                  <div class="mockup-view" id="mockup-view-5">
+                    <div class="premium-kpi-grid" style="margin-top:0; margin-bottom:0; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+                      <div class="premium-kpi-card" style="padding:16px;" id="mockup-kpi-crm">
+                        <div class="premium-kpi-header">
+                          <span class="premium-kpi-title" style="color:var(--text-secondary);">Active Business Clients</span>
+                          <span class="material-symbols-outlined" style="color:var(--text-muted); font-size:18px;">groups</span>
+                        </div>
+                        <div class="premium-kpi-val" style="font-size:24px;">248 Clients</div>
+                        <div style="font-size:11px; color:var(--text-muted);">Enterprise database</div>
+                      </div>
+                      <div class="premium-kpi-card" style="padding:16px;">
+                        <div class="premium-kpi-header">
+                          <span class="premium-kpi-title" style="color:var(--text-secondary);">Open Sales Leads</span>
+                          <span class="mockup-badge badge-pending" style="font-size: 8px;">Active</span>
+                        </div>
+                        <div class="premium-kpi-val" style="font-size:24px; color:var(--teal-600);">14 Leads</div>
+                        <div style="font-size:11px; color:var(--text-muted);">MTD Sales Pipeline</div>
+                      </div>
+                      <div class="premium-kpi-card" style="padding:16px;">
+                        <div class="premium-kpi-header">
+                          <span class="premium-kpi-title" style="color:var(--text-secondary);">Sales Conversion</span>
+                          <span class="material-symbols-outlined" style="color:var(--text-muted); font-size:18px;">trending_up</span>
+                        </div>
+                        <div class="premium-kpi-val" style="font-size:24px;">8.4%</div>
+                        <div style="font-size:11px; color:var(--text-muted);">+1.2% this quarter</div>
+                      </div>
+                    </div>
+
+                    <div class="mockup-grid" style="margin-top: 16px; gap: 16px; flex: 1; overflow: hidden;">
+                      <div class="mockup-col">
+                        <div style="background:#fff; border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:16px; flex:1; display:flex; flex-direction:column; justify-content:space-between; overflow:hidden;">
+                          <div style="font-size:13px; font-weight:600; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
+                            <span>Registered Business Clients</span>
+                            <span style="font-size:10px; color:var(--text-muted); font-weight:normal;">VIP Corporate Tier</span>
+                          </div>
+                          <div style="flex:1; overflow:hidden;">
+                            <table class="mockup-table">
+                              <thead>
+                                <tr>
+                                  <th>Client ID</th>
+                                  <th>Company / Name</th>
+                                  <th>Contact Email</th>
+                                  <th>Phone Number</th>
+                                  <th>Status</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                  <td>CLI-001</td>
+                                  <td>Acme Corporation</td>
+                                  <td>billing@acme.com</td>
+                                  <td>+234 803 123 4567</td>
+                                  <td><span class="mockup-badge badge-success">Active</span></td>
+                                </tr>
+                                <tr>
+                                  <td>CLI-002</td>
+                                  <td>Globex Limited</td>
+                                  <td>accounts@globex.com</td>
+                                  <td>+234 812 987 6543</td>
+                                  <td><span class="mockup-badge badge-success">Active</span></td>
+                                </tr>
+                                <tr>
+                                  <td>CLI-003</td>
+                                  <td>Initech Holdings</td>
+                                  <td>info@initech.com</td>
+                                  <td>+234 815 555 0199</td>
+                                  <td><span class="mockup-badge badge-success">Active</span></td>
+                                </tr>
+                                <tr>
+                                  <td>CLI-004</td>
+                                  <td>Umbrella Corp</td>
+                                  <td>finance@umbrella.com</td>
+                                  <td>+234 902 444 8812</td>
+                                  <td><span class="mockup-badge badge-pending">Review</span></td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="mockup-col">
+                        <div style="background:#fff; border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:16px; flex:1; display:flex; flex-direction:column; gap:16px;">
+                          <div style="font-size:13px; font-weight:600;">Sales Pipeline Status</div>
+                          <div style="display:flex; flex-direction:column; gap:12px; font-size:11px; flex:1;">
+                            <div>
+                              <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                                <span style="color:var(--text-secondary);">1. Contacted / Discovery</span>
+                                <span style="font-weight:700;">5 Leads</span>
+                              </div>
+                              <div style="width:100%; height:6px; background:var(--slate-100); border-radius:3px; overflow:hidden;"><div style="width:35%; height:100%; background:var(--teal-600);"></div></div>
+                              <div style="font-size:9px; color:var(--text-muted); margin-top:2px;">Est Value: ₦1.2M</div>
+                            </div>
+                            <div>
+                              <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                                <span style="color:var(--text-secondary);">2. Proposal Sent</span>
+                                <span style="font-weight:700;">6 Leads</span>
+                              </div>
+                              <div style="width:100%; height:6px; background:var(--slate-100); border-radius:3px; overflow:hidden;"><div style="width:55%; height:100%; background:var(--teal-600);"></div></div>
+                              <div style="font-size:9px; color:var(--text-muted); margin-top:2px;">Est Value: ₦3.4M</div>
+                            </div>
+                            <div>
+                              <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
+                                <span style="color:var(--text-secondary);">3. Negotiation</span>
+                                <span style="font-weight:700;">3 Leads</span>
+                              </div>
+                              <div style="width:100%; height:6px; background:var(--slate-100); border-radius:3px; overflow:hidden;"><div style="width:20%; height:100%; background:var(--teal-600);"></div></div>
+                              <div style="font-size:9px; color:var(--text-muted); margin-top:2px;">Est Value: ₦1.8M</div>
+                            </div>
+                          </div>
+                          
+                          <div style="font-size:12px; font-weight:600; margin-top:8px;">Realized Revenue MTD</div>
+                          <div style="display:flex; justify-content:space-between; align-items:center; font-size:10px;">
+                            <span style="color:var(--text-muted);">8 Won Deals Total</span>
+                            <span style="font-weight:700; color:var(--success); font-size:12px;">+₦4.5M</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- View 6: HR -->
+                  <div class="mockup-view" id="mockup-view-6">
+                    <div class="premium-kpi-grid" style="margin-top:0; margin-bottom:0; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+                      <div class="premium-kpi-card" style="padding:16px;" id="mockup-kpi-hr">
+                        <div class="premium-kpi-header">
+                          <span class="premium-kpi-title" style="color:var(--text-secondary);">Total Workforce</span>
+                          <span class="material-symbols-outlined" style="color:var(--text-muted); font-size:18px;">badge</span>
+                        </div>
+                        <div class="premium-kpi-val" style="font-size:24px;">32 Employees</div>
+                        <div style="font-size:11px; color:var(--text-muted);">Active roster</div>
+                      </div>
+                      <div class="premium-kpi-card" style="padding:16px;">
+                        <div class="premium-kpi-header">
+                          <span class="premium-kpi-title" style="color:var(--text-secondary);">Monthly Payroll</span>
+                          <span class="mockup-badge badge-success" style="font-size: 8px;">Disbursed</span>
+                        </div>
+                        <div class="premium-kpi-val" style="font-size:24px;">₦8.45M</div>
+                        <div style="font-size:11px; color:var(--text-muted);">June disburse completed</div>
+                      </div>
+                      <div class="premium-kpi-card" style="padding:16px;">
+                        <div class="premium-kpi-header">
+                          <span class="premium-kpi-title" style="color:var(--text-secondary);">Statutory Deductions</span>
+                          <span class="material-symbols-outlined" style="color:var(--text-muted); font-size:18px;">account_balance_wallet</span>
+                        </div>
+                        <div class="premium-kpi-val" style="font-size:24px;">₦1.12M</div>
+                        <div style="font-size:11px; color:var(--text-muted);">PAYE + Pension reserve</div>
+                      </div>
+                    </div>
+
+                    <div class="mockup-grid" style="margin-top: 16px; gap: 16px; flex: 1; overflow: hidden;">
+                      <div class="mockup-col">
+                        <div style="background:#fff; border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:16px; flex:1; display:flex; flex-direction:column; justify-content:space-between; overflow:hidden;">
+                          <div style="font-size:13px; font-weight:600; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
+                            <span>Employee Monthly Deductions Ledger</span>
+                            <span style="font-size:10px; color:var(--text-muted); font-weight:normal;">June Payroll Run</span>
+                          </div>
+                          <div style="flex:1; overflow:hidden;">
+                            <table class="mockup-table">
+                              <thead>
+                                <tr>
+                                  <th>Emp ID</th>
+                                  <th>Employee Name</th>
+                                  <th>Role / Department</th>
+                                  <th style="text-align: right;">Base Salary</th>
+                                  <th>Status</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                  <td>EMP-001</td>
+                                  <td>Jane Doe</td>
+                                  <td>VP Product / Engineering</td>
+                                  <td style="text-align: right; font-weight: 600;">₦1,200,000</td>
+                                  <td><span class="mockup-badge badge-success">Disbursed</span></td>
+                                </tr>
+                                <tr>
+                                  <td>EMP-002</td>
+                                  <td>John Smith</td>
+                                  <td>Lead Full Stack Engineer</td>
+                                  <td style="text-align: right; font-weight: 600;">₦850,000</td>
+                                  <td><span class="mockup-badge badge-success">Disbursed</span></td>
+                                </tr>
+                                <tr>
+                                  <td>EMP-003</td>
+                                  <td>Sarah Williams</td>
+                                  <td>Head of Finance</td>
+                                  <td style="text-align: right; font-weight: 600;">₦950,000</td>
+                                  <td><span class="mockup-badge badge-success">Disbursed</span></td>
+                                </tr>
+                                <tr>
+                                  <td>EMP-004</td>
+                                  <td>David Ojo</td>
+                                  <td>HR Operations Lead</td>
+                                  <td style="text-align: right; font-weight: 600;">₦600,000</td>
+                                  <td><span class="mockup-badge badge-success">Disbursed</span></td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="mockup-col">
+                        <div style="background:#fff; border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:16px; flex:1; display:flex; flex-direction:column; gap:16px;">
+                          <div style="font-size:13px; font-weight:600;">Disbursement Status</div>
+                          <div style="display:flex; flex-direction:column; gap:12px; font-size:11px; flex:1;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom:6px;">
+                              <div>
+                                <div style="font-weight:700;">Base Salary Payments</div>
+                                <div style="font-size:9px; color:var(--text-muted);">To 32 employees</div>
+                              </div>
+                              <span class="mockup-badge badge-success">Disbursed</span>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom:6px;">
+                              <div>
+                                <div style="font-weight:700;">PAYE Tax Remittance</div>
+                                <div style="font-size:9px; color:var(--text-muted);">To LIRS/State IRS</div>
+                              </div>
+                              <span class="mockup-badge badge-success">Remitted</span>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom:6px;">
+                              <div>
+                                <div style="font-weight:700;">Pension Fund Reserve</div>
+                                <div style="font-size:9px; color:var(--text-muted);">To PenCom PFA</div>
+                              </div>
+                              <span class="mockup-badge badge-success">Remitted</span>
+                            </div>
+                          </div>
+                          
+                          <div style="font-size:12px; font-weight:600; margin-top:8px;">Next Payroll Schedule</div>
+                          <div style="display:flex; flex-direction:column; gap:4px; font-size:10px;">
+                            <div style="font-weight:700; color:var(--slate-800);">28th June 2026</div>
+                            <div style="color:var(--text-muted);">Status: Draft sheets pending approval</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- View 7: Reports -->
+                  <div class="mockup-view" id="mockup-view-7">
+                    <div class="premium-kpi-grid" style="margin-top:0; margin-bottom:0; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+                      <div class="premium-kpi-card" style="padding:16px;" id="mockup-kpi-reports">
+                        <div class="premium-kpi-header">
+                          <span class="premium-kpi-title" style="color:var(--text-secondary);">Cash Flow Ratio</span>
+                          <span class="material-symbols-outlined" style="color:var(--text-muted); font-size:18px;">monitoring</span>
+                        </div>
+                        <div class="premium-kpi-val" style="font-size:24px;">1.48</div>
+                        <div style="font-size:11px; color:var(--text-muted);">Healthy working capital</div>
+                      </div>
+                      <div class="premium-kpi-card" style="padding:16px;">
+                        <div class="premium-kpi-header">
+                          <span class="premium-kpi-title" style="color:var(--text-secondary);">EBITDA Margin</span>
+                          <span class="mockup-badge badge-success" style="font-size: 8px;">22.4%</span>
+                        </div>
+                        <div class="premium-kpi-val" style="font-size:24px; color:var(--teal-600);">22.4%</div>
+                        <div style="font-size:11px; color:var(--text-muted);">Current financial year</div>
+                      </div>
+                      <div class="premium-kpi-card" style="padding:16px;">
+                        <div class="premium-kpi-header">
+                          <span class="premium-kpi-title" style="color:var(--text-secondary);">Quick Ratio (Acid Test)</span>
+                          <span class="material-symbols-outlined" style="color:var(--text-muted); font-size:18px;">speed</span>
+                        </div>
+                        <div class="premium-kpi-val" style="font-size:24px;">1.15</div>
+                        <div style="font-size:11px; color:var(--text-muted);">Ideal liquid target</div>
+                      </div>
+                    </div>
+
+                    <div class="mockup-grid" style="margin-top: 16px; gap: 16px; flex: 1; overflow: hidden;">
+                      <div class="mockup-col">
+                        <div style="background:#fff; border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:16px; flex:1; display:flex; flex-direction:column; justify-content:space-between; overflow:hidden;">
+                          <div style="font-size:13px; font-weight:600; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
+                            <span>Generated Board Reports</span>
+                            <span style="font-size:10px; color:var(--text-muted); font-weight:normal;">Automated GAAP Compliant</span>
+                          </div>
+                          <div style="flex:1; overflow:hidden;">
+                            <table class="mockup-table">
+                              <thead>
+                                <tr>
+                                  <th>Report Name</th>
+                                  <th>Reporting Period</th>
+                                  <th>Created By</th>
+                                  <th>Generated Date</th>
+                                  <th>Download</th>
+                                </tr>
+                              </thead>
+                              <tbody>
+                                <tr>
+                                  <td>Profit &amp; Loss Statement (P&amp;L)</td>
+                                  <td>Q2 Fiscal Year 2026</td>
+                                  <td>Automated Engine</td>
+                                  <td>18 Jun 2026</td>
+                                  <td><span class="mockup-badge badge-success">PDF / Excel</span></td>
+                                </tr>
+                                <tr>
+                                  <td>Corporate Balance Sheet</td>
+                                  <td>May 2026 Closing</td>
+                                  <td>System Scheduler</td>
+                                  <td>01 Jun 2026</td>
+                                  <td><span class="mockup-badge badge-success">PDF / Excel</span></td>
+                                </tr>
+                                <tr>
+                                  <td>Tax Compliance Report (Form CAC)</td>
+                                  <td>FY 2025 Audit</td>
+                                  <td>Compliance Bot</td>
+                                  <td>15 May 2026</td>
+                                  <td><span class="mockup-badge badge-success">PDF / CAC</span></td>
+                                </tr>
+                                <tr>
+                                  <td>Employee Benefits Summary</td>
+                                  <td>Q1 2026 Review</td>
+                                  <td>Payroll Summary</td>
+                                  <td>10 Apr 2026</td>
+                                  <td><span class="mockup-badge badge-success">PDF / Excel</span></td>
+                                </tr>
+                              </tbody>
+                            </table>
+                          </div>
+                        </div>
+                      </div>
+                      <div class="mockup-col">
+                        <div style="background:#fff; border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:16px; flex:1; display:flex; flex-direction:column; gap:16px;">
+                          <div style="font-size:13px; font-weight:600;">Audit & Compliance</div>
+                          <div style="display:flex; flex-direction:column; gap:12px; font-size:11px; flex:1;">
+                            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom:6px;">
+                              <span style="color:var(--text-secondary);">IFRS Accounting Grade</span>
+                              <span style="font-weight:700; color:var(--teal-600);">98% Score</span>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom:6px;">
+                              <span style="color:var(--text-secondary);">Audit Log Integrity</span>
+                              <span style="font-weight:700; color:var(--success);">100% Intact</span>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom:6px;">
+                              <span style="color:var(--text-secondary);">CAC Form upload</span>
+                              <span style="font-weight:700;">CAC-7 Active</span>
+                            </div>
+                            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom:6px;">
+                              <span style="color:var(--text-secondary);">NDPR Data Privacy</span>
+                              <span style="font-weight:700; color:var(--success);">Compliant</span>
+                            </div>
+                          </div>
+                          
+                          <div style="font-size:12px; font-weight:600; margin-top:8px;">Compliance Actions</div>
+                          <div style="font-size:10px; color:var(--text-muted); line-height:1.4;">All financial reports are locked and sealed with SHA-256 digital signatures at the end of each fiscal month to guarantee auditing integrity.</div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+
+                </div>
               </div>
             </div>
           </div>
+          <div class="macbook-base"></div>
         </div>
-      </div>
       </div>
     </div>
   </section>
 
   <!-- Premium Features Showcase -->
-  <section class="section" id="features">
+  <section class="section features-section-dark" id="features">
     <div class="section-header reveal">
       <h2 class="section-title">Enterprise grade, without the complexity.</h2>
       <p class="section-desc">
@@ -317,59 +2008,192 @@
   </section>
 
   <!-- Pricing Section -->
-  <section class="section" id="pricing" style="background: var(--slate-50); border-top: 1px solid var(--border-color); border-bottom: 1px solid var(--border-color);">
+  <section class="section pricing-section-light" id="pricing">
     <div class="section-header reveal">
       <h2 class="section-title">Simple, transparent pricing</h2>
       <p class="section-desc">Choose a plan that scales with your business. No hidden fees.</p>
     </div>
 
-    <div class="pricing-grid reveal">
+    <div class="pricing-grid-glass reveal">
       <!-- Starter -->
-      <div class="pricing-card">
-        <div class="pricing-header">
-          <h3>Starter</h3>
-          <p class="text-muted" style="font-size: 13px;">For early-stage operations</p>
-          <div class="pricing-price">₦15,000<span>/month</span></div>
+      <div class="pricing-card-glass">
+        <div class="pricing-header-row">
+          <span class="pricing-badge-capsule">Starter Pack</span>
         </div>
-        <ul class="pricing-features">
-          <li><span class="material-symbols-outlined" style="color:var(--success); font-size:18px;">check_circle</span> Up to 5 active users</li>
-          <li><span class="material-symbols-outlined" style="color:var(--success); font-size:18px;">check_circle</span> General Ledger Accounting</li>
-          <li><span class="material-symbols-outlined" style="color:var(--success); font-size:18px;">check_circle</span> Sales Invoices</li>
-        </ul>
-        <a href="signup.html" class="btn btn-secondary" style="width:100%;">Start Trial</a>
+        
+        <h3 class="pricing-card-title">Starter</h3>
+        <p class="pricing-card-desc">For early-stage operations &amp; startups managing core ledgers.</p>
+        
+        <div class="pricing-price-wrap">
+          <div class="pricing-price-large">₦15,000<span>/month</span></div>
+          <div class="pricing-price-sub">or ₦150,000 billed annually</div>
+        </div>
+        
+        <a href="signup.html?tier=starter" class="btn-pricing btn-pricing-secondary">Start Free Trial</a>
+        
+        <div class="pricing-features-section">
+          <div class="pricing-features-header">Included</div>
+          <ul class="pricing-features-list">
+            <li>
+              <span class="material-symbols-outlined check-icon">check</span>
+              <span>Up to 5 active users</span>
+            </li>
+            <li>
+              <span class="material-symbols-outlined check-icon">check</span>
+              <span>General Ledger Accounting</span>
+            </li>
+            <li>
+              <span class="material-symbols-outlined check-icon">check</span>
+              <span>Sales Invoices &amp; Receipts</span>
+            </li>
+            <li>
+              <span class="material-symbols-outlined check-icon">check</span>
+              <span>1 Connected Bank Account</span>
+            </li>
+            <li>
+              <span class="material-symbols-outlined check-icon">check</span>
+              <span>P&amp;L &amp; Balance Sheet Reports</span>
+            </li>
+          </ul>
+          
+          <div class="pricing-features-header add-on-header">Available to Add</div>
+          <ul class="pricing-features-list">
+            <li class="muted-feature">
+              <span class="material-symbols-outlined add-icon">add</span>
+              <span>Automated Payroll Run</span>
+            </li>
+            <li class="muted-feature">
+              <span class="material-symbols-outlined add-icon">add</span>
+              <span>FIRS VAT/WHT Calculations</span>
+            </li>
+            <li class="muted-feature">
+              <span class="material-symbols-outlined add-icon">add</span>
+              <span>Multi-Depot Inventory</span>
+            </li>
+          </ul>
+        </div>
       </div>
 
-      <!-- Professional -->
-      <div class="pricing-card premium">
-        <div class="popular-tag">Most Popular</div>
-        <div class="pricing-header">
-          <h3>Professional</h3>
-          <p class="text-muted" style="font-size: 13px;">For scaling organizations</p>
-          <div class="pricing-price">₦45,000<span>/month</span></div>
+      <!-- Professional / Business Suite -->
+      <div class="pricing-card-glass recommended">
+        <div class="pricing-header-row">
+          <span class="pricing-badge-capsule">Recommended Package</span>
         </div>
-        <ul class="pricing-features">
-          <li><span class="material-symbols-outlined" style="color:var(--success); font-size:18px;">check_circle</span> Up to 25 active users</li>
-          <li><span class="material-symbols-outlined" style="color:var(--success); font-size:18px;">check_circle</span> Double-Entry System</li>
-          <li><span class="material-symbols-outlined" style="color:var(--success); font-size:18px;">check_circle</span> Tax Calculations & Reports</li>
-          <li><span class="material-symbols-outlined" style="color:var(--success); font-size:18px;">check_circle</span> Automated Payroll Sheets</li>
-        </ul>
-        <a href="signup.html" class="btn btn-primary" style="width:100%;">Get Started</a>
+        
+        <h3 class="pricing-card-title">Business Suite</h3>
+        <p class="pricing-card-desc">Complete suite for scaling companies needing advanced compliance.</p>
+        
+        <div class="pricing-price-wrap">
+          <div class="pricing-price-large">₦45,000<span>/month</span></div>
+          <div class="pricing-price-sub">or ₦450,000 billed annually</div>
+        </div>
+        
+        <a href="signup.html?tier=professional" class="btn-pricing btn-pricing-primary">Get Business Suite</a>
+        
+        <div class="pricing-features-section">
+          <div class="pricing-features-header">Included</div>
+          <ul class="pricing-features-list">
+            <li>
+              <span class="material-symbols-outlined check-icon">check</span>
+              <span>Up to 25 active users</span>
+            </li>
+            <li>
+              <span class="material-symbols-outlined check-icon">check</span>
+              <span>Double-Entry System</span>
+            </li>
+            <li>
+              <span class="material-symbols-outlined check-icon">check</span>
+              <span>Automated Payroll Sheets</span>
+            </li>
+            <li>
+              <span class="material-symbols-outlined check-icon">check</span>
+              <span>FIRS VAT/WHT Compliance</span>
+            </li>
+            <li>
+              <span class="material-symbols-outlined check-icon">check</span>
+              <span>Depot &amp; Product Valuations</span>
+            </li>
+            <li>
+              <span class="material-symbols-outlined check-icon">check</span>
+              <span>Bank Auto-Reconciliation</span>
+            </li>
+          </ul>
+          
+          <div class="pricing-features-header add-on-header">Available to Add</div>
+          <ul class="pricing-features-list">
+            <li class="muted-feature">
+              <span class="material-symbols-outlined add-icon">add</span>
+              <span>Multi-Entity Management</span>
+            </li>
+            <li class="muted-feature">
+              <span class="material-symbols-outlined add-icon">add</span>
+              <span>Custom API &amp; Developer Access</span>
+            </li>
+            <li class="muted-feature">
+              <span class="material-symbols-outlined add-icon">add</span>
+              <span>Dedicated Success Manager</span>
+            </li>
+          </ul>
+        </div>
       </div>
 
       <!-- Enterprise -->
-      <div class="pricing-card">
-        <div class="pricing-header">
-          <h3>Enterprise</h3>
-          <p class="text-muted" style="font-size: 13px;">For high-volume commerce</p>
-          <div class="pricing-price">Custom</div>
+      <div class="pricing-card-glass dark-glass">
+        <div class="pricing-header-row">
+          <span class="pricing-badge-capsule">Highest-Touch Package</span>
         </div>
-        <ul class="pricing-features">
-          <li><span class="material-symbols-outlined" style="color:var(--success); font-size:18px;">check_circle</span> Unlimited users</li>
-          <li><span class="material-symbols-outlined" style="color:var(--success); font-size:18px;">check_circle</span> Multi-entity support</li>
-          <li><span class="material-symbols-outlined" style="color:var(--success); font-size:18px;">check_circle</span> Dedicated Success Manager</li>
-          <li><span class="material-symbols-outlined" style="color:var(--success); font-size:18px;">check_circle</span> Custom integrations</li>
-        </ul>
-        <a href="mailto:sales@coda.com" class="btn btn-secondary" style="width:100%;">Contact Sales</a>
+        
+        <h3 class="pricing-card-title">Enterprise</h3>
+        <p class="pricing-card-desc">For high-volume commerce, multi-entity operations &amp; custom SLAs.</p>
+        
+        <div class="pricing-price-wrap">
+          <div class="pricing-price-large">₦150,000<span>/month</span></div>
+          <div class="pricing-price-sub">or ₦1,500,000 billed annually</div>
+        </div>
+        
+        <a href="mailto:sales@coda.com?subject=Enterprise%20Plan%20Inquiry" class="btn-pricing btn-pricing-white">Contact Sales</a>
+        
+        <div class="pricing-features-section">
+          <div class="pricing-features-header">Included</div>
+          <ul class="pricing-features-list">
+            <li>
+              <span class="material-symbols-outlined check-icon">check</span>
+              <span>Unlimited active users</span>
+            </li>
+            <li>
+              <span class="material-symbols-outlined check-icon">check</span>
+              <span>Multi-Entity Consolidation</span>
+            </li>
+            <li>
+              <span class="material-symbols-outlined check-icon">check</span>
+              <span>Custom API &amp; Developer Webhooks</span>
+            </li>
+            <li>
+              <span class="material-symbols-outlined check-icon">check</span>
+              <span>FIRS Audit Log Integrity</span>
+            </li>
+            <li>
+              <span class="material-symbols-outlined check-icon">check</span>
+              <span>Dedicated Success Manager</span>
+            </li>
+            <li>
+              <span class="material-symbols-outlined check-icon">check</span>
+              <span>24/7 SLA Support &amp; Training</span>
+            </li>
+          </ul>
+          
+          <div class="pricing-features-header add-on-header">Available to Add</div>
+          <ul class="pricing-features-list">
+            <li class="muted-feature">
+              <span class="material-symbols-outlined add-icon">add</span>
+              <span>On-Prem / Private Cloud Deploy</span>
+            </li>
+            <li class="muted-feature">
+              <span class="material-symbols-outlined add-icon">add</span>
+              <span>Bespoke Custom ERP Modules</span>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </section>
@@ -463,36 +2287,47 @@
 
   <!-- Shared Footer -->
   <footer class="dark-footer">
-    <div style="max-width: var(--max-width); margin: 0 auto; padding: 0 24px;">
-      <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 48px; flex-wrap: wrap; gap: 32px;">
-        <div>
-          <div class="brand-name" style="display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 20px; margin-bottom: 16px;">
-            <span class="brand-icon-box brand-icon-sm"><svg viewBox="20 20 54 58" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="38" y="22" width="34" height="14" rx="3" fill="#0d9488"/><rect x="22" y="32" width="18" height="38" rx="3.5" fill="currentColor"/><rect x="34" y="62" width="38" height="14" rx="3" fill="currentColor"/></svg></span>
+    <div class="dark-footer-container">
+      <div class="dark-footer-top">
+        <div class="footer-brand-column">
+          <a href="/" class="nav-brand" style="color: #ffffff !important; margin-bottom: 16px;">
+            <span class="brand-icon-box"><svg viewBox="20 20 54 58" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="38" y="22" width="34" height="14" rx="3" fill="#0d9488"/><rect x="22" y="32" width="18" height="38" rx="3.5" fill="currentColor"/><rect x="34" y="62" width="38" height="14" rx="3" fill="currentColor"/></svg></span>
             <span>Coda</span>
-          </div>
-          <p style="max-width: 240px; font-size: 14px;">The definitive financial operating system for high-growth enterprise businesses.</p>
+          </a>
+          <p class="brand-tagline">The definitive financial operating system for high-growth enterprise businesses.</p>
         </div>
         
-        <div style="display: flex; gap: 48px;">
-          <div>
-            <h4 style="font-size: 14px; margin-bottom: 16px;">Product</h4>
-            <ul style="list-style: none; display: flex; flex-direction: column; gap: 12px; font-size: 14px; padding-left: 0;">
-              <li><a href="#features">Features</a></li>
-              <li><a href="#pricing">Pricing</a></li>
-              <li><a href="api.html" class="link-accent">API Documentation</a></li>
-            </ul>
-          </div>
-          <div>
-            <h4 style="font-size: 14px; margin-bottom: 16px;">Legal</h4>
-            <ul style="list-style: none; display: flex; flex-direction: column; gap: 12px; font-size: 14px; padding-left: 0;">
-              <li><a href="#!" class="legal-trigger-terms">Terms of Service</a></li>
-              <li><a href="#!" class="legal-trigger-privacy">Privacy Policy</a></li>
-            </ul>
-          </div>
+        <div class="footer-links-column">
+          <h4>Product</h4>
+          <ul>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#pricing">Pricing</a></li>
+            <li><a href="api.html" class="link-accent">API Documentation</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-links-column">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="#!" class="legal-trigger-terms">Terms of Service</a></li>
+            <li><a href="#!" class="legal-trigger-privacy">Privacy Policy</a></li>
+          </ul>
+        </div>
+        
+        <div class="footer-vertical-divider"></div>
+        
+        <div class="footer-description-column">
+          <p>
+            Coda is built to comply with Nigerian GAAP and IFRS accounting standards. WHT, VAT, and PAYE tax compliance is automated in accordance with FIRS guidelines. Secured under NDPR regulations.
+          </p>
         </div>
       </div>
-      <div class="footer-bottom" style="display: flex; justify-content: space-between; align-items: center; font-size: 12px;">
-        <div>&copy; 2026 Coda Technologies Ltd. All rights reserved.</div>
+      
+      <div class="dark-footer-bottom">
+        <div class="giant-coda-text">Coda</div>
+        <div class="footer-copyright-info">
+          &copy; 2026 Coda Technologies Ltd. All rights reserved.
+        </div>
       </div>
     </div>
   </footer>
@@ -545,7 +2380,226 @@
       });
     }
   </script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
   <script src="ticker.js"></script>
+  
+  <!-- Interactive Live-Demo Mockup Script -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Initialize mockup expense doughnut chart
+      const mockExpCtx = document.getElementById('mockupExpenseChart')?.getContext('2d');
+      if (mockExpCtx) {
+        new Chart(mockExpCtx, {
+          type: 'doughnut',
+          data: {
+            labels: ['Staff Payroll', 'Office Infrastructure', 'Miscellaneous'],
+            datasets: [{
+              data: [7330, 920, 200],
+              backgroundColor: ['#2A8566', '#B8652E', '#94A3B8'],
+              borderWidth: 0,
+              cutout: '70%'
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+              legend: { display: false },
+              tooltip: {
+                callbacks: {
+                  label: ctx => ctx.label + ': ₦' + (ctx.raw * 1000).toLocaleString()
+                }
+              }
+            }
+          }
+        });
+      }
+
+      const card = document.getElementById('hero-mockup-card');
+      const cursor = document.getElementById('mockup-simulated-cursor');
+      const topbarTitle = document.getElementById('mockup-topbar-title');
+      if (!card || !cursor) return;
+
+      const tabs = card.querySelectorAll('.mockup-nav-item');
+      const views = card.querySelectorAll('.mockup-view');
+      const titleMapping = {
+        0: 'Dashboard Overview',
+        1: 'Double-Entry Ledger',
+        2: 'Depot & Product Valuations',
+        3: 'Tax Remittance & Filing Center',
+        4: 'Bank Reconciliation',
+        5: 'Customer Directory & Leads',
+        6: 'Corporate Payroll Sheet',
+        7: 'Financial Analytics & Reports'
+      };
+
+      // Find an inspectable target in each view (the right-side column card) to let the cursor go farther to the right
+      const inspectTargets = {};
+      views.forEach((view, idx) => {
+        const cols = view.querySelectorAll('.mockup-col');
+        if (cols && cols.length >= 2) {
+          inspectTargets[idx] = cols[1]; // target the right column widget container
+        } else {
+          inspectTargets[idx] = view.querySelector('.premium-kpi-card') || view;
+        }
+      });
+
+      // Autoplay cycles through all 8 views sequentially in visual order
+      const autoplaySequence = [0, 1, 4, 2, 5, 6, 3, 7];
+      let seqIdx = 0;
+      let activeIdx = 0;
+      let isHovered = false;
+      let cycleTimeout = null;
+
+      // Unscaled relative position calculation
+      function getOffsetRect(el, container) {
+        let left = 0;
+        let top = 0;
+        let current = el;
+        while (current && current !== container) {
+          left += current.offsetLeft;
+          top += current.offsetTop;
+          current = current.offsetParent;
+        }
+        return {
+          left: left,
+          top: top,
+          width: el.offsetWidth,
+          height: el.offsetHeight
+        };
+      }
+
+      function switchView(idx) {
+        activeIdx = idx;
+        
+        // Update tabs active state
+        tabs.forEach(tab => tab.classList.remove('active'));
+        const activeTab = card.querySelector(`.mockup-nav-item[data-view-idx="${idx}"]`);
+        if (activeTab) activeTab.classList.add('active');
+
+        // Update topbar title
+        if (topbarTitle) {
+          topbarTitle.textContent = titleMapping[idx] || 'Dashboard Overview';
+        }
+
+        // Update views display
+        views.forEach(view => view.classList.remove('active'));
+        const activeView = document.getElementById(`mockup-view-${idx}`);
+        if (activeView) activeView.classList.add('active');
+      }
+
+      // Smooth custom cursor movement logic
+      function moveCursorTo(el, callback) {
+        if (isHovered) return;
+        const rect = getOffsetRect(el, card);
+        // Arrow cursor tip is at (0, 0), so direct center alignment maps tip to center
+        const targetX = rect.left + rect.width / 2;
+        const targetY = rect.top + rect.height / 2;
+
+        cursor.style.left = `${targetX}px`;
+        cursor.style.top = `${targetY}px`;
+
+        if (callback) {
+          setTimeout(callback, 800); // 800ms for cursor transition
+        }
+      }
+
+      function executeAutoplayCycle() {
+        if (isHovered) return;
+
+        // 1. Move to next tab in the sequence
+        seqIdx = (seqIdx + 1) % autoplaySequence.length;
+        activeIdx = autoplaySequence[seqIdx];
+        
+        const targetTab = card.querySelector(`.mockup-nav-item[data-view-idx="${activeIdx}"]`);
+        if (!targetTab) return;
+
+        moveCursorTo(targetTab, () => {
+          if (isHovered) return;
+
+          // 2. Click effect (scale scale-down)
+          cursor.classList.add('clicking');
+          
+          setTimeout(() => {
+            if (isHovered) return;
+            cursor.classList.remove('clicking');
+            
+            // 3. Switch active view
+            switchView(activeIdx);
+
+            // 4. Move cursor to inside content inspect target (simulating looking around)
+            setTimeout(() => {
+              if (isHovered) return;
+              const inspectEl = inspectTargets[activeIdx];
+              if (inspectEl) {
+                moveCursorTo(inspectEl, () => {
+                  // Wait 5 seconds at inspect target before next cycle
+                  cycleTimeout = setTimeout(executeAutoplayCycle, 5000);
+                });
+              } else {
+                cycleTimeout = setTimeout(executeAutoplayCycle, 5000);
+              }
+            }, 300);
+
+          }, 150);
+        });
+      }
+
+      // Mouse enter: Pause autoplay, hide custom cursor, allow manual clicks
+      card.addEventListener('mouseenter', () => {
+        isHovered = true;
+        cursor.style.opacity = '0';
+        if (cycleTimeout) {
+          clearTimeout(cycleTimeout);
+          cycleTimeout = null;
+        }
+      });
+
+      // Mouse leave: Reshow custom cursor, align cursor position, schedule autoplay resume
+      card.addEventListener('mouseleave', () => {
+        isHovered = false;
+        
+        // Place simulated cursor immediately on currently active tab so it doesn't jump
+        const currentTab = card.querySelector(`.mockup-nav-item[data-view-idx="${activeIdx}"]`);
+        if (currentTab) {
+          const rect = getOffsetRect(currentTab, card);
+          cursor.style.left = `${rect.left + rect.width / 2}px`;
+          cursor.style.top = `${rect.top + rect.height / 2}px`;
+        }
+
+        setTimeout(() => {
+          if (isHovered) return;
+          cursor.style.opacity = '1';
+          // Find the current sequence index to resume sequence from here
+          const currentSeqIdx = autoplaySequence.indexOf(activeIdx);
+          if (currentSeqIdx !== -1) {
+            seqIdx = currentSeqIdx;
+          }
+          // Schedule next transition in 2 seconds
+          cycleTimeout = setTimeout(executeAutoplayCycle, 2000);
+        }, 150);
+      });
+
+      // Manual clicks on navigation items
+      tabs.forEach(tab => {
+        tab.addEventListener('click', (e) => {
+          const idx = parseInt(tab.getAttribute('data-view-idx'), 10);
+          switchView(idx);
+        });
+      });
+
+      // Initialize simulated cursor position at the start tab
+      const startTab = card.querySelector('.mockup-nav-item.active');
+      if (startTab) {
+        const rect = getOffsetRect(startTab, card);
+        cursor.style.left = `${rect.left + rect.width / 2}px`;
+        cursor.style.top = `${rect.top + rect.height / 2}px`;
+      }
+
+      // Start autoplay cycle
+      cycleTimeout = setTimeout(executeAutoplayCycle, 3000);
+    });
+  </script>
 
 <script id="modal-fix-script">
   document.addEventListener('DOMContentLoaded', function() {
