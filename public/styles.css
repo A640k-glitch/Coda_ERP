@@ -2586,6 +2586,15 @@ input:checked + .slider:before {
   font-size: 16px;
   font-weight: 600;
 }
+.nav-links .nav-auth .btn-primary {
+  background-color: #ffffff !important;
+  color: #0f172a !important; /* Charcoal */
+  border-color: #ffffff !important;
+}
+.nav-links .nav-auth .btn-primary:hover {
+  background-color: var(--slate-100, #f1f5f9) !important;
+  border-color: var(--slate-100, #f1f5f9) !important;
+}
 .nav-user-profile {
   justify-content: center;
   width: 100%;
@@ -2642,6 +2651,15 @@ input:checked + .slider:before {
   }
   .nav-auth .btn {
     width: auto !important;
+  }
+  .nav-links .nav-auth .btn-primary {
+    background-color: var(--slate-900) !important;
+    color: #ffffff !important;
+    border-color: var(--slate-900) !important;
+  }
+  .nav-links .nav-auth .btn-primary:hover {
+    background-color: var(--slate-800) !important;
+    border-color: var(--slate-800) !important;
   }
   .nav-user-profile {
     margin-bottom: 0 !important;

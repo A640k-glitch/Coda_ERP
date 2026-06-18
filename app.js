@@ -24,7 +24,7 @@ app.use(helmet({
       styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
       fontSrc: ["'self'", "https://fonts.gstatic.com"],
       imgSrc: ["'self'", "data:"],
-      connectSrc: ["'self'", "https://api.coingecko.com", "https://open.er-api.com"]
+      connectSrc: ["'self'", "https://api.coingecko.com", "https://open.er-api.com", "https://cdn.jsdelivr.net"]
     }
   }
 }));
