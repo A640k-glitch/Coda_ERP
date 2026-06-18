@@ -2,7 +2,7 @@ const sharp = require('sharp');
 const fs = require('fs');
 
 async function processIcon() {
-  const inputPath = 'public/apple-touch-icon.png';
+  const inputPath = 'public/apple-touch-icon-v4.png';
   const backupPath = 'public/apple-touch-icon-original.png';
   
   // Create a 180x180 solid white background (3 channels = absolutely no alpha channel)
@@ -24,12 +24,14 @@ async function processIcon() {
     .toBuffer();
 
   // Composite the resized foreground perfectly in the center of the solid white background
+  // and force flatten the alpha channel so the resulting PNG has channels: 3 (RGB)
   await background
     .composite([{ input: foreground, gravity: 'center' }])
-    .png()
+    .flatten({ background: '#ffffff' })
+    .png({ colours: 256, effort: 10 }) // palette-based/no-alpha PNG
     .toFile(inputPath);
     
-  console.log('Successfully composited apple-touch-icon.png over a solid white square.');
+  console.log('Successfully composited apple-touch-icon-v4.png over a solid white square and flattened alpha channels.');
 }
 
 processIcon().catch(console.error);
