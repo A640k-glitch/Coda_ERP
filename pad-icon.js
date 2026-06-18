@@ -5,28 +5,31 @@ async function processIcon() {
   const inputPath = 'public/apple-touch-icon.png';
   const backupPath = 'public/apple-touch-icon-original.png';
   
-  // Load the original image
-  const image = sharp(backupPath);
-  const metadata = await image.metadata();
+  // Create a 180x180 solid white background (3 channels = absolutely no alpha channel)
+  const background = sharp({
+    create: {
+      width: 180,
+      height: 180,
+      channels: 3,
+      background: '#ffffff'
+    }
+  });
 
-  // Resize the logo to be smaller so it acts as an inner image
-  // Assuming target is 180x180, we resize inner to 120x120 and pad 30 on each side
-  await image
-    .resize(120, 120, { 
-      fit: 'contain', 
-      background: { r: 255, g: 255, b: 255, alpha: 0 } 
+  // Load the original image and resize it to fit securely within 110x110
+  // 'inside' resizes keeping aspect ratio, without adding any padding
+  const foreground = await sharp(backupPath)
+    .resize(110, 110, { 
+      fit: 'inside' 
     })
-    .extend({
-      top: 30,
-      bottom: 30,
-      left: 30,
-      right: 30,
-      background: { r: 255, g: 255, b: 255, alpha: 1 }
-    })
-    .flatten({ background: '#ffffff' })
+    .toBuffer();
+
+  // Composite the resized foreground perfectly in the center of the solid white background
+  await background
+    .composite([{ input: foreground, gravity: 'center' }])
+    .png()
     .toFile(inputPath);
     
-  console.log('Successfully padded apple-touch-icon.png with a white background and flattened.');
+  console.log('Successfully composited apple-touch-icon.png over a solid white square.');
 }
 
 processIcon().catch(console.error);
