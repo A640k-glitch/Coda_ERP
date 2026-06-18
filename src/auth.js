@@ -4,15 +4,14 @@ const { db } = require('./db');
 const { generateId, generateApiKey, asyncHandler } = require('./utils');
 const config = require('./config');
 
-const SESSION_DAYS = 14;
-const SESSION_TTL_MS = SESSION_DAYS * 24 * 60 * 60 * 1000;
+const SESSION_TTL_MS = 1 * 60 * 60 * 1000; // 1 hour
 
-function hashPassword(plain) {
-  return bcrypt.hashSync(plain, 10);
+async function hashPassword(plain) {
+  return await bcrypt.hash(plain, 12);
 }
 
-function verifyPassword(plain, hash) {
-  return bcrypt.compareSync(plain, hash);
+async function verifyPassword(plain, hash) {
+  return await bcrypt.compare(plain, hash);
 }
 
 function createSession(userId) {
@@ -52,14 +51,16 @@ function userFromApiKey(key) {
 
 function setSessionCookie(res, id, expiresIso) {
   const maxAge = Math.max(0, Math.floor((new Date(expiresIso) - Date.now()) / 1000));
+  const secure = process.env.NODE_ENV === 'production' ? '; Secure' : '';
   res.setHeader(
     'Set-Cookie',
-    `coda_sid=${id}; HttpOnly; Path=/; SameSite=Lax; Max-Age=${maxAge}`
+    `coda_sid=${id}; HttpOnly; Path=/; SameSite=Lax; Max-Age=${maxAge}${secure}`
   );
 }
 
 function clearSessionCookie(res) {
-  res.setHeader('Set-Cookie', 'coda_sid=; HttpOnly; Path=/; SameSite=Lax; Max-Age=0');
+  const secure = process.env.NODE_ENV === 'production' ? '; Secure' : '';
+  res.setHeader('Set-Cookie', `coda_sid=; HttpOnly; Path=/; SameSite=Lax; Max-Age=0${secure}`);
 }
 
 function readSessionCookie(req) {

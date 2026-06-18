@@ -2,7 +2,6 @@
 const { db } = require('../db');
 const accounting = require('./accounting');
 const inventory = require('./inventory');
-const crm = require('./crm');
 const hr = require('./hr');
 const { toCSV } = require('../utils');
 

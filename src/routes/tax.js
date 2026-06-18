@@ -2,7 +2,10 @@
 const express = require('express');
 const router = express.Router();
 const tax = require('../modules/tax');
-const { requireAuth } = require('../auth');
+const { requireAuth, requireBusiness } = require('../auth');
+const config = require('../config');
+
+router.use(requireAuth, requireBusiness);
 
 router.post('/calculate', (req, res) => {
   const { amount, taxType, payerType, annual } = req.body || {};
@@ -24,13 +27,12 @@ router.post('/calculate', (req, res) => {
   });
 });
 
-router.get('/report', requireAuth, (req, res) => {
-  const report = tax.generateTaxReport(req.user.business_id, { from: req.query.from, to: req.query.to });
+router.get('/report', (req, res) => {
+  const report = tax.generateTaxReport(req.businessId, { from: req.query.from, to: req.query.to });
   res.json({ report });
 });
 
 router.get('/brackets', (req, res) => {
-  const config = require('../config');
   res.json({ brackets: config.taxRates.payeBrackets, vat: config.taxRates.vat, wht: config.taxRates.wht, cit: config.taxRates.cit });
 });
 

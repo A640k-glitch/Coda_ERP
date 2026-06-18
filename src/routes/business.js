@@ -10,7 +10,7 @@ router.get('/me', requireAuth, requireBusiness, (req, res) => {
 });
 
 router.patch('/me', requireAuth, requireBusiness, (req, res) => {
-  const allowed = ['name', 'address', 'phone', 'email', 'cac_number', 'tin', 'business_type'];
+  const allowed = ['name', 'address', 'phone', 'email', 'cac_number', 'business_type'];
   const updates = {};
   for (const k of allowed) if (k in req.body) updates[k] = req.body[k];
   if (!Object.keys(updates).length) return res.json({ ok: true });

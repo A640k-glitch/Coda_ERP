@@ -45,7 +45,7 @@ function csvEscape(val) {
 }
 
 function toCSV(rows, columns) {
-  if (!rows.length) return columns.map(c => c.label).join(',') + '\n';
+  if (!rows || !rows.length) return columns.map(c => c.label).join(',') + '\n';
   const header = columns.map(c => `"${c.label}"`).join(',');
   const body = rows
     .map(r => columns.map(c => csvEscape(c.value(r))).join(','))

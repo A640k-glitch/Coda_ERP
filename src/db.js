@@ -36,6 +36,10 @@ function migrate() {
       business_id TEXT NOT NULL,
       role TEXT NOT NULL DEFAULT 'owner',
       api_key TEXT UNIQUE,
+      failed_login_attempts INTEGER DEFAULT 0,
+      locked_until TEXT DEFAULT NULL,
+      password_reset_token TEXT DEFAULT NULL,
+      password_reset_expires TEXT DEFAULT NULL,
       created_at TEXT NOT NULL DEFAULT (datetime('now')),
       FOREIGN KEY (business_id) REFERENCES businesses(id) ON DELETE CASCADE
     );
@@ -205,7 +209,29 @@ function migrate() {
       created_at TEXT NOT NULL DEFAULT (datetime('now'))
     );
     CREATE INDEX IF NOT EXISTS idx_audit_business ON audit_log(business_id, created_at);
+
+    CREATE TABLE IF NOT EXISTS bank_transactions (
+      id TEXT PRIMARY KEY,
+      business_id TEXT NOT NULL,
+      date TEXT NOT NULL,
+      amount REAL NOT NULL,
+      description TEXT,
+      reference TEXT,
+      status TEXT NOT NULL DEFAULT 'unreconciled',
+      matched_journal_id TEXT,
+      created_at TEXT NOT NULL DEFAULT (datetime('now')),
+      FOREIGN KEY (business_id) REFERENCES businesses(id) ON DELETE CASCADE,
+      FOREIGN KEY (matched_journal_id) REFERENCES journal_entries(id) ON DELETE SET NULL
+    );
+    CREATE INDEX IF NOT EXISTS idx_bank_tx_business ON bank_transactions(business_id, status);
   `);
+
+  // Run ALTER TABLE statements for existing databases to ensure columns exist
+  try { db.exec("ALTER TABLE users ADD COLUMN failed_login_attempts INTEGER DEFAULT 0;"); } catch(e) {}
+  try { db.exec("ALTER TABLE users ADD COLUMN locked_until TEXT DEFAULT NULL;"); } catch(e) {}
+  try { db.exec("ALTER TABLE users ADD COLUMN password_reset_token TEXT DEFAULT NULL;"); } catch(e) {}
+  try { db.exec("ALTER TABLE users ADD COLUMN password_reset_expires TEXT DEFAULT NULL;"); } catch(e) {}
+  try { db.exec("ALTER TABLE users ADD COLUMN status TEXT NOT NULL DEFAULT 'active';"); } catch(e) {}
 }
 
 migrate();

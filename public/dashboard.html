@@ -16,13 +16,7 @@
       position: relative;
       overflow-x: hidden;
     }
-    .panel-right {
-      transform: translateX(100%);
-      transition: transform var(--transition);
-    }
-    .panel-right.open {
-      transform: translateX(0);
-    }
+
     .settings-tab {
       padding: 6px 12px;
       font-size: 12px;
@@ -82,16 +76,85 @@
       letter-spacing: -0.01em;
       margin-bottom: 4px;
     }
+    
+    /* Loader & Fade-in styles */
+    .page-loader {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: var(--bg-app, #f8fafc);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 999999;
+      opacity: 1;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+    }
+    .page-loader.fade-out {
+      opacity: 0;
+      visibility: hidden;
+    }
+    .loader-spinner {
+      width: 48px;
+      height: 48px;
+      border: 4px solid rgba(0,0,0,0.1);
+      border-top-color: #14b8a6; /* Teal 500 */
+      border-radius: 50%;
+      animation: loader-spin 0.8s linear infinite;
+    }
+    @keyframes loader-spin {
+      to { transform: rotate(360deg); }
+    }
+    
+    /* App shell fade-in animation */
+    .app-shell {
+      opacity: 0;
+      transition: opacity 0.35s ease;
+    }
+    .app-shell.loaded {
+      opacity: 1;
+    }
   </style>
+  <script>
+    if (localStorage.getItem('coda_sidebar_collapsed') === 'true' && window.innerWidth > 1024) {
+      document.documentElement.classList.add('sidebar-collapsed-pref');
+    }
+    // Prevent view layout flickering on reload
+    (function() {
+      const activeView = localStorage.getItem('coda_active_view') || 'overview';
+      const style = document.createElement('style');
+      style.id = 'early-view-override';
+      style.textContent = `
+        .module-view { display: none !important; } 
+        #view-${activeView} { display: block !important; }
+        .nav-item[data-view="${activeView}"] { background: var(--teal-50) !important; color: var(--teal-700) !important; font-weight: 600 !important; }
+        .nav-item[data-view="${activeView}"] .material-symbols-outlined { color: var(--teal-600) !important; }
+      `;
+      document.head.appendChild(style);
+      document.addEventListener('DOMContentLoaded', () => {
+        const titleEl = document.getElementById('pageTitle');
+        if (titleEl) {
+          const labels = { overview: 'Dashboard', accounting: 'Accounting', reconciliation: 'Bank Reconciliation', inventory: 'Inventory', crm: 'CRM & Customers', hr: 'HR & Payroll', tax: 'Tax Center', reports: 'Reports' };
+          titleEl.textContent = labels[activeView] || 'Dashboard';
+        }
+      });
+    })();
+  </script>
+  <script src="currency.js"></script>
 </head>
 <body>
+  <div id="pageLoader" class="page-loader">
+    <div class="loader-spinner"></div>
+  </div>
   <div class="app-shell">
     <!-- Sidebar Wrapper -->
     <div class="sidebar-wrapper" id="sidebar">
       <aside class="app-sidebar">
         <div class="sidebar-header">
           <a href="/" class="sidebar-brand">
-            <span class="brand-icon-box"><span class="material-symbols-outlined">finance</span></span>
+            <span class="brand-icon-box"><svg viewBox="20 20 54 58" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="38" y="22" width="34" height="14" rx="3" fill="#0d9488"/><rect x="22" y="32" width="18" height="38" rx="3.5" fill="currentColor"/><rect x="34" y="62" width="38" height="14" rx="3" fill="currentColor"/></svg></span>
             <span>Coda ERP</span>
             <span class="badge-subscription">Pro</span>
           </a>
@@ -103,7 +166,7 @@
         <nav class="sidebar-nav" id="sidebarNav">
           <div class="nav-section">
             <div class="nav-section-title">Overview</div>
-            <button class="nav-item active" data-view="overview" data-label="Dashboard">
+            <button class="nav-item" data-view="overview" data-label="Dashboard">
               <span class="material-symbols-outlined">dashboard</span>
               <span>Dashboard</span>
             </button>
@@ -114,6 +177,10 @@
             <button class="nav-item" data-view="accounting" data-label="Accounting">
               <span class="material-symbols-outlined">account_balance</span>
               <span>Accounting</span>
+            </button>
+            <button class="nav-item" data-view="reconciliation" data-label="Bank Reconciliation">
+              <span class="material-symbols-outlined">sync_alt</span>
+              <span>Bank Reconciliation</span>
             </button>
             <button class="nav-item" data-view="inventory" data-label="Inventory">
               <span class="material-symbols-outlined">inventory_2</span>
@@ -144,7 +211,7 @@
           <div class="nav-section" id="adminNavSection" style="display:none">
             <div class="nav-section-title">Admin</div>
             <a href="/admin" class="nav-item nav-link-admin" data-label="Admin Panel">
-              <span class="material-symbols-outlined">admin_panel_settings</span>
+              <span class="material-symbols-outlined" style="color: var(--success, #10b981);">account_circle</span>
               <span>Admin Panel</span>
             </a>
           </div>
@@ -165,9 +232,15 @@
       </aside>
     </div>
 
-    <!-- Top Bar -->
     <header class="app-topbar" id="topbar">
       <div class="topbar-left">
+        <a href="/" class="brand-icon-box topbar-logo-icon" style="text-decoration:none;" aria-label="Go to Homepage">
+          <svg viewBox="20 20 54 58" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="38" y="22" width="34" height="14" rx="3" fill="#0d9488"/>
+            <rect x="22" y="32" width="18" height="38" rx="3.5" fill="currentColor"/>
+            <rect x="34" y="62" width="38" height="14" rx="3" fill="currentColor"/>
+          </svg>
+        </a>
         <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle navigation">
           <span class="material-symbols-outlined">menu</span>
         </button>
@@ -196,7 +269,7 @@
     <aside class="panel panel-right" id="panelNotifications" aria-label="Notifications">
       <div class="panel-header" style="padding: 16px 24px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
         <h3 style="font-size: 16px;">Notifications</h3>
-        <button id="closeNotifications" style="background: none; border: none; cursor: pointer;"><span class="material-symbols-outlined">close</span></button>
+        <button id="closeNotifications"><span class="material-symbols-outlined">close</span></button>
       </div>
       <div class="panel-body" id="notificationsList" style="padding: 24px; overflow-y: auto;">
         <!-- Filled dynamically -->
@@ -207,7 +280,7 @@
     <aside class="panel panel-right" id="panelSettings" aria-label="Settings">
       <div class="panel-header" style="padding: 16px 24px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
         <h3 style="font-size: 16px;">Settings</h3>
-        <button id="closeSettings" style="background: none; border: none; cursor: pointer;"><span class="material-symbols-outlined">close</span></button>
+        <button id="closeSettings"><span class="material-symbols-outlined">close</span></button>
       </div>
       <div class="panel-body" style="padding: 24px; overflow-y: auto;">
         <nav class="settings-nav" id="settingsNav" style="display: flex; gap: 8px; margin-bottom: 20px;">
@@ -244,6 +317,21 @@
               <input type="email" class="form-control" id="optEmail">
             </div>
             <button type="button" class="btn btn-primary btn-sm" id="btnUpdateProfile" style="width: 100%;">Update Profile</button>
+
+            <!-- Danger Zone -->
+            <div style="margin-top: 32px; border-top: 1px solid var(--border-color); padding-top: 20px;">
+              <button class="btn btn-outline" id="btnShowDangerZone" style="width: 100%; justify-content: center; color: var(--error); border-color: var(--error);">
+                <span class="material-symbols-outlined" style="font-size: 16px;">warning</span>
+                Delete Account Options
+              </button>
+              <div id="dangerZoneReveal" style="display: none; margin-top: 16px;">
+                <div class="settings-danger-zone">
+                  <h4><span class="material-symbols-outlined" style="font-size: 18px;">warning</span> Danger Zone</h4>
+                  <p>Permanently delete your account and all associated data. This cannot be undone.</p>
+                  <button class="btn btn-danger" id="btnDeleteAccount">Delete My Account Permanently</button>
+                </div>
+              </div>
+            </div>
           </div>
           
           <div class="settings-panel" id="tab-billing">
@@ -260,61 +348,94 @@
     <!-- Main Content Panel -->
     <main class="app-main" id="mainContent">
       <!-- 1. Overview Screen -->
-      <section class="module-view active" id="view-overview">
+      <section class="module-view" id="view-overview">
         <div class="page-header">
           <h1>Dashboard Overview</h1>
           <p>Real-time corporate position and performance statement.</p>
         </div>
 
-        <div class="kpi-grid">
-          <div class="kpi-card green">
-            <div class="kpi-card-header">
-              <span class="kpi-icon"><span class="material-symbols-outlined">trending_up</span></span>
-              <span class="kpi-trend up" id="kpiRevenueTrend">+12.5%</span>
+        <div class="stats-strip">
+          <div class="stat-item">
+            <div class="stat-header">
+              <span class="stat-icon green"><span class="material-symbols-outlined">trending_up</span></span>
+              <span class="stat-trend up" id="kpiRevenueTrend">+12.5%</span>
             </div>
-            <div class="kpi-label">Revenue MTD</div>
-            <div class="kpi-value" id="kpiRevenue">₦0</div>
-            <div class="kpi-sub">vs last month</div>
+            <div class="stat-label">Revenue MTD</div>
+            <div class="stat-value" id="kpiRevenue">₦ 0</div>
+            <div class="stat-sub">vs last month</div>
           </div>
+          <div class="stat-item divider"></div>
 
-          <div class="kpi-card copper">
-            <div class="kpi-card-header">
-              <span class="kpi-icon"><span class="material-symbols-outlined">payments</span></span>
-              <span class="kpi-trend down" id="kpiExpenseTrend">+3.2%</span>
+          <div class="stat-item">
+            <div class="stat-header">
+              <span class="stat-icon copper"><span class="material-symbols-outlined">payments</span></span>
+              <span class="stat-trend down" id="kpiExpenseTrend">+3.2%</span>
             </div>
-            <div class="kpi-label">Expenses MTD</div>
-            <div class="kpi-value" id="kpiExpense">₦0</div>
-            <div class="kpi-sub">vs last month</div>
+            <div class="stat-label">Expenses MTD</div>
+            <div class="stat-value" id="kpiExpense">₦ 0</div>
+            <div class="stat-sub">vs last month</div>
           </div>
+          <div class="stat-item divider"></div>
 
-          <div class="kpi-card teal">
-            <div class="kpi-card-header">
-              <span class="kpi-icon"><span class="material-symbols-outlined">savings</span></span>
-              <span class="kpi-trend up" id="kpiProfitTrend">+8.7%</span>
+          <div class="stat-item">
+            <div class="stat-header">
+              <span class="stat-icon teal"><span class="material-symbols-outlined">savings</span></span>
+              <span class="stat-trend up" id="kpiProfitTrend">+8.7%</span>
             </div>
-            <div class="kpi-label">Net Income</div>
-            <div class="kpi-value" id="kpiProfit">₦0</div>
-            <div class="kpi-sub">Calculated Profit</div>
+            <div class="stat-label">Net Income</div>
+            <div class="stat-value" id="kpiProfit">₦ 0</div>
+            <div class="stat-sub">Calculated Profit</div>
           </div>
+          <div class="stat-item divider"></div>
 
-          <div class="kpi-card dark">
-            <div class="kpi-card-header">
-              <span class="kpi-icon"><span class="material-symbols-outlined">receipt_long</span></span>
-              <span class="kpi-trend neutral" id="kpiTaxTrend">₦0</span>
+          <div class="stat-item">
+            <div class="stat-header">
+              <span class="stat-icon dark"><span class="material-symbols-outlined">receipt_long</span></span>
+              <span class="stat-trend neutral" id="kpiTaxTrend">₦ 0</span>
             </div>
-            <div class="kpi-label">Tax Reserve</div>
-            <div class="kpi-value" id="kpiTax">VAT + WHT + PAYE</div>
-            <div class="kpi-sub">computed reserves</div>
+            <div class="stat-label">Tax Reserve</div>
+            <div class="stat-value" id="kpiTax">VAT + WHT + PAYE</div>
+            <div class="stat-sub">computed reserves</div>
+          </div>
+        </div>
+
+        <!-- Operations Summary Row -->
+        <div class="stats-strip" style="margin-top: 24px; margin-bottom: 24px; background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 16px 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; box-shadow: var(--shadow-sm);">
+          <div style="cursor:pointer;" onclick="document.querySelector('[data-view=inventory]').click()">
+            <div style="font-size: 11px; color: var(--text-muted); font-weight:700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">Inventory Stock</div>
+            <div id="summaryProductCount" style="font-size: 20px; font-weight:800; color: var(--slate-900); margin-bottom: 2px;">0 Products</div>
+            <div id="summaryLowStockCount" style="font-size: 11px; color: var(--error); font-weight: 500;">0 Low stock items</div>
+          </div>
+          <div style="cursor:pointer; border-left: 1px solid var(--border-color); padding-left: 20px;" onclick="document.querySelector('[data-view=crm]').click()">
+            <div style="font-size: 11px; color: var(--text-muted); font-weight:700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">CRM &amp; Customers</div>
+            <div id="summaryCustomerCount" style="font-size: 20px; font-weight:800; color: var(--slate-900); margin-bottom: 2px;">0 Customers</div>
+            <div id="summaryLeadCount" style="font-size: 11px; color: var(--teal-600); font-weight: 500;">0 Open sales leads</div>
+          </div>
+          <div style="cursor:pointer; border-left: 1px solid var(--border-color); padding-left: 20px;" onclick="document.querySelector('[data-view=hr]').click()">
+            <div style="font-size: 11px; color: var(--text-muted); font-weight:700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">Workforce (HR)</div>
+            <div id="summaryEmployeeCount" style="font-size: 20px; font-weight:800; color: var(--slate-900); margin-bottom: 2px;">0 Employees</div>
+            <div style="font-size: 11px; color: var(--text-muted); font-weight: 500;">Active payroll roster</div>
+          </div>
+          <div style="cursor:pointer; border-left: 1px solid var(--border-color); padding-left: 20px;" onclick="document.querySelector('[data-view=tax]').click()">
+            <div style="font-size: 11px; color: var(--text-muted); font-weight:700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">Taxes Reserve</div>
+            <div id="summaryTaxStatus" style="font-size: 20px; font-weight:800; color: var(--copper-600); margin-bottom: 2px;">Calculated</div>
+            <div style="font-size: 11px; color: var(--text-muted); font-weight: 500;">Nigerian FIRS compliant</div>
           </div>
         </div>
 
         <div class="dashboard-grid">
           <div class="chart-card">
-            <div class="table-card-header">
-              <h3>Monthly Cash Flow</h3>
-              <span style="font-size: 11px; color: var(--text-muted);">6 month trend</span>
+            <div class="table-card-header" style="justify-content: space-between;">
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <h3>Monthly Cash Flow</h3>
+                <span style="font-size: 11px; color: var(--text-muted);">6 month trend</span>
+              </div>
+              <div class="chart-type-toggle">
+                <button class="active" id="btnChartLine" aria-label="Line Chart"><span class="material-symbols-outlined">show_chart</span></button>
+                <button id="btnChartBar" aria-label="Bar Chart"><span class="material-symbols-outlined">bar_chart</span></button>
+              </div>
             </div>
-            <div style="padding: 16px; height: 260px;">
+            <div class="chart-canvas-wrap" style="padding: 16px;">
               <canvas id="revenueChart"></canvas>
             </div>
           </div>
@@ -323,7 +444,7 @@
               <h3>Expense Categories</h3>
               <span style="font-size: 11px; color: var(--text-muted);">Current month</span>
             </div>
-            <div style="padding: 16px; height: 260px;">
+            <div class="chart-canvas-wrap" style="padding: 16px;">
               <canvas id="expenseChart"></canvas>
             </div>
           </div>
@@ -338,12 +459,14 @@
             <table class="transactions-table">
               <thead>
                 <tr>
+                  <th style="width: 36px;"><input type="checkbox" class="select-all" onclick="toggleSelectAll(this)"></th>
                   <th>Date</th>
                   <th>Journal description</th>
                   <th>Category</th>
                   <th style="text-align: right;">Debit / Credit</th>
                   <th>Type</th>
                   <th>Status</th>
+                  <th style="width: 80px;">Actions</th>
                 </tr>
               </thead>
               <tbody id="transactionsBody"></tbody>
@@ -374,7 +497,7 @@
               <span>Naira Current Account</span>
               <span class="badge badge-success">Active</span>
             </h4>
-            <div class="ledger-metric">₦14,850,200</div>
+            <div class="ledger-metric cur-amount" data-value="14850200">₦14,850,200</div>
             <div class="text-muted" style="font-size: 11px;">Union Bank · 1024***89</div>
           </div>
           <div class="ledger-card">
@@ -390,7 +513,7 @@
               <span>Trade Receivables</span>
               <span class="badge badge-warning">Review</span>
             </h4>
-            <div class="ledger-metric">₦3,120,400</div>
+            <div class="ledger-metric cur-amount" data-value="3120400">₦3,120,400</div>
             <div class="text-muted" style="font-size: 11px;">Unpaid invoices total</div>
           </div>
         </div>
@@ -404,44 +527,75 @@
             <table class="transactions-table">
               <thead>
                 <tr>
+                  <th style="width: 36px;"><input type="checkbox" class="select-all" onclick="toggleSelectAll(this)"></th>
                   <th>Code</th>
                   <th>Account Name</th>
                   <th>Classification</th>
                   <th style="text-align: right;">Balance</th>
                   <th>Status</th>
+                  <th style="width: 80px;">Actions</th>
                 </tr>
               </thead>
-              <tbody>
-                <tr>
-                  <td><code>1010</code></td>
-                  <td>Cash &amp; Cash Equivalents</td>
-                  <td>Asset (Current)</td>
-                  <td style="text-align: right; font-weight: 700;">₦14,850,200</td>
-                  <td><span class="badge badge-success">Reconciled</span></td>
-                </tr>
-                <tr>
-                  <td><code>1200</code></td>
-                  <td>Trade Receivables</td>
-                  <td>Asset (Current)</td>
-                  <td style="text-align: right; font-weight: 700;">₦3,120,400</td>
-                  <td><span class="badge badge-warning">Unreconciled</span></td>
-                </tr>
-                <tr>
-                  <td><code>2010</code></td>
-                  <td>Trade Payables</td>
-                  <td>Liability (Current)</td>
-                  <td style="text-align: right; font-weight: 700;">₦1,450,000</td>
-                  <td><span class="badge badge-success">Reconciled</span></td>
-                </tr>
-                <tr>
-                  <td><code>3010</code></td>
-                  <td>Retained Earnings</td>
-                  <td>Equity</td>
-                  <td style="text-align: right; font-weight: 700;">₦16,520,600</td>
-                  <td><span class="badge badge-success">Audited</span></td>
-                </tr>
+              <tbody id="coaTableBody">
+                <tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 24px;">Loading accounts...</td></tr>
               </tbody>
             </table>
+          </div>
+        </div>
+
+        <div class="table-card" style="margin-top: 24px;">
+          <div class="table-card-header">
+            <h3>Recent Journal Entries &amp; Ledger Activity</h3>
+          </div>
+          <div class="table-wrap">
+            <table class="transactions-table">
+              <thead>
+                <tr>
+                  <th style="width: 36px;"><input type="checkbox" class="select-all" onclick="toggleSelectAll(this)"></th>
+                  <th>Date</th>
+                  <th>Journal description</th>
+                  <th>Reference</th>
+                  <th style="text-align: right;">Amount</th>
+                  <th>Classification</th>
+                  <th>Status</th>
+                  <th style="width: 80px;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="accountingTransactionsBody">
+                <tr><td colspan="8" style="text-align: center; color: var(--text-muted); padding: 24px;">Loading ledger activity...</td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <!-- 2.5 Bank Reconciliation Screen -->
+      <section class="module-view" id="view-reconciliation">
+        <div class="module-header">
+          <h2>Bank Reconciliation</h2>
+          <div class="module-actions">
+            <button class="btn btn-secondary" id="btnSimulateBankSync">Simulate Bank Sync</button>
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 24px; margin-top: 24px;">
+          <!-- Left: Bank Statement -->
+          <div style="flex: 1; display: flex; flex-direction: column; gap: 16px;">
+            <h3 style="font-size: 16px; color: var(--slate-800);">Bank Statement (Unreconciled)</h3>
+            <div id="reconBankFeedList" style="display: flex; flex-direction: column; gap: 12px;">
+              <!-- Populated via JS -->
+              <div style="padding: 24px; text-align: center; color: var(--text-muted); background: white; border: 1px dashed var(--border-color); border-radius: var(--radius-md);">
+                No pending bank transactions. Click "Simulate Bank Sync" to fetch new data.
+              </div>
+            </div>
+          </div>
+
+          <!-- Right: Suggested Coda Ledger Matches -->
+          <div style="flex: 1; display: flex; flex-direction: column; gap: 16px;">
+            <h3 style="font-size: 16px; color: var(--slate-800);">Coda Ledger Matches</h3>
+            <div id="reconLedgerMatchList" style="display: flex; flex-direction: column; gap: 12px;">
+              <!-- Populated via JS -->
+            </div>
           </div>
         </div>
       </section>
@@ -462,48 +616,24 @@
             <button class="btn btn-secondary btn-sm" id="btnAddFirstProduct">Add item</button>
           </div>
           <div class="table-wrap">
-            <table class="transactions-table">
-              <thead>
-                <tr>
-                  <th>SKU Code</th>
-                  <th>Item Description</th>
-                  <th>Cost Price</th>
-                  <th>Selling Price</th>
-                  <th>On Hand</th>
-                  <th>Reorder limit</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><code>PRD-NGL-01</code></td>
-                  <td>Premium Groundnut Oil (5L)</td>
-                  <td>₦8,500</td>
-                  <td>₦12,000</td>
-                  <td>250 units</td>
-                  <td>50 units</td>
-                  <td><span class="badge badge-success">Healthy</span></td>
-                </tr>
-                <tr>
-                  <td><code>PRD-NGL-02</code></td>
-                  <td>Refined Sugar (50kg)</td>
-                  <td>₦42,000</td>
-                  <td>₦55,000</td>
-                  <td>12 units</td>
-                  <td>20 units</td>
-                  <td><span class="badge badge-warning">Low Stock</span></td>
-                </tr>
-                <tr>
-                  <td><code>PRD-NGL-03</code></td>
-                  <td>Wheat Flour Bag (25kg)</td>
-                  <td>₦18,000</td>
-                  <td>₦24,000</td>
-                  <td>0 units</td>
-                  <td>15 units</td>
-                  <td><span class="badge badge-expense">Out of Stock</span></td>
-                </tr>
-              </tbody>
-            </table>
+            <table class="data-table">
+                <thead>
+                  <tr>
+                    <th style="width: 36px;"><input type="checkbox" class="select-all" onclick="toggleSelectAll(this)"></th>
+                    <th>Item ID</th>
+                    <th>SKU Code</th>
+                    <th>Product Description</th>
+                    <th>Unit Cost</th>
+                    <th>Selling Price</th>
+                    <th>Units in Stock</th>
+                    <th>Reorder Point</th>
+                    <th style="width: 80px;">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="inventoryTableBody">
+                  <tr><td colspan="9" style="text-align: center; color: var(--text-muted); padding: 24px;">Loading inventory...</td></tr>
+                </tbody>
+              </table>
           </div>
         </div>
       </section>
@@ -524,36 +654,23 @@
             <button class="btn btn-secondary btn-sm" id="btnAddFirstCustomer">Manage Group</button>
           </div>
           <div class="table-wrap">
-            <table class="transactions-table">
-              <thead>
-                <tr>
-                  <th>Client Name</th>
-                  <th>Corporate Email</th>
-                  <th>Phone Line</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td>Adebayo Ogunlesi Ltd</td>
-                  <td>ogundele@reni.com.ng</td>
-                  <td>+234 803 111 2233</td>
-                  <td><span class="badge badge-success">Active</span></td>
-                </tr>
-                <tr>
-                  <td>Trestle Group Logistics</td>
-                  <td>finance@trestlegroup.ng</td>
-                  <td>+234 812 444 5555</td>
-                  <td><span class="badge badge-success">Active</span></td>
-                </tr>
-                <tr>
-                  <td>Bridgeway Freight Inc.</td>
-                  <td>operations@bridgeway.ng</td>
-                  <td>+234 905 777 8888</td>
-                  <td><span class="badge badge-revenue">Prospect</span></td>
-                </tr>
-              </tbody>
-            </table>
+            <table class="data-table">
+                <thead>
+                  <tr>
+                    <th style="width: 36px;"><input type="checkbox" class="select-all" onclick="toggleSelectAll(this)"></th>
+                    <th>Client ID</th>
+                    <th>Company / Name</th>
+                    <th>Contact Email</th>
+                    <th>Phone Number</th>
+                    <th>TIN</th>
+                    <th>Added Date</th>
+                    <th style="width: 80px;">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="crmTableBody">
+                  <tr><td colspan="8" style="text-align: center; color: var(--text-muted); padding: 24px;">Loading customers...</td></tr>
+                </tbody>
+              </table>
           </div>
         </div>
       </section>
@@ -574,48 +691,23 @@
             <button class="btn btn-secondary btn-sm" id="btnAddFirstEmployee">View Employee Details</button>
           </div>
           <div class="table-wrap">
-            <table class="transactions-table">
-              <thead>
-                <tr>
-                  <th>Staff ID</th>
-                  <th>Employee Name</th>
-                  <th>Gross Monthly</th>
-                  <th>PAYE Tax</th>
-                  <th>Pension (8%)</th>
-                  <th>NHF Contribution</th>
-                  <th>Net Disbursed</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr>
-                  <td><code>EMP-001</code></td>
-                  <td>Oluwaseun Ajayi</td>
-                  <td class="amount">₦450,000</td>
-                  <td class="amount negative">₦48,500</td>
-                  <td class="amount negative">₦36,000</td>
-                  <td class="amount negative">₦11,250</td>
-                  <td class="amount positive" style="font-weight:700">₦354,250</td>
-                </tr>
-                <tr>
-                  <td><code>EMP-002</code></td>
-                  <td>Chioma Nwachukwu</td>
-                  <td class="amount">₦320,000</td>
-                  <td class="amount negative">₦28,400</td>
-                  <td class="amount negative">₦25,600</td>
-                  <td class="amount negative">₦8,000</td>
-                  <td class="amount positive" style="font-weight:700">₦258,000</td>
-                </tr>
-                <tr>
-                  <td><code>EMP-003</code></td>
-                  <td>Babatunde Bello</td>
-                  <td class="amount">₦600,000</td>
-                  <td class="amount negative">₦78,200</td>
-                  <td class="amount negative">₦48,000</td>
-                  <td class="amount negative">₦15,000</td>
-                  <td class="amount positive" style="font-weight:700">₦458,800</td>
-                </tr>
-              </tbody>
-            </table>
+            <table class="data-table">
+                <thead>
+                  <tr>
+                    <th style="width: 36px;"><input type="checkbox" class="select-all" onclick="toggleSelectAll(this)"></th>
+                    <th>Emp ID</th>
+                    <th>Employee Name</th>
+                    <th>Role / Department</th>
+                    <th>Email</th>
+                    <th>Base Salary</th>
+                    <th>Status</th>
+                    <th style="width: 80px;">Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="hrTableBody">
+                  <tr><td colspan="8" style="text-align: center; color: var(--text-muted); padding: 24px;">Loading employees...</td></tr>
+                </tbody>
+              </table>
           </div>
         </div>
       </section>
@@ -646,7 +738,7 @@
                   <th>Remittance Status</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody id="taxTableBody">
                 <tr>
                   <td>June 2026</td>
                   <td>Value Added Tax (VAT 7.5%)</td>
@@ -699,7 +791,7 @@
                   <th>Format Action</th>
                 </tr>
               </thead>
-              <tbody>
+              <tbody id="reportsTableBody">
                 <tr>
                   <td>Profit &amp; Loss Statement (P&amp;L)</td>
                   <td>IFRS / GAAP Compliant</td>
@@ -724,13 +816,24 @@
         </div>
       </section>
 
+      <!-- Batch Action Bar -->
+      <div class="batch-action-bar" id="batchActionBar" style="display:none;">
+        <span class="batch-count" id="batchCount">0 selected</span>
+        <div class="batch-actions">
+          <button class="btn btn-sm btn-outline" id="batchClearBtn">Clear</button>
+          <button class="btn btn-sm btn-danger" id="batchDeleteBtn">Delete Selected</button>
+          <button class="btn btn-sm btn-outline" id="batchStatusActive" style="display:none;">Mark Active</button>
+          <button class="btn btn-sm btn-outline" id="batchStatusInactive" style="display:none;">Mark Inactive</button>
+        </div>
+      </div>
+
       <!-- Dashboard Footer -->
       <footer class="dashboard-footer">
         <p>&copy; 2026 Coda Technologies Ltd. All rights reserved.</p>
         <div class="dashboard-footer-links">
-          <a href="#">Privacy</a>
-          <a href="#">Terms</a>
-          <a href="#">Support Hub</a>
+          <a href="#!" class="legal-trigger-privacy">Privacy</a>
+          <a href="#!" class="legal-trigger-terms">Terms</a>
+          <a href="#!" class="support-trigger">Support Hub</a>
         </div>
       </footer>
     </main>
@@ -755,10 +858,235 @@
     </div>
   </div>
 
+  <!-- Global Form Modal -->
+  <div class="modal-overlay" id="actionModal" style="display: none; align-items: center; justify-content: center;">
+    <div class="modal" style="width: 400px; max-width: 90%; max-height: 90vh; overflow-y: auto;">
+      <button type="button" id="closeActionModal" style="position:absolute; top:12px; right:12px; background:none; border:none; color:var(--text-muted); cursor:pointer;">
+        <span class="material-symbols-outlined">close</span>
+      </button>
+      <h2 id="actionModalTitle" style="font-size: 18px; margin-bottom: 20px;">Action</h2>
+      <form id="actionModalForm">
+        <div id="actionModalFields"></div>
+        <button type="submit" class="btn btn-primary" id="actionModalSubmit" style="width: 100%; margin-top: 12px;">Save</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Delete Confirmation Modal -->
+  <div class="modal-overlay" id="confirmDeleteModal" style="display: none; align-items: center; justify-content: center;">
+    <div class="modal" style="width: 400px; max-width: 90%;">
+      <h2 style="font-size: 18px; margin-bottom: 8px; color: var(--error);">Confirm Delete</h2>
+      <p id="confirmDeleteMessage" style="color: var(--text-secondary); margin-bottom: 20px;"></p>
+      <div style="display: flex; gap: 8px; justify-content: flex-end;">
+        <button class="btn btn-sm btn-secondary" id="confirmDeleteCancel">Cancel</button>
+        <button class="btn btn-sm btn-danger" id="confirmDeleteOk">Delete</button>
+      </div>
+    </div>
+  </div>
+
   <!-- Toast Alerts Container -->
   <div class="toast-container" id="toastContainer"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
-  <script src="dashboard.js"></script>
+  <script src="dashboard.v3.js"></script>
+
+<script id="modal-fix-script">
+  document.addEventListener('DOMContentLoaded', function() {
+    function openModal(id) {
+      var m = document.getElementById(id);
+      if (m) {
+        document.body.classList.add('no-scroll');
+        var dm = document.querySelector('.dashboard-main'); if(dm) dm.style.overflow = 'hidden';
+        var am = document.querySelector('.admin-main'); if(am) am.style.overflow = 'hidden';
+        m.style.setProperty('display', 'flex', 'important');
+        m.classList.add('active');
+        m.style.zIndex = '999999';
+        m.style.opacity = '1';
+        m.style.visibility = 'visible';
+      }
+    }
+    function closeModal(id) {
+      var m = document.getElementById(id);
+      if (m) {
+        document.body.classList.remove('no-scroll');
+        var dm = document.querySelector('.dashboard-main'); if(dm) dm.style.overflow = '';
+        var am = document.querySelector('.admin-main'); if(am) am.style.overflow = '';
+        m.style.setProperty('display', 'none', 'important');
+        m.classList.remove('active');
+      }
+    }
+    
+    document.querySelectorAll('.legal-trigger-privacy').forEach(function(el) {
+      el.addEventListener('click', function(e) {
+        e.preventDefault();
+        openModal('privacyModal');
+      });
+    });
+    
+    document.querySelectorAll('.legal-trigger-terms').forEach(function(el) {
+      el.addEventListener('click', function(e) {
+        e.preventDefault();
+        openModal('termsModal');
+      });
+
+    document.querySelectorAll('.support-trigger').forEach(function(el) {
+      el.addEventListener('click', function(e) {
+        e.preventDefault();
+        openModal('supportModal');
+      });
+    });
+  
+    });
+
+    // Close buttons
+    ['privacyModal', 'termsModal', 'supportModal'].forEach(function(id) {
+      var m = document.getElementById(id);
+      if (m) {
+        var buttons = m.querySelectorAll('.modal-close-btn, .legal-modal-close, button.btn-primary');
+        buttons.forEach(function(btn) {
+          btn.addEventListener('click', function() {
+            closeModal(id);
+          });
+        });
+      }
+    });
+  });
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // FAQ Accordion Logic
+    const faqToggles = document.querySelectorAll('.faq-toggle');
+    faqToggles.forEach(toggle => {
+      toggle.addEventListener('click', function(e) {
+        e.preventDefault(); // Prevent accidental form submissions/jumps
+        const content = this.nextElementSibling;
+        const icon = this.querySelector('.faq-icon');
+        
+        // Close all others safely
+        document.querySelectorAll('.faq-content').forEach(c => {
+          if(c !== content) {
+            c.style.maxHeight = '0px';
+            c.style.paddingTop = '0px';
+          }
+        });
+        document.querySelectorAll('.faq-icon').forEach(i => {
+          if(i !== icon) {
+            i.style.transform = 'rotate(0deg)';
+          }
+        });
+
+        if (content.style.maxHeight && content.style.maxHeight !== '0px') {
+          content.style.maxHeight = '0px';
+          content.style.paddingTop = '0px';
+          icon.style.transform = 'rotate(0deg)';
+        } else {
+          content.style.paddingTop = '12px';
+          content.style.maxHeight = content.scrollHeight + 24 + "px";
+          icon.style.transform = 'rotate(180deg)';
+        }
+      });
+    });
+  });
+</script>
+
 </body>
 </html>
+
+<div class="modal-overlay" id="termsModal" style="position:fixed;inset:0;background:rgba(15,23,42,0.6);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:1000;">
+  <div style="background:#fff;width:100%;max-width:500px;border-radius:14px;padding:32px;position:relative;max-height:80vh;overflow-y:auto;box-shadow:0 20px 25px -5px rgba(15,23,42,0.06);">
+    <button class="modal-close-btn" style="position:absolute;top:24px;right:24px;background:none;border:none;cursor:pointer;color:#64748b;"><span class="material-symbols-outlined">close</span></button>
+    <div style="display:flex;align-items:center;gap:8px;font-weight:800;font-size:18px;color:#0f172a;margin-bottom:24px;">
+      <span style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;"><svg viewBox="20 20 54 58" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;"><rect x="38" y="22" width="34" height="14" rx="3" fill="#0d9488"/><rect x="22" y="32" width="18" height="38" rx="3.5" fill="currentColor"/><rect x="34" y="62" width="38" height="14" rx="3" fill="currentColor"/></svg></span>
+      <span>Coda</span>
+    </div>
+    <h2 style="font-size:20px;margin-bottom:16px;">Terms of Service</h2>
+    <p style="font-size:14px;color:#475569;line-height:1.6;margin-bottom:12px;">By accessing Coda's enterprise financial systems, you agree to these Terms of Service. As a financial operating system, you entrust us with critical business data; in turn, you agree to use the platform lawfully and maintain the confidentiality of your account credentials.</p>
+      <p style="font-size:14px;color:#475569;line-height:1.6;margin-bottom:12px;">While Coda guarantees 99.9% uptime and rigorous data backups for our core ERP features, the platform is provided without liability for indirect business losses. You remain responsible for the accuracy of the financial and tax data you input into the system.</p>
+    <button class="modal-close-btn" style="display:inline-flex;align-items:center;justify-content:center;font-family:Inter,sans-serif;font-weight:600;font-size:13px;padding:10px 20px;border-radius:6px;border:1px solid #0f172a;background:#0f172a;color:#fff;cursor:pointer;width:100%;margin-top:16px;height:40px;">Acknowledge</button>
+  </div>
+</div>
+
+<div class="modal-overlay" id="privacyModal" style="position:fixed;inset:0;background:rgba(15,23,42,0.6);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:1000;">
+  <div style="background:#fff;width:100%;max-width:500px;border-radius:14px;padding:32px;position:relative;max-height:80vh;overflow-y:auto;box-shadow:0 20px 25px -5px rgba(15,23,42,0.06);">
+    <button class="modal-close-btn" style="position:absolute;top:24px;right:24px;background:none;border:none;cursor:pointer;color:#64748b;"><span class="material-symbols-outlined">close</span></button>
+    <div style="display:flex;align-items:center;gap:8px;font-weight:800;font-size:18px;color:#0f172a;margin-bottom:24px;">
+      <span style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;"><svg viewBox="20 20 54 58" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;"><rect x="38" y="22" width="34" height="14" rx="3" fill="#0d9488"/><rect x="22" y="32" width="18" height="38" rx="3.5" fill="currentColor"/><rect x="34" y="62" width="38" height="14" rx="3" fill="currentColor"/></svg></span>
+      <span>Coda</span>
+    </div>
+    <h2 style="font-size:20px;margin-bottom:16px;">Privacy Policy</h2>
+    <p style="font-size:14px;color:#475569;line-height:1.6;margin-bottom:12px;">Coda acts as a data processor for your business. We securely process your financial, payroll, employee, and customer data exclusively to provide our ERP services. We employ industry-standard AES-256 encryption and strict access controls to ensure your corporate data remains confidential, compliant with financial regulations, and is never sold to third parties.</p>
+    <p style="font-size:14px;color:#475569;line-height:1.6;margin-bottom:12px;">We only ask for personal information when we truly need it to provide a service to you. We collect it by fair and lawful means, with your knowledge and consent. We also let you know why we're collecting it and how it will be used. We don't share any personally identifying information publicly or with third-parties, except when required to by law.</p>
+    <button class="modal-close-btn" style="display:inline-flex;align-items:center;justify-content:center;font-family:Inter,sans-serif;font-weight:600;font-size:13px;padding:10px 20px;border-radius:6px;border:1px solid #0f172a;background:#0f172a;color:#fff;cursor:pointer;width:100%;margin-top:16px;height:40px;">Acknowledge</button>
+  </div>
+</div>
+
+
+
+<div class="modal-overlay" id="supportModal" style="position:fixed;inset:0;background:rgba(15,23,42,0.6);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:1000;">
+  <div style="background:#fff;width:100%;max-width:500px;border-radius:14px;padding:32px;position:relative;max-height:80vh;overflow-y:auto;box-shadow:0 20px 25px -5px rgba(15,23,42,0.06);">
+    <button class="modal-close-btn" style="position:absolute;top:24px;right:24px;background:none;border:none;cursor:pointer;color:#64748b;"><span class="material-symbols-outlined">close</span></button>
+    
+    <div style="display:flex;align-items:center;gap:8px;font-weight:800;font-size:18px;color:#0f172a;margin-bottom:24px;">
+      <span style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;"><svg viewBox="20 20 54 58" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;"><rect x="38" y="22" width="34" height="14" rx="3" fill="#0d9488"/><rect x="22" y="32" width="18" height="38" rx="3.5" fill="currentColor"/><rect x="34" y="62" width="38" height="14" rx="3" fill="currentColor"/></svg></span>
+      <span>Coda Support Hub</span>
+    </div>
+    
+    <div style="margin-bottom: 24px;">
+      <div style="display: flex; align-items: center; gap: 8px; padding: 12px; background: #ecfdf5; border-radius: 8px; border: 1px solid #a7f3d0; margin-bottom: 24px;">
+        <span class="material-symbols-outlined" style="color: #059669; font-size: 20px;">check_circle</span>
+        <span style="color: #065f46; font-size: 14px; font-weight: 500;">System Status: All Systems Operational</span>
+      </div>
+
+      
+      <h3 style="font-size: 16px; color: #0f172a; margin-bottom: 12px;">Frequently Asked Questions</h3>
+      <div class="faq-accordion" style="display: flex; flex-direction: column; gap: 8px;">
+        
+        <div class="faq-item" style="border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
+          <button class="faq-toggle" style="width: 100%; display: flex; align-items: center; justify-content: space-between; background: #f8fafc; border: none; padding: 12px 16px; cursor: pointer; text-align: left; font-family: 'Inter', sans-serif;">
+            <span style="color: #0f172a; font-weight: 600; font-size: 14px;">How do I reset my account password?</span>
+            <span class="material-symbols-outlined faq-icon" style="color: #64748b; font-size: 20px; transition: transform 0.2s;">expand_more</span>
+          </button>
+          <div class="faq-content" style="padding: 0 16px; max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.3s ease; background: #fff;">
+            <p style="font-size: 14px; color: #475569; margin: 0; padding-bottom: 12px; line-height: 1.5;">Go to the login screen and click "Forgot Password". A secure reset link will be sent to your registered email. For security, links expire after 15 minutes.</p>
+          </div>
+        </div>
+
+        <div class="faq-item" style="border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
+          <button class="faq-toggle" style="width: 100%; display: flex; align-items: center; justify-content: space-between; background: #f8fafc; border: none; padding: 12px 16px; cursor: pointer; text-align: left; font-family: 'Inter', sans-serif;">
+            <span style="color: #0f172a; font-weight: 600; font-size: 14px;">How do I export monthly financial reports?</span>
+            <span class="material-symbols-outlined faq-icon" style="color: #64748b; font-size: 20px; transition: transform 0.2s;">expand_more</span>
+          </button>
+          <div class="faq-content" style="padding: 0 16px; max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.3s ease; background: #fff;">
+            <p style="font-size: 14px; color: #475569; margin: 0; padding-bottom: 12px; line-height: 1.5;">Navigate to the <b>Reports</b> tab from your dashboard. Select "Profit & Loss" or "Balance Sheet", choose your date range, and click the Export button to download as CSV or PDF.</p>
+          </div>
+        </div>
+
+        <div class="faq-item" style="border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
+          <button class="faq-toggle" style="width: 100%; display: flex; align-items: center; justify-content: space-between; background: #f8fafc; border: none; padding: 12px 16px; cursor: pointer; text-align: left; font-family: 'Inter', sans-serif;">
+            <span style="color: #0f172a; font-weight: 600; font-size: 14px;">How do I run Bank Reconciliation?</span>
+            <span class="material-symbols-outlined faq-icon" style="color: #64748b; font-size: 20px; transition: transform 0.2s;">expand_more</span>
+          </button>
+          <div class="faq-content" style="padding: 0 16px; max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.3s ease; background: #fff;">
+            <p style="font-size: 14px; color: #475569; margin: 0; padding-bottom: 12px; line-height: 1.5;">Open the <b>Bank Reconciliation</b> module. You can manually match your ERP ledger entries against your uploaded bank statements by clicking the "Match" icon next to each transaction.</p>
+          </div>
+        </div>
+
+        <div class="faq-item" style="border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
+          <button class="faq-toggle" style="width: 100%; display: flex; align-items: center; justify-content: space-between; background: #f8fafc; border: none; padding: 12px 16px; cursor: pointer; text-align: left; font-family: 'Inter', sans-serif;">
+            <span style="color: #0f172a; font-weight: 600; font-size: 14px;">How do I manage team permissions?</span>
+            <span class="material-symbols-outlined faq-icon" style="color: #64748b; font-size: 20px; transition: transform 0.2s;">expand_more</span>
+          </button>
+          <div class="faq-content" style="padding: 0 16px; max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.3s ease; background: #fff;">
+            <p style="font-size: 14px; color: #475569; margin: 0; padding-bottom: 12px; line-height: 1.5;">Navigate to the <b>Admin Portal</b>. From the "Team Management" section, you can add new users and assign them specific role-based access controls (e.g., restricted to HR & Payroll or full access).</p>
+          </div>
+        </div>
+        
+      </div>
+
+    </div>
+
+    <a href="mailto:support@codatechnologies.com" style="display:inline-flex;align-items:center;justify-content:center;font-family:Inter,sans-serif;font-weight:600;font-size:13px;padding:10px 20px;border-radius:6px;border:1px solid #0f172a;background:#0f172a;color:#fff;text-decoration:none;cursor:pointer;width:100%;height:40px;box-sizing:border-box;">Contact Support Team</a>
+  </div>
+</div>
+

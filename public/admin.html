@@ -11,8 +11,9 @@
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+  <script src="currency.js"></script>
   <style>
-    :root { --admin-sidebar-w: 260px; --admin-topbar-h: 64px; }
+    :root { --admin-topbar-h: 64px; }
     body {
       margin: 0;
       min-height: 100vh;
@@ -23,136 +24,43 @@
       width: 100%;
       min-height: 100vh;
     }
-    .admin-sidebar {
-      width: var(--admin-sidebar-w);
-      min-height: 100vh;
-      background: var(--slate-950);
-      color: var(--slate-300);
-      display: flex;
-      flex-direction: column;
-      position: fixed;
-      top: 0;
-      left: 0;
-      z-index: 100;
-      transition: transform 0.2s ease;
-      border-right: 1px solid rgba(255,255,255,0.08);
-    }
-    .sidebar-header {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 16px 20px;
-      border-bottom: 1px solid rgba(255,255,255,0.08);
-    }
-    .sidebar-brand {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-weight: 800;
-      font-size: 20px;
-      color: #ffffff;
-    }
-    .sidebar-brand .brand-icon-box {
-      width: 30px;
-      height: 30px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: var(--radius-sm);
-      background: var(--teal-600);
-    }
-    .sidebar-brand .brand-icon-box .material-symbols-outlined {
-      font-size: 18px;
-      color: #ffffff;
-    }
-    .sidebar-close {
-      display: none;
-      background: none;
-      border: none;
-      cursor: pointer;
-      margin-left: auto;
-      color: var(--slate-400);
-    }
-    .admin-nav {
-      flex: 1;
-      overflow-y: auto;
-      padding: 16px 12px;
-    }
-    .nav-section-title {
-      font-size: 10px;
-      font-weight: 700;
-      color: var(--slate-500);
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-      padding: 8px 12px 6px;
-    }
-    .nav-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 10px 12px;
-      border-radius: var(--radius-sm);
-      font-size: 13.5px;
-      font-weight: 500;
-      color: var(--slate-400);
-      cursor: pointer;
-      transition: all var(--transition);
-      text-decoration: none;
-      width: 100%;
-      border: none;
-      background: none;
-      text-align: left;
-      font-family: inherit;
-    }
-    .nav-item:hover {
-      background: rgba(255,255,255,0.05);
-      color: #ffffff;
-    }
-    .nav-item.active {
-      background: var(--teal-600);
-      color: #ffffff;
-      font-weight: 600;
-    }
-    .sidebar-footer {
-      padding: 16px;
-      border-top: 1px solid rgba(255,255,255,0.08);
-    }
-    .user-info {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 8px;
-    }
-    .user-avatar {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      background: var(--teal-600);
-      color: #fff;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 700;
-      font-size: 13px;
-    }
-    .user-details .user-name {
-      font-size: 13px;
-      font-weight: 600;
-      color: #ffffff;
-    }
-    .user-details .user-role {
-      font-size: 11px;
-      color: var(--slate-400);
-    }
     .admin-main {
-      margin-left: var(--admin-sidebar-w);
-      width: calc(100% - var(--admin-sidebar-w));
+      margin-left: var(--sidebar-w);
+      width: calc(100% - var(--sidebar-w));
       flex: 1;
       display: flex;
       flex-direction: column;
       min-height: 100vh;
-      transition: margin-left 0.2s ease, width 0.2s ease;
+      transition: margin-left var(--transition), width var(--transition);
     }
+    @media (min-width: 1025px) {
+      .sidebar-wrapper.collapsed ~ .admin-main {
+        margin-left: 0 !important;
+        width: 100% !important;
+      }
+      .sidebar-wrapper.collapsed ~ .admin-main .admin-topbar {
+        padding-left: calc(32px + 130px) !important;
+        padding-right: calc(32px + 130px) !important;
+      }
+      .sidebar-wrapper.collapsed ~ .admin-main .admin-content {
+        padding-left: calc(32px + 130px) !important;
+        padding-right: calc(32px + 130px) !important;
+      }
+      /* Preload collapsed classes */
+      .sidebar-collapsed-pref .admin-main {
+        margin-left: 0 !important;
+        width: 100% !important;
+      }
+      .sidebar-collapsed-pref .admin-main .admin-topbar {
+        padding-left: calc(32px + 130px) !important;
+        padding-right: calc(32px + 130px) !important;
+      }
+      .sidebar-collapsed-pref .admin-main .admin-content {
+        padding-left: calc(32px + 130px) !important;
+        padding-right: calc(32px + 130px) !important;
+      }
+    }
+
     .admin-topbar {
       height: var(--admin-topbar-h);
       display: flex;
@@ -164,6 +72,7 @@
       position: sticky;
       top: 0;
       z-index: 50;
+      transition: padding var(--transition);
     }
     .admin-topbar h1 {
       font-size: 18px;
@@ -174,38 +83,9 @@
     .admin-content {
       padding: 24px 32px;
       flex: 1;
+      transition: padding var(--transition);
     }
-    .kpi-row {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 16px;
-      margin-bottom: 24px;
-    }
-    .kpi-card {
-      background: var(--bg-card);
-      border: 1px solid var(--border-color);
-      border-radius: var(--radius);
-      padding: 20px;
-      box-shadow: var(--shadow-sm);
-    }
-    .kpi-card .kpi-label {
-      font-size: 11px;
-      color: var(--text-muted);
-      font-weight: 600;
-      text-transform: uppercase;
-      margin-bottom: 6px;
-    }
-    .kpi-card .kpi-value {
-      font-size: 26px;
-      font-weight: 800;
-      color: var(--slate-900);
-      letter-spacing: -0.02em;
-    }
-    .kpi-card .kpi-sub {
-      font-size: 11px;
-      color: var(--text-muted);
-      margin-top: 4px;
-    }
+
     .admin-tabs {
       display: flex;
       gap: 4px;
@@ -330,109 +210,232 @@
       opacity: 0.4;
       cursor: not-allowed;
     }
-    .mobile-toggle {
-      display: flex;
-      background: none;
-      border: none;
-      cursor: pointer;
-      color: var(--text-secondary);
-      align-items: center;
-      justify-content: center;
-      padding: 8px;
-      margin-right: 8px;
-    }
+
     .sidebar-close {
       display: none;
     }
-    @media (min-width: 1025px) {
-      .admin-sidebar.collapsed {
-        transform: translateX(-100%);
-      }
-      .admin-sidebar.collapsed ~ .admin-main,
-      .admin-sidebar.collapsed + .admin-main {
-        margin-left: 0;
-        width: 100%;
-      }
-    }
     @media (max-width: 1024px) {
-      .admin-sidebar { transform: translateX(-100%); }
-      .admin-sidebar.open { transform: translateX(0); }
-      .sidebar-close { display: block; }
-      .admin-main { margin-left: 0; width: 100%; }
-      .admin-topbar { padding: 0 20px !important; }
-      .admin-content { padding: 16px; }
-      .kpi-row { grid-template-columns: repeat(2, 1fr); }
-      .chart-row { grid-template-columns: 1fr; }
+      .sidebar-wrapper {
+        position: fixed;
+        top: 0; left: 0; bottom: 0;
+        width: 300px;
+        max-width: 82vw;
+        transform: translateX(-100%);
+        z-index: 1100;
+        border-right: none;
+        box-shadow: none;
+        transition: transform 0.38s cubic-bezier(0.32, 0.72, 0, 1), box-shadow 0.38s cubic-bezier(0.32, 0.72, 0, 1);
+      }
+      .sidebar-wrapper.open {
+        transform: translateX(0);
+        box-shadow: 20px 0 60px rgba(0,0,0,0.3);
+      }
+      .sidebar-close {
+        display: block;
+      }
+      .admin-main {
+        margin-left: 0 !important;
+        width: 100% !important;
+      }
+
+      /* Frosted glass topbar */
+      .admin-topbar,
+      .sidebar-collapsed-pref .admin-main .admin-topbar,
+      .sidebar-wrapper.collapsed ~ .admin-main .admin-topbar {
+        padding: 0 16px !important;
+        height: 56px !important;
+        background: rgba(255,255,255,0.82) !important;
+        backdrop-filter: saturate(180%) blur(20px) !important;
+        -webkit-backdrop-filter: saturate(180%) blur(20px) !important;
+        border-bottom: 0.5px solid rgba(0,0,0,0.12) !important;
+      }
+      .admin-topbar h1 {
+        font-size: 16px !important;
+      }
+
+      /* Content padding */
+      .admin-content,
+      .sidebar-collapsed-pref .admin-main .admin-content,
+      .sidebar-wrapper.collapsed ~ .admin-main .admin-content {
+        padding: 16px !important;
+      }
+
+
+      .chart-row { grid-template-columns: 1fr; gap: 12px; }
+      .chart-card { border-radius: 14px !important; }
+
+      /* Admin tabs — horizontal scroll on mobile */
+      .admin-tabs {
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        flex-wrap: nowrap;
+        gap: 0;
+      }
+      .admin-tab {
+        white-space: nowrap;
+        flex-shrink: 0;
+        padding: 10px 16px;
+      }
+
+      /* Table card */
+      .admin-table-wrap {
+        border-radius: 14px;
+      }
     }
     @media (max-width: 600px) {
-      .admin-topbar { padding: 0 16px !important; }
-      .kpi-row { grid-template-columns: 1fr; }
-      .kpi-row .kpi-card { grid-column: span 1 !important; }
+      .admin-topbar,
+      .sidebar-collapsed-pref .admin-main .admin-topbar,
+      .sidebar-wrapper.collapsed ~ .admin-main .admin-topbar {
+        padding: 0 12px !important;
+        height: 52px !important;
+      }
+      .admin-content,
+      .sidebar-collapsed-pref .admin-main .admin-content,
+      .sidebar-wrapper.collapsed ~ .admin-main .admin-content {
+        padding: 12px !important;
+      }
+
+      .admin-topbar h1 { font-size: 14px !important; }
     }
+    
+    /* Admin shell - always visible, no hiding */
+    .admin-shell {
+      display: flex;
+      width: 100%;
+      min-height: 100vh;
+    }
+    
+    /* Inline loading spinner for table cells */
+    .loading-spinner {
+      display: inline-block;
+      width: 16px;
+      height: 16px;
+      border: 2px solid rgba(20, 184, 166, 0.15);
+      border-top-color: #14b8a6;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      vertical-align: middle;
+      margin-right: 6px;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+    .btn-xs {
+      padding: 3px 10px;
+      font-size: 11px;
+      border-radius: 4px;
+      border: 1px solid var(--border-color);
+      background: #fff;
+      cursor: pointer;
+      font-family: inherit;
+      font-weight: 500;
+      color: var(--text-secondary);
+      transition: all 0.15s;
+    }
+    .btn-xs:hover { background: var(--slate-50); }
+    .btn-xs.btn-outline { border-color: var(--slate-300); }
+    .btn-xs.btn-danger { background: var(--error); color: #fff; border-color: var(--error); }
+    .btn-xs.btn-danger:hover { background: #b91c1c; }
+    .badge-warning { background: var(--warning-bg); color: var(--warning); }
+    .toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; max-width: 360px; }
+    .toast { background: #fff; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 12px 16px; box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
+    .toast-title { font-size: 13px; font-weight: 600; color: var(--slate-900); margin-bottom: 2px; }
+    .toast-message { font-size: 12px; color: var(--text-secondary); }
+    .toast-success { border-left: 3px solid var(--teal-500); }
+    .toast-error { border-left: 3px solid var(--error); }
+    .toast-info { border-left: 3px solid var(--teal-500); }
   </style>
+  <script>
+    if (localStorage.getItem('coda_sidebar_collapsed') === 'true' && window.innerWidth > 1024) {
+      document.documentElement.classList.add('sidebar-collapsed-pref');
+    }
+    // Prevent view layout flickering on reload
+    (function() {
+      const activeTab = localStorage.getItem('coda_admin_active_view') || 'users';
+      const style = document.createElement('style');
+      style.id = 'early-admin-override';
+      style.textContent = `
+        .admin-panel { display: none !important; } 
+        #panel-${activeTab} { display: block !important; }
+        .admin-tab[data-tab="${activeTab}"] { color: var(--slate-900) !important; border-bottom-color: var(--slate-900) !important; }
+        .nav-item[data-tab="${activeTab}"] { background: var(--teal-50) !important; color: var(--teal-700) !important; font-weight: 600 !important; }
+        .nav-item[data-tab="${activeTab}"] .material-symbols-outlined { color: var(--teal-600) !important; }
+      `;
+      document.head.appendChild(style);
+    })();
+  </script>
 </head>
 <body>
   <div class="admin-shell">
     <!-- Sidebar -->
-    <aside class="admin-sidebar" id="adminSidebar">
-      <div class="sidebar-header">
-        <a href="/" class="sidebar-brand">
-          <span class="brand-icon-box"><span class="material-symbols-outlined">finance</span></span>
-          <span>Coda</span>
-        </a>
-        <span class="badge-role" style="font-size:9px; padding:2px 8px; border-radius:100px; background:var(--bronze-600); color:#fff; font-weight:600; margin-left:8px;">Admin</span>
-        <button class="sidebar-close" id="sidebarClose" aria-label="Close"><span class="material-symbols-outlined">close</span></button>
-      </div>
-      
-      <nav class="admin-nav">
-        <div class="nav-section">
-          <div class="nav-section-title">Management</div>
-          <button class="nav-item active" data-tab="users">
-            <span class="material-symbols-outlined">people</span>
-            <span>Users</span>
-          </button>
-          <button class="nav-item" data-tab="businesses">
-            <span class="material-symbols-outlined">business</span>
-            <span>Businesses</span>
-          </button>
-        </div>
-        <div class="nav-section">
-          <div class="nav-section-title">Analytics</div>
-          <button class="nav-item" data-tab="analytics">
-            <span class="material-symbols-outlined">monitoring</span>
-            <span>Analytics</span>
-          </button>
-          <button class="nav-item" data-tab="audit">
-            <span class="material-symbols-outlined">history</span>
-            <span>Audit Log</span>
-          </button>
-        </div>
-        <div class="nav-section">
-          <div class="nav-section-title">Quick Links</div>
-          <a href="/dashboard" class="nav-item">
-            <span class="material-symbols-outlined">dashboard</span>
-            <span>Back to Dashboard</span>
+    <div class="sidebar-wrapper" id="adminSidebar">
+      <aside class="app-sidebar">
+        <div class="sidebar-header">
+          <a href="/" class="sidebar-brand">
+            <span class="brand-icon-box"><svg viewBox="20 20 54 58" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="38" y="22" width="34" height="14" rx="3" fill="#0d9488"/><rect x="22" y="32" width="18" height="38" rx="3.5" fill="currentColor"/><rect x="34" y="62" width="38" height="14" rx="3" fill="currentColor"/></svg></span>
+            <span>Coda ERP</span>
+            <span class="badge-subscription">Admin</span>
           </a>
+          <button class="sidebar-close" id="sidebarClose" aria-label="Close navigation"><span class="material-symbols-outlined">close</span></button>
         </div>
-      </nav>
-      
-      <div class="sidebar-footer">
-        <div class="user-info" id="adminUserInfo"></div>
-        <button class="nav-item" id="btnAdminLogout" style="padding:8px 12px; font-size:12px; margin-top:4px;">
-          <span class="material-symbols-outlined" style="font-size:16px">logout</span>
-          <span>Sign Out</span>
-        </button>
-      </div>
-    </aside>
+        
+        <nav class="sidebar-nav admin-nav">
+          <div class="nav-section">
+            <div class="nav-section-title">Management</div>
+            <button class="nav-item" data-tab="users">
+              <span class="material-symbols-outlined">people</span>
+              <span>Users</span>
+            </button>
+            <button class="nav-item" data-tab="businesses">
+              <span class="material-symbols-outlined">business</span>
+              <span>Businesses</span>
+            </button>
+          </div>
+          <div class="nav-section">
+            <div class="nav-section-title">Analytics</div>
+            <button class="nav-item" data-tab="analytics">
+              <span class="material-symbols-outlined">monitoring</span>
+              <span>Analytics</span>
+            </button>
+            <button class="nav-item" data-tab="audit">
+              <span class="material-symbols-outlined">history</span>
+              <span>Audit Log</span>
+            </button>
+          </div>
+          <div class="nav-section">
+            <div class="nav-section-title">Quick Links</div>
+            <a href="/dashboard" class="nav-item">
+              <span class="material-symbols-outlined">space_dashboard</span>
+              <span>Back to Dashboard</span>
+            </a>
+          </div>
+        </nav>
+        
+        <div class="sidebar-footer">
+          <div class="user-info" id="adminUserInfo"></div>
+          <button class="btn btn-secondary btn-logout" id="btnAdminLogout" style="width: 100%; margin-top: 8px;">
+            <span class="material-symbols-outlined" style="font-size: 16px;">logout</span>
+            <span>Sign Out</span>
+          </button>
+        </div>
+      </aside>
+    </div>
 
     <!-- Main Content -->
     <div class="admin-main">
       <div class="admin-topbar">
-        <div style="display:flex; align-items:center; gap:12px;">
-          <button class="mobile-toggle" id="sidebarToggle" aria-label="Toggle menu">
+        <div class="topbar-left">
+          <a href="/" class="brand-icon-box topbar-logo-icon" style="text-decoration:none;" aria-label="Go to Homepage">
+            <svg viewBox="20 20 54 58" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="38" y="22" width="34" height="14" rx="3" fill="#0d9488"/>
+              <rect x="22" y="32" width="18" height="38" rx="3.5" fill="currentColor"/>
+              <rect x="34" y="62" width="38" height="14" rx="3" fill="currentColor"/>
+            </svg>
+          </a>
+          <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle menu">
             <span class="material-symbols-outlined">menu</span>
           </button>
-          <h1>Platform Operations</h1>
+          <h1 class="page-title">Platform Operations</h1>
         </div>
         <div>
           <span style="font-size:12px; color:var(--text-muted);" id="adminLastUpdated"></span>
@@ -440,65 +443,49 @@
       </div>
 
       <div class="admin-content">
-        <!-- KPIs -->
-        <div class="kpi-row" id="kpiRow">
-          <!-- Total Users -->
-          <div class="kpi-card green">
-            <div class="kpi-card-header">
-              <span class="kpi-icon"><span class="material-symbols-outlined">groups</span></span>
-            </div>
-            <div class="kpi-label">Total Users</div>
-            <div class="kpi-value" id="kpiUsers">-</div>
+        <!-- KPIs (Apple-style horizontal strip) -->
+        <div class="stats-strip" id="kpiRow">
+          <div class="stat-item">
+            <div class="stat-label">Total Users</div>
+            <div class="stat-value" id="kpiUsers">-</div>
           </div>
-
-          <!-- Total Businesses -->
-          <div class="kpi-card copper">
-            <div class="kpi-card-header">
-              <span class="kpi-icon"><span class="material-symbols-outlined">business</span></span>
-            </div>
-            <div class="kpi-label">Total Businesses</div>
-            <div class="kpi-value" id="kpiBusinesses">-</div>
+          <div class="stat-item divider"></div>
+          
+          <div class="stat-item">
+            <div class="stat-label">Businesses</div>
+            <div class="stat-value" id="kpiBusinesses">-</div>
           </div>
-
-          <!-- Active Subscriptions -->
-          <div class="kpi-card teal">
-            <div class="kpi-card-header">
-              <span class="kpi-icon"><span class="material-symbols-outlined">card_membership</span></span>
-            </div>
-            <div class="kpi-label">Active Subscriptions</div>
-            <div class="kpi-value" id="kpiActiveSubs">-</div>
+          <div class="stat-item divider"></div>
+          
+          <div class="stat-item">
+            <div class="stat-label">Active Subs</div>
+            <div class="stat-value" id="kpiActiveSubs">-</div>
           </div>
-
-          <!-- Month Signups -->
-          <div class="kpi-card green">
-            <div class="kpi-card-header">
-              <span class="kpi-icon"><span class="material-symbols-outlined">person_add</span></span>
-            </div>
-            <div class="kpi-label">Month Signups</div>
-            <div class="kpi-value" id="kpiSignups">-</div>
+          <div class="stat-item divider"></div>
+          
+          <div class="stat-item">
+            <div class="stat-label">Month Signups</div>
+            <div class="stat-value" id="kpiSignups">-</div>
           </div>
-
-          <!-- Total Paid Revenue -->
-          <div class="kpi-card dark" style="grid-column: span 2;">
-            <div class="kpi-card-header">
-              <span class="kpi-icon"><span class="material-symbols-outlined">payments</span></span>
-            </div>
-            <div class="kpi-label">Total Paid Revenue</div>
-            <div class="kpi-value" id="kpiRevenue">-</div>
-            <div class="kpi-sub" id="kpiRevenueSub"></div>
+          <div class="stat-item divider"></div>
+          
+          <div class="stat-item highlight">
+            <div class="stat-label">Paid Revenue</div>
+            <div class="stat-value" id="kpiRevenue">-</div>
+            <div class="stat-sub" id="kpiRevenueSub"></div>
           </div>
         </div>
 
         <!-- Tabs -->
         <div class="admin-tabs">
-          <button class="admin-tab active" data-tab="users">Users</button>
+          <button class="admin-tab" data-tab="users">Users</button>
           <button class="admin-tab" data-tab="businesses">Businesses</button>
           <button class="admin-tab" data-tab="analytics">Analytics</button>
           <button class="admin-tab" data-tab="audit">Audit Log</button>
         </div>
 
         <!-- Users Panel -->
-        <div class="admin-panel active" id="panel-users">
+        <div class="admin-panel" id="panel-users">
           <div class="admin-table-wrap">
             <table class="admin-table">
               <thead>
@@ -508,11 +495,13 @@
                   <th>Business</th>
                   <th>Role</th>
                   <th>Tier</th>
+                  <th>Status</th>
                   <th>Joined</th>
+                  <th style="width:150px;">Actions</th>
                 </tr>
               </thead>
-              <tbody id="usersBody">
-                <tr><td colspan="6" style="text-align:center; padding:40px; color:var(--text-muted);">Loading users...</td></tr>
+                <tbody id="usersBody">
+                  <tr><td colspan="8" style="text-align:center; padding:40px; color:var(--text-muted);"><span class="loading-spinner"></span>Loading users...</td></tr>
               </tbody>
             </table>
           </div>
@@ -541,7 +530,7 @@
                   </tr>
                 </thead>
                 <tbody id="businessesBody">
-                  <tr><td colspan="6" style="text-align:center; padding:40px; color:var(--text-muted);">Loading businesses...</td></tr>
+                  <tr><td colspan="6" style="text-align:center; padding:40px; color:var(--text-muted);"><span class="loading-spinner"></span>Loading businesses...</td></tr>
                 </tbody>
               </table>
             </div>
@@ -611,6 +600,9 @@
     </div>
   </div>
   <!-- Shared Auth/Trial Modal Frame -->
+  <!-- Toast Alerts Container -->
+  <div class="toast-container" id="toastContainer"></div>
+
   <div class="modal-overlay" id="authModal" style="display: none;">
     <div class="modal" style="position: relative;">
       <!-- Added close button to go home -->
@@ -637,25 +629,96 @@
       let usersPage = 1, businessesPage = 1, auditPage = 1;
       let signupsChart = null, revenueChart = null, tierChart = null, revenueTierChart = null;
 
+      // Sync preloaded sidebar collapsed state
+      const adminSidebar = document.getElementById('adminSidebar');
+      if (adminSidebar && document.documentElement.classList.contains('sidebar-collapsed-pref')) {
+        adminSidebar.classList.add('collapsed');
+        document.documentElement.classList.remove('sidebar-collapsed-pref');
+      }
+
+      function showToast(title, message, type) {
+        const container = document.getElementById('toastContainer');
+        if (!container) return;
+        const toast = document.createElement('div');
+        toast.className = 'toast toast-' + (type || 'success');
+        toast.innerHTML = '<div class="toast-title">' + title + '</div><div class="toast-message">' + message + '</div>';
+        container.appendChild(toast);
+        setTimeout(() => { toast.remove(); }, 4000);
+      }
+
       function formatCurrency(amount) {
-        return new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN', minimumFractionDigits: 0 }).format(amount);
+        if (typeof window.formatCurrency === 'function') {
+          return window.formatCurrency(amount);
+        }
+        const formatted = new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN', minimumFractionDigits: 0 }).format(amount);
+        return formatted.replace('₦', '₦ ');
       }
 
       function formatDate(d) {
         return new Date(d).toLocaleDateString('en-NG', { day: '2-digit', month: 'short', year: 'numeric' });
       }
 
+      let csrfToken = '';
+
+      async function initCsrf() {
+        try {
+          const res = await fetch('/api/v1/auth/csrf-token');
+          if (res.ok) {
+            const data = await res.json();
+            csrfToken = data.csrfToken;
+            
+            // Override global fetch to automatically inject CSRF token header for state-changing requests
+            // and redirect to login on 401 (session invalidated in another tab)
+            const originalFetch = window.fetch;
+            window.fetch = function(input, init) {
+              init = init || {};
+              init.headers = init.headers || {};
+              const method = (init.method || 'GET').toUpperCase();
+              if (['POST', 'PUT', 'DELETE', 'PATCH'].includes(method)) {
+                if (init.headers instanceof Headers) {
+                  init.headers.set('X-CSRF-Token', csrfToken);
+                } else {
+                  init.headers['X-CSRF-Token'] = csrfToken;
+                }
+              }
+              return originalFetch(input, init).then(res => {
+                if (res.status === 401 && currentUser) {
+                  window.location.href = '/login';
+                }
+                return res;
+              });
+            };
+          }
+        } catch (err) {
+          console.error('Failed to initialize CSRF token:', err);
+        }
+      }
+
       async function fetchWithAuth(url) {
         const res = await fetch(url, { credentials: 'include' });
-        if (res.status === 401) { window.location.href = '/login'; return null; }
-        if (res.status === 403) { window.location.href = '/dashboard'; return null; }
+        if (res.status === 401) { 
+          window.location.href = '/login'; 
+          return null; 
+        }
+        if (res.status === 403) { 
+          window.location.href = '/dashboard'; 
+          return null; 
+        }
         return res.ok ? res.json() : null;
       }
 
       function switchTab(tab) {
+        localStorage.setItem('coda_admin_active_view', tab);
+        
         document.querySelectorAll('.admin-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
         document.querySelectorAll('.admin-panel').forEach(p => p.classList.toggle('active', p.id === 'panel-' + tab));
         document.querySelectorAll('.admin-nav .nav-item[data-tab]').forEach(n => n.classList.toggle('active', n.dataset.tab === tab));
+
+        // Force layout reflow before removing override styles to prevent visual flickering
+        document.body.offsetHeight;
+
+        const override = document.getElementById('early-admin-override');
+        if (override) override.remove();
       }
 
       document.querySelectorAll('.admin-tab').forEach(tab => {
@@ -675,7 +738,8 @@
         });
       });
 
-      document.getElementById('sidebarToggle')?.addEventListener('click', () => {
+      document.getElementById('sidebarToggle')?.addEventListener('click', (e) => {
+        e.stopPropagation();
         const s = document.getElementById('adminSidebar');
         if (window.innerWidth <= 1024) {
           s.classList.toggle('open');
@@ -686,6 +750,7 @@
           }
         } else {
           s.classList.toggle('collapsed');
+          localStorage.setItem('coda_sidebar_collapsed', s.classList.contains('collapsed'));
         }
       });
       document.getElementById('sidebarClose')?.addEventListener('click', () => {
@@ -693,17 +758,64 @@
         document.body.classList.remove('no-scroll');
       });
 
+      // Click outside to close admin mobile sidebar
+      document.addEventListener('click', (e) => {
+        const sidebar = document.getElementById('adminSidebar');
+        const toggle = document.getElementById('sidebarToggle');
+        if (window.innerWidth <= 1024 && sidebar && sidebar.classList.contains('open')) {
+          if (!sidebar.contains(e.target) && (!toggle || !toggle.contains(e.target))) {
+            sidebar.classList.remove('open');
+            document.body.classList.remove('no-scroll');
+          }
+        }
+      });
+
+      // Escape key handler for admin page sidebar
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          const sidebar = document.getElementById('adminSidebar');
+          if (sidebar && sidebar.classList.contains('open')) {
+            sidebar.classList.remove('open');
+            document.body.classList.remove('no-scroll');
+          }
+        }
+      });
+
       document.getElementById('btnAdminLogout')?.addEventListener('click', async () => {
         await fetch('/api/v1/auth/logout', { method: 'POST', credentials: 'include' });
         localStorage.removeItem('coda_token');
         localStorage.removeItem('coda_user');
         
-        document.body.style.overflow = 'hidden';
+        document.body.classList.add('no-scroll');
+        var dm = document.querySelector('.dashboard-main'); if(dm) dm.style.overflow = 'hidden';
+        var am = document.querySelector('.admin-main'); if(am) am.style.overflow = 'hidden';
         const s = document.getElementById('adminSidebar');
         if (s) s.classList.remove('open');
         const authModal = document.getElementById('authModal');
         if (authModal) authModal.style.display = 'flex';
       });
+
+      async function setUserStatus(userId, status) {
+        const label = status === 'active' ? 'Activate' : status === 'blocked' ? 'Block' : 'Suspend';
+        if (!confirm('Are you sure you want to ' + label.toLowerCase() + ' this user?')) return;
+        await fetch('/api/v1/admin/users/' + userId + '/status', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ status })
+        });
+        loadUsers(usersPage);
+      }
+      function activateUser(id) { setUserStatus(id, 'active'); }
+      function suspendUser(id) { setUserStatus(id, 'suspended'); }
+      function blockUser(id) { setUserStatus(id, 'blocked'); }
+
+      async function adminDeleteUser(userId) {
+        if (!confirm('WARNING: This will permanently delete this user and all their sessions. Are you sure?')) return;
+        if (!confirm('This action cannot be undone. Type OK to confirm.')) return;
+        await fetch('/api/v1/admin/users/' + userId, { method: 'DELETE' });
+        showToast('Deleted', 'User has been permanently deleted.', 'success');
+        loadUsers(usersPage);
+      }
 
       async function loadOverview() {
         const data = await fetchWithAuth('/api/v1/admin/analytics/overview');
@@ -723,11 +835,16 @@
         if (!data) return;
         const tbody = document.getElementById('usersBody');
         if (!data.users.length) {
-          tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;padding:40px;color:var(--text-muted);">No users found.</td></tr>';
+          tbody.innerHTML = '<tr><td colspan="8" style="text-align:center;padding:40px;color:var(--text-muted);">No users found.</td></tr>';
           document.getElementById('usersPagination').style.display = 'none';
           return;
         }
-        tbody.innerHTML = data.users.map(u => '<tr><td>' + (u.name || '-') + '</td><td class="email-cell" title="' + u.email + '">' + u.email + '</td><td>' + (u.business_name || '-') + '</td><td>' + u.role + '</td><td>' + (u.business_tier || '-') + '</td><td>' + formatDate(u.created_at) + '</td></tr>').join('');
+        tbody.innerHTML = data.users.map(u => {
+          const status = u.status || 'active';
+          const statusClass = status === 'active' ? 'badge-active' : status === 'blocked' ? 'badge-inactive' : 'badge-warning';
+          const actBtn = status === 'active' ? '<button class="btn btn-xs btn-outline" onclick="suspendUser(\'' + u.id + '\')">Suspend</button><button class="btn btn-xs btn-outline" onclick="blockUser(\'' + u.id + '\')">Block</button>' : status === 'blocked' ? '<button class="btn btn-xs btn-outline" onclick="activateUser(\'' + u.id + '\')">Activate</button>' : '<button class="btn btn-xs btn-outline" onclick="activateUser(\'' + u.id + '\')">Activate</button><button class="btn btn-xs btn-outline" onclick="blockUser(\'' + u.id + '\')">Block</button>';
+          return '<tr><td>' + (u.name || '-') + '</td><td class="email-cell" title="' + u.email + '">' + u.email + '</td><td>' + (u.business_name || '-') + '</td><td>' + u.role + '</td><td>' + (u.business_tier || '-') + '</td><td><span class="badge ' + statusClass + '">' + status.toUpperCase() + '</span></td><td>' + formatDate(u.created_at) + '</td><td style="white-space:nowrap;">' + actBtn + '<button class="btn btn-xs btn-danger" onclick="adminDeleteUser(\'' + u.id + '\')" style="margin-left:4px;">Delete</button></td></tr>';
+        }).join('');
         const p = data.pagination;
         document.getElementById('usersPagination').style.display = 'flex';
         document.getElementById('usersPageInfo').textContent = 'Page ' + p.page + ' of ' + p.pages + ' (' + p.total + ' users)';
@@ -806,7 +923,7 @@
               plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => formatCurrency(ctx.raw) } } },
               scales: {
                 x: { grid: { display: false } },
-                y: { grid: { color: colors.border }, ticks: { callback: v => '₦' + (v/1000).toFixed(0) + 'k' }, beginAtZero: true }
+                y: { grid: { color: colors.border }, ticks: { callback: v => (typeof getActiveCurrencySymbol === 'function' ? getActiveCurrencySymbol() : '₦') + (v/1000).toFixed(0) + 'k' }, beginAtZero: true }
               }
             }
           });
@@ -844,7 +961,7 @@
               plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => formatCurrency(ctx.raw) } } },
               scales: {
                 x: { grid: { display: false } },
-                y: { grid: { color: colors.border }, ticks: { callback: v => '₦' + (v/1000).toFixed(0) + 'k' }, beginAtZero: true }
+                y: { grid: { color: colors.border }, ticks: { callback: v => (typeof getActiveCurrencySymbol === 'function' ? getActiveCurrencySymbol() : '₦') + (v/1000).toFixed(0) + 'k' }, beginAtZero: true }
               }
             }
           });
@@ -879,16 +996,36 @@
         if (!me) return;
         currentUser = me.user;
 
+        // Cross-tab session invalidation: re-check auth when tab becomes visible
+        document.addEventListener('visibilitychange', function onVis() {
+          if (document.visibilityState === 'visible' && currentUser) {
+            fetch('/api/v1/auth/me', { credentials: 'include' }).then(r => {
+              if (!r.ok) window.location.href = '/login';
+            });
+          }
+        });
+
         const ui = document.getElementById('adminUserInfo');
         if (ui && currentUser) {
           ui.innerHTML = '<div class="user-avatar">' + (currentUser.name?.charAt(0)?.toUpperCase() || 'A') + '</div><div class="user-details"><div class="user-name">' + (currentUser.name || '') + '</div><div class="user-role">Platform Admin</div></div>';
         }
 
-        await Promise.all([
-          loadOverview(),
-          loadUsers(1),
-          loadBusinesses(1),
-        ]);
+        // Fire data loads asynchronously (same fire-and-forget pattern as user dashboard)
+        loadOverview();
+        loadUsers(1);
+        loadBusinesses(1);
+
+        // Switch to saved tab (removes early-override, applies .active classes)
+        const savedTab = localStorage.getItem('coda_admin_active_view') || 'users';
+        switchTab(savedTab);
+        if (savedTab === 'analytics') loadAnalytics();
+        if (savedTab === 'audit') loadAuditLog(1);
+
+        // Safety net: ensure a panel is actually active, fall back to users
+        const anyActive = Array.from(document.querySelectorAll('.admin-panel')).some(p => p.classList.contains('active'));
+        if (!anyActive) {
+          switchTab('users');
+        }
       }
 
       if (document.readyState === 'loading') {
@@ -898,5 +1035,175 @@
       }
     })();
   </script>
+
+<script id="modal-fix-script">
+  document.addEventListener('DOMContentLoaded', function() {
+    function openModal(id) {
+      var m = document.getElementById(id);
+      if (m) {
+        document.body.classList.add('no-scroll');
+        var dm = document.querySelector('.dashboard-main'); if(dm) dm.style.overflow = 'hidden';
+        var am = document.querySelector('.admin-main'); if(am) am.style.overflow = 'hidden';
+        m.style.setProperty('display', 'flex', 'important');
+        m.classList.add('active');
+        m.style.zIndex = '999999';
+        m.style.opacity = '1';
+        m.style.visibility = 'visible';
+      }
+    }
+    function closeModal(id) {
+      var m = document.getElementById(id);
+      if (m) {
+        document.body.classList.remove('no-scroll');
+        var dm = document.querySelector('.dashboard-main'); if(dm) dm.style.overflow = '';
+        var am = document.querySelector('.admin-main'); if(am) am.style.overflow = '';
+        m.style.setProperty('display', 'none', 'important');
+        m.classList.remove('active');
+      }
+    }
+    
+    document.querySelectorAll('.legal-trigger-privacy').forEach(function(el) {
+      el.addEventListener('click', function(e) {
+        e.preventDefault();
+        openModal('privacyModal');
+      });
+    });
+    
+    document.querySelectorAll('.legal-trigger-terms').forEach(function(el) {
+      el.addEventListener('click', function(e) {
+        e.preventDefault();
+        openModal('termsModal');
+      });
+
+    document.querySelectorAll('.support-trigger').forEach(function(el) {
+      el.addEventListener('click', function(e) {
+        e.preventDefault();
+        openModal('supportModal');
+      });
+    });
+  
+    });
+
+    // Close buttons
+    ['privacyModal', 'termsModal', 'supportModal'].forEach(function(id) {
+      var m = document.getElementById(id);
+      if (m) {
+        var buttons = m.querySelectorAll('.modal-close-btn, .legal-modal-close, button.btn-primary');
+        buttons.forEach(function(btn) {
+          btn.addEventListener('click', function() {
+            closeModal(id);
+          });
+        });
+      }
+    });
+  });
+</script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // FAQ Accordion Logic
+    const faqToggles = document.querySelectorAll('.faq-toggle');
+    faqToggles.forEach(toggle => {
+      toggle.addEventListener('click', function(e) {
+        e.preventDefault(); // Prevent accidental form submissions/jumps
+        const content = this.nextElementSibling;
+        const icon = this.querySelector('.faq-icon');
+        
+        // Close all others safely
+        document.querySelectorAll('.faq-content').forEach(c => {
+          if(c !== content) {
+            c.style.maxHeight = '0px';
+            c.style.paddingTop = '0px';
+          }
+        });
+        document.querySelectorAll('.faq-icon').forEach(i => {
+          if(i !== icon) {
+            i.style.transform = 'rotate(0deg)';
+          }
+        });
+
+        if (content.style.maxHeight && content.style.maxHeight !== '0px') {
+          content.style.maxHeight = '0px';
+          content.style.paddingTop = '0px';
+          icon.style.transform = 'rotate(0deg)';
+        } else {
+          content.style.paddingTop = '12px';
+          content.style.maxHeight = content.scrollHeight + 24 + "px";
+          icon.style.transform = 'rotate(180deg)';
+        }
+      });
+    });
+  });
+</script>
+
 </body>
 </html>
+
+
+<div class="modal-overlay" id="supportModal" style="position:fixed;inset:0;background:rgba(15,23,42,0.6);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:1000;">
+  <div style="background:#fff;width:100%;max-width:500px;border-radius:14px;padding:32px;position:relative;max-height:80vh;overflow-y:auto;box-shadow:0 20px 25px -5px rgba(15,23,42,0.06);">
+    <button class="modal-close-btn" style="position:absolute;top:24px;right:24px;background:none;border:none;cursor:pointer;color:#64748b;"><span class="material-symbols-outlined">close</span></button>
+    
+    <div style="display:flex;align-items:center;gap:8px;font-weight:800;font-size:18px;color:#0f172a;margin-bottom:24px;">
+      <span style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;"><svg viewBox="20 20 54 58" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;"><rect x="38" y="22" width="34" height="14" rx="3" fill="#0d9488"/><rect x="22" y="32" width="18" height="38" rx="3.5" fill="currentColor"/><rect x="34" y="62" width="38" height="14" rx="3" fill="currentColor"/></svg></span>
+      <span>Coda Support Hub</span>
+    </div>
+    
+    <div style="margin-bottom: 24px;">
+      <div style="display: flex; align-items: center; gap: 8px; padding: 12px; background: #ecfdf5; border-radius: 8px; border: 1px solid #a7f3d0; margin-bottom: 24px;">
+        <span class="material-symbols-outlined" style="color: #059669; font-size: 20px;">check_circle</span>
+        <span style="color: #065f46; font-size: 14px; font-weight: 500;">System Status: All Systems Operational</span>
+      </div>
+
+      
+      <h3 style="font-size: 16px; color: #0f172a; margin-bottom: 12px;">Frequently Asked Questions</h3>
+      <div class="faq-accordion" style="display: flex; flex-direction: column; gap: 8px;">
+        
+        <div class="faq-item" style="border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
+          <button class="faq-toggle" style="width: 100%; display: flex; align-items: center; justify-content: space-between; background: #f8fafc; border: none; padding: 12px 16px; cursor: pointer; text-align: left; font-family: 'Inter', sans-serif;">
+            <span style="color: #0f172a; font-weight: 600; font-size: 14px;">How do I reset my account password?</span>
+            <span class="material-symbols-outlined faq-icon" style="color: #64748b; font-size: 20px; transition: transform 0.2s;">expand_more</span>
+          </button>
+          <div class="faq-content" style="padding: 0 16px; max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.3s ease; background: #fff;">
+            <p style="font-size: 14px; color: #475569; margin: 0; padding-bottom: 12px; line-height: 1.5;">Go to the login screen and click "Forgot Password". A secure reset link will be sent to your registered email. For security, links expire after 15 minutes.</p>
+          </div>
+        </div>
+
+        <div class="faq-item" style="border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
+          <button class="faq-toggle" style="width: 100%; display: flex; align-items: center; justify-content: space-between; background: #f8fafc; border: none; padding: 12px 16px; cursor: pointer; text-align: left; font-family: 'Inter', sans-serif;">
+            <span style="color: #0f172a; font-weight: 600; font-size: 14px;">How do I export monthly financial reports?</span>
+            <span class="material-symbols-outlined faq-icon" style="color: #64748b; font-size: 20px; transition: transform 0.2s;">expand_more</span>
+          </button>
+          <div class="faq-content" style="padding: 0 16px; max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.3s ease; background: #fff;">
+            <p style="font-size: 14px; color: #475569; margin: 0; padding-bottom: 12px; line-height: 1.5;">Navigate to the <b>Reports</b> tab from your dashboard. Select "Profit & Loss" or "Balance Sheet", choose your date range, and click the Export button to download as CSV or PDF.</p>
+          </div>
+        </div>
+
+        <div class="faq-item" style="border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
+          <button class="faq-toggle" style="width: 100%; display: flex; align-items: center; justify-content: space-between; background: #f8fafc; border: none; padding: 12px 16px; cursor: pointer; text-align: left; font-family: 'Inter', sans-serif;">
+            <span style="color: #0f172a; font-weight: 600; font-size: 14px;">How do I run Bank Reconciliation?</span>
+            <span class="material-symbols-outlined faq-icon" style="color: #64748b; font-size: 20px; transition: transform 0.2s;">expand_more</span>
+          </button>
+          <div class="faq-content" style="padding: 0 16px; max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.3s ease; background: #fff;">
+            <p style="font-size: 14px; color: #475569; margin: 0; padding-bottom: 12px; line-height: 1.5;">Open the <b>Bank Reconciliation</b> module. You can manually match your ERP ledger entries against your uploaded bank statements by clicking the "Match" icon next to each transaction.</p>
+          </div>
+        </div>
+
+        <div class="faq-item" style="border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
+          <button class="faq-toggle" style="width: 100%; display: flex; align-items: center; justify-content: space-between; background: #f8fafc; border: none; padding: 12px 16px; cursor: pointer; text-align: left; font-family: 'Inter', sans-serif;">
+            <span style="color: #0f172a; font-weight: 600; font-size: 14px;">How do I manage team permissions?</span>
+            <span class="material-symbols-outlined faq-icon" style="color: #64748b; font-size: 20px; transition: transform 0.2s;">expand_more</span>
+          </button>
+          <div class="faq-content" style="padding: 0 16px; max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.3s ease; background: #fff;">
+            <p style="font-size: 14px; color: #475569; margin: 0; padding-bottom: 12px; line-height: 1.5;">Navigate to the <b>Admin Portal</b>. From the "Team Management" section, you can add new users and assign them specific role-based access controls (e.g., restricted to HR & Payroll or full access).</p>
+          </div>
+        </div>
+        
+      </div>
+
+    </div>
+
+    <a href="mailto:support@codatechnologies.com" style="display:inline-flex;align-items:center;justify-content:center;font-family:Inter,sans-serif;font-weight:600;font-size:13px;padding:10px 20px;border-radius:6px;border:1px solid #0f172a;background:#0f172a;color:#fff;text-decoration:none;cursor:pointer;width:100%;height:40px;box-sizing:border-box;">Contact Support Team</a>
+  </div>
+</div>
+

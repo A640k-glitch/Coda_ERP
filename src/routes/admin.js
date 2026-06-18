@@ -1,9 +1,42 @@
 const express = require('express');
 const router = express.Router();
 const { db } = require('../db');
-const { requireAuth, requireAdmin } = require('../auth');
+const { requireAuth, requireAdmin, logAudit } = require('../auth');
 
 router.use(requireAuth, requireAdmin);
+
+router.delete('/users/:id', (req, res) => {
+  try {
+    const user = db.prepare('SELECT * FROM users WHERE id = ?').get(req.params.id);
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    db.prepare('DELETE FROM sessions WHERE user_id = ?').run(user.id);
+    db.prepare('DELETE FROM users WHERE id = ?').run(user.id);
+    logAudit(user.business_id, req.user.id, 'admin.user.delete', { deleted_user_id: user.id, email: user.email });
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.patch('/users/:id/status', (req, res) => {
+  try {
+    const { status } = req.body;
+    if (!['active', 'blocked', 'suspended'].includes(status)) {
+      return res.status(400).json({ error: 'status must be active, blocked, or suspended' });
+    }
+    const user = db.prepare('SELECT * FROM users WHERE id = ?').get(req.params.id);
+    if (!user) return res.status(404).json({ error: 'User not found' });
+    db.prepare('UPDATE users SET status = ? WHERE id = ?').run(status, user.id);
+    // Destroy all sessions if blocked or suspended
+    if (status === 'blocked' || status === 'suspended') {
+      db.prepare('DELETE FROM sessions WHERE user_id = ?').run(user.id);
+    }
+    logAudit(user.business_id, req.user.id, 'admin.user.status', { user_id: user.id, email: user.email, status });
+    res.json({ success: true, userId: user.id, status });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 router.get('/analytics/overview', (req, res) => {
   const totalUsers = db.prepare('SELECT COUNT(*) AS c FROM users').get().c;
@@ -76,7 +109,7 @@ router.get('/users', (req, res) => {
   const offset = (page - 1) * limit;
   const total = db.prepare('SELECT COUNT(*) AS c FROM users').get().c;
   const users = db.prepare(`
-    SELECT u.id, u.email, u.name, u.role, u.created_at, u.business_id,
+    SELECT u.id, u.email, u.name, u.role, u.status, u.created_at, u.business_id,
            b.name AS business_name, b.tier AS business_tier
     FROM users u
     LEFT JOIN businesses b ON b.id = u.business_id

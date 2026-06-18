@@ -108,7 +108,28 @@ function deleteLead(businessId, id) {
   return r.changes > 0;
 }
 
+function importCustomers(businessId, customersList) {
+  const stmt = db.prepare(
+    `INSERT INTO customers (business_id, id, name, email, phone, tin, address)
+     VALUES (?, ?, ?, ?, ?, ?, ?)`
+  );
+  
+  const inserted = [];
+  const transaction = db.transaction((list) => {
+    for (const c of list) {
+      if (!c.name) continue;
+      const id = generateId('cust');
+      stmt.run(businessId, id, c.name, c.email || null, c.phone || null, c.tin || null, c.address || null);
+      inserted.push({ id, ...c });
+    }
+  });
+  
+  transaction(customersList);
+  return inserted;
+}
+
 module.exports = {
   addCustomer, updateCustomer, getCustomer, listCustomers, deleteCustomer,
-  addLead, updateLead, getLead, listLeads, deleteLead,
+  addLead, updateLead, getLead, listLeads, deleteLead, importCustomers,
 };
+

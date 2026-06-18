@@ -5,64 +5,64 @@ require('dotenv').config();
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const path = require('path');
+const helmet = require('helmet');
+const cors = require('cors');
 
 const config = require('./src/config');
 const { attachUser, requireAuth, requireBusiness, requireAdmin } = require('./src/auth');
 const { db } = require('./src/db');
+const { csrfProtection } = require('./src/csrf');
 
 const app = express();
+
+// Security headers with CSP for external CDNs (Fonts, Chartjs)
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://cdn.jsdelivr.net"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com"],
+      imgSrc: ["'self'", "data:"],
+      connectSrc: ["'self'", "https://api.coingecko.com", "https://open.er-api.com"]
+    }
+  }
+}));
+
+// CORS with origin whitelist/reflection
+app.use(cors({
+  origin: process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : true,
+  credentials: true
+}));
+
+// Dev-only conditional request logging
 app.use((req, res, next) => {
-  console.log('INCOMING REQUEST:', req.method, req.url, req.originalUrl);
+  if (process.env.NODE_ENV !== 'production') {
+    console.log('INCOMING REQUEST:', req.method, req.url, req.originalUrl);
+  }
   next();
 });
+
 app.use(express.json({ limit: '2mb' }));
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(attachUser);
 
-// Rate limiting for auth endpoints
-const authRequestCounts = new Map();
-const AUTH_WINDOW_MS = 15 * 60 * 1000;
-const AUTH_MAX_REQUESTS = 10;
-
-function authRateLimiter(req, res, next) {
-  const ip = req.ip || req.connection.remoteAddress || req.socket.remoteAddress || 'unknown';
-  const now = Date.now();
-  const key = `auth:${ip}`;
-  
-  if (!authRequestCounts.has(key)) {
-    authRequestCounts.set(key, { count: 0, windowStart: now });
+// CSRF middleware
+const csrfBypassRoutes = ['/api/v1/compliance/validate'];
+app.use((req, res, next) => {
+  if (csrfBypassRoutes.includes(req.path)) {
+    return next();
   }
-  
-  const record = authRequestCounts.get(key);
-  if (now - record.windowStart > AUTH_WINDOW_MS) {
-    record.count = 0;
-    record.windowStart = now;
-  }
-  
-  record.count++;
-  
-  res.set({
-    'X-RateLimit-Limit': AUTH_MAX_REQUESTS,
-    'X-RateLimit-Remaining': Math.max(0, AUTH_MAX_REQUESTS - record.count),
-    'X-RateLimit-Reset': new Date(record.windowStart + AUTH_WINDOW_MS).toISOString()
+  csrfProtection(req, res, (err) => {
+    if (err) {
+      return res.status(403).json({ error: 'Invalid or missing CSRF token' });
+    }
+    next();
   });
-  
-  if (record.count > AUTH_MAX_REQUESTS) {
-    return res.status(429).json({ error: 'Too many attempts, please try again later' });
-  }
-  
-  next();
-}
+});
 
-app.use('/api/v1/auth/login', (req, res, next) => {
-  console.log('RATE LIMITER HIT for login:', req.ip);
-  authRateLimiter(req, res, next);
-});
-app.use('/api/v1/auth/signup', (req, res, next) => {
-  console.log('RATE LIMITER HIT for signup:', req.ip);
-  authRateLimiter(req, res, next);
-});
+
 
 // API routes
 app.use('/api/v1/auth',         require('./src/routes/auth'));
@@ -73,12 +73,13 @@ app.use('/api/v1/crm',          require('./src/routes/crm'));
 app.use('/api/v1/hr',           require('./src/routes/hr'));
 app.use('/api/v1/tax',          require('./src/routes/tax'));
 app.use('/api/v1/subscription', require('./src/routes/subscription'));
+app.use('/api/v1/reconciliation', require('./src/routes/reconciliation'));
 app.use('/api/v1/admin', require('./src/routes/admin'));
 
 // Backward-compat: the original /api/v1/business/onboard endpoint
 const subscription = require('./src/modules/subscription');
 const accounting = require('./src/modules/accounting');
-app.post('/api/v1/business/onboard', (req, res) => {
+app.post('/api/v1/business/onboard', requireAuth, (req, res) => {
   try {
     const { businessName, registrationNumber, businessType, contactEmail, contactPhone, subscriptionTier, address } = req.body;
     if (!businessName || !registrationNumber || !contactEmail) {
@@ -153,6 +154,12 @@ app.get('/login', (req, res) => {
 app.get('/signup', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'signup.html'));
 });
+app.get('/forgot-password', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'forgot-password.html'));
+});
+app.get('/reset-password', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'reset-password.html'));
+});
 
 // Static frontend
 app.use(express.static(path.join(__dirname, 'public')));
@@ -160,17 +167,17 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Health check
 app.get('/healthz', (req, res) => {
   try {
-    const userCount = db.prepare('SELECT COUNT(*) AS c FROM users').get().c;
-    res.json({ ok: true, users: userCount, version: config.version });
+    res.json({ ok: true, version: config.version });
   } catch (e) {
-    res.status(500).json({ ok: false, error: e.message });
+    res.status(500).json({ ok: false });
   }
 });
 
 // Error handler
 app.use((err, req, res, next) => {
   console.error('Unhandled error:', err);
-  res.status(500).json({ error: err.message || 'Internal server error' });
+  const message = process.env.NODE_ENV !== 'production' ? err.message : 'Internal server error';
+  res.status(500).json({ error: message });
 });
 
 // Boot
@@ -192,7 +199,7 @@ if (require.main === module) {
   API:        http://localhost:${PORT}/api/v1
   Health:     http://localhost:${PORT}/healthz
 
-  Tiers: Starter ₦5,000 | Professional ₦15,000 | Enterprise ₦45,000
+  Tiers: Starter ₦15,000 | Professional ₦45,000 | Enterprise Custom
     `);
   });
 }

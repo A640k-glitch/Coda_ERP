@@ -1,6 +1,6 @@
 // Accounting module — real double-entry ledger, financial reports
 const { db } = require('../db');
-const { generateId, asyncHandler } = require('../utils');
+const { generateId } = require('../utils');
 
 function accountByCode(businessId, code) {
   return db.prepare('SELECT * FROM accounts WHERE business_id = ? AND code = ?').get(businessId, code);
@@ -172,8 +172,8 @@ function balanceSheet(businessId, asOf = null) {
 function incomeStatement(businessId, { from, to } = {}) {
   const fromIso = from || new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString();
   const toIso = to || new Date().toISOString();
-  const revenue = balancesByType(businessId, 'revenue');
-  const expenses = balancesByType(businessId, 'expense');
+  const revenue = balancesByType(businessId, 'revenue', toIso);
+  const expenses = balancesByType(businessId, 'expense', toIso);
   // For revenue & expense, credit - debit (revenue up via credit; expense up via debit)
   const totalRevenue = -revenue.reduce((s, r) => s + r.balance, 0);
   const cogsItem = expenses.find(e => e.code === '5000');
@@ -232,13 +232,81 @@ function cashFlow(businessId, { from, to } = {}) {
   };
 }
 
+function updateTransaction(businessId, id, { date, description, reference }) {
+  const existing = db.prepare('SELECT * FROM journal_entries WHERE id = ? AND business_id = ?').get(id, businessId);
+  if (!existing) throw new Error('Transaction not found');
+  db.prepare(
+    'UPDATE journal_entries SET date = ?, description = ?, reference = ? WHERE id = ? AND business_id = ?'
+  ).run(
+    date || existing.date,
+    description !== undefined ? description : existing.description,
+    reference !== undefined ? reference : existing.reference,
+    id, businessId
+  );
+  return { id, date: date || existing.date, description: description !== undefined ? description : existing.description };
+}
+
+function deleteTransaction(businessId, id) {
+  const existing = db.prepare('SELECT * FROM journal_entries WHERE id = ? AND business_id = ?').get(id, businessId);
+  if (!existing) throw new Error('Transaction not found');
+  db.prepare('DELETE FROM journal_entries WHERE id = ? AND business_id = ?').run(id, businessId);
+  // journal_lines are cascade-deleted
+  return { success: true };
+}
+
+function createAccount(businessId, { code, name, type }) {
+  if (!code || !name || !type) throw new Error('code, name, and type are required');
+  const existing = db.prepare('SELECT id FROM accounts WHERE business_id = ? AND code = ?').get(businessId, code);
+  if (existing) throw new Error('Account code already exists');
+  const allowedTypes = ['asset', 'liability', 'equity', 'revenue', 'expense'];
+  if (!allowedTypes.includes(type)) throw new Error('Invalid account type');
+  const info = db.prepare(
+    'INSERT INTO accounts (business_id, code, name, type) VALUES (?, ?, ?, ?)'
+  ).run(businessId, code, name, type);
+  return { id: info.lastInsertRowid, code, name, type };
+}
+
+function updateAccount(businessId, id, { code, name, type }) {
+  const existing = db.prepare('SELECT * FROM accounts WHERE id = ? AND business_id = ?').get(id, businessId);
+  if (!existing) throw new Error('Account not found');
+  if (type) {
+    const allowedTypes = ['asset', 'liability', 'equity', 'revenue', 'expense'];
+    if (!allowedTypes.includes(type)) throw new Error('Invalid account type');
+  }
+  db.prepare(
+    'UPDATE accounts SET code = ?, name = ?, type = ? WHERE id = ? AND business_id = ?'
+  ).run(
+    code || existing.code,
+    name || existing.name,
+    type || existing.type,
+    id, businessId
+  );
+  return { id: Number(id), code: code || existing.code, name: name || existing.name, type: type || existing.type };
+}
+
+function deleteAccount(businessId, id) {
+  const existing = db.prepare('SELECT * FROM accounts WHERE id = ? AND business_id = ?').get(id, businessId);
+  if (!existing) throw new Error('Account not found');
+  const lineCount = db.prepare(
+    'SELECT COUNT(*) AS cnt FROM journal_lines WHERE account_id = ?'
+  ).get(id);
+  if (lineCount.cnt > 0) throw new Error('Cannot delete account with journal lines. Remove or re-assign transactions first.');
+  db.prepare('DELETE FROM accounts WHERE id = ? AND business_id = ?').run(id, businessId);
+  return { success: true };
+}
+
 module.exports = {
   accountByCode,
   listAccounts,
   getAccountBalance,
   recordTransaction,
+  updateTransaction,
+  deleteTransaction,
   listTransactions,
   getTransaction,
+  createAccount,
+  updateAccount,
+  deleteAccount,
   balanceSheet,
   incomeStatement,
   cashFlow,

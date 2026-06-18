@@ -217,14 +217,15 @@ document.addEventListener('DOMContentLoaded', () => {
   function animateKPI(el, target) {
     const duration = 1200;
     const start = performance.now();
+    const sym = typeof getActiveCurrencySymbol === 'function' ? getActiveCurrencySymbol() : '₦';
 
     function tick(now) {
       const p = Math.min((now - start) / duration, 1);
       const eased = 1 - Math.pow(1 - p, 3);
       const current = Math.floor(target * eased);
-      el.textContent = '₦' + current.toLocaleString();
+      el.textContent = sym + current.toLocaleString();
       if (p < 1) requestAnimationFrame(tick);
-      else el.textContent = '₦' + target.toLocaleString();
+      else el.textContent = sym + target.toLocaleString();
     }
     requestAnimationFrame(tick);
   }
@@ -275,11 +276,12 @@ document.addEventListener('DOMContentLoaded', () => {
       const statusClass = tx.status === 'Paid' ? 'badge-paid' : 'badge-pending';
       const amountClass = tx.cat === 'Revenue' ? '' : '';
       const tr = document.createElement('tr');
+      const formattedAmount = typeof formatCurrency === 'function' ? formatCurrency(tx.amount) : '₦' + tx.amount.toLocaleString();
       tr.innerHTML = `
         <td>${tx.date}</td>
         <td>${tx.desc}</td>
         <td><span class="badge ${badgeClass}">${tx.cat}</span></td>
-        <td class="amount ${amountClass}">₦${tx.amount.toLocaleString()}</td>
+        <td class="amount ${amountClass}">${formattedAmount}</td>
         <td><span class="badge ${statusClass}">${tx.status}</span></td>
       `;
       tbody.appendChild(tr);
@@ -323,13 +325,14 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 
   function calculate() {
+    if (!grossInput) return;
     const gross = parseFloat(grossInput.value);
     if (isNaN(gross) || gross <= 0) {
-      demoResult.innerHTML = '<div class="result-placeholder">Enter a valid salary amount</div>';
+      if (demoResult) demoResult.innerHTML = '<div class="result-placeholder">Enter a valid salary amount</div>';
       return;
     }
 
-    const pensionMode = pensionSelect.value;
+    const pensionMode = pensionSelect ? pensionSelect.value : 'none';
     let employeePensionRate = 0.08;
     let employerPensionRate = 0.10;
 
@@ -347,25 +350,27 @@ document.addEventListener('DOMContentLoaded', () => {
     const nhf = gross <= 0 ? 0 : Math.min(gross * 0.025, 15000);
     const netPay = taxableIncome - paye - nhf;
 
-    const cur = n => '₦' + n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    const cur = n => typeof formatCurrency === 'function' ? formatCurrency(n, 2) : '₦' + n.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-    demoResult.innerHTML = `
-      <div class="result-content">
-        <div class="result-row"><span class="label">Gross Salary</span><span class="value">${cur(gross)}</span></div>
-        <div class="result-row"><span class="label">Employee Pension (${(employeePensionRate * 100).toFixed(0)}%)</span><span class="value">${cur(employeePension)}</span></div>
-        <div class="result-row"><span class="label">Employer Pension (${(employerPensionRate * 100).toFixed(0)}%)</span><span class="value">${cur(employerPension)}</span></div>
-        <div class="result-row"><span class="label">PAYE Tax</span><span class="value">${cur(paye)}</span></div>
-        <div class="result-row"><span class="label">NHF (2.5%)</span><span class="value">${cur(nhf)}</span></div>
-        <div class="result-row" style="border-bottom:none;padding-bottom:0;"><span class="label">Net Pay</span><span class="value highlight">${cur(netPay)}</span></div>
-      </div>
-    `;
+    if (demoResult) {
+      demoResult.innerHTML = `
+        <div class="result-content">
+          <div class="result-row"><span class="label">Gross Salary</span><span class="value">${cur(gross)}</span></div>
+          <div class="result-row"><span class="label">Employee Pension (${(employeePensionRate * 100).toFixed(0)}%)</span><span class="value">${cur(employeePension)}</span></div>
+          <div class="result-row"><span class="label">Employer Pension (${(employerPensionRate * 100).toFixed(0)}%)</span><span class="value">${cur(employerPension)}</span></div>
+          <div class="result-row"><span class="label">PAYE Tax</span><span class="value">${cur(paye)}</span></div>
+          <div class="result-row"><span class="label">NHF (2.5%)</span><span class="value">${cur(nhf)}</span></div>
+          <div class="result-row" style="border-bottom:none;padding-bottom:0;"><span class="label">Net Pay</span><span class="value highlight">${cur(netPay)}</span></div>
+        </div>
+      `;
+    }
   }
 
   if (calcBtn) calcBtn.addEventListener('click', calculate);
   if (grossInput) grossInput.addEventListener('keydown', e => { if (e.key === 'Enter') calculate(); });
 
   // Auto-calculate on load
-  calculate();
+  if (grossInput) calculate();
 
   // ----------------------------------------------------------
   // 8. Session check
@@ -382,7 +387,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const initials = userName.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase();
             let adminBtn = '';
             if (data.isAdmin) {
-              adminBtn = '<a href="/admin" class="btn btn-ghost btn-sm" style="font-size:12px;"><span class="material-symbols-outlined" style="font-size:16px;">admin_panel_settings</span> Admin</a>';
+              adminBtn = '<a href="/admin" class="btn btn-ghost btn-sm" style="display:flex; align-items:center; gap:8px;"><span class="material-symbols-outlined" style="font-size: 20px; color: var(--success, #10b981);">account_circle</span> Admin Panel</a>';
             }
             navAuth.innerHTML = adminBtn + `
               <a href="/dashboard" class="btn btn-primary btn-sm" style="color:white!important; display:flex; align-items:center; gap:8px;">
@@ -391,12 +396,35 @@ document.addEventListener('DOMContentLoaded', () => {
               </a>
             `;
           }
+          
+          // Remove hero actions completely from the DOM if logged in to avoid unused elements
+          const heroActions = document.querySelector('.hero-actions');
+          if (heroActions) {
+            heroActions.remove();
+          }
+          
+          window.codaHasSession = true;
+        }
+      } else if (res.status === 401) {
+        if (window.location.pathname === '/dashboard' || window.location.pathname === '/admin') {
+          window.location.href = '/login';
+        } else if (window.codaHasSession) {
+          // User was logged in on this tab, but logged out elsewhere. Reload to restore default logged-out UI.
+          window.location.reload();
         }
       }
     } catch (e) {
       // session check failed, silently continue — user not logged in
     }
   }
+  
   checkUserSession();
+  
+  // Re-check session when switching back to this tab
+  document.addEventListener('visibilitychange', () => {
+    if (document.visibilityState === 'visible') {
+      checkUserSession();
+    }
+  });
 
 });

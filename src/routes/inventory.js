@@ -2,9 +2,19 @@
 const express = require('express');
 const router = express.Router();
 const inventory = require('../modules/inventory');
-const { requireAuth, requireBusiness } = require('../auth');
+const { db } = require('../db');
+const { requireAuth, requireBusiness, logAudit } = require('../auth');
 
 router.use(requireAuth, requireBusiness);
+
+router.post('/products/batch-delete', (req, res) => {
+  const { ids } = req.body;
+  if (!Array.isArray(ids) || !ids.length) return res.status(400).json({ error: 'ids array required' });
+  const placeholders = ids.map(() => '?').join(',');
+  const result = db.prepare(`DELETE FROM products WHERE id IN (${placeholders}) AND business_id = ?`).run(...ids, req.businessId);
+  logAudit(req.businessId, req.user.id, 'product.batch_delete', { count: result.changes });
+  res.json({ deleted: result.changes });
+});
 
 router.get('/products', (req, res) => {
   const { q, lowStockOnly, limit, offset } = req.query;
@@ -20,6 +30,7 @@ router.get('/products', (req, res) => {
 
 router.post('/products', (req, res) => {
   const p = inventory.addProduct(req.businessId, req.body);
+  logAudit(req.businessId, req.user.id, 'product.create', { id: p.id, name: p.name });
   res.status(201).json({ product: p });
 });
 
@@ -43,6 +54,7 @@ router.delete('/products/:id', (req, res) => {
 
 router.post('/sales', (req, res) => {
   const s = inventory.recordSale(req.businessId, req.user.id, req.body);
+  logAudit(req.businessId, req.user.id, 'sale.create', { id: s.id, total: s.total });
   res.status(201).json({ sale: s });
 });
 
