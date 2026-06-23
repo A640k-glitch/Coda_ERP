@@ -224,6 +224,20 @@ function migrate() {
       FOREIGN KEY (matched_journal_id) REFERENCES journal_entries(id) ON DELETE SET NULL
     );
     CREATE INDEX IF NOT EXISTS idx_bank_tx_business ON bank_transactions(business_id, status);
+
+    CREATE TABLE IF NOT EXISTS notifications (
+      id TEXT PRIMARY KEY,
+      business_id TEXT NOT NULL,
+      user_id TEXT,
+      title TEXT NOT NULL,
+      message TEXT NOT NULL,
+      type TEXT NOT NULL DEFAULT 'info',
+      is_read INTEGER NOT NULL DEFAULT 0,
+      created_at TEXT NOT NULL DEFAULT (datetime('now')),
+      FOREIGN KEY (business_id) REFERENCES businesses(id) ON DELETE CASCADE,
+      FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    );
+    CREATE INDEX IF NOT EXISTS idx_notifications_business ON notifications(business_id, user_id, is_read);
   `);
 
   // Run ALTER TABLE statements for existing databases to ensure columns exist

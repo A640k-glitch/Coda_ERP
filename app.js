@@ -21,6 +21,7 @@ app.use(helmet({
     directives: {
       defaultSrc: ["'self'"],
       scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://cdn.jsdelivr.net"],
+      scriptSrcAttr: ["'unsafe-inline'"],
       styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
       fontSrc: ["'self'", "https://fonts.gstatic.com"],
       imgSrc: ["'self'", "data:"],
@@ -75,6 +76,8 @@ app.use('/api/v1/tax',          require('./src/routes/tax'));
 app.use('/api/v1/subscription', require('./src/routes/subscription'));
 app.use('/api/v1/reconciliation', require('./src/routes/reconciliation'));
 app.use('/api/v1/admin', require('./src/routes/admin'));
+app.use('/api/v1/notifications', require('./src/routes/notifications'));
+
 
 // Backward-compat: the original /api/v1/business/onboard endpoint
 const subscription = require('./src/modules/subscription');

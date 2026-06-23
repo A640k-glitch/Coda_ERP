@@ -7,7 +7,7 @@ const { db, seedAccounts } = require('../db');
 const { generateId, generateApiKey } = require('../utils');
 const {
   hashPassword, verifyPassword, createSession, destroySession,
-  setSessionCookie, clearSessionCookie, requireAuth, logAudit,
+  setSessionCookie, clearSessionCookie, clearAuthCookies, requireAuth, logAudit,
 } = require('../auth');
 const { generateCsrfToken } = require('../csrf');
 const subscription = require('../modules/subscription');
@@ -158,10 +158,7 @@ router.post('/login', loginLimiter, async (req, res) => {
 router.post('/logout', requireAuth, (req, res) => {
   const sid = req.sessionId;
   if (sid) destroySession(sid);
-  clearSessionCookie(res);
-  // Also clear CSRF cookie
-  const secure = process.env.NODE_ENV === 'production' ? '; Secure' : '';
-  res.setHeader('Set-Cookie', `coda_csrf=; HttpOnly; Path=/; SameSite=Lax; Max-Age=0${secure}`);
+  clearAuthCookies(res);
   res.json({ ok: true });
 });
 
@@ -240,9 +237,7 @@ router.post('/delete-account', requireAuth, async (req, res) => {
     // Destroy current session and clear cookies
     const sid = req.sessionId;
     if (sid) destroySession(sid);
-    clearSessionCookie(res);
-    const secure = process.env.NODE_ENV === 'production' ? '; Secure' : '';
-    res.setHeader('Set-Cookie', `coda_csrf=; HttpOnly; Path=/; SameSite=Lax; Max-Age=0${secure}`);
+    clearAuthCookies(res);
 
     logAudit(user.business_id, user.id, 'user.delete_account', { isLastOwner });
 

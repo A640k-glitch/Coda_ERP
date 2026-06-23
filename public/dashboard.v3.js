@@ -64,6 +64,9 @@
       if (res.ok) {
         const data = await res.json();
         currentUser = data.user;
+        if (currentUser && data.business) {
+          currentUser.tier = data.business.tier;
+        }
         window.__isAdmin = data.isAdmin === true;
         return true;
       }
@@ -184,17 +187,82 @@
       adminNav.style.display = '';
     }
 
+    // Apply Tier Restrictions
+    function applyTierRestrictions(tier) {
+      const t = (tier || 'starter').toLowerCase();
+      const modules = {
+        starter: ['overview', 'accounting', 'reconciliation', 'tax', 'reports'],
+        professional: ['overview', 'accounting', 'reconciliation', 'tax', 'reports', 'crm', 'hr'],
+        enterprise: ['overview', 'accounting', 'reconciliation', 'inventory', 'crm', 'hr', 'tax', 'reports']
+      };
+      const allowed = modules[t] || modules.starter;
+      
+      document.querySelectorAll('.nav-item[data-view]').forEach(el => {
+        const view = el.getAttribute('data-view');
+        if (!allowed.includes(view)) {
+          el.style.display = 'none';
+        } else {
+          el.style.display = 'flex';
+        }
+      });
+
+      const promoCard = document.querySelector('.sidebar-promo-card');
+      const promoTitle = promoCard?.querySelector('.promo-title');
+      const promoDesc = promoCard?.querySelector('.promo-desc');
+      
+      if (promoCard) {
+        if (t === 'enterprise') {
+          promoCard.style.display = 'none';
+        } else if (t === 'professional') {
+          if (promoTitle) promoTitle.textContent = 'Enterprise Tier';
+          if (promoDesc) promoDesc.textContent = 'Multi-depot inventory and APIs.';
+          promoCard.style.display = 'block';
+        } else {
+          if (promoTitle) promoTitle.textContent = 'Professional Tier';
+          if (promoDesc) promoDesc.textContent = 'Unlock CRM, HR & Payroll.';
+          promoCard.style.display = 'block';
+        }
+      }
+
+      // Gate Overview Cards
+      const overviewCards = {
+        inventory: document.getElementById('card-inventory'),
+        crm: document.getElementById('card-crm'),
+        hr: document.getElementById('card-hr'),
+        tax: document.getElementById('card-tax')
+      };
+      
+      for (const [key, el] of Object.entries(overviewCards)) {
+        if (el) {
+          if (!allowed.includes(key)) {
+            el.style.display = 'none';
+          } else {
+            el.style.display = '';
+            el.style.cursor = 'pointer';
+            el.addEventListener('click', () => switchView(key));
+          }
+        }
+      }
+      return allowed;
+    }
+
+    const allowedViews = applyTierRestrictions(currentUser.tier);
+
     // Initialize components
     initCharts();
-    loadNotifications();
+    fetchNotifications();
     loadSettings();
+    fetchBusinessData();
     updateNotificationBadge();
 
     // Event listeners
     setupEventListeners();
 
     // Restore saved view or default to overview
-    const savedView = localStorage.getItem('coda_active_view') || 'overview';
+    let savedView = localStorage.getItem('coda_active_view') || 'overview';
+    if (!allowedViews.includes(savedView)) {
+      savedView = 'overview';
+    }
     switchView(savedView);
 
     // Safety net: ensure a view is actually active, force overview if not
@@ -237,6 +305,20 @@
         switchView(view);
       });
     });
+
+    // Overview KPI Cards Navigation Shortcuts
+    const statCards = {
+      statCardRevenue: 'accounting',
+      statCardExpenses: 'accounting',
+      statCardProfit: 'accounting',
+      statCardTax: 'tax'
+    };
+    for (const [id, view] of Object.entries(statCards)) {
+      const el = document.getElementById(id);
+      if (el) {
+        el.addEventListener('click', () => switchView(view));
+      }
+    }
 
     document.getElementById('sidebarToggle')?.addEventListener('click', () => {
       if (window.innerWidth <= 1024) {
@@ -453,17 +535,39 @@
     });
 
     // Sidebar Promo Card
-    document.querySelector('.btn-promo')?.addEventListener('click', () => {
-      showToast('Enterprise', 'Contact sales@coda.ng for Enterprise pricing.', 'info');
+    document.querySelector('.btn-promo')?.addEventListener('click', async () => {
+      if (document.getElementById('btnManageBilling')) {
+         document.getElementById('btnManageBilling').click();
+      }
     });
 
-    // Billing button event listener
+    // Billing tab logic
     const btnManageBilling = document.getElementById('btnManageBilling');
     if (btnManageBilling) {
-      btnManageBilling.addEventListener('click', () => {
-        showToast('Billing Gateway', 'Redirecting to external billing portal... (Demo mode)', 'info');
+      btnManageBilling.addEventListener('click', async () => {
+        showModal('Upgrade Subscription', [
+          { label: 'Select Tier', name: 'tier', type: 'select', options: ['professional', 'enterprise'] }
+        ], async (data) => {
+          const tier = data.tier;
+          try {
+            const res = await fetch('/api/v1/business/request-upgrade', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ new_tier: tier.toLowerCase() })
+            });
+            const resData = await res.json();
+            if (resData.success) {
+              showToast('Upgrade Requested', 'Request sent to admin! You can track this in the admin portal.', 'success');
+            } else {
+              showToast('Error', resData.error || 'Failed to request upgrade', 'error');
+            }
+          } catch (err) {
+            showToast('Error', 'Failed to request upgrade', 'error');
+          }
+        });
       });
     }
+
 
     // Global Search Filter (Per User Local Search for active view)
     // viewSearchTargets is defined at IIFE scope (hoisted for switchView access)
@@ -866,44 +970,80 @@
     });
   });
 
+  async function fetchBusinessData() {
+    try {
+      const res = await fetch('/api/v1/business/me', { credentials: 'include' });
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.business) {
+          const planEl = document.getElementById('billingPlan');
+          if (planEl) {
+            planEl.textContent = (data.business.tier || 'Starter').toUpperCase() + ' PLAN';
+          }
+        }
+      }
+    } catch (err) {
+      console.error('Failed to load business data:', err);
+    }
+  }
+
   // ===== Notifications =====
   let notificationCount = 0;
-  let notificationsData = [
-    { id: 1, type: 'alert', title: 'Low Inventory', message: 'Item "Premium Wireless Headphones" is running low (5 left).', time: '1 hour ago', read: false },
-    { id: 2, type: 'info', title: 'New Invoice', message: 'Invoice INV-2024-0453 for ' + formatCurrency(450000) + ' has been paid by Best Foods Ltd.', time: '5 hours ago', read: false },
-    { id: 3, type: 'success', title: 'Payroll Processed', message: 'May 2024 payroll has been processed successfully.', time: '1 day ago', read: true },
-    { id: 4, type: 'warning', title: 'Tax Deadline', message: 'VAT return for Q2 is due in 5 days.', time: '2 days ago', read: true },
-    { id: 5, type: 'error', title: 'Payment Failed', message: 'Payment of ' + formatCurrency(128000) + ' to Sterling Bank was declined. Please retry.', time: '3 days ago', read: true },
-  ];
-  notificationCount = notificationsData.filter(n => !n.read).length;
+  let notificationsData = [];
+
+  async function fetchNotifications() {
+    try {
+      const res = await fetch('/api/v1/notifications', { credentials: 'include' });
+      const data = await res.json();
+      if (data && data.notifications) {
+        notificationsData = data.notifications;
+        notificationCount = notificationsData.filter(n => !n.is_read).length;
+        updateNotificationBadge();
+        if (document.getElementById('panelNotifications')?.classList.contains('open')) {
+          loadNotifications();
+        }
+      }
+    } catch (err) {
+      console.error('Failed to fetch notifications', err);
+    }
+  }
 
   function loadNotifications() {
     const container = document.getElementById('notificationsList');
     if (!container) return;
     
-    container.innerHTML = notificationsData.map(n => `
-      <div class="notification-item${n.read ? '' : ' unread'}" data-id="${n.id}" style="cursor: pointer; padding: 16px; margin-bottom: 12px; border-radius: 12px; background: rgba(15, 23, 42, 0.95); display: flex; gap: 14px; opacity: ${n.read ? 0.7 : 1}; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(8px);">
+    if (notificationsData.length === 0) {
+      container.innerHTML = '<div style="color:var(--text-muted); padding:20px; text-align:center;">No notifications</div>';
+      return;
+    }
+    
+    container.innerHTML = notificationsData.map(n => {
+      const timeStr = typeof formatDate === 'function' ? formatDate(n.created_at) : new Date(n.created_at).toLocaleString();
+      return `
+      <div class="notification-item${n.is_read ? '' : ' unread'}" data-id="${n.id}" style="cursor: pointer; padding: 16px; margin-bottom: 12px; border-radius: 12px; background: rgba(15, 23, 42, 0.95); display: flex; gap: 14px; opacity: ${n.is_read ? 0.7 : 1}; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(8px);">
         <div class="notification-icon ${n.type}" style="display:flex;align-items:center;justify-content:center;width:28px;height:28px;flex-shrink:0; border-radius: 50%; background: rgba(255,255,255,0.05);">
           <span class="material-symbols-outlined" style="font-size: 18px; color: var(--${n.type === 'error' ? 'error' : n.type === 'warning' ? 'warning' : n.type === 'success' ? 'success' : 'info'});">${n.type === 'success' ? 'check_circle' : n.type === 'error' ? 'error' : n.type === 'warning' ? 'warning' : 'info'}</span>
         </div>
         <div class="notification-content" style="flex:1;">
           <div class="notification-title" style="font-weight: 600; font-size: 14px; margin-bottom: 4px; color: #ffffff;">${n.title}</div>
           <div class="notification-message" style="font-size: 13px; color: rgba(255,255,255,0.7); line-height: 1.5; margin-bottom: 6px;">${n.message}</div>
-          <div class="notification-time" style="font-size: 11px; color: rgba(255,255,255,0.4); font-weight: 500;">${n.time}</div>
+          <div class="notification-time" style="font-size: 11px; color: rgba(255,255,255,0.4); font-weight: 500;">${timeStr}</div>
         </div>
       </div>
-    `).join('');
+    `;
+    }).join('');
 
     container.querySelectorAll('.notification-item').forEach(item => {
-      item.addEventListener('click', () => {
-        const id = parseInt(item.dataset.id);
+      item.addEventListener('click', async () => {
+        const id = item.dataset.id;
         const notif = notificationsData.find(n => n.id === id);
-        if (notif && !notif.read) {
-          notif.read = true;
+        if (notif && !notif.is_read) {
+          notif.is_read = true;
           item.classList.remove('unread');
           item.style.opacity = '0.6';
           notificationCount = Math.max(0, notificationCount - 1);
           updateNotificationBadge();
+          await fetch('/api/v1/notifications/' + id + '/read', { method: 'PATCH', credentials: 'include' });
         }
       });
     });
@@ -1712,7 +1852,7 @@
       <p style="font-size:13px; color:rgba(255,255,255,0.7); margin-bottom:12px;">
         Review the customer records parsed from your CSV file.
       </p>
-      <div style="max-height: 200px; overflow-y: auto; border:1px solid rgba(255,255,255,0.1); border-radius:var(--radius-sm); margin-bottom:16px; background: rgba(0,0,0,0.2);">
+      <div style="border:1px solid rgba(255,255,255,0.1); border-radius:var(--radius-sm); margin-bottom:16px; background: rgba(0,0,0,0.2);">
         <table style="width:100%; border-collapse:collapse; text-align:left;">
           <thead>
             <tr style="background:rgba(255,255,255,0.05); border-bottom:1px solid rgba(255,255,255,0.1);">

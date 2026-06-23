@@ -28,7 +28,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
-  <script src="currency.js"></script>
+
   <style>
     :root { --admin-topbar-h: 64px; }
     body {
@@ -348,6 +348,11 @@
       font-weight: 500;
       color: var(--text-secondary);
       transition: all 0.15s;
+      height: 24px !important;
+      display: inline-flex !important;
+      align-items: center;
+      justify-content: center;
+      box-sizing: border-box;
     }
     .btn-xs:hover { background: var(--slate-50); }
     .btn-xs.btn-outline { border-color: var(--slate-300); }
@@ -375,8 +380,8 @@
         .admin-panel { display: none !important; } 
         #panel-${activeTab} { display: block !important; }
         .admin-tab[data-tab="${activeTab}"] { color: var(--slate-900) !important; border-bottom-color: var(--slate-900) !important; }
-        .nav-item[data-tab="${activeTab}"] { background: var(--teal-50) !important; color: var(--teal-700) !important; font-weight: 600 !important; }
-        .nav-item[data-tab="${activeTab}"] .material-symbols-outlined { color: var(--teal-600) !important; }
+        .nav-item[data-tab="${activeTab}"] { background: var(--slate-100) !important; color: var(--slate-900) !important; font-weight: 600 !important; }
+        .nav-item[data-tab="${activeTab}"] .material-symbols-outlined { color: var(--slate-900) !important; }
       `;
       document.head.appendChild(style);
     })();
@@ -406,6 +411,10 @@
             <button class="nav-item" data-tab="businesses">
               <span class="material-symbols-outlined">business</span>
               <span>Businesses</span>
+            </button>
+            <button class="nav-item" data-tab="requests">
+              <span class="material-symbols-outlined">notifications</span>
+              <span>Requests</span>
             </button>
           </div>
           <div class="nav-section">
@@ -454,7 +463,15 @@
           </button>
           <h1 class="page-title">Platform Operations</h1>
         </div>
-        <div>
+        <div style="display:flex; align-items:center; gap:16px;">
+          <div class="topbar-search" style="position: relative; display: flex; align-items: center;">
+            <span class="material-symbols-outlined" style="position: absolute; left: 10px; top: 10px; font-size: 18px; color: var(--text-muted);">search</span>
+            <input class="form-control" type="search" id="adminGlobalSearch" placeholder="Search users, businesses..." style="padding-left: 36px; height: 38px; width: 300px; border-radius: 100px;">
+          </div>
+          <button class="btn-icon-only" id="btnAdminNotifications" aria-label="Notifications" style="width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--border-color); background: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; position: relative;">
+            <span class="material-symbols-outlined" style="font-size: 20px;">notifications</span>
+            <span class="notification-badge" id="adminNotificationBadge" style="display:none; position: absolute; top: -6px; right: -6px; background: var(--error); min-width: 18px; height: 18px; padding: 0 4px; border-radius: 10px; color: #fff; font-size: 10px; font-weight: 700; align-items: center; justify-content: center; border: 2px solid #fff; box-sizing: border-box;"></span>
+          </button>
           <span style="font-size:12px; color:var(--text-muted);" id="adminLastUpdated"></span>
         </div>
       </div>
@@ -497,6 +514,7 @@
         <div class="admin-tabs">
           <button class="admin-tab" data-tab="users">Users</button>
           <button class="admin-tab" data-tab="businesses">Businesses</button>
+          <button class="admin-tab" data-tab="requests">Requests</button>
           <button class="admin-tab" data-tab="analytics">Analytics</button>
           <button class="admin-tab" data-tab="audit">Audit Log</button>
         </div>
@@ -555,9 +573,28 @@
           <div class="pagination" id="businessesPagination" style="display:none;">
             <span id="businessesPageInfo"></span>
             <div style="display:flex; gap:8px;">
-              <button id="businessesPrev" disabled>Previous</button>
-              <button id="businessesNext">Next</button>
+               <button id="businessesPrev" disabled>Previous</button>
+               <button id="businessesNext">Next</button>
             </div>
+          </div>
+        </div>
+
+        <!-- Requests / Notifications Panel -->
+        <div class="admin-panel" id="panel-requests">
+          <div class="admin-table-wrap">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Request Title</th>
+                  <th>Message</th>
+                  <th>Date</th>
+                  <th style="width:160px;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="notificationsBody">
+                <tr><td colspan="4" style="text-align:center; padding:40px; color:var(--text-muted);"><span class="loading-spinner"></span>Loading requests...</td></tr>
+              </tbody>
+            </table>
           </div>
         </div>
 
@@ -690,6 +727,7 @@
             window.fetch = function(input, init) {
               init = init || {};
               init.headers = init.headers || {};
+              init.credentials = 'include';
               const method = (init.method || 'GET').toUpperCase();
               if (['POST', 'PUT', 'DELETE', 'PATCH'].includes(method)) {
                 if (init.headers instanceof Headers) {
@@ -731,6 +769,15 @@
         document.querySelectorAll('.admin-panel').forEach(p => p.classList.toggle('active', p.id === 'panel-' + tab));
         document.querySelectorAll('.admin-nav .nav-item[data-tab]').forEach(n => n.classList.toggle('active', n.dataset.tab === tab));
 
+        // Reset search input and show all table rows when switching tabs
+        const searchInput = document.getElementById('adminGlobalSearch');
+        if (searchInput) {
+          searchInput.value = '';
+        }
+        document.querySelectorAll('.admin-panel tbody tr').forEach(row => {
+          row.style.display = '';
+        });
+
         // Force layout reflow before removing override styles to prevent visual flickering
         document.body.offsetHeight;
 
@@ -744,6 +791,7 @@
           switchTab(t);
           if (t === 'analytics') loadAnalytics();
           if (t === 'audit') loadAuditLog(1);
+          if (t === 'requests') loadNotifications();
         });
       });
       
@@ -752,6 +800,7 @@
           switchTab(item.dataset.tab);
           if (item.dataset.tab === 'analytics') loadAnalytics();
           if (item.dataset.tab === 'audit') loadAuditLog(1);
+          if (item.dataset.tab === 'requests') loadNotifications();
         });
       });
 
@@ -799,39 +848,236 @@
       });
 
       document.getElementById('btnAdminLogout')?.addEventListener('click', async () => {
-        await fetch('/api/v1/auth/logout', { method: 'POST', credentials: 'include' });
+        try {
+          await fetch('/api/v1/auth/logout', { method: 'POST', credentials: 'include' });
+        } catch (e) {}
         localStorage.removeItem('coda_token');
         localStorage.removeItem('coda_user');
-        
-        document.body.classList.add('no-scroll');
-        var dm = document.querySelector('.dashboard-main'); if(dm) dm.style.overflow = 'hidden';
-        var am = document.querySelector('.admin-main'); if(am) am.style.overflow = 'hidden';
-        const s = document.getElementById('adminSidebar');
-        if (s) s.classList.remove('open');
-        const authModal = document.getElementById('authModal');
-        if (authModal) authModal.style.display = 'flex';
+        window.location.href = '/login';
       });
 
-      async function setUserStatus(userId, status) {
-        const label = status === 'active' ? 'Activate' : status === 'blocked' ? 'Block' : 'Suspend';
-        if (!confirm('Are you sure you want to ' + label.toLowerCase() + ' this user?')) return;
-        await fetch('/api/v1/admin/users/' + userId + '/status', {
-          method: 'PATCH',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ status })
+      function showAdminModal(title, text, confirmBtn, isDanger, onConfirm) {
+        const overlay = document.createElement('div');
+        overlay.style.cssText = 'position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; z-index:9999; opacity:0; transition: opacity 0.2s;';
+        
+        const modal = document.createElement('div');
+        modal.style.cssText = 'background:#fff; border-radius:12px; padding:24px; width:400px; max-width:90%; box-shadow:0 10px 25px rgba(0,0,0,0.2); transform: scale(0.95); transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);';
+        
+        const btnClass = isDanger ? 'btn-danger' : 'btn-primary';
+        
+        modal.innerHTML = `
+          <h3 style="margin-bottom:12px; font-size:18px;">${title}</h3>
+          <p style="margin-bottom:24px; color:var(--text-secondary); font-size:14px; line-height:1.5;">${text}</p>
+          <div style="display:flex; justify-content:flex-end; gap:12px;">
+            <button class="btn btn-outline" id="btnAdminModalCancel">Cancel</button>
+            <button class="btn ${btnClass}" id="btnAdminModalConfirm">${confirmBtn}</button>
+          </div>
+        `;
+        
+        overlay.appendChild(modal);
+        document.body.appendChild(overlay);
+        
+        requestAnimationFrame(() => {
+          overlay.style.opacity = '1';
+          modal.style.transform = 'scale(1)';
         });
-        loadUsers(usersPage);
+        
+        const close = () => {
+          overlay.style.opacity = '0';
+          modal.style.transform = 'scale(0.95)';
+          setTimeout(() => overlay.remove(), 200);
+        };
+        
+        document.getElementById('btnAdminModalCancel').onclick = close;
+        
+        const confirmElement = document.getElementById('btnAdminModalConfirm');
+        const cancelElement = document.getElementById('btnAdminModalCancel');
+        
+        confirmElement.onclick = async () => {
+          confirmElement.disabled = true;
+          cancelElement.disabled = true;
+          const originalHTML = confirmElement.innerHTML;
+          confirmElement.innerHTML = '<span class="loading-spinner" style="border: 2px solid rgba(255,255,255,0.3); border-top-color:#fff; width:12px; height:12px; display:inline-block; border-radius:50%; animation:spin 0.6s linear infinite; margin-right:6px; vertical-align:middle;"></span> Processing...';
+          
+          try {
+            await onConfirm();
+            close();
+          } catch (err) {
+            console.error(err);
+            showToast('Action Failed', err.message || 'Could not complete request', 'error');
+            confirmElement.disabled = false;
+            cancelElement.disabled = false;
+            confirmElement.innerHTML = originalHTML;
+          }
+        };
+      }
+
+      async function setUserStatus(userId, status) {
+        const actionMap = { 'active': 'Activate', 'blocked': 'Block', 'suspended': 'Suspend' };
+        const label = actionMap[status] || status;
+        const isDanger = status === 'blocked' || status === 'suspended';
+        
+        showAdminModal(
+          label + ' User', 
+          'Are you sure you want to ' + label.toLowerCase() + ' this user? This will affect their ability to access the platform.', 
+          label,
+          isDanger,
+          async () => {
+            const res = await fetch('/api/v1/admin/users/' + userId + '/status', {
+              method: 'PATCH',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ status })
+            });
+            if (!res.ok) {
+              const errData = await res.json().catch(() => ({}));
+              throw new Error(errData.error || 'Server returned error ' + res.status);
+            }
+            showToast('Updated', 'User has been ' + status + '.', 'success');
+            loadUsers(usersPage);
+          }
+        );
       }
       function activateUser(id) { setUserStatus(id, 'active'); }
       function suspendUser(id) { setUserStatus(id, 'suspended'); }
       function blockUser(id) { setUserStatus(id, 'blocked'); }
 
       async function adminDeleteUser(userId) {
-        if (!confirm('WARNING: This will permanently delete this user and all their sessions. Are you sure?')) return;
-        if (!confirm('This action cannot be undone. Type OK to confirm.')) return;
-        await fetch('/api/v1/admin/users/' + userId, { method: 'DELETE' });
-        showToast('Deleted', 'User has been permanently deleted.', 'success');
+        showAdminModal(
+          'Delete User',
+          'WARNING: This will permanently delete this user and all their sessions. This action cannot be undone.',
+          'Delete Permanently',
+          true,
+          async () => {
+            const res = await fetch('/api/v1/admin/users/' + userId, { method: 'DELETE' });
+            if (!res.ok) {
+              const errData = await res.json().catch(() => ({}));
+              throw new Error(errData.error || 'Server returned error ' + res.status);
+            }
+            showToast('Deleted', 'User has been permanently deleted.', 'success');
+            loadUsers(usersPage);
+          }
+        );
+      }
+
+      async function adminChangeUserTier(userId, tier) {
+        if (!confirm('Change this user\'s business tier to ' + tier.toUpperCase() + '?')) {
+          loadUsers(usersPage); // Reset dropdown
+          return;
+        }
+        const res = await fetch('/api/v1/admin/users/' + userId + '/upgrade', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ tier })
+        });
+        if (res.ok) {
+          showToast('Updated', 'Business tier updated to ' + tier, 'success');
+        } else {
+          showToast('Error', 'Failed to update business tier.', 'error');
+        }
         loadUsers(usersPage);
+      }
+      
+      let currentNotifications = [];
+
+      async function loadNotifications() {
+        const data = await fetchWithAuth('/api/v1/notifications');
+        if (!data) return;
+        const tbody = document.getElementById('notificationsBody');
+        if (!data.notifications || !data.notifications.length) {
+          tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:40px;color:var(--text-muted);">No pending requests.</td></tr>';
+          return;
+        }
+        currentNotifications = data.notifications;
+        tbody.innerHTML = data.notifications.map(n => {
+          const isRead = n.is_read === 1;
+          const readStyle = isRead ? 'opacity: 0.6;' : 'font-weight: 600;';
+          let actionBtn = '';
+          if (n.title === 'Upgrade Request' && !isRead) {
+            actionBtn = `<button class="btn btn-xs btn-outline" onclick="approveUpgradeFromNotification('${n.id}', '${n.business_id}')">Approve</button>`;
+          }
+          if (!isRead) {
+            actionBtn += `<button class="btn btn-xs btn-outline" style="margin-left:4px;" onclick="markNotificationRead('${n.id}')">Dismiss</button>`;
+          } else {
+            actionBtn = '<span style="color:var(--text-muted); font-size:11px;">Processed</span>';
+          }
+          return `<tr style="${readStyle}">
+            <td>${n.title}</td>
+            <td>${n.message}</td>
+            <td style="white-space:nowrap;">${formatDate(n.created_at)}</td>
+            <td><div style="display:flex; gap:4px; flex-wrap:nowrap; align-items:center;">${actionBtn}</div></td>
+          </tr>`;
+        }).join('');
+        
+        // Also populate the notification slider panel
+        const panelList = document.getElementById('adminNotificationsList');
+        if (panelList) {
+          if (data.notifications.length === 0) {
+            panelList.innerHTML = '<div style="text-align:center; padding: 40px 0; color:var(--text-muted);">No new notifications.</div>';
+          } else {
+            panelList.innerHTML = data.notifications.map(n => {
+              const isRead = n.is_read === 1;
+              const timeStr = formatDate(n.created_at);
+              const type = n.type || 'info';
+              const iconColor = type === 'error' ? 'var(--error)' : type === 'warning' ? 'var(--warning)' : type === 'success' ? 'var(--success)' : 'var(--teal-500)';
+              const iconName = type === 'success' ? 'check_circle' : type === 'error' ? 'error' : type === 'warning' ? 'warning' : 'info';
+              return `
+                <div class="notification-item${isRead ? '' : ' unread'}" data-id="${n.id}" onclick="markNotificationRead('${n.id}')" style="cursor: pointer; padding: 16px; margin-bottom: 12px; border-radius: 12px; background: rgba(15, 23, 42, 0.95); display: flex; gap: 14px; opacity: ${isRead ? 0.7 : 1}; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(8px); text-align: left;">
+                  <div class="notification-icon ${type}" style="display:flex;align-items:center;justify-content:center;width:28px;height:28px;flex-shrink:0; border-radius: 50%; background: rgba(255,255,255,0.05);">
+                    <span class="material-symbols-outlined" style="font-size: 18px; color: ${iconColor};">${iconName}</span>
+                  </div>
+                  <div class="notification-content" style="flex:1;">
+                    <div class="notification-title" style="font-weight: 600; font-size: 14px; margin-bottom: 4px; color: #ffffff;">${n.title}</div>
+                    <div class="notification-message" style="font-size: 13px; color: rgba(255,255,255,0.7); line-height: 1.5; margin-bottom: 6px;">${n.message}</div>
+                    <div class="notification-time" style="font-size: 11px; color: rgba(255,255,255,0.4); font-weight: 500; display:flex; justify-content:space-between; align-items:center;">
+                      <span>${timeStr}</span>
+                      ${!isRead ? `<span style="color:var(--teal-400); font-weight:600; font-size:11px;">Dismiss</span>` : ''}
+                    </div>
+                  </div>
+                </div>
+              `;
+            }).join('');
+          }
+        }
+        
+        // Update badge
+        const badge = document.getElementById('adminNotificationBadge');
+        if (badge) {
+          const unread = data.notifications.filter(n => n.is_read === 0).length;
+          if (unread > 0) {
+            badge.textContent = unread > 9 ? '9+' : unread;
+            badge.style.display = 'flex';
+          } else {
+            badge.style.display = 'none';
+          }
+        }
+      }
+
+      async function approveUpgradeFromNotification(id, businessId) {
+        const notif = currentNotifications.find(n => n.id === id);
+        let tier = 'professional';
+        if (notif && notif.message.toLowerCase().includes('enterprise')) tier = 'enterprise';
+        if (notif && notif.message.toLowerCase().includes('starter')) tier = 'starter';
+        
+        if (!confirm('Approve upgrade to ' + tier.toUpperCase() + '?')) return;
+        
+        const res = await fetch('/api/v1/admin/businesses/' + businessId + '/tier', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ tier })
+        });
+        
+        if (res.ok) {
+          showToast('Approved', 'Business upgraded to ' + tier, 'success');
+          await fetch('/api/v1/notifications/' + id + '/read', { method: 'PATCH' });
+          loadNotifications();
+        } else {
+          showToast('Error', 'Failed to upgrade business.', 'error');
+        }
+      }
+
+      async function markNotificationRead(id) {
+        await fetch('/api/v1/notifications/' + id + '/read', { method: 'PATCH' });
+        loadNotifications();
       }
 
       async function loadOverview() {
@@ -860,7 +1106,13 @@
           const status = u.status || 'active';
           const statusClass = status === 'active' ? 'badge-active' : status === 'blocked' ? 'badge-inactive' : 'badge-warning';
           const actBtn = status === 'active' ? '<button class="btn btn-xs btn-outline" onclick="suspendUser(\'' + u.id + '\')">Suspend</button><button class="btn btn-xs btn-outline" onclick="blockUser(\'' + u.id + '\')">Block</button>' : status === 'blocked' ? '<button class="btn btn-xs btn-outline" onclick="activateUser(\'' + u.id + '\')">Activate</button>' : '<button class="btn btn-xs btn-outline" onclick="activateUser(\'' + u.id + '\')">Activate</button><button class="btn btn-xs btn-outline" onclick="blockUser(\'' + u.id + '\')">Block</button>';
-          return '<tr><td>' + (u.name || '-') + '</td><td class="email-cell" title="' + u.email + '">' + u.email + '</td><td>' + (u.business_name || '-') + '</td><td>' + u.role + '</td><td>' + (u.business_tier || '-') + '</td><td><span class="badge ' + statusClass + '">' + status.toUpperCase() + '</span></td><td>' + formatDate(u.created_at) + '</td><td style="white-space:nowrap;">' + actBtn + '<button class="btn btn-xs btn-danger" onclick="adminDeleteUser(\'' + u.id + '\')" style="margin-left:4px;">Delete</button></td></tr>';
+          const bTier = u.business_tier || 'starter';
+          const upgradeSelect = `<select class="btn btn-xs btn-outline" style="padding:2px 4px;" onchange="adminChangeUserTier('${u.id}', this.value)">
+            <option value="starter" ${bTier === 'starter' ? 'selected' : ''}>Starter</option>
+            <option value="professional" ${bTier === 'professional' ? 'selected' : ''}>Professional</option>
+            <option value="enterprise" ${bTier === 'enterprise' ? 'selected' : ''}>Enterprise</option>
+          </select>`;
+          return '<tr><td>' + (u.name || '-') + '</td><td class="email-cell" title="' + u.email + '">' + u.email + '</td><td>' + (u.business_name || '-') + '</td><td>' + u.role + '</td><td>' + upgradeSelect + '</td><td><span class="badge ' + statusClass + '">' + status.toUpperCase() + '</span></td><td>' + formatDate(u.created_at) + '</td><td style="white-space:nowrap;">' + actBtn + '<button class="btn btn-xs btn-danger" onclick="adminDeleteUser(\'' + u.id + '\')" style="margin-left:4px;">Delete</button></td></tr>';
         }).join('');
         const p = data.pagination;
         document.getElementById('usersPagination').style.display = 'flex';
@@ -1009,6 +1261,7 @@
       }
 
       async function init() {
+        await initCsrf();
         const me = await fetchWithAuth('/api/v1/auth/me');
         if (!me) return;
         currentUser = me.user;
@@ -1027,16 +1280,42 @@
           ui.innerHTML = '<div class="user-avatar">' + (currentUser.name?.charAt(0)?.toUpperCase() || 'A') + '</div><div class="user-details"><div class="user-name">' + (currentUser.name || '') + '</div><div class="user-role">Platform Admin</div></div>';
         }
 
+        // Wire up the global search box for the active admin tab
+        const searchInput = document.getElementById('adminGlobalSearch');
+        if (searchInput) {
+          searchInput.addEventListener('input', (e) => {
+            const query = e.target.value.toLowerCase();
+            const activePanel = document.querySelector('.admin-panel.active');
+            if (activePanel) {
+              const rows = activePanel.querySelectorAll('tbody tr');
+              rows.forEach(row => {
+                if (row.textContent.includes('No users found') || 
+                    row.textContent.includes('No businesses found') || 
+                    row.textContent.includes('No pending requests') || 
+                    row.textContent.includes('No entries found') || 
+                    row.textContent.includes('Loading requests...')) return;
+                const text = row.textContent.toLowerCase();
+                row.style.display = text.includes(query) ? '' : 'none';
+              });
+            }
+          });
+        }
+
         // Fire data loads asynchronously (same fire-and-forget pattern as user dashboard)
         loadOverview();
         loadUsers(1);
         loadBusinesses(1);
+        loadNotifications();
+        
+        // Poll for notifications periodically
+        setInterval(loadNotifications, 30000);
 
         // Switch to saved tab (removes early-override, applies .active classes)
         const savedTab = localStorage.getItem('coda_admin_active_view') || 'users';
         switchTab(savedTab);
         if (savedTab === 'analytics') loadAnalytics();
         if (savedTab === 'audit') loadAuditLog(1);
+        if (savedTab === 'requests') loadNotifications();
 
         // Safety net: ensure a panel is actually active, fall back to users
         const anyActive = Array.from(document.querySelectorAll('.admin-panel')).some(p => p.classList.contains('active'));
@@ -1050,6 +1329,14 @@
       } else {
         init();
       }
+      // Expose event handlers to window object so inline onclick/onchange attributes work
+      window.activateUser = activateUser;
+      window.suspendUser = suspendUser;
+      window.blockUser = blockUser;
+      window.adminDeleteUser = adminDeleteUser;
+      window.adminChangeUserTier = adminChangeUserTier;
+      window.approveUpgradeFromNotification = approveUpgradeFromNotification;
+      window.markNotificationRead = markNotificationRead;
     })();
   </script>
 
@@ -1091,14 +1378,13 @@
         e.preventDefault();
         openModal('termsModal');
       });
+    });
 
     document.querySelectorAll('.support-trigger').forEach(function(el) {
       el.addEventListener('click', function(e) {
         e.preventDefault();
         openModal('supportModal');
       });
-    });
-  
     });
 
     // Close buttons
@@ -1153,6 +1439,43 @@
   });
 </script>
 
+<!-- Notification Panel -->
+<aside class="panel panel-right" id="panelAdminNotifications" aria-label="Notifications">
+  <div class="panel-header" style="padding: 16px 24px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+    <h3 style="font-size: 16px;">Notifications</h3>
+    <button id="closeAdminNotifications"><span class="material-symbols-outlined">close</span></button>
+  </div>
+  <div class="panel-body" id="adminNotificationsList" style="padding: 24px; overflow-y: auto;">
+    <!-- Filled dynamically from loadNotifications -->
+  </div>
+</aside>
+
+<script>
+  // Setup Admin Notifications Panel Toggle
+  document.getElementById('btnAdminNotifications')?.addEventListener('click', () => {
+    const panel = document.getElementById('panelAdminNotifications');
+    panel.classList.add('open');
+    document.body.classList.add('no-scroll');
+  });
+
+  document.getElementById('closeAdminNotifications')?.addEventListener('click', () => {
+    const panel = document.getElementById('panelAdminNotifications');
+    panel.classList.remove('open');
+    document.body.classList.remove('no-scroll');
+  });
+
+  // Close panel if clicked outside
+  document.addEventListener('click', (e) => {
+    const panel = document.getElementById('panelAdminNotifications');
+    const btn = document.getElementById('btnAdminNotifications');
+    if (panel && panel.classList.contains('open')) {
+      if (!panel.contains(e.target) && (!btn || !btn.contains(e.target))) {
+        panel.classList.remove('open');
+        document.body.classList.remove('no-scroll');
+      }
+    }
+  });
+</script>
 </body>
 </html>
 

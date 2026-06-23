@@ -63,6 +63,14 @@ function clearSessionCookie(res) {
   res.setHeader('Set-Cookie', `coda_sid=; HttpOnly; Path=/; SameSite=Lax; Max-Age=0${secure}`);
 }
 
+function clearAuthCookies(res) {
+  const secure = process.env.NODE_ENV === 'production' ? '; Secure' : '';
+  res.setHeader('Set-Cookie', [
+    `coda_sid=; HttpOnly; Path=/; SameSite=Lax; Max-Age=0${secure}`,
+    `coda_csrf=; HttpOnly; Path=/; SameSite=Lax; Max-Age=0${secure}`
+  ]);
+}
+
 function readSessionCookie(req) {
   const raw = req.headers.cookie || '';
   const m = raw.match(/(?:^|;\s*)coda_sid=([^;]+)/);
@@ -122,6 +130,7 @@ module.exports = {
   destroySession,
   setSessionCookie,
   clearSessionCookie,
+  clearAuthCookies,
   attachUser,
   requireAuth,
   requireBusiness,

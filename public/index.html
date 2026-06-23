@@ -125,8 +125,9 @@
     /* MacBook Mockup Device Frame Styles */
     .macbook-wrapper {
       width: 1400px; /* Designed width for scaling */
-      margin: 48px auto 0;
-      position: relative;
+      margin: 48px 0 0 0;
+      position: absolute;
+      left: 50%;
       background: none;
     }
     
@@ -535,13 +536,13 @@
 
     .btn-pricing {
       width: 100%;
-      height: 46px;
+      height: 42px;
       display: inline-flex;
       align-items: center;
       justify-content: center;
       border-radius: 10px;
       font-weight: 700;
-      font-size: 14px;
+      font-size: 13px;
       text-decoration: none;
       transition: all 0.2s ease;
       cursor: pointer;
@@ -767,7 +768,6 @@
       background: rgba(20, 184, 166, 0.1) !important;
     }
     
-    /* Responsive grids - prevent single card orphan wrap on tablet */
     @media (max-width: 1024px) {
       .pricing-grid-glass,
       .features-section-dark .premium-kpi-grid {
@@ -779,6 +779,17 @@
       }
       .pricing-card-glass {
         padding: 32px !important;
+      }
+      .btn-pricing {
+        height: 38px;
+        font-size: 12px;
+      }
+    }
+    
+    @media (max-width: 768px) {
+      .btn-pricing {
+        height: 36px;
+        font-size: 12px;
       }
     }
   </style>
@@ -796,11 +807,8 @@
       // Laptop mockup is designed at 1400px wide
       const scale = Math.min(1, (width - 32) / 1400);
       
-      wrapper.style.transform = `scale(${scale})`;
-      wrapper.style.transformOrigin = `top left`;
-      
-      // Center the scaled wrapper
-      wrapper.style.left = `${(width - (1400 * scale)) / 2}px`;
+      wrapper.style.transform = `translateX(-50%) scale(${scale})`;
+      wrapper.style.transformOrigin = `top center`;
       
       // Macbook designed height is ~822px (760px viewport + 48px bezels + 14px keyboard base)
       scaler.style.height = `${822 * scale}px`;
