@@ -9,7 +9,7 @@ class CACIntegration {
   constructor() {
     const apiKey = process.env.QOREID_SECRET_KEY;
     if (process.env.NODE_ENV === 'production' && !apiKey) {
-      throw new Error('Missing QOREID_SECRET_KEY in production');
+      console.warn('Missing QOREID_SECRET_KEY in production');
     }
 
     this.client = axios.create({

@@ -24,12 +24,12 @@
   --teal-700: #0f766e;
 
   /* Bronze/Gold Accent (Premium, High-Value Wealth) */
-  --bronze-50: #f0fdfa;
-  --bronze-100: #ccfbf1;
-  --bronze-500: #14b8a6;
-  --bronze-600: #0d9488;
-  --bronze-700: #0f766e;
-  --bronze-badge: rgba(13, 148, 136, 0.08);
+  --bronze-50: #fafaf9;
+  --bronze-100: #fef9c3;
+  --bronze-500: #eab308;
+  --bronze-600: #ca8a04;
+  --bronze-700: #a16207;
+  --bronze-badge: rgba(202, 138, 4, 0.08);
 
   /* Semantic Colors */
   --success: #10b981;
@@ -4023,5 +4023,39 @@ body.no-scroll .admin-main {
   to { transform: rotate(360deg); }
 }
 
+/* Reconciliation Stats Grid Layout & Responsiveness */
+.recon-stats-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-top: 20px;
+}
 
+@media (max-width: 1024px) {
+  .recon-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
 
+@media (max-width: 768px) {
+  .recon-stats-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+}
+
+/* Smooth transition animation for dashboard view switching */
+.module-view {
+  animation: fadeInView 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeInView {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

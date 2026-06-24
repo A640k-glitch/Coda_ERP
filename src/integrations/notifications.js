@@ -13,7 +13,7 @@ class NotificationsIntegration {
 
     const apiKey = process.env.SENDGRID_API_KEY;
     if (process.env.NODE_ENV === 'production' && !apiKey) {
-      throw new Error('Missing SENDGRID_API_KEY in production');
+      console.warn('Missing SENDGRID_API_KEY in production');
     }
 
     this.sendgridClient = axios.create({

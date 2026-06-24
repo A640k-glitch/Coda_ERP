@@ -8,7 +8,7 @@ class CBNIntegration {
   constructor() {
     const apiKey = process.env.OXR_APP_ID;
     if (process.env.NODE_ENV === 'production' && !apiKey) {
-      throw new Error('Missing OXR_APP_ID in production');
+      console.warn('Missing OXR_APP_ID in production');
     }
 
     this.client = axios.create({

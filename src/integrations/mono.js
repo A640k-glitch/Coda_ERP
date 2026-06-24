@@ -8,7 +8,7 @@ class MonoIntegration {
   constructor() {
     const apiKey = process.env.MONO_SECRET_KEY;
     if (process.env.NODE_ENV === 'production' && !apiKey) {
-      throw new Error('Missing MONO_SECRET_KEY in production');
+      console.warn('Missing MONO_SECRET_KEY in production');
     }
 
     this.client = axios.create({

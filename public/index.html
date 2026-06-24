@@ -963,12 +963,80 @@
       background: rgba(20, 184, 166, 0.1) !important;
     }
 
+    .hero-mobile-metrics {
+      display: none;
+      grid-template-columns: 1fr;
+      gap: 16px;
+      margin-top: 32px;
+      width: 100%;
+    }
+
+    .hero-mobile-card {
+      background: rgba(255, 255, 255, 0.03);
+      backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-lg);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      text-align: left;
+    }
+
+    .hero-mobile-card-title {
+      font-size: 11px;
+      font-weight: 700;
+      color: rgba(255, 255, 255, 0.5);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .hero-mobile-card-val {
+      font-size: 22px;
+      font-weight: 800;
+      color: #ffffff;
+    }
+
+    .hero-mobile-card-meta {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.7);
+    }
+
     @media (max-width: 1024px) {
+      .pricing-grid-glass {
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 16px !important;
+        padding: 0 16px !important;
+        max-width: 100% !important;
+      }
+
+      .pricing-card-glass {
+        padding: 24px 16px !important;
+      }
+
+      .btn-pricing {
+        height: 36px;
+        font-size: 11px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .hero-mockup-scaler {
+        display: none !important;
+      }
+
+      .hero-mobile-metrics {
+        display: grid;
+      }
 
       .pricing-grid-glass,
       .features-section-dark .premium-kpi-grid {
         grid-template-columns: 1fr !important;
-        gap: 32px !important;
+        gap: 24px !important;
         max-width: 480px !important;
         margin-left: auto !important;
         margin-right: auto !important;
@@ -978,13 +1046,6 @@
         padding: 32px !important;
       }
 
-      .btn-pricing {
-        height: 38px;
-        font-size: 12px;
-      }
-    }
-
-    @media (max-width: 768px) {
       .btn-pricing {
         height: 36px;
         font-size: 12px;
@@ -1059,7 +1120,7 @@
 
       <div class="hero-text-container">
         <h1 class="hero-title">
-          The definitive financial operating system for <span class="text-accent">high-growth business</span>
+          The definitive financial operating system for <span class="text-accent">high-growth businesses</span>
         </h1>
         <p class="hero-subtitle">
           Unify your accounting, payroll, tax compliance, and inventory in one state-of-the-art platform. Built for
@@ -2294,6 +2355,42 @@
             </div>
           </div>
           <div class="macbook-base"></div>
+        </div>
+      </div>
+
+      <!-- Mobile Hero Cards for small screens -->
+      <div class="hero-mobile-metrics">
+        <div class="hero-mobile-card">
+          <div class="hero-mobile-card-title">
+            <span>Monthly Revenue</span>
+            <span class="material-symbols-outlined" style="font-size:16px; color:#14b8a6;">trending_up</span>
+          </div>
+          <div class="hero-mobile-card-val">₦4,250,800</div>
+          <div class="hero-mobile-card-meta">
+            <span style="color:#10b981; font-weight:600;">+12.4%</span> vs last month
+          </div>
+        </div>
+        
+        <div class="hero-mobile-card">
+          <div class="hero-mobile-card-title">
+            <span>Payroll Run</span>
+            <span class="material-symbols-outlined" style="font-size:16px; color:var(--bronze-600);">groups</span>
+          </div>
+          <div class="hero-mobile-card-val">24 Active Staff</div>
+          <div class="hero-mobile-card-meta">
+            Salary sheet CAC compliant & approved
+          </div>
+        </div>
+        
+        <div class="hero-mobile-card">
+          <div class="hero-mobile-card-title">
+            <span>Bank Sync</span>
+            <span class="material-symbols-outlined" style="font-size:16px; color:#10b981;">check_circle</span>
+          </div>
+          <div class="hero-mobile-card-val">All Synced</div>
+          <div class="hero-mobile-card-meta">
+            Mono auto-reconciliation active
+          </div>
         </div>
       </div>
     </div>

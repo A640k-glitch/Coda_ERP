@@ -8,7 +8,7 @@ class PencomIntegration {
   constructor() {
     const apiKey = process.env.PFA_API_KEY;
     if (process.env.NODE_ENV === 'production' && !apiKey) {
-      throw new Error('Missing PFA_API_KEY in production');
+      console.warn('Missing PFA_API_KEY in production');
     }
 
     this.client = axios.create({

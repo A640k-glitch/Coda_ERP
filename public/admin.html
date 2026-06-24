@@ -366,6 +366,46 @@
     .toast-success { border-left: 3px solid var(--teal-500); }
     .toast-error { border-left: 3px solid var(--error); }
     .toast-info { border-left: 3px solid var(--teal-500); }
+
+    /* Integrations Form Grid layout & mobile responsiveness */
+    #integrationsForm {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+    }
+    @media (max-width: 600px) {
+      #integrationsForm {
+        grid-template-columns: 1fr;
+        gap: 16px;
+      }
+    }
+
+    /* Admin Tabs Scroll Wrapper with fading cue shadow */
+    .admin-tabs-scroll-wrap {
+      position: relative;
+      margin-bottom: 20px;
+      width: 100%;
+    }
+    .admin-tabs-scroll-wrap::after {
+      content: '';
+      position: absolute;
+      top: 0; right: 0; bottom: 0;
+      width: 40px;
+      background: linear-gradient(to right, rgba(248, 250, 252, 0), rgba(248, 250, 252, 0.95));
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity var(--transition);
+      z-index: 5;
+    }
+    
+    @media (max-width: 1024px) {
+      .admin-tabs-scroll-wrap::after {
+        opacity: 1;
+      }
+      .admin-tabs {
+        margin-bottom: 0 !important;
+      }
+    }
   </style>
   <script>
       function escapeHTML(str) {
@@ -522,13 +562,15 @@
         </div>
 
         <!-- Tabs -->
-        <div class="admin-tabs">
-          <button class="admin-tab" data-tab="users">Users</button>
-          <button class="admin-tab" data-tab="businesses">Businesses</button>
-          <button class="admin-tab" data-tab="requests">Requests</button>
-          <button class="admin-tab" data-tab="analytics">Analytics</button>
-          <button class="admin-tab" data-tab="audit">Audit Log</button>
-          <button class="admin-tab" data-tab="integrations">Integrations</button>
+        <div class="admin-tabs-scroll-wrap">
+          <div class="admin-tabs">
+            <button class="admin-tab" data-tab="users">Users</button>
+            <button class="admin-tab" data-tab="businesses">Businesses</button>
+            <button class="admin-tab" data-tab="requests">Requests</button>
+            <button class="admin-tab" data-tab="analytics">Analytics</button>
+            <button class="admin-tab" data-tab="audit">Audit Log</button>
+            <button class="admin-tab" data-tab="integrations">Integrations</button>
+          </div>
         </div>
 
         <!-- Users Panel -->
@@ -686,7 +728,7 @@
               <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 24px;">Configure the live environment variables for external integrations. Changes are saved securely to the backend <code>.env</code> file. Do not expose these to clients.</p>
               
               <div id="integrationsFormWrapper">
-                <form id="integrationsForm" style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                <form id="integrationsForm">
                   <div class="form-group">
                     <label class="form-label" for="env-mono">Mono API Key (Bank Sync)</label>
                     <input class="form-control" type="password" id="env-mono" name="MONO_SECRET_KEY" placeholder="sk_live_...">

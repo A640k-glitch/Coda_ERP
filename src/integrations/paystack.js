@@ -8,7 +8,7 @@ class PaystackIntegration {
   constructor() {
     const apiKey = process.env.PAYSTACK_SECRET_KEY;
     if (process.env.NODE_ENV === 'production' && !apiKey) {
-      throw new Error('Missing PAYSTACK_SECRET_KEY in production');
+      console.warn('Missing PAYSTACK_SECRET_KEY in production');
     }
 
     this.client = axios.create({

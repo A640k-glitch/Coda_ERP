@@ -8,7 +8,7 @@ class FIRSIntegration {
   constructor() {
     const apiKey = process.env.FIRS_API_KEY;
     if (process.env.NODE_ENV === 'production' && !apiKey) {
-      throw new Error('Missing FIRS_API_KEY in production');
+      console.warn('Missing FIRS_API_KEY in production');
     }
 
     this.client = axios.create({
