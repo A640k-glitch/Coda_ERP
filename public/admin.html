@@ -754,7 +754,7 @@
                     <input class="form-control" type="password" id="env-sendgrid" name="SENDGRID_API_KEY" placeholder="SG....">
                   </div>
                   <div class="form-group" style="grid-column: 1 / -1;">
-                    <button type="submit" class="btn btn-primary" id="btnSaveEnv">
+                    <button type="submit" class="btn btn-primary btn-interactive" id="btnSaveEnv">
                       <span class="material-symbols-outlined" style="font-size: 16px;">save</span> Save Configuration
                     </button>
                   </div>
@@ -779,7 +779,7 @@
       </button>
       <h2 style="font-size: 18px; margin-bottom: 8px;">Session Expired</h2>
       <p class="sub" style="margin-bottom:20px">Your session has ended. Please sign in again.</p>
-      <a href="/login" class="btn btn-primary" style="width:100%; justify-content:center; text-decoration:none;">
+      <a href="/login" class="btn btn-primary btn-interactive" style="width:100%; justify-content:center; text-decoration:none;">
         <span class="material-symbols-outlined">login</span>
         Sign in to Coda
       </a>
@@ -1552,7 +1552,7 @@ async function approveUpgradeFromNotification(id, businessId) {
 
         const ui = document.getElementById('adminUserInfo');
         if (ui && currentUser) {
-          ui.innerHTML = '<div class="user-avatar">' + escapeHTML(currentUser.name)?.charAt(0)?.toUpperCase() || 'A') + '</div><div class="user-details"><div class="user-name">' + escapeHTML(currentUser.name) || '') + '</div><div class="user-role">Platform Admin</div></div>';
+          ui.innerHTML = '<div class="user-avatar">' + (escapeHTML(currentUser.name)?.charAt(0)?.toUpperCase() || 'A') + '</div><div class="user-details"><div class="user-name">' + (escapeHTML(currentUser.name) || '') + '</div><div class="user-role">Platform Admin</div></div>';
         }
 
         // Wire up the global search box for the active admin tab

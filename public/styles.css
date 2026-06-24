@@ -4059,3 +4059,103 @@ body.no-scroll .admin-main {
     transform: translateY(0);
   }
 }
+
+/* ==========================================================================
+   UI/UX Design Pro & Flow Auditor Additions
+   ========================================================================== */
+
+:root {
+  /* Semantic Tokens Mapping */
+  --bg-primary: var(--bg-app);
+  --bg-secondary: #ffffff;
+  --surface: #ffffff;
+  --surface-hover: var(--slate-50);
+  --primary: var(--teal-600);
+  --primary-hover: var(--teal-700);
+  --primary-active: var(--teal-700);
+  --text-primary: var(--slate-900);
+}
+
+/* Typography Scales */
+.text-sm { font-size: 0.875rem; line-height: 1.25rem; }
+.text-base { font-size: 1rem; line-height: 1.5rem; }
+.text-lg { font-size: 1.125rem; line-height: 1.75rem; }
+.text-xl { font-size: 1.25rem; line-height: 1.75rem; }
+.font-medium { font-weight: 500; }
+.font-semibold { font-weight: 600; }
+
+/* 8px Grid Spacing Utilities */
+.gap-8 { gap: 8px; }
+.gap-16 { gap: 16px; }
+.gap-24 { gap: 24px; }
+.gap-32 { gap: 32px; }
+.p-8 { padding: 8px; }
+.p-16 { padding: 16px; }
+.p-24 { padding: 24px; }
+.p-32 { padding: 32px; }
+.mb-8 { margin-bottom: 8px; }
+.mb-16 { margin-bottom: 16px; }
+.mb-24 { margin-bottom: 24px; }
+.mb-32 { margin-bottom: 32px; }
+
+/* Glassmorphism & Depth Utilities */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: var(--shadow-md);
+}
+
+/* Interactive Micro-animations */
+.hover-lift {
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s ease;
+}
+.hover-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+.btn-interactive {
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+.btn-interactive:active {
+  transform: scale(0.97);
+}
+
+/* UX Flow Auditor Classes */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 64px 24px;
+  text-align: center;
+  background: var(--bg-card);
+  border: 1px dashed var(--border-color);
+  border-radius: var(--radius-lg);
+  color: var(--text-muted);
+}
+.empty-state-icon {
+  font-size: 48px;
+  margin-bottom: 16px;
+  color: var(--slate-300);
+}
+.error-border {
+  border-color: var(--error) !important;
+}
+.inline-error {
+  color: var(--error);
+  font-size: 12px;
+  margin-top: 4px;
+}
+.animate-shake {
+  animation: shake 0.4s cubic-bezier(.36,.07,.19,.97) both;
+}
+@keyframes shake {
+  10%, 90% { transform: translate3d(-1px, 0, 0); }
+  20%, 80% { transform: translate3d(2px, 0, 0); }
+  30%, 50%, 70% { transform: translate3d(-4px, 0, 0); }
+  40%, 60% { transform: translate3d(4px, 0, 0); }
+}

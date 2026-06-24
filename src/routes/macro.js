@@ -4,6 +4,8 @@ const axios = require('axios');
 const config = require('../config');
 
 // In-memory cache for macro data
+const { requireAuth } = require('../auth');
+router.use(requireAuth);
 let macroCache = { data: null, timestamp: 0 };
 const CACHE_TTL = 60 * 60 * 1000; // 1 hour
 

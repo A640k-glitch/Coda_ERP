@@ -11,8 +11,13 @@ router.get('/me', requireAuth, requireBusiness, (req, res) => {
 
 router.patch('/me', requireAuth, requireBusiness, (req, res) => {
   const allowed = ['name', 'address', 'phone', 'email', 'cac_number', 'business_type'];
+  const { escapeHtml } = require('../utils');
   const updates = {};
-  for (const k of allowed) if (k in req.body) updates[k] = req.body[k];
+  for (const k of allowed) {
+    if (k in req.body && typeof req.body[k] === 'string') {
+      updates[k] = escapeHtml(req.body[k]);
+    }
+  }
   if (!Object.keys(updates).length) return res.json({ ok: true });
   const sets = Object.keys(updates).map(k => `${k} = ?`).join(', ');
   const vals = Object.values(updates);

@@ -165,7 +165,7 @@
   <div id="pageLoader" class="page-loader">
     <div class="loader-spinner"></div>
   </div>
-  <div class="app-shell">
+  <div class="app-shell flex-responsive">
     <!-- Sidebar Wrapper -->
     <div class="sidebar-wrapper" id="sidebar">
       <aside class="app-sidebar">
@@ -275,7 +275,7 @@
         <button class="btn-icon-only" id="btnSettings" aria-label="Settings" style="width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--border-color); background: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center;">
           <span class="material-symbols-outlined" style="font-size: 20px;">settings</span>
         </button>
-        <button class="btn btn-primary btn-sm" id="btnNewTransaction">
+        <button class="btn btn-primary btn-sm btn-interactive" id="btnNewTransaction">
           <span class="material-symbols-outlined" style="font-size: 16px;">add</span>
           New transaction
         </button>
@@ -320,7 +320,7 @@
                   <option value="EUR">Euro (€)</option>
                 </select>
               </div>
-              <button type="submit" class="btn btn-primary btn-sm" style="width: 100%;">Save Changes</button>
+              <button type="submit" class="btn btn-primary btn-sm btn-interactive" style="width: 100%;">Save Changes</button>
             </form>
           </div>
           
@@ -333,7 +333,7 @@
               <label class="form-label">Primary Email</label>
               <input type="email" class="form-control" id="optEmail">
             </div>
-            <button type="button" class="btn btn-primary btn-sm" id="btnUpdateProfile" style="width: 100%;">Update Profile</button>
+            <button type="button" class="btn btn-primary btn-sm btn-interactive" id="btnUpdateProfile" style="width: 100%;">Update Profile</button>
 
             <!-- Danger Zone -->
             <div style="margin-top: 32px; border-top: 1px solid var(--border-color); padding-top: 20px;">
@@ -483,7 +483,7 @@
               <span class="material-symbols-outlined">edit_note</span>
               Journal Entry
             </button>
-            <button class="btn btn-primary" id="btnNewInvoice">
+            <button class="btn btn-primary btn-interactive" id="btnNewInvoice">
               <span class="material-symbols-outlined">receipt_long</span>
               Create Invoice
             </button>
@@ -492,7 +492,7 @@
 
         <div class="ledger-grid" id="accountingLedgerGrid">
           <!-- Dynamically populated from accounts-with-balances API -->
-          <div class="ledger-card">
+          <div class="ledger-card glass-panel hover-lift">
             <h4><span>Loading accounts...</span></h4>
             <div class="ledger-metric" style="color: var(--text-muted);">—</div>
           </div>
@@ -554,13 +554,13 @@
         <div class="module-header">
           <h2>Bank Reconciliation</h2>
           <div class="module-actions">
-            <button class="btn btn-primary" id="btnSyncBankFeed">Sync Bank Feed</button>
+            <button class="btn btn-primary btn-interactive" id="btnSyncBankFeed">Sync Bank Feed</button>
           </div>
         </div>
 
         <!-- Summary Stats -->
         <div id="reconSummary" class="recon-stats-grid">
-          <div class="premium-kpi-card">
+          <div class="premium-kpi-card glass-panel hover-lift">
             <div class="premium-kpi-header">
               <span class="premium-kpi-title">Unreconciled</span>
               <span class="material-symbols-outlined" style="color: var(--text-muted); font-size: 18px;">pending</span>
@@ -568,7 +568,7 @@
             <div class="premium-kpi-val" id="reconUnrecCount">0</div>
             <div class="premium-kpi-meta" id="reconUnrecAmount">₦ 0</div>
           </div>
-          <div class="premium-kpi-card">
+          <div class="premium-kpi-card glass-panel hover-lift">
             <div class="premium-kpi-header">
               <span class="premium-kpi-title">Reconciled</span>
               <span class="material-symbols-outlined" style="color: var(--success); font-size: 18px;">check_circle</span>
@@ -576,7 +576,7 @@
             <div class="premium-kpi-val" id="reconRecCount" style="color: var(--success);">0</div>
             <div class="premium-kpi-meta">Matched transactions</div>
           </div>
-          <div class="premium-kpi-card">
+          <div class="premium-kpi-card glass-panel hover-lift">
             <div class="premium-kpi-header">
               <span class="premium-kpi-title">Ledger Entries</span>
               <span class="material-symbols-outlined" style="color: var(--text-muted); font-size: 18px;">receipt_long</span>
@@ -584,7 +584,7 @@
             <div class="premium-kpi-val" id="reconJeCount">0</div>
             <div class="premium-kpi-meta">Matched journal entries</div>
           </div>
-          <div class="premium-kpi-card">
+          <div class="premium-kpi-card glass-panel hover-lift">
             <div class="premium-kpi-header">
               <span class="premium-kpi-title">Match Rate</span>
               <span class="material-symbols-outlined" style="color: var(--text-muted); font-size: 18px;">percent</span>
@@ -612,7 +612,7 @@
           <h2>Depot &amp; Product Valuations</h2>
           <div class="module-actions">
             <button class="btn btn-secondary" id="btnNewPurchaseOrder">PO Order</button>
-            <button class="btn btn-primary" id="btnNewProduct">Add Product</button>
+            <button class="btn btn-primary btn-interactive" id="btnNewProduct">Add Product</button>
           </div>
         </div>
 
@@ -672,7 +672,7 @@
           <h2>Customer Directory &amp; Leads</h2>
           <div class="module-actions">
             <button class="btn btn-secondary" id="btnImportCustomers">Import CSV</button>
-            <button class="btn btn-primary" id="btnNewCustomer">Add Customer</button>
+            <button class="btn btn-primary btn-interactive" id="btnNewCustomer">Add Customer</button>
           </div>
         </div>
 
@@ -709,7 +709,7 @@
           <h2>Corporate Payroll Sheet</h2>
           <div class="module-actions">
             <button class="btn btn-secondary" id="btnRunPayroll">Disburse Payroll</button>
-            <button class="btn btn-primary" id="btnNewEmployee">Add Employee</button>
+            <button class="btn btn-primary btn-interactive" id="btnNewEmployee">Add Employee</button>
           </div>
         </div>
 
@@ -746,7 +746,7 @@
           <h2>Tax Remittance &amp; Filing Center</h2>
           <div class="module-actions">
             <button class="btn btn-secondary" id="btnFileVAT">File returns</button>
-            <button class="btn btn-primary" id="btnCalculateTax">Recalculate liabilities</button>
+            <button class="btn btn-primary btn-interactive" id="btnCalculateTax">Recalculate liabilities</button>
           </div>
         </div>
 
@@ -780,7 +780,7 @@
           <h2>Audit &amp; Financial Reporting</h2>
           <div class="module-actions">
             <button class="btn btn-secondary" id="btnCustomReport">Configure Filters</button>
-            <button class="btn btn-primary" id="btnGenerateReport">Download statement</button>
+            <button class="btn btn-primary btn-interactive" id="btnGenerateReport">Download statement</button>
           </div>
         </div>
 
@@ -856,7 +856,7 @@
       </button>
       <h2 style="font-size: 18px; margin-bottom: 8px;">Session Expired</h2>
       <p class="sub" style="margin-bottom:20px">Your session has ended. Please sign in again.</p>
-      <a href="/login" class="btn btn-primary" style="width:100%; justify-content:center; text-decoration:none;">
+      <a href="/login" class="btn btn-primary btn-interactive" style="width:100%; justify-content:center; text-decoration:none;">
         <span class="material-symbols-outlined">login</span>
         Sign in to Coda
       </a>
@@ -875,7 +875,7 @@
       <h2 id="actionModalTitle" style="font-size: 18px; margin-bottom: 20px;">Action</h2>
       <form id="actionModalForm">
         <div id="actionModalFields"></div>
-        <button type="submit" class="btn btn-primary" id="actionModalSubmit" style="width: 100%; margin-top: 12px;">Save</button>
+        <button type="submit" class="btn btn-primary btn-interactive" id="actionModalSubmit" style="width: 100%; margin-top: 12px;">Save</button>
       </form>
     </div>
   </div>
