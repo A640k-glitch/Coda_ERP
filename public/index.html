@@ -1026,11 +1026,11 @@
 
     @media (max-width: 768px) {
       .hero-mockup-scaler {
-        display: none !important;
+        display: block !important;
       }
 
       .hero-mobile-metrics {
-        display: grid;
+        display: none !important;
       }
 
       .pricing-grid-glass,
@@ -1071,7 +1071,8 @@
       wrapper.style.transformOrigin = `top center`;
 
       // Macbook designed height is ~890px (760px viewport + 48px bezels + 14px keyboard base + 48px margin-top + shadow)
-      scaler.style.height = `${890 * scale}px`;
+      // Added an extra 80px to prevent any overlapping with the features section below
+      scaler.style.height = `${(890 + 80) * scale}px`;
     }
     window.addEventListener('resize', scaleMockup);
     document.addEventListener('DOMContentLoaded', scaleMockup);

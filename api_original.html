@@ -1,0 +1,492 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Enterprise API Docs ΓÇô Coda</title>
+  <meta name="theme-color" content="#0f172a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    .api-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      max-width: var(--max-width);
+      margin: 80px auto 40px;
+      gap: 32px;
+      padding: 0 24px;
+    }
+    .api-docs-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 32px;
+    }
+    .api-code-panel {
+      position: sticky;
+      top: 96px;
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      align-self: start;
+    }
+    .api-header h1 {
+      font-size: 32px;
+      font-weight: 800;
+      margin-bottom: 8px;
+      letter-spacing: -0.03em;
+    }
+    .api-header p {
+      color: var(--text-secondary);
+      font-size: 15px;
+    }
+    .api-card-wrapper {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+    }
+    .api-card-wrapper h3 {
+      font-size: 16px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .method-badge {
+      font-size: 10px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+    .method-post { background: var(--teal-50); color: var(--teal-700); }
+    .method-get { background: var(--info-bg); color: var(--info); }
+    .api-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      margin-top: 16px;
+      text-align: left;
+    }
+    .api-table th {
+      padding: 8px 12px 8px 0;
+      border-bottom: 1px solid var(--border-color);
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-size: 10px;
+    }
+    .api-table td {
+      padding: 10px 12px 10px 0;
+      border-bottom: 1px solid var(--border-light);
+      color: var(--text-secondary);
+    }
+    .api-table td code {
+      font-family: var(--font-mono);
+      background: var(--slate-100);
+      color: var(--slate-900);
+      padding: 2px 6px;
+      border-radius: 4px;
+    }
+    .code-console {
+      background: var(--slate-950);
+      border-radius: var(--radius);
+      padding: 24px;
+      color: var(--slate-200);
+      font-family: var(--font-mono);
+      font-size: 12.5px;
+      line-height: 1.6;
+      box-shadow: var(--shadow-md);
+      overflow-x: auto;
+    }
+    .try-console {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+    }
+    .try-console h3 { font-size: 15px; font-weight: 700; margin-bottom: 12px; }
+    .result-display {
+      background: var(--slate-950);
+      color: #38bdf8;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      padding: 16px;
+      border-radius: var(--radius-sm);
+      min-height: 80px;
+      max-height: 300px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      margin-top: 12px;
+    }
+    .api-keys-section {
+      background: var(--teal-50);
+      border: 1px solid var(--teal-200);
+      border-radius: var(--radius);
+      padding: 20px;
+      margin-top: 24px;
+    }
+    .api-keys-section h4 {
+      color: var(--teal-900);
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    .api-keys-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      font-size: 13px;
+    }
+    .api-keys-list li {
+      margin-bottom: 8px;
+      display: flex;
+      align-items: flex-start;
+      gap: 8px;
+      line-height: 1.5;
+    }
+    .api-keys-list a {
+      color: var(--teal-700);
+      text-decoration: underline;
+      font-weight: 600;
+    }
+    
+    /* Tabs styling */
+    .tabs-nav {
+      display: flex;
+      border-bottom: 1px solid var(--border-color);
+      margin-bottom: 16px;
+      gap: 16px;
+    }
+    .tab-btn {
+      background: none;
+      border: none;
+      padding: 8px 0;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+    }
+    .tab-btn.active {
+      color: var(--teal-600);
+      border-bottom-color: var(--teal-600);
+    }
+    .tab-content {
+      display: none;
+    }
+    .tab-content.active {
+      display: block;
+    }
+    @media (max-width: 900px) {
+      .api-container { grid-template-columns: 1fr; }
+      .api-code-panel { position: static; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="nav">
+    <div class="nav-inner">
+      <a href="/" class="nav-brand">
+        <span class="brand-icon-box"><svg viewBox="20 20 54 58" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="38" y="22" width="34" height="14" rx="3" fill="#0d9488"/><rect x="22" y="32" width="18" height="38" rx="3.5" fill="currentColor"/><rect x="34" y="62" width="38" height="14" rx="3" fill="currentColor"/></svg></span>
+        <span>Coda</span>
+      </a>
+      <button class="nav-mobile-toggle" id="mobileMenuToggle" aria-label="Toggle menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M4 12L20 12" class="top-line"/>
+          <path d="M4 12H20" class="mid-line"/>
+          <path d="M4 12H20" class="bot-line"/>
+        </svg>
+      </button>
+      <div class="nav-links" id="navLinks">
+        <div class="nav-auth" id="apiNavAuth">
+          <a href="login.html" class="btn btn-sm" style="background-color: var(--teal-600, #0d9488); color: white; border: none; font-weight: 600;">Sign in</a>
+          <a href="signup.html" class="btn btn-primary btn-sm">Get started</a>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <div class="api-container">
+    <!-- Left Panel: Endpoint Documentation -->
+    <div class="api-docs-panel">
+      <div class="api-header">
+        <a href="/" class="btn btn-ghost btn-sm" style="padding: 0; margin-bottom: 8px;">
+          <span class="material-symbols-outlined" style="font-size: 16px;">arrow_back</span>
+          Back to site
+        </a>
+        <h1>Enterprise API Integrations</h1>
+        <p>Integrate Coda's real-time banking, compliance, and messaging modules. To use these endpoints, supply the respective API keys in your backend environment.</p>
+      </div>
+
+      <!-- Endpoint 1: CAC Verify -->
+      <div class="api-card-wrapper">
+        <h3>
+          <span class="method-badge method-post">POST</span>
+          <span>Verify CAC Registration</span>
+        </h3>
+        <div style="font-family: var(--font-mono); font-size: 11px; margin-bottom: 8px; color: var(--teal-600); background: var(--teal-50); padding: 4px 8px; border-radius: 4px; display: inline-block;">/api/v1/integrations/cac/verify</div>
+        <p style="font-size: 13px; color: var(--text-secondary);">Query CAC registry to validate business numbers (RC/BN).</p>
+        <table class="api-table">
+          <thead><tr><th>Field</th><th>Type</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>rcNumber</code></td><td>string</td><td>CAC number (e.g. RC1234567)</td></tr>
+            <tr><td><code>companyName</code></td><td>string</td><td>Optional. Registered name for cross-check</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Endpoint 2: Bank Sync -->
+      <div class="api-card-wrapper">
+        <h3>
+          <span class="method-badge method-post">POST</span>
+          <span>Sync Bank Statement (Mono)</span>
+        </h3>
+        <div style="font-family: var(--font-mono); font-size: 11px; margin-bottom: 8px; color: var(--teal-600); background: var(--teal-50); padding: 4px 8px; border-radius: 4px; display: inline-block;">/api/v1/integrations/bank/sync</div>
+        <p style="font-size: 13px; color: var(--text-secondary);">Fetch real-time transaction feeds from connected Nigerian bank accounts for auto-reconciliation.</p>
+        <table class="api-table">
+          <thead><tr><th>Field</th><th>Type</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>accountId</code></td><td>string</td><td>Mono connected account ID</td></tr>
+            <tr><td><code>period</code></td><td>string</td><td>Date range e.g., <code>last30days</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Endpoint 3: Tax File -->
+      <div class="api-card-wrapper">
+        <h3>
+          <span class="method-badge method-post">POST</span>
+          <span>Automated Tax Filing (FIRS)</span>
+        </h3>
+        <div style="font-family: var(--font-mono); font-size: 11px; margin-bottom: 8px; color: var(--teal-600); background: var(--teal-50); padding: 4px 8px; border-radius: 4px; display: inline-block;">/api/v1/integrations/tax/file</div>
+        <p style="font-size: 13px; color: var(--text-secondary);">Remit VAT/WHT directly to TaxPromax.</p>
+        <table class="api-table">
+          <thead><tr><th>Field</th><th>Type</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>tin</code></td><td>string</td><td>FIRS Tax Identification Number</td></tr>
+            <tr><td><code>period</code></td><td>string</td><td>Tax period e.g. <code>2026-06</code></td></tr>
+            <tr><td><code>amount</code></td><td>number</td><td>Total tax amount (NGN)</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Endpoint 4: Send SMS -->
+      <div class="api-card-wrapper">
+        <h3>
+          <span class="method-badge method-post">POST</span>
+          <span>Send SMS via Termii</span>
+        </h3>
+        <div style="font-family: var(--font-mono); font-size: 11px; margin-bottom: 8px; color: var(--teal-600); background: var(--teal-50); padding: 4px 8px; border-radius: 4px; display: inline-block;">/api/v1/integrations/notifications/sms</div>
+        <p style="font-size: 13px; color: var(--text-secondary);">Send high-deliverability SMS for OTPs and payment reminders.</p>
+        <table class="api-table">
+          <thead><tr><th>Field</th><th>Type</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td><code>to</code></td><td>string</td><td>Recipient Phone (e.g. 23480...)</td></tr>
+            <tr><td><code>message</code></td><td>string</td><td>SMS Content</td></tr>
+          </tbody>
+        </table>
+      </div>
+
+    </div>
+
+    <!-- Right Panel: Code Console & Live Try-it -->
+    <div class="api-code-panel">
+      
+      <div class="try-console">
+        <h3>Interactive API Tester</h3>
+        <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 16px;">
+          Test the Enterprise Integration endpoints directly. (Uses simulated mock data if live API keys are absent in backend).
+        </p>
+        
+        <div class="form-group" style="margin-bottom: 20px;">
+          <label class="form-label" for="global-api-key">Coda API Key (x-api-key)</label>
+          <input class="form-control" type="text" id="global-api-key" placeholder="Enter any string for dev mode..." value="dev_key_123">
+        </div>
+
+        <div class="tabs-nav">
+          <button class="tab-btn active" data-tab="tab-cac">CAC Verify</button>
+          <button class="tab-btn" data-tab="tab-bank">Bank Sync</button>
+          <button class="tab-btn" data-tab="tab-sms">SMS (Termii)</button>
+        </div>
+
+        <!-- Tab 1: CAC Verify -->
+        <div class="tab-content active" id="tab-cac">
+          <div class="form-group">
+            <label class="form-label" for="cac-rc">RC/BN Number</label>
+            <input class="form-control" type="text" id="cac-rc" value="RC1234567">
+          </div>
+          <button class="btn btn-primary" onclick="testEndpoint('/api/v1/integrations/cac/verify', { rcNumber: document.getElementById('cac-rc').value })" style="width: 100%;">
+            <span class="material-symbols-outlined" style="font-size: 16px;">verified_user</span> Verify Company
+          </button>
+        </div>
+
+        <!-- Tab 2: Bank Sync -->
+        <div class="tab-content" id="tab-bank">
+          <div class="form-group">
+            <label class="form-label" for="bank-acc">Mono Account ID</label>
+            <input class="form-control" type="text" id="bank-acc" value="acc_9xjfkd8923">
+          </div>
+          <button class="btn btn-primary" onclick="testEndpoint('/api/v1/integrations/bank/sync', { accountId: document.getElementById('bank-acc').value })" style="width: 100%;">
+            <span class="material-symbols-outlined" style="font-size: 16px;">sync</span> Sync Statements
+          </button>
+        </div>
+
+        <!-- Tab 3: SMS -->
+        <div class="tab-content" id="tab-sms">
+          <div class="form-group">
+            <label class="form-label" for="sms-phone">Phone Number</label>
+            <input class="form-control" type="text" id="sms-phone" value="2348012345678">
+          </div>
+          <div class="form-group">
+            <label class="form-label" for="sms-msg">Message</label>
+            <input class="form-control" type="text" id="sms-msg" value="Your invoice #1002 is due.">
+          </div>
+          <button class="btn btn-primary" onclick="testEndpoint('/api/v1/integrations/notifications/sms', { to: document.getElementById('sms-phone').value, message: document.getElementById('sms-msg').value })" style="width: 100%;">
+            <span class="material-symbols-outlined" style="font-size: 16px;">send</span> Send SMS
+          </button>
+        </div>
+
+        <!-- Result Console -->
+        <div class="result-display" id="api-result">
+// Response will appear here
+{
+  "status": "waiting"
+}</div>
+      </div>
+      
+      <!-- Integration Guide Code block -->
+      <div class="code-console" style="margin-top: 24px;">
+        <div class="code-console-title">Integration Node.js (Axios)</div>
+        <div style="color: #c084fc;">const</div> <div style="color: #e2e8f0; display: inline;">axios =</div> <div style="color: #60a5fa; display: inline;">require</div><div style="color: #e2e8f0; display: inline;">('axios');</div><br><br>
+        <div style="color: #c084fc;">const</div> <div style="color: #e2e8f0; display: inline;">response =</div> <div style="color: #c084fc; display: inline;">await</div> <div style="color: #e2e8f0; display: inline;">axios.post('https://api.coda.ng/api/v1/integrations/cac/verify', {</div><br>
+        <div style="color: #e2e8f0;">  rcNumber: <span style="color: #34d399;">'RC1234567'</span></div>
+        <div style="color: #e2e8f0;">}, {</div>
+        <div style="color: #e2e8f0;">  headers: {</div>
+        <div style="color: #e2e8f0;">    <span style="color: #34d399;">'x-api-key'</span>: <span style="color: #34d399;">'YOUR_CODA_API_KEY'</span></div>
+        <div style="color: #e2e8f0;">  }</div>
+        <div style="color: #e2e8f0;">});</div><br>
+        <div style="color: #e2e8f0;">console.<span style="color: #60a5fa;">log</span>(response.data);</div>
+      </div>
+      
+    </div>
+  </div>
+
+  <footer class="dark-footer" style="margin-top: 60px;">
+    <div class="dark-footer-container">
+      <div class="dark-footer-top">
+        <div class="footer-brand-column">
+          <a href="/" class="nav-brand" style="color: #ffffff !important; margin-bottom: 16px;">
+            <span class="brand-icon-box"><svg viewBox="20 20 54 58" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="38" y="22" width="34" height="14" rx="3" fill="#0d9488"/><rect x="22" y="32" width="18" height="38" rx="3.5" fill="currentColor"/><rect x="34" y="62" width="38" height="14" rx="3" fill="currentColor"/></svg></span>
+            <span>Coda</span>
+          </a>
+          <p class="brand-tagline">The definitive financial operating system for high-growth enterprise businesses.</p>
+        </div>
+      </div>
+      <div class="dark-footer-bottom">
+        <div class="giant-coda-text">Coda</div>
+        <div class="footer-copyright-info">
+          &copy; 2026 Coda Technologies Ltd. All rights reserved.
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    // Tab switching logic
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+        
+        btn.classList.add('active');
+        document.getElementById(btn.dataset.tab).classList.add('active');
+      });
+    });
+
+    // API Testing Logic
+    async function testEndpoint(endpoint, payload) {
+      const apiKey = document.getElementById('global-api-key').value.trim();
+      const resultEl = document.getElementById('api-result');
+      
+      if (!apiKey) {
+        resultEl.textContent = JSON.stringify({ error: "Please enter a Coda API Key" }, null, 2);
+        return;
+      }
+      
+      resultEl.textContent = JSON.stringify({ status: "executing_request..." }, null, 2);
+      
+      try {
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'x-api-key': apiKey
+          },
+          body: JSON.stringify(payload)
+        });
+        
+        const data = await response.json();
+        resultEl.textContent = JSON.stringify({
+          _status: response.status,
+          _ok: response.ok,
+          ...data
+        }, null, 2);
+        
+      } catch (err) {
+        resultEl.textContent = JSON.stringify({ error: err.message }, null, 2);
+      }
+    }
+    
+    const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+    const navLinks = document.getElementById('navLinks');
+    if (mobileMenuToggle && navLinks) {
+      mobileMenuToggle.addEventListener('click', () => {
+        mobileMenuToggle.classList.toggle('open');
+        navLinks.classList.toggle('open');
+      });
+    }
+
+    // Session check ΓÇö update nav for logged-in users
+    async function checkUserSession() {
+      try {
+        const res = await fetch('/api/v1/auth/me', { credentials: 'include' });
+        if (res.ok) {
+          const data = await res.json();
+          if (data && data.user) {
+            const navAuth = document.getElementById('apiNavAuth');
+            if (navAuth) {
+              const userName = data.user.name || data.user.email || 'User';
+              const initials = userName.split(' ').map(n=>n[0]).join('').substring(0,2).toUpperCase();
+              let adminBtn = '';
+              if (data.isAdmin) {
+                adminBtn = '<a href="/admin" class="btn btn-ghost btn-sm" style="display:flex; align-items:center; gap:8px;"><span class="material-symbols-outlined" style="font-size: 20px; color: var(--success, #10b981);">account_circle</span> Admin Panel</a>';
+              }
+              navAuth.innerHTML = adminBtn + `
+                <a href="/dashboard" class="btn btn-primary btn-sm" style="color:white!important; display:flex; align-items:center; gap:8px;">
+                  <div style="width:22px; height:22px; border-radius:50%; background:rgba(255,255,255,0.2); display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700;">${initials}</div>
+                  Dashboard
+                </a>
+              `;
+            }
+          }
+        }
+      } catch (e) {
+        // session check failed, silently continue
+      }
+    }
+    checkUserSession();
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') checkUserSession();
+    });
+  </script>
+</body>
+</html>

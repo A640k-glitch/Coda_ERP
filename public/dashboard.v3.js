@@ -1535,7 +1535,7 @@ function escapeHTML(str) {
       });
       if (res.ok) {
         showToast('Reconciled', 'Bank transaction matched to ledger entry.', 'success');
-        row.innerHTML = '<div style="color: var(--success); font-weight: 600; width: 100%; text-align: center; padding: 4px 0;">✓ Reconciled</div>';
+        row.innerHTML = '<div style="color: var(--success); font-weight: 600; width: 100%; text-align: center; padding: 4px 0; display: flex; align-items: center; justify-content: center; gap: 4px;"><span class="material-symbols-outlined" style="font-size: 18px;">check_circle</span> Reconciled</div>';
         setTimeout(() => loadReconciliation(), 1200);
       } else {
         const err = await res.json().catch(() => ({}));
@@ -1572,7 +1572,7 @@ function escapeHTML(str) {
 
       if (res.ok) {
         showToast('Created & Matched', 'New ledger entry created and reconciled.', 'success');
-        row.innerHTML = '<div style="color: var(--success); font-weight: 600; width: 100%; text-align: center; padding: 4px 0;">✓ Created & Reconciled</div>';
+        row.innerHTML = '<div style="color: var(--success); font-weight: 600; width: 100%; text-align: center; padding: 4px 0; display: flex; align-items: center; justify-content: center; gap: 4px;"><span class="material-symbols-outlined" style="font-size: 18px;">check_circle</span> Created & Reconciled</div>';
         setTimeout(() => loadReconciliation(), 1200);
       } else {
         const err = await res.json().catch(() => ({}));

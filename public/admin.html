@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,7 +17,8 @@
   <link rel="manifest" href="site.webmanifest">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Coda — Enterprise Fintech ERP">
-  <meta property="og:description" content="Premium Fintech ERP for Nigerian SMEs — accounting, inventory, CRM, HR, tax, and payments.">
+  <meta property="og:description"
+    content="Premium Fintech ERP for Nigerian SMEs — accounting, inventory, CRM, HR, tax, and payments.">
   <meta property="og:image" content="og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -24,23 +26,29 @@
   <meta name="twitter:image" content="og-image.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
 
   <style>
-    :root { --admin-topbar-h: 64px; }
+    :root {
+      --admin-topbar-h: 64px;
+    }
+
     body {
       margin: 0;
       min-height: 100vh;
       display: flex;
     }
+
     .admin-shell {
       display: flex;
       width: 100%;
       min-height: 100vh;
     }
+
     .admin-main {
       margin-left: var(--sidebar-w);
       width: calc(100% - var(--sidebar-w));
@@ -50,28 +58,34 @@
       min-height: 100vh;
       transition: margin-left var(--transition), width var(--transition);
     }
+
     @media (min-width: 1025px) {
-      .sidebar-wrapper.collapsed ~ .admin-main {
+      .sidebar-wrapper.collapsed~.admin-main {
         margin-left: 0 !important;
         width: 100% !important;
       }
-      .sidebar-wrapper.collapsed ~ .admin-main .admin-topbar {
+
+      .sidebar-wrapper.collapsed~.admin-main .admin-topbar {
         padding-left: calc(32px + 130px) !important;
         padding-right: calc(32px + 130px) !important;
       }
-      .sidebar-wrapper.collapsed ~ .admin-main .admin-content {
+
+      .sidebar-wrapper.collapsed~.admin-main .admin-content {
         padding-left: calc(32px + 130px) !important;
         padding-right: calc(32px + 130px) !important;
       }
+
       /* Preload collapsed classes */
       .sidebar-collapsed-pref .admin-main {
         margin-left: 0 !important;
         width: 100% !important;
       }
+
       .sidebar-collapsed-pref .admin-main .admin-topbar {
         padding-left: calc(32px + 130px) !important;
         padding-right: calc(32px + 130px) !important;
       }
+
       .sidebar-collapsed-pref .admin-main .admin-content {
         padding-left: calc(32px + 130px) !important;
         padding-right: calc(32px + 130px) !important;
@@ -91,12 +105,14 @@
       z-index: 50;
       transition: padding var(--transition);
     }
+
     .admin-topbar h1 {
       font-size: 18px;
       font-weight: 700;
       color: var(--slate-900);
       margin: 0;
     }
+
     .admin-content {
       padding: 24px 32px;
       flex: 1;
@@ -109,6 +125,7 @@
       margin-bottom: 20px;
       border-bottom: 1px solid var(--border-color);
     }
+
     .admin-tab {
       padding: 10px 20px;
       font-size: 13px;
@@ -122,19 +139,24 @@
       transition: all var(--transition);
       margin-bottom: -1px;
     }
+
     .admin-tab:hover {
       color: var(--slate-900);
     }
+
     .admin-tab.active {
       color: var(--slate-900);
       border-bottom-color: var(--slate-900);
     }
+
     .admin-panel {
       display: none;
     }
+
     .admin-panel.active {
       display: block;
     }
+
     .admin-table-wrap {
       overflow-x: auto;
       background: var(--bg-card);
@@ -142,6 +164,7 @@
       border-radius: var(--radius);
       box-shadow: var(--shadow-sm);
     }
+
     .admin-table {
       width: 100%;
       border-collapse: collapse;
@@ -149,9 +172,11 @@
       min-width: 600px;
       text-align: left;
     }
+
     .admin-table thead {
       background: var(--slate-50);
     }
+
     .admin-table th {
       padding: 12px 16px;
       font-weight: 600;
@@ -160,14 +185,17 @@
       text-transform: uppercase;
       letter-spacing: 0.5px;
     }
+
     .admin-table td {
       padding: 12px 16px;
       border-top: 1px solid var(--border-light);
       color: var(--text-secondary);
     }
+
     .admin-table tr:hover td {
       background: var(--slate-50);
     }
+
     .badge {
       display: inline-block;
       padding: 2px 10px;
@@ -175,17 +203,39 @@
       font-size: 11px;
       font-weight: 600;
     }
-    .badge-trial { background: var(--bronze-50); color: var(--bronze-700); }
-    .badge-active { background: var(--teal-50); color: var(--teal-700); }
-    .badge-inactive { background: var(--error-bg); color: var(--error); }
-    .badge-paid { background: var(--teal-50); color: var(--teal-700); }
-    .badge-pending { background: var(--warning-bg); color: var(--warning); }
+
+    .badge-trial {
+      background: var(--bronze-50);
+      color: var(--bronze-700);
+    }
+
+    .badge-active {
+      background: var(--teal-50);
+      color: var(--teal-700);
+    }
+
+    .badge-inactive {
+      background: var(--error-bg);
+      color: var(--error);
+    }
+
+    .badge-paid {
+      background: var(--teal-50);
+      color: var(--teal-700);
+    }
+
+    .badge-pending {
+      background: var(--warning-bg);
+      color: var(--warning);
+    }
+
     .chart-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 20px;
       margin-bottom: 24px;
     }
+
     .chart-card {
       background: var(--bg-card);
       border: 1px solid var(--border-color);
@@ -193,16 +243,19 @@
       padding: 20px;
       box-shadow: var(--shadow-sm);
     }
+
     .chart-card h3 {
       font-size: 14px;
       font-weight: 700;
       color: var(--slate-900);
       margin-bottom: 16px;
     }
+
     .chart-canvas-wrap {
       position: relative;
       height: 280px;
     }
+
     .pagination {
       display: flex;
       align-items: center;
@@ -211,6 +264,7 @@
       font-size: 12px;
       color: var(--text-muted);
     }
+
     .pagination button {
       background: var(--bg-card);
       border: 1px solid var(--border-color);
@@ -220,9 +274,11 @@
       cursor: pointer;
       font-family: inherit;
     }
+
     .pagination button:hover:not(:disabled) {
       background: var(--slate-50);
     }
+
     .pagination button:disabled {
       opacity: 0.4;
       cursor: not-allowed;
@@ -231,10 +287,13 @@
     .sidebar-close {
       display: none;
     }
+
     @media (max-width: 1024px) {
       .sidebar-wrapper {
         position: fixed;
-        top: 0; left: 0; bottom: 0;
+        top: 0;
+        left: 0;
+        bottom: 0;
         width: 300px;
         max-width: 82vw;
         transform: translateX(-100%);
@@ -243,13 +302,16 @@
         box-shadow: none;
         transition: transform 0.38s cubic-bezier(0.32, 0.72, 0, 1), box-shadow 0.38s cubic-bezier(0.32, 0.72, 0, 1);
       }
+
       .sidebar-wrapper.open {
         transform: translateX(0);
-        box-shadow: 20px 0 60px rgba(0,0,0,0.3);
+        box-shadow: 20px 0 60px rgba(0, 0, 0, 0.3);
       }
+
       .sidebar-close {
         display: block;
       }
+
       .admin-main {
         margin-left: 0 !important;
         width: 100% !important;
@@ -258,14 +320,15 @@
       /* Frosted glass topbar */
       .admin-topbar,
       .sidebar-collapsed-pref .admin-main .admin-topbar,
-      .sidebar-wrapper.collapsed ~ .admin-main .admin-topbar {
+      .sidebar-wrapper.collapsed~.admin-main .admin-topbar {
         padding: 0 16px !important;
         height: 56px !important;
-        background: rgba(255,255,255,0.82) !important;
+        background: rgba(255, 255, 255, 0.82) !important;
         backdrop-filter: saturate(180%) blur(20px) !important;
         -webkit-backdrop-filter: saturate(180%) blur(20px) !important;
-        border-bottom: 0.5px solid rgba(0,0,0,0.12) !important;
+        border-bottom: 0.5px solid rgba(0, 0, 0, 0.12) !important;
       }
+
       .admin-topbar h1 {
         font-size: 16px !important;
       }
@@ -273,13 +336,19 @@
       /* Content padding */
       .admin-content,
       .sidebar-collapsed-pref .admin-main .admin-content,
-      .sidebar-wrapper.collapsed ~ .admin-main .admin-content {
+      .sidebar-wrapper.collapsed~.admin-main .admin-content {
         padding: 16px !important;
       }
 
 
-      .chart-row { grid-template-columns: 1fr; gap: 12px; }
-      .chart-card { border-radius: 14px !important; }
+      .chart-row {
+        grid-template-columns: 1fr;
+        gap: 12px;
+      }
+
+      .chart-card {
+        border-radius: 14px !important;
+      }
 
       /* Admin tabs — horizontal scroll on mobile */
       .admin-tabs {
@@ -288,6 +357,7 @@
         flex-wrap: nowrap;
         gap: 0;
       }
+
       .admin-tab {
         white-space: nowrap;
         flex-shrink: 0;
@@ -299,29 +369,34 @@
         border-radius: 14px;
       }
     }
+
     @media (max-width: 600px) {
+
       .admin-topbar,
       .sidebar-collapsed-pref .admin-main .admin-topbar,
-      .sidebar-wrapper.collapsed ~ .admin-main .admin-topbar {
+      .sidebar-wrapper.collapsed~.admin-main .admin-topbar {
         padding: 0 12px !important;
         height: 52px !important;
       }
+
       .admin-content,
       .sidebar-collapsed-pref .admin-main .admin-content,
-      .sidebar-wrapper.collapsed ~ .admin-main .admin-content {
+      .sidebar-wrapper.collapsed~.admin-main .admin-content {
         padding: 12px !important;
       }
 
-      .admin-topbar h1 { font-size: 14px !important; }
+      .admin-topbar h1 {
+        font-size: 14px !important;
+      }
     }
-    
+
     /* Admin shell - always visible, no hiding */
     .admin-shell {
       display: flex;
       width: 100%;
       min-height: 100vh;
     }
-    
+
     /* Inline loading spinner for table cells */
     .loading-spinner {
       display: inline-block;
@@ -334,9 +409,13 @@
       vertical-align: middle;
       margin-right: 6px;
     }
+
     @keyframes spin {
-      to { transform: rotate(360deg); }
+      to {
+        transform: rotate(360deg);
+      }
     }
+
     .btn-xs {
       padding: 3px 10px;
       font-size: 11px;
@@ -354,18 +433,72 @@
       justify-content: center;
       box-sizing: border-box;
     }
-    .btn-xs:hover { background: var(--slate-50); }
-    .btn-xs.btn-outline { border-color: var(--slate-300); }
-    .btn-xs.btn-danger { background: var(--error); color: #fff; border-color: var(--error); }
-    .btn-xs.btn-danger:hover { background: #b91c1c; }
-    .badge-warning { background: var(--warning-bg); color: var(--warning); }
-    .toast-container { position: fixed; bottom: 24px; right: 24px; z-index: 9999; display: flex; flex-direction: column; gap: 8px; max-width: 360px; }
-    .toast { background: #fff; border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 12px 16px; box-shadow: 0 4px 16px rgba(0,0,0,0.1); }
-    .toast-title { font-size: 13px; font-weight: 600; color: var(--slate-900); margin-bottom: 2px; }
-    .toast-message { font-size: 12px; color: var(--text-secondary); }
-    .toast-success { border-left: 3px solid var(--teal-500); }
-    .toast-error { border-left: 3px solid var(--error); }
-    .toast-info { border-left: 3px solid var(--teal-500); }
+
+    .btn-xs:hover {
+      background: var(--slate-50);
+    }
+
+    .btn-xs.btn-outline {
+      border-color: var(--slate-300);
+    }
+
+    .btn-xs.btn-danger {
+      background: var(--error);
+      color: #fff;
+      border-color: var(--error);
+    }
+
+    .btn-xs.btn-danger:hover {
+      background: #b91c1c;
+    }
+
+    .badge-warning {
+      background: var(--warning-bg);
+      color: var(--warning);
+    }
+
+    .toast-container {
+      position: fixed;
+      bottom: 24px;
+      right: 24px;
+      z-index: 9999;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      max-width: 360px;
+    }
+
+    .toast {
+      background: #fff;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    }
+
+    .toast-title {
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--slate-900);
+      margin-bottom: 2px;
+    }
+
+    .toast-message {
+      font-size: 12px;
+      color: var(--text-secondary);
+    }
+
+    .toast-success {
+      border-left: 3px solid var(--teal-500);
+    }
+
+    .toast-error {
+      border-left: 3px solid var(--error);
+    }
+
+    .toast-info {
+      border-left: 3px solid var(--teal-500);
+    }
 
     /* Integrations Form Grid layout & mobile responsiveness */
     #integrationsForm {
@@ -373,6 +506,7 @@
       grid-template-columns: 1fr 1fr;
       gap: 24px;
     }
+
     @media (max-width: 600px) {
       #integrationsForm {
         grid-template-columns: 1fr;
@@ -386,10 +520,13 @@
       margin-bottom: 20px;
       width: 100%;
     }
+
     .admin-tabs-scroll-wrap::after {
       content: '';
       position: absolute;
-      top: 0; right: 0; bottom: 0;
+      top: 0;
+      right: 0;
+      bottom: 0;
       width: 40px;
       background: linear-gradient(to right, rgba(248, 250, 252, 0), rgba(248, 250, 252, 0.95));
       pointer-events: none;
@@ -397,29 +534,30 @@
       transition: opacity var(--transition);
       z-index: 5;
     }
-    
+
     @media (max-width: 1024px) {
       .admin-tabs-scroll-wrap::after {
         opacity: 1;
       }
+
       .admin-tabs {
         margin-bottom: 0 !important;
       }
     }
   </style>
   <script>
-      function escapeHTML(str) {
-        if (str === null || str === undefined) return '';
-        return String(str).replace(/[&<>"']/g, function(m) {
-          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "\'": '&#039;' }[m];
-        });
-      }
+    function escapeHTML(str) {
+      if (str === null || str === undefined) return '';
+      return String(str).replace(/[&<>"']/g, function (m) {
+        return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "\'": '&#039;' }[m];
+      });
+    }
 
     if (localStorage.getItem('coda_sidebar_collapsed') === 'true' && window.innerWidth > 1024) {
       document.documentElement.classList.add('sidebar-collapsed-pref');
     }
     // Prevent view layout flickering on reload
-    (function() {
+    (function () {
       const activeTab = localStorage.getItem('coda_admin_active_view') || 'users';
       const style = document.createElement('style');
       style.id = 'early-admin-override';
@@ -434,6 +572,7 @@
     })();
   </script>
 </head>
+
 <body>
   <div class="admin-shell">
     <!-- Sidebar -->
@@ -441,13 +580,18 @@
       <aside class="app-sidebar">
         <div class="sidebar-header">
           <a href="/" class="sidebar-brand">
-            <span class="brand-icon-box"><svg viewBox="20 20 54 58" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="38" y="22" width="34" height="14" rx="3" fill="#0d9488"/><rect x="22" y="32" width="18" height="38" rx="3.5" fill="currentColor"/><rect x="34" y="62" width="38" height="14" rx="3" fill="currentColor"/></svg></span>
+            <span class="brand-icon-box"><svg viewBox="20 20 54 58" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="38" y="22" width="34" height="14" rx="3" fill="#0d9488" />
+                <rect x="22" y="32" width="18" height="38" rx="3.5" fill="currentColor" />
+                <rect x="34" y="62" width="38" height="14" rx="3" fill="currentColor" />
+              </svg></span>
             <span>Coda ERP</span>
             <span class="badge-subscription">Admin</span>
           </a>
-          <button class="sidebar-close" id="sidebarClose" aria-label="Close navigation"><span class="material-symbols-outlined">close</span></button>
+          <button class="sidebar-close" id="sidebarClose" aria-label="Close navigation"><span
+              class="material-symbols-outlined">close</span></button>
         </div>
-        
+
         <nav class="sidebar-nav admin-nav">
           <div class="nav-section">
             <div class="nav-section-title">Management</div>
@@ -487,7 +631,7 @@
             </a>
           </div>
         </nav>
-        
+
         <div class="sidebar-footer">
           <div class="user-info" id="adminUserInfo"></div>
           <button class="btn btn-secondary btn-logout" id="btnAdminLogout" style="width: 100%; margin-top: 8px;">
@@ -504,9 +648,9 @@
         <div class="topbar-left">
           <a href="/" class="brand-icon-box topbar-logo-icon" style="text-decoration:none;" aria-label="Go to Homepage">
             <svg viewBox="20 20 54 58" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect x="38" y="22" width="34" height="14" rx="3" fill="#0d9488"/>
-              <rect x="22" y="32" width="18" height="38" rx="3.5" fill="currentColor"/>
-              <rect x="34" y="62" width="38" height="14" rx="3" fill="currentColor"/>
+              <rect x="38" y="22" width="34" height="14" rx="3" fill="#0d9488" />
+              <rect x="22" y="32" width="18" height="38" rx="3.5" fill="currentColor" />
+              <rect x="34" y="62" width="38" height="14" rx="3" fill="currentColor" />
             </svg>
           </a>
           <button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle menu">
@@ -516,12 +660,16 @@
         </div>
         <div style="display:flex; align-items:center; gap:16px;">
           <div class="topbar-search" style="position: relative; display: flex; align-items: center;">
-            <span class="material-symbols-outlined" style="position: absolute; left: 10px; top: 10px; font-size: 18px; color: var(--text-muted);">search</span>
-            <input class="form-control" type="search" id="adminGlobalSearch" placeholder="Search users, businesses..." style="padding-left: 36px; height: 38px; width: 300px; border-radius: 100px;">
+            <span class="material-symbols-outlined"
+              style="position: absolute; left: 10px; top: 10px; font-size: 18px; color: var(--text-muted);">search</span>
+            <input class="form-control" type="search" id="adminGlobalSearch" placeholder="Search users, businesses..."
+              style="padding-left: 36px; height: 38px; width: 300px; border-radius: 100px;">
           </div>
-          <button class="btn-icon-only" id="btnAdminNotifications" aria-label="Notifications" style="width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--border-color); background: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; position: relative;">
+          <button class="btn-icon-only" id="btnAdminNotifications" aria-label="Notifications"
+            style="width: 38px; height: 38px; border-radius: 50%; border: 1px solid var(--border-color); background: #fff; cursor: pointer; display: flex; align-items: center; justify-content: center; position: relative;">
             <span class="material-symbols-outlined" style="font-size: 20px;">notifications</span>
-            <span class="notification-badge" id="adminNotificationBadge" style="display:none; position: absolute; top: -6px; right: -6px; background: var(--error); min-width: 18px; height: 18px; padding: 0 4px; border-radius: 10px; color: #fff; font-size: 10px; font-weight: 700; align-items: center; justify-content: center; border: 2px solid #fff; box-sizing: border-box;"></span>
+            <span class="notification-badge" id="adminNotificationBadge"
+              style="display:none; position: absolute; top: -6px; right: -6px; background: var(--error); min-width: 18px; height: 18px; padding: 0 4px; border-radius: 10px; color: #fff; font-size: 10px; font-weight: 700; align-items: center; justify-content: center; border: 2px solid #fff; box-sizing: border-box;"></span>
           </button>
           <span style="font-size:12px; color:var(--text-muted);" id="adminLastUpdated"></span>
         </div>
@@ -535,25 +683,25 @@
             <div class="stat-value" id="kpiUsers">-</div>
           </div>
           <div class="stat-item divider"></div>
-          
+
           <div class="stat-item">
             <div class="stat-label">Businesses</div>
             <div class="stat-value" id="kpiBusinesses">-</div>
           </div>
           <div class="stat-item divider"></div>
-          
+
           <div class="stat-item">
             <div class="stat-label">Active Subs</div>
             <div class="stat-value" id="kpiActiveSubs">-</div>
           </div>
           <div class="stat-item divider"></div>
-          
+
           <div class="stat-item">
             <div class="stat-label">Month Signups</div>
             <div class="stat-value" id="kpiSignups">-</div>
           </div>
           <div class="stat-item divider"></div>
-          
+
           <div class="stat-item highlight">
             <div class="stat-label">Paid Revenue</div>
             <div class="stat-value" id="kpiRevenue">-</div>
@@ -577,17 +725,26 @@
         <div class="admin-panel" id="panel-users">
           <!-- Users Panel Overview -->
           <div style="display:flex; gap:16px; margin-bottom:16px;">
-            <div style="background:#fff; border:1px solid var(--border-color); border-radius:8px; padding:12px 16px; flex:1;">
-              <div style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Active Users</div>
-              <div id="summaryActiveUsers" style="font-size:20px; font-weight:800; margin-top:4px; color:var(--teal-600);">-</div>
+            <div
+              style="background:#fff; border:1px solid var(--border-color); border-radius:8px; padding:12px 16px; flex:1;">
+              <div style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Active
+                Users</div>
+              <div id="summaryActiveUsers"
+                style="font-size:20px; font-weight:800; margin-top:4px; color:var(--teal-600);">-</div>
             </div>
-            <div style="background:#fff; border:1px solid var(--border-color); border-radius:8px; padding:12px 16px; flex:1;">
-              <div style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Suspended Accounts</div>
-              <div id="summarySuspendedUsers" style="font-size:20px; font-weight:800; margin-top:4px; color:var(--copper-600);">-</div>
+            <div
+              style="background:#fff; border:1px solid var(--border-color); border-radius:8px; padding:12px 16px; flex:1;">
+              <div style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Suspended
+                Accounts</div>
+              <div id="summarySuspendedUsers"
+                style="font-size:20px; font-weight:800; margin-top:4px; color:var(--copper-600);">-</div>
             </div>
-            <div style="background:#fff; border:1px solid var(--border-color); border-radius:8px; padding:12px 16px; flex:1;">
-              <div style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Blocked Accounts</div>
-              <div id="summaryBlockedUsers" style="font-size:20px; font-weight:800; margin-top:4px; color:var(--error);">-</div>
+            <div
+              style="background:#fff; border:1px solid var(--border-color); border-radius:8px; padding:12px 16px; flex:1;">
+              <div style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Blocked
+                Accounts</div>
+              <div id="summaryBlockedUsers"
+                style="font-size:20px; font-weight:800; margin-top:4px; color:var(--error);">-</div>
             </div>
           </div>
           <div class="admin-table-wrap">
@@ -604,8 +761,11 @@
                   <th style="width:150px;">Actions</th>
                 </tr>
               </thead>
-                <tbody id="usersBody">
-                  <tr><td colspan="8" style="text-align:center; padding:40px; color:var(--text-muted);"><span class="loading-spinner"></span>Loading users...</td></tr>
+              <tbody id="usersBody">
+                <tr>
+                  <td colspan="8" style="text-align:center; padding:40px; color:var(--text-muted);"><span
+                      class="loading-spinner"></span>Loading users...</td>
+                </tr>
               </tbody>
             </table>
           </div>
@@ -634,7 +794,10 @@
                   </tr>
                 </thead>
                 <tbody id="businessesBody">
-                  <tr><td colspan="6" style="text-align:center; padding:40px; color:var(--text-muted);"><span class="loading-spinner"></span>Loading businesses...</td></tr>
+                  <tr>
+                    <td colspan="6" style="text-align:center; padding:40px; color:var(--text-muted);"><span
+                        class="loading-spinner"></span>Loading businesses...</td>
+                  </tr>
                 </tbody>
               </table>
             </div>
@@ -642,8 +805,8 @@
           <div class="pagination" id="businessesPagination" style="display:none;">
             <span id="businessesPageInfo"></span>
             <div style="display:flex; gap:8px;">
-               <button id="businessesPrev" disabled>Previous</button>
-               <button id="businessesNext">Next</button>
+              <button id="businessesPrev" disabled>Previous</button>
+              <button id="businessesNext">Next</button>
             </div>
           </div>
         </div>
@@ -661,7 +824,10 @@
                 </tr>
               </thead>
               <tbody id="notificationsBody">
-                <tr><td colspan="4" style="text-align:center; padding:40px; color:var(--text-muted);"><span class="loading-spinner"></span>Loading requests...</td></tr>
+                <tr>
+                  <td colspan="4" style="text-align:center; padding:40px; color:var(--text-muted);"><span
+                      class="loading-spinner"></span>Loading requests...</td>
+                </tr>
               </tbody>
             </table>
           </div>
@@ -706,7 +872,10 @@
                   </tr>
                 </thead>
                 <tbody id="auditBody">
-                  <tr><td colspan="5" style="text-align:center; padding:40px; color:var(--text-muted);">Loading audit entries...</td></tr>
+                  <tr>
+                    <td colspan="5" style="text-align:center; padding:40px; color:var(--text-muted);">Loading audit
+                      entries...</td>
+                  </tr>
                 </tbody>
               </table>
             </div>
@@ -725,21 +894,26 @@
           <div class="chart-row">
             <div class="chart-card" style="grid-column: 1 / -1;">
               <h3 style="margin-bottom: 8px;">Platform API Keys</h3>
-              <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 24px;">Configure the live environment variables for external integrations. Changes are saved securely to the backend <code>.env</code> file. Do not expose these to clients.</p>
-              
+              <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 24px;">Configure the live
+                environment variables for external integrations. Changes are saved securely to the backend
+                <code>.env</code> file. Do not expose these to clients.</p>
+
               <div id="integrationsFormWrapper">
                 <form id="integrationsForm">
                   <div class="form-group">
                     <label class="form-label" for="env-mono">Mono API Key (Bank Sync)</label>
-                    <input class="form-control" type="password" id="env-mono" name="MONO_SECRET_KEY" placeholder="sk_live_...">
+                    <input class="form-control" type="password" id="env-mono" name="MONO_SECRET_KEY"
+                      placeholder="sk_live_...">
                   </div>
                   <div class="form-group">
                     <label class="form-label" for="env-paystack">Paystack Secret Key (Payments)</label>
-                    <input class="form-control" type="password" id="env-paystack" name="PAYSTACK_SECRET_KEY" placeholder="sk_live_...">
+                    <input class="form-control" type="password" id="env-paystack" name="PAYSTACK_SECRET_KEY"
+                      placeholder="sk_live_...">
                   </div>
                   <div class="form-group">
                     <label class="form-label" for="env-qoreid">QoreID API Key (CAC Verify)</label>
-                    <input class="form-control" type="password" id="env-qoreid" name="QOREID_SECRET_KEY" placeholder="...">
+                    <input class="form-control" type="password" id="env-qoreid" name="QOREID_SECRET_KEY"
+                      placeholder="...">
                   </div>
                   <div class="form-group">
                     <label class="form-label" for="env-firs">FIRS TaxPromax API Key</label>
@@ -751,7 +925,8 @@
                   </div>
                   <div class="form-group">
                     <label class="form-label" for="env-sendgrid">SendGrid API Key (Email)</label>
-                    <input class="form-control" type="password" id="env-sendgrid" name="SENDGRID_API_KEY" placeholder="SG....">
+                    <input class="form-control" type="password" id="env-sendgrid" name="SENDGRID_API_KEY"
+                      placeholder="SG....">
                   </div>
                   <div class="form-group" style="grid-column: 1 / -1;">
                     <button type="submit" class="btn btn-primary btn-interactive" id="btnSaveEnv">
@@ -774,23 +949,26 @@
   <div class="modal-overlay" id="authModal" style="display: none;">
     <div class="modal" style="position: relative;">
       <!-- Added close button to go home -->
-      <button onclick="window.location.href='/'" style="position:absolute; top:12px; right:12px; background:none; border:none; color:var(--text-muted); cursor:pointer;">
+      <button onclick="window.location.href='/'"
+        style="position:absolute; top:12px; right:12px; background:none; border:none; color:var(--text-muted); cursor:pointer;">
         <span class="material-symbols-outlined">close</span>
       </button>
       <h2 style="font-size: 18px; margin-bottom: 8px;">Session Expired</h2>
       <p class="sub" style="margin-bottom:20px">Your session has ended. Please sign in again.</p>
-      <a href="/login" class="btn btn-primary btn-interactive" style="width:100%; justify-content:center; text-decoration:none;">
+      <a href="/login" class="btn btn-primary btn-interactive"
+        style="width:100%; justify-content:center; text-decoration:none;">
         <span class="material-symbols-outlined">login</span>
         Sign in to Coda
       </a>
       <div style="margin-top: 16px; text-align:center;">
-        <p style="font-size:13px; color:var(--text-secondary);">Don't have an account? <a href="/signup" style="color:var(--teal-600); font-weight:600;">Create trial account</a></p>
+        <p style="font-size:13px; color:var(--text-secondary);">Don't have an account? <a href="/signup"
+            style="color:var(--teal-600); font-weight:600;">Create trial account</a></p>
       </div>
     </div>
   </div>
 
   <script>
-    (function() {
+    (function () {
       'use strict';
 
       let currentUser = null;
@@ -858,14 +1036,14 @@
             document.head.appendChild(style);
 
             document.body.appendChild(overlay);
-            requestAnimationFrame(function() { overlay.style.opacity = '1'; });
+            requestAnimationFrame(function () { overlay.style.opacity = '1'; });
 
-            setTimeout(function() {
+            setTimeout(function () {
               window.location.href = '/blocked?status=' + status + '&email=' + encodeURIComponent(email || '') + '&reason=' + encodeURIComponent('Account ' + status + ' by administrator');
             }, 2500);
             return true;
           }
-        } catch (_) {}
+        } catch (_) { }
         localStorage.removeItem('coda_user');
         localStorage.removeItem('coda_token');
         window.location.href = '/login';
@@ -878,11 +1056,11 @@
           if (res.ok) {
             const data = await res.json();
             csrfToken = data.csrfToken;
-            
+
             // Override global fetch to automatically inject CSRF token header for state-changing requests
             // and redirect to login on 401 (session invalidated in another tab)
             const originalFetch = window.fetch;
-            window.fetch = function(input, init) {
+            window.fetch = function (input, init) {
               init = init || {};
               init.headers = init.headers || {};
               init.credentials = 'include';
@@ -916,20 +1094,20 @@
 
       async function fetchWithAuth(url) {
         const res = await fetch(url, { credentials: 'include' });
-        if (res.status === 401) { 
+        if (res.status === 401) {
           redirectAuth();
-          return null; 
+          return null;
         }
-        if (res.status === 403) { 
+        if (res.status === 403) {
           redirectAuth();
-          return null; 
+          return null;
         }
         return res.ok ? res.json() : null;
       }
 
       function switchTab(tab) {
         localStorage.setItem('coda_admin_active_view', tab);
-        
+
         document.querySelectorAll('.admin-tab').forEach(t => t.classList.toggle('active', t.dataset.tab === tab));
         document.querySelectorAll('.admin-panel').forEach(p => p.classList.toggle('active', p.id === 'panel-' + tab));
         document.querySelectorAll('.admin-nav .nav-item[data-tab]').forEach(n => n.classList.toggle('active', n.dataset.tab === tab));
@@ -968,7 +1146,7 @@
           if (t === 'requests') loadNotifications();
         });
       });
-      
+
       document.querySelectorAll('.admin-nav .nav-item[data-tab]').forEach(item => {
         item.addEventListener('click', () => {
           switchTab(item.dataset.tab);
@@ -1024,7 +1202,7 @@
       document.getElementById('btnAdminLogout')?.addEventListener('click', async () => {
         try {
           await fetch('/api/v1/auth/logout', { method: 'POST', credentials: 'include' });
-        } catch (e) {}
+        } catch (e) { }
         localStorage.removeItem('coda_token');
         localStorage.removeItem('coda_user');
         window.location.href = '/login';
@@ -1033,12 +1211,12 @@
       function showAdminModal(title, text, confirmBtn, isDanger, onConfirm) {
         const overlay = document.createElement('div');
         overlay.style.cssText = 'position:fixed; inset:0; background:rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; z-index:9999; opacity:0; transition: opacity 0.2s;';
-        
+
         const modal = document.createElement('div');
         modal.style.cssText = 'background:#fff; border-radius:12px; padding:24px; width:400px; max-width:90%; box-shadow:0 10px 25px rgba(0,0,0,0.2); transform: scale(0.95); transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);';
-        
+
         const btnClass = isDanger ? 'btn-danger' : 'btn-primary';
-        
+
         modal.innerHTML = `
           <h3 style="margin-bottom:12px; font-size:18px;">${escapeHTML(title)}</h3>
           <p style="margin-bottom:24px; color:var(--text-secondary); font-size:14px; line-height:1.5;">${text}</p>
@@ -1047,34 +1225,34 @@
             <button class="btn ${btnClass}" id="btnAdminModalConfirm">${confirmBtn}</button>
           </div>
         `;
-        
+
         overlay.appendChild(modal);
         document.body.appendChild(overlay);
         document.body.classList.add('no-scroll');
-        
+
         requestAnimationFrame(() => {
           overlay.style.opacity = '1';
           modal.style.transform = 'scale(1)';
         });
-        
+
         const close = () => {
           overlay.style.opacity = '0';
           modal.style.transform = 'scale(0.95)';
           document.body.classList.remove('no-scroll');
           setTimeout(() => overlay.remove(), 200);
         };
-        
+
         document.getElementById('btnAdminModalCancel').onclick = close;
-        
+
         const confirmElement = document.getElementById('btnAdminModalConfirm');
         const cancelElement = document.getElementById('btnAdminModalCancel');
-        
+
         confirmElement.onclick = async () => {
           confirmElement.disabled = true;
           cancelElement.disabled = true;
           const originalHTML = confirmElement.innerHTML;
           confirmElement.innerHTML = '<span class="loading-spinner" style="border: 2px solid rgba(255,255,255,0.3); border-top-color:#fff; width:12px; height:12px; display:inline-block; border-radius:50%; animation:spin 0.6s linear infinite; margin-right:6px; vertical-align:middle;"></span> Processing...';
-          
+
           try {
             await onConfirm();
             close();
@@ -1154,8 +1332,8 @@
         loadUsers(usersPage);
         loadOverview();
       }
-      
-            let currentNotifications = [];
+
+      let currentNotifications = [];
 
       function updateAdminNotificationBadge() {
         const badge = document.getElementById('adminNotificationBadge');
@@ -1315,20 +1493,20 @@
         const endpoint = newReadState ? 'read' : 'unread';
         await fetch('/api/v1/notifications/' + id + '/' + endpoint, { method: 'PATCH', credentials: 'include' });
       }
-async function approveUpgradeFromNotification(id, businessId) {
+      async function approveUpgradeFromNotification(id, businessId) {
         const notif = currentNotifications.find(n => n.id === id);
         let tier = 'professional';
         if (notif && notif.message.toLowerCase().includes('enterprise')) tier = 'enterprise';
         if (notif && notif.message.toLowerCase().includes('starter')) tier = 'starter';
-        
+
         if (!confirm('Approve upgrade to ' + tier.toUpperCase() + '?')) return;
-        
+
         const res = await fetch('/api/v1/admin/businesses/' + businessId + '/tier', {
           method: 'PATCH',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ tier })
         });
-        
+
         if (res.ok) {
           showToast('Approved', 'Business upgraded to ' + tier, 'success');
           await fetch('/api/v1/notifications/' + id + '/read', { method: 'PATCH' });
@@ -1352,7 +1530,7 @@ async function approveUpgradeFromNotification(id, businessId) {
         document.getElementById('kpiRevenue').textContent = formatCurrency(o.paidRevenue);
         document.getElementById('kpiRevenueSub').textContent = o.totalBusinesses > 0 ? formatCurrency(Math.round(o.paidRevenue / o.totalBusinesses)) + ' avg/business' : '';
         document.getElementById('kpiSignups').textContent = o.signupsThisMonth.toLocaleString();
-        
+
         // Populate specific users panel stats
         const elActive = document.getElementById('summaryActiveUsers');
         if (elActive) elActive.textContent = (o.activeUsers || 0).toLocaleString();
@@ -1360,7 +1538,7 @@ async function approveUpgradeFromNotification(id, businessId) {
         if (elSuspended) elSuspended.textContent = (o.suspendedUsers || 0).toLocaleString();
         const elBlocked = document.getElementById('summaryBlockedUsers');
         if (elBlocked) elBlocked.textContent = (o.blockedUsers || 0).toLocaleString();
-        
+
         document.getElementById('adminLastUpdated').textContent = 'Updated ' + new Date().toLocaleString('en-NG');
       }
 
@@ -1467,7 +1645,7 @@ async function approveUpgradeFromNotification(id, businessId) {
               plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => formatCurrency(ctx.raw) } } },
               scales: {
                 x: { grid: { display: false } },
-                y: { grid: { color: colors.border }, ticks: { callback: v => (typeof getActiveCurrencySymbol === 'function' ? getActiveCurrencySymbol() : '₦') + (v/1000).toFixed(0) + 'k' }, beginAtZero: true }
+                y: { grid: { color: colors.border }, ticks: { callback: v => (typeof getActiveCurrencySymbol === 'function' ? getActiveCurrencySymbol() : '₦') + (v / 1000).toFixed(0) + 'k' }, beginAtZero: true }
               }
             }
           });
@@ -1505,7 +1683,7 @@ async function approveUpgradeFromNotification(id, businessId) {
               plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => formatCurrency(ctx.raw) } } },
               scales: {
                 x: { grid: { display: false } },
-                y: { grid: { color: colors.border }, ticks: { callback: v => (typeof getActiveCurrencySymbol === 'function' ? getActiveCurrencySymbol() : '₦') + (v/1000).toFixed(0) + 'k' }, beginAtZero: true }
+                y: { grid: { color: colors.border }, ticks: { callback: v => (typeof getActiveCurrencySymbol === 'function' ? getActiveCurrencySymbol() : '₦') + (v / 1000).toFixed(0) + 'k' }, beginAtZero: true }
               }
             }
           });
@@ -1564,11 +1742,11 @@ async function approveUpgradeFromNotification(id, businessId) {
             if (activePanel) {
               const rows = activePanel.querySelectorAll('tbody tr');
               rows.forEach(row => {
-                if (row.textContent.includes('No users found') || 
-                    row.textContent.includes('No businesses found') || 
-                    row.textContent.includes('No pending requests') || 
-                    row.textContent.includes('No entries found') || 
-                    row.textContent.includes('Loading requests...')) return;
+                if (row.textContent.includes('No users found') ||
+                  row.textContent.includes('No businesses found') ||
+                  row.textContent.includes('No pending requests') ||
+                  row.textContent.includes('No entries found') ||
+                  row.textContent.includes('Loading requests...')) return;
                 const text = row.textContent.toLowerCase();
                 row.style.display = text.includes(query) ? '' : 'none';
               });
@@ -1581,7 +1759,7 @@ async function approveUpgradeFromNotification(id, businessId) {
         loadUsers(1);
         loadBusinesses(1);
         loadNotifications();
-        
+
         // Poll for notifications periodically
         setInterval(loadNotifications, 30000);
 
@@ -1615,65 +1793,65 @@ async function approveUpgradeFromNotification(id, businessId) {
     })();
   </script>
 
-<script id="modal-fix-script">
-  document.addEventListener('DOMContentLoaded', function() {
-    function openModal(id) {
-      var m = document.getElementById(id);
-      if (m) {
-        document.body.classList.add('no-scroll');
-        var dm = document.querySelector('.dashboard-main'); if(dm) dm.style.overflow = 'hidden';
-        var am = document.querySelector('.admin-main'); if(am) am.style.overflow = 'hidden';
-        m.style.setProperty('display', 'flex', 'important');
-        m.classList.add('active');
-        m.style.zIndex = '999999';
-        m.style.opacity = '1';
-        m.style.visibility = 'visible';
+  <script id="modal-fix-script">
+    document.addEventListener('DOMContentLoaded', function () {
+      function openModal(id) {
+        var m = document.getElementById(id);
+        if (m) {
+          document.body.classList.add('no-scroll');
+          var dm = document.querySelector('.dashboard-main'); if (dm) dm.style.overflow = 'hidden';
+          var am = document.querySelector('.admin-main'); if (am) am.style.overflow = 'hidden';
+          m.style.setProperty('display', 'flex', 'important');
+          m.classList.add('active');
+          m.style.zIndex = '999999';
+          m.style.opacity = '1';
+          m.style.visibility = 'visible';
+        }
       }
-    }
-    function closeModal(id) {
-      var m = document.getElementById(id);
-      if (m) {
-        document.body.classList.remove('no-scroll');
-        var dm = document.querySelector('.dashboard-main'); if(dm) dm.style.overflow = '';
-        var am = document.querySelector('.admin-main'); if(am) am.style.overflow = '';
-        m.style.setProperty('display', 'none', 'important');
-        m.classList.remove('active');
+      function closeModal(id) {
+        var m = document.getElementById(id);
+        if (m) {
+          document.body.classList.remove('no-scroll');
+          var dm = document.querySelector('.dashboard-main'); if (dm) dm.style.overflow = '';
+          var am = document.querySelector('.admin-main'); if (am) am.style.overflow = '';
+          m.style.setProperty('display', 'none', 'important');
+          m.classList.remove('active');
+        }
       }
-    }
-    
-    document.querySelectorAll('.legal-trigger-privacy').forEach(function(el) {
-      el.addEventListener('click', function(e) {
-        e.preventDefault();
-        openModal('privacyModal');
-      });
-    });
-    
-    document.querySelectorAll('.legal-trigger-terms').forEach(function(el) {
-      el.addEventListener('click', function(e) {
-        e.preventDefault();
-        openModal('termsModal');
-      });
-    });
 
-    document.querySelectorAll('.support-trigger').forEach(function(el) {
-      el.addEventListener('click', function(e) {
-        e.preventDefault();
-        openModal('supportModal');
-      });
-    });
-
-    // Close buttons
-    ['privacyModal', 'termsModal', 'supportModal'].forEach(function(id) {
-      var m = document.getElementById(id);
-      if (m) {
-        var buttons = m.querySelectorAll('.modal-close-btn, .legal-modal-close, button.btn-primary');
-        buttons.forEach(function(btn) {
-          btn.addEventListener('click', function() {
-            closeModal(id);
-          });
+      document.querySelectorAll('.legal-trigger-privacy').forEach(function (el) {
+        el.addEventListener('click', function (e) {
+          e.preventDefault();
+          openModal('privacyModal');
         });
-      }
-    });
+      });
+
+      document.querySelectorAll('.legal-trigger-terms').forEach(function (el) {
+        el.addEventListener('click', function (e) {
+          e.preventDefault();
+          openModal('termsModal');
+        });
+      });
+
+      document.querySelectorAll('.support-trigger').forEach(function (el) {
+        el.addEventListener('click', function (e) {
+          e.preventDefault();
+          openModal('supportModal');
+        });
+      });
+
+      // Close buttons
+      ['privacyModal', 'termsModal', 'supportModal'].forEach(function (id) {
+        var m = document.getElementById(id);
+        if (m) {
+          var buttons = m.querySelectorAll('.modal-close-btn, .legal-modal-close, button.btn-primary');
+          buttons.forEach(function (btn) {
+            btn.addEventListener('click', function () {
+              closeModal(id);
+            });
+          });
+        }
+      });
       async function loadIntegrations() {
         const res = await fetchWithAuth('/api/v1/admin/config/env');
         if (res && res.success && res.data) {
@@ -1689,10 +1867,10 @@ async function approveUpgradeFromNotification(id, businessId) {
         const btn = document.getElementById('btnSaveEnv');
         btn.disabled = true;
         btn.innerHTML = 'Saving...';
-        
+
         const formData = new FormData(e.target);
         const payload = Object.fromEntries(formData.entries());
-        
+
         try {
           const res = await fetch('/api/v1/admin/config/env', {
             method: 'POST',
@@ -1714,7 +1892,7 @@ async function approveUpgradeFromNotification(id, businessId) {
           btn.innerHTML = '<span class="material-symbols-outlined" style="font-size: 16px;">save</span> Save Configuration';
         }
       });
-      
+
       // Also intercept the switchTab for integrations
       document.querySelectorAll('.admin-tab').forEach(tab => {
         tab.addEventListener('click', () => {
@@ -1726,140 +1904,175 @@ async function approveUpgradeFromNotification(id, businessId) {
     })();
   </script>
 
-<script>
-  document.addEventListener('DOMContentLoaded', function() {
-    // FAQ Accordion Logic
-    const faqToggles = document.querySelectorAll('.faq-toggle');
-    faqToggles.forEach(toggle => {
-      toggle.addEventListener('click', function(e) {
-        e.preventDefault(); // Prevent accidental form submissions/jumps
-        const content = this.nextElementSibling;
-        const icon = this.querySelector('.faq-icon');
-        
-        // Close all others safely
-        document.querySelectorAll('.faq-content').forEach(c => {
-          if(c !== content) {
-            c.style.maxHeight = '0px';
-            c.style.paddingTop = '0px';
-          }
-        });
-        document.querySelectorAll('.faq-icon').forEach(i => {
-          if(i !== icon) {
-            i.style.transform = 'rotate(0deg)';
-          }
-        });
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      // FAQ Accordion Logic
+      const faqToggles = document.querySelectorAll('.faq-toggle');
+      faqToggles.forEach(toggle => {
+        toggle.addEventListener('click', function (e) {
+          e.preventDefault(); // Prevent accidental form submissions/jumps
+          const content = this.nextElementSibling;
+          const icon = this.querySelector('.faq-icon');
 
-        if (content.style.maxHeight && content.style.maxHeight !== '0px') {
-          content.style.maxHeight = '0px';
-          content.style.paddingTop = '0px';
-          icon.style.transform = 'rotate(0deg)';
-        } else {
-          content.style.paddingTop = '12px';
-          content.style.maxHeight = content.scrollHeight + 24 + "px";
-          icon.style.transform = 'rotate(180deg)';
-        }
+          // Close all others safely
+          document.querySelectorAll('.faq-content').forEach(c => {
+            if (c !== content) {
+              c.style.maxHeight = '0px';
+              c.style.paddingTop = '0px';
+            }
+          });
+          document.querySelectorAll('.faq-icon').forEach(i => {
+            if (i !== icon) {
+              i.style.transform = 'rotate(0deg)';
+            }
+          });
+
+          if (content.style.maxHeight && content.style.maxHeight !== '0px') {
+            content.style.maxHeight = '0px';
+            content.style.paddingTop = '0px';
+            icon.style.transform = 'rotate(0deg)';
+          } else {
+            content.style.paddingTop = '12px';
+            content.style.maxHeight = content.scrollHeight + 24 + "px";
+            icon.style.transform = 'rotate(180deg)';
+          }
+        });
       });
     });
-  });
-</script>
+  </script>
 
-<!-- Notification Panel -->
-<aside class="panel panel-right" id="panelAdminNotifications" aria-label="Notifications">
-  <div class="panel-header" style="padding: 16px 24px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
-    <h3 style="font-size: 16px;">Notifications</h3>
-    <button id="closeAdminNotifications"><span class="material-symbols-outlined">close</span></button>
-  </div>
-  <div class="panel-body" id="adminNotificationsList" style="padding: 24px; overflow-y: auto;">
-    <!-- Filled dynamically from loadNotifications -->
-  </div>
-</aside>
+  <!-- Notification Panel -->
+  <aside class="panel panel-right" id="panelAdminNotifications" aria-label="Notifications">
+    <div class="panel-header"
+      style="padding: 16px 24px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
+      <h3 style="font-size: 16px;">Notifications</h3>
+      <button id="closeAdminNotifications"><span class="material-symbols-outlined">close</span></button>
+    </div>
+    <div class="panel-body" id="adminNotificationsList" style="padding: 24px; overflow-y: auto;">
+      <!-- Filled dynamically from loadNotifications -->
+    </div>
+  </aside>
 
-<script>
-  // Setup Admin Notifications Panel Toggle
-  document.getElementById('btnAdminNotifications')?.addEventListener('click', () => {
-    const panel = document.getElementById('panelAdminNotifications');
-    panel.classList.add('open');
-    document.body.classList.add('no-scroll');
-  });
+  <script>
+    // Setup Admin Notifications Panel Toggle
+    document.getElementById('btnAdminNotifications')?.addEventListener('click', () => {
+      const panel = document.getElementById('panelAdminNotifications');
+      panel.classList.add('open');
+      document.body.classList.add('no-scroll');
+    });
 
-  document.getElementById('closeAdminNotifications')?.addEventListener('click', () => {
-    const panel = document.getElementById('panelAdminNotifications');
-    panel.classList.remove('open');
-    document.body.classList.remove('no-scroll');
-  });
+    document.getElementById('closeAdminNotifications')?.addEventListener('click', () => {
+      const panel = document.getElementById('panelAdminNotifications');
+      panel.classList.remove('open');
+      document.body.classList.remove('no-scroll');
+    });
 
-  document.getElementById('btnAdminNotifications')?.addEventListener('click', (e) => {
-    e.stopPropagation();
-  });
-</script>
+    document.getElementById('btnAdminNotifications')?.addEventListener('click', (e) => {
+      e.stopPropagation();
+    });
+  </script>
 </body>
+
 </html>
 
 
-<div class="modal-overlay" id="supportModal" style="position:fixed;inset:0;background:rgba(15,23,42,0.6);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:1000;">
-  <div style="background:#fff;width:100%;max-width:500px;border-radius:14px;padding:32px;position:relative;max-height:80vh;overflow-y:auto;box-shadow:0 20px 25px -5px rgba(15,23,42,0.06);">
-    <button class="modal-close-btn" style="position:absolute;top:24px;right:24px;background:none;border:none;cursor:pointer;color:#64748b;"><span class="material-symbols-outlined">close</span></button>
-    
-    <div style="display:flex;align-items:center;gap:8px;font-weight:800;font-size:18px;color:#0f172a;margin-bottom:24px;">
-      <span style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;"><svg viewBox="20 20 54 58" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;"><rect x="38" y="22" width="34" height="14" rx="3" fill="#0d9488"/><rect x="22" y="32" width="18" height="38" rx="3.5" fill="currentColor"/><rect x="34" y="62" width="38" height="14" rx="3" fill="currentColor"/></svg></span>
+<div class="modal-overlay" id="supportModal"
+  style="position:fixed;inset:0;background:rgba(15,23,42,0.6);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:1000;">
+  <div
+    style="background:#fff;width:100%;max-width:500px;border-radius:14px;padding:32px;position:relative;max-height:80vh;overflow-y:auto;box-shadow:0 20px 25px -5px rgba(15,23,42,0.06);">
+    <button class="modal-close-btn"
+      style="position:absolute;top:24px;right:24px;background:none;border:none;cursor:pointer;color:#64748b;"><span
+        class="material-symbols-outlined">close</span></button>
+
+    <div
+      style="display:flex;align-items:center;gap:8px;font-weight:800;font-size:18px;color:#0f172a;margin-bottom:24px;">
+      <span style="width:32px;height:32px;display:flex;align-items:center;justify-content:center;"><svg
+          viewBox="20 20 54 58" fill="none" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;">
+          <rect x="38" y="22" width="34" height="14" rx="3" fill="#0d9488" />
+          <rect x="22" y="32" width="18" height="38" rx="3.5" fill="currentColor" />
+          <rect x="34" y="62" width="38" height="14" rx="3" fill="currentColor" />
+        </svg></span>
       <span>Coda Support Hub</span>
     </div>
-    
+
     <div style="margin-bottom: 24px;">
-      <div style="display: flex; align-items: center; gap: 8px; padding: 12px; background: #ecfdf5; border-radius: 8px; border: 1px solid #a7f3d0; margin-bottom: 24px;">
+      <div
+        style="display: flex; align-items: center; gap: 8px; padding: 12px; background: #ecfdf5; border-radius: 8px; border: 1px solid #a7f3d0; margin-bottom: 24px;">
         <span class="material-symbols-outlined" style="color: #059669; font-size: 20px;">check_circle</span>
         <span style="color: #065f46; font-size: 14px; font-weight: 500;">System Status: All Systems Operational</span>
       </div>
 
-      
+
       <h3 style="font-size: 16px; color: #0f172a; margin-bottom: 12px;">Frequently Asked Questions</h3>
       <div class="faq-accordion" style="display: flex; flex-direction: column; gap: 8px;">
-        
+
         <div class="faq-item" style="border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
-          <button class="faq-toggle" style="width: 100%; display: flex; align-items: center; justify-content: space-between; background: #f8fafc; border: none; padding: 12px 16px; cursor: pointer; text-align: left; font-family: 'Inter', sans-serif;">
+          <button class="faq-toggle"
+            style="width: 100%; display: flex; align-items: center; justify-content: space-between; background: #f8fafc; border: none; padding: 12px 16px; cursor: pointer; text-align: left; font-family: 'Inter', sans-serif;">
             <span style="color: #0f172a; font-weight: 600; font-size: 14px;">How do I reset my account password?</span>
-            <span class="material-symbols-outlined faq-icon" style="color: #64748b; font-size: 20px; transition: transform 0.2s;">expand_more</span>
+            <span class="material-symbols-outlined faq-icon"
+              style="color: #64748b; font-size: 20px; transition: transform 0.2s;">expand_more</span>
           </button>
-          <div class="faq-content" style="padding: 0 16px; max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.3s ease; background: #fff;">
-            <p style="font-size: 14px; color: #475569; margin: 0; padding-bottom: 12px; line-height: 1.5;">Go to the login screen and click "Forgot Password". A secure reset link will be sent to your registered email. For security, links expire after 15 minutes.</p>
+          <div class="faq-content"
+            style="padding: 0 16px; max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.3s ease; background: #fff;">
+            <p style="font-size: 14px; color: #475569; margin: 0; padding-bottom: 12px; line-height: 1.5;">Go to the
+              login screen and click "Forgot Password". A secure reset link will be sent to your registered email. For
+              security, links expire after 15 minutes.</p>
           </div>
         </div>
 
         <div class="faq-item" style="border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
-          <button class="faq-toggle" style="width: 100%; display: flex; align-items: center; justify-content: space-between; background: #f8fafc; border: none; padding: 12px 16px; cursor: pointer; text-align: left; font-family: 'Inter', sans-serif;">
-            <span style="color: #0f172a; font-weight: 600; font-size: 14px;">How do I export monthly financial reports?</span>
-            <span class="material-symbols-outlined faq-icon" style="color: #64748b; font-size: 20px; transition: transform 0.2s;">expand_more</span>
+          <button class="faq-toggle"
+            style="width: 100%; display: flex; align-items: center; justify-content: space-between; background: #f8fafc; border: none; padding: 12px 16px; cursor: pointer; text-align: left; font-family: 'Inter', sans-serif;">
+            <span style="color: #0f172a; font-weight: 600; font-size: 14px;">How do I export monthly financial
+              reports?</span>
+            <span class="material-symbols-outlined faq-icon"
+              style="color: #64748b; font-size: 20px; transition: transform 0.2s;">expand_more</span>
           </button>
-          <div class="faq-content" style="padding: 0 16px; max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.3s ease; background: #fff;">
-            <p style="font-size: 14px; color: #475569; margin: 0; padding-bottom: 12px; line-height: 1.5;">Navigate to the <b>Reports</b> tab from your dashboard. Select "Profit & Loss" or "Balance Sheet", choose your date range, and click the Export button to download as CSV or PDF.</p>
+          <div class="faq-content"
+            style="padding: 0 16px; max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.3s ease; background: #fff;">
+            <p style="font-size: 14px; color: #475569; margin: 0; padding-bottom: 12px; line-height: 1.5;">Navigate to
+              the <b>Reports</b> tab from your dashboard. Select "Profit & Loss" or "Balance Sheet", choose your date
+              range, and click the Export button to download as CSV or PDF.</p>
           </div>
         </div>
 
         <div class="faq-item" style="border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
-          <button class="faq-toggle" style="width: 100%; display: flex; align-items: center; justify-content: space-between; background: #f8fafc; border: none; padding: 12px 16px; cursor: pointer; text-align: left; font-family: 'Inter', sans-serif;">
+          <button class="faq-toggle"
+            style="width: 100%; display: flex; align-items: center; justify-content: space-between; background: #f8fafc; border: none; padding: 12px 16px; cursor: pointer; text-align: left; font-family: 'Inter', sans-serif;">
             <span style="color: #0f172a; font-weight: 600; font-size: 14px;">How do I run Bank Reconciliation?</span>
-            <span class="material-symbols-outlined faq-icon" style="color: #64748b; font-size: 20px; transition: transform 0.2s;">expand_more</span>
+            <span class="material-symbols-outlined faq-icon"
+              style="color: #64748b; font-size: 20px; transition: transform 0.2s;">expand_more</span>
           </button>
-          <div class="faq-content" style="padding: 0 16px; max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.3s ease; background: #fff;">
-            <p style="font-size: 14px; color: #475569; margin: 0; padding-bottom: 12px; line-height: 1.5;">Open the <b>Bank Reconciliation</b> module. You can manually match your ERP ledger entries against your uploaded bank statements by clicking the "Match" icon next to each transaction.</p>
+          <div class="faq-content"
+            style="padding: 0 16px; max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.3s ease; background: #fff;">
+            <p style="font-size: 14px; color: #475569; margin: 0; padding-bottom: 12px; line-height: 1.5;">Open the
+              <b>Bank Reconciliation</b> module. You can manually match your ERP ledger entries against your uploaded
+              bank statements by clicking the "Match" icon next to each transaction.</p>
           </div>
         </div>
 
         <div class="faq-item" style="border: 1px solid #e2e8f0; border-radius: 8px; overflow: hidden;">
-          <button class="faq-toggle" style="width: 100%; display: flex; align-items: center; justify-content: space-between; background: #f8fafc; border: none; padding: 12px 16px; cursor: pointer; text-align: left; font-family: 'Inter', sans-serif;">
+          <button class="faq-toggle"
+            style="width: 100%; display: flex; align-items: center; justify-content: space-between; background: #f8fafc; border: none; padding: 12px 16px; cursor: pointer; text-align: left; font-family: 'Inter', sans-serif;">
             <span style="color: #0f172a; font-weight: 600; font-size: 14px;">How do I manage team permissions?</span>
-            <span class="material-symbols-outlined faq-icon" style="color: #64748b; font-size: 20px; transition: transform 0.2s;">expand_more</span>
+            <span class="material-symbols-outlined faq-icon"
+              style="color: #64748b; font-size: 20px; transition: transform 0.2s;">expand_more</span>
           </button>
-          <div class="faq-content" style="padding: 0 16px; max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.3s ease; background: #fff;">
-            <p style="font-size: 14px; color: #475569; margin: 0; padding-bottom: 12px; line-height: 1.5;">Navigate to the <b>Admin Portal</b>. From the "Team Management" section, you can add new users and assign them specific role-based access controls (e.g., restricted to HR & Payroll or full access).</p>
+          <div class="faq-content"
+            style="padding: 0 16px; max-height: 0; overflow: hidden; transition: max-height 0.3s ease, padding 0.3s ease; background: #fff;">
+            <p style="font-size: 14px; color: #475569; margin: 0; padding-bottom: 12px; line-height: 1.5;">Navigate to
+              the <b>Admin Portal</b>. From the "Team Management" section, you can add new users and assign them
+              specific role-based access controls (e.g., restricted to HR & Payroll or full access).</p>
           </div>
         </div>
-        
+
       </div>
 
     </div>
 
-    <a href="mailto:support@codatechnologies.com" style="display:inline-flex;align-items:center;justify-content:center;font-family:Inter,sans-serif;font-weight:600;font-size:13px;padding:10px 20px;border-radius:6px;border:1px solid #0f172a;background:#0f172a;color:#fff;text-decoration:none;cursor:pointer;width:100%;height:40px;box-sizing:border-box;">Contact Support Team</a>
+    <a href="mailto:support@codatechnologies.com"
+      style="display:inline-flex;align-items:center;justify-content:center;font-family:Inter,sans-serif;font-weight:600;font-size:13px;padding:10px 20px;border-radius:6px;border:1px solid #0f172a;background:#0f172a;color:#fff;text-decoration:none;cursor:pointer;width:100%;height:40px;box-sizing:border-box;">Contact
+      Support Team</a>
   </div>
 </div>
-

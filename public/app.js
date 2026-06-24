@@ -390,7 +390,7 @@ document.addEventListener('DOMContentLoaded', () => {
               adminBtn = '<a href="/admin" class="btn btn-ghost btn-sm" style="display:flex; align-items:center; gap:8px;"><span class="material-symbols-outlined" style="font-size: 20px; color: var(--success, #10b981);">account_circle</span> Admin Panel</a>';
             }
             navAuth.innerHTML = adminBtn + `
-              <a href="/dashboard" class="btn btn-primary btn-sm" style="color:white!important; display:flex; align-items:center; gap:8px;">
+              <a href="/dashboard" class="btn btn-primary btn-sm" style="display:flex; align-items:center; gap:8px;">
                 <div style="width:22px; height:22px; border-radius:50%; background:rgba(255,255,255,0.2); display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700;">${initials}</div>
                 Dashboard
               </a>
