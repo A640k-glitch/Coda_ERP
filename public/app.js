@@ -50,24 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('[data-count]').forEach(el => counterObserver.observe(el));
 
   // ----------------------------------------------------------
-  // 3. Scroll reveal (IntersectionObserver)
-  // ----------------------------------------------------------
-  const revealObserver = new IntersectionObserver((entries) => {
-    entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.style.transition = 'opacity 500ms ease, transform 500ms ease';
-        entry.target.style.opacity = '1';
-        entry.target.style.transform = 'translateY(0)';
-        revealObserver.unobserve(entry.target);
-      }
-    });
-  }, { threshold: 0.1 });
-
-  document.querySelectorAll('.reveal').forEach(el => {
-    el.style.opacity = '0';
-    el.style.transform = 'translateY(20px)';
-    revealObserver.observe(el);
-  });
+  
 
   // ----------------------------------------------------------
   // 4. Charts (scroll-triggered via IntersectionObserver)

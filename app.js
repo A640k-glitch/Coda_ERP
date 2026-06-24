@@ -140,7 +140,7 @@ app.post('/api/v1/compliance/validate', (req, res) => res.json(validateBusiness(
 // Protected dashboard route
 app.get('/dashboard', attachUser, (req, res) => {
   if (!req.user) {
-    return res.redirect('/login');
+    return res.redirect('/');
   }
   res.set({
     'Cache-Control': 'no-store, no-cache, must-revalidate, private',
@@ -153,7 +153,7 @@ app.get('/dashboard', attachUser, (req, res) => {
 // Protected admin route
 app.get('/admin', attachUser, (req, res) => {
   if (!req.user) {
-    return res.redirect('/login');
+    return res.redirect('/');
   }
   if (req.user.email !== config.adminEmail) {
     return res.redirect('/dashboard');
@@ -166,13 +166,9 @@ app.get('/admin', attachUser, (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'admin.html'));
 });
 
-// /login and /signup -> dedicated auth pages
-app.get('/login', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'login.html'));
-});
-app.get('/signup', (req, res) => {
-  res.sendFile(path.join(__dirname, 'public', 'signup.html'));
-});
+// Redirect old auth routes to the new homepage modal flow
+app.get('/login', (req, res) => res.redirect('/'));
+app.get('/signup', (req, res) => res.redirect('/'));
 app.get('/forgot-password', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'forgot-password.html'));
 });
@@ -184,6 +180,7 @@ app.get('/blocked', (req, res) => {
 });
 
 // Static frontend
+app.use(express.static(path.join(__dirname, 'dist')));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Health check
