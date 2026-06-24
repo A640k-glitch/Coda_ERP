@@ -50,7 +50,7 @@
   --border-color: #e2e8f0;
   --border-light: #f1f5f9;
 
-  --sidebar-w: 260px;
+  --sidebar-w: 280px;
   --sidebar-gap: 16px;
   --topbar-h: 64px;
 
@@ -1010,8 +1010,7 @@ input:checked+.slider:before {
   bottom: 0;
   width: var(--sidebar-w);
   z-index: 100;
-  border-right: 1px solid var(--border-color);
-  background: var(--slate-950);
+  background: transparent;
   color: var(--slate-300);
   transition: transform var(--transition);
 }
@@ -1022,7 +1021,6 @@ input:checked+.slider:before {
   height: calc(100vh - 32px);
   margin: 16px;
   border-radius: var(--radius-lg);
-  border: 1px solid var(--border-color);
   box-shadow: var(--shadow-lg);
   overflow: hidden;
   background: var(--slate-950);
@@ -1080,7 +1078,7 @@ input:checked+.slider:before {
 }
 
 .app-sidebar .nav-section {
-  margin-bottom: 24px;
+  margin-bottom: 18px;
 }
 
 .app-sidebar .nav-section-title {
@@ -1090,7 +1088,7 @@ input:checked+.slider:before {
   text-transform: uppercase;
   letter-spacing: 0.1em;
   padding: 0 12px;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
 }
 
 .app-sidebar .nav-auth {
@@ -1132,11 +1130,11 @@ input:checked+.slider:before {
 .app-sidebar .nav-item {
   display: flex;
   align-items: center;
-  gap: 12px;
-  padding: 10px 16px;
+  gap: 10px;
+  padding: 7px 12px;
   border-radius: var(--radius-sm);
   color: var(--slate-400);
-  font-size: 13.5px;
+  font-size: 13px;
   font-weight: 500;
   cursor: pointer;
   transition: all var(--transition);
@@ -1158,7 +1156,7 @@ input:checked+.slider:before {
 }
 
 .app-sidebar .nav-item .material-symbols-outlined {
-  font-size: 20px;
+  font-size: 18px;
 }
 
 .app-sidebar .sidebar-promo-card {
@@ -2727,11 +2725,11 @@ input:checked+.slider:before {
   }
 
   .section {
-    padding: 40px 16px !important;
+    padding: 64px 16px !important;
   }
 
   .hero {
-    padding: 100px 0 32px;
+    padding: 100px 16px 48px;
     overflow-x: hidden;
   }
 
@@ -3014,8 +3012,8 @@ input:checked+.slider:before {
 .nav-auth .btn {
   width: 100%;
   justify-content: center;
-  padding: 14px 28px;
-  font-size: 16px;
+  padding: 10px 16px;
+  font-size: 13px;
   font-weight: 600;
 }
 
@@ -3032,14 +3030,25 @@ input:checked+.slider:before {
 }
 
 .nav-user-profile {
-  justify-content: center;
-  width: 100%;
-  margin-bottom: 12px;
-  color: #ffffff;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  text-decoration: none;
+  white-space: nowrap;
+  color: var(--teal-600, #0d9488) !important;
+  font-weight: 600;
+  font-size: 13px;
+  transition: color var(--transition);
 }
 
-.nav-admin-btn {
-  margin-bottom: 0;
+.nav-user-profile:hover {
+  color: var(--slate-900, #1e293b) !important;
+}
+
+.nav-user-profile .material-symbols-outlined {
+  font-size: 18px;
+  color: inherit;
+  vertical-align: middle;
 }
 
 
@@ -3109,7 +3118,11 @@ input:checked+.slider:before {
   .nav-user-profile {
     margin-bottom: 0 !important;
     width: auto !important;
-    color: var(--text-primary) !important;
+    color: var(--teal-600, #0d9488) !important;
+  }
+
+  .nav-user-profile:hover {
+    color: var(--slate-900, #1e293b) !important;
   }
 }
 
@@ -4174,10 +4187,53 @@ body.no-scroll .admin-main {
 @media (min-width: 769px) and (max-width: 1024px) {
   .nav-inner { padding: 0 16px; }
   .nav-brand { font-size: 16px; gap: 4px; }
+  .nav-links { gap: 20px; }
+  .nav-links a:not(.btn) { font-size: 13px; }
+  .nav-auth { gap: 12px; }
+  .nav-auth .btn { padding: 6px 14px; font-size: 12px; }
+  .nav-user-profile { font-size: 13px; gap: 6px; }
+  .nav-user-profile .material-symbols-outlined { font-size: 16px; }
+}
+
+/* Mobile Navigation Adjustments (481px–768px) */
+@media (min-width: 481px) and (max-width: 768px) {
+  .nav-inner { padding: 0 16px; }
+  .nav-brand { font-size: 15px; }
   .nav-links { gap: 16px; }
   .nav-links a:not(.btn) { font-size: 13px; }
+  .nav-auth { gap: 10px; }
+  .nav-auth .btn { padding: 6px 12px; font-size: 11px; }
+  .nav-user-profile { font-size: 12px; gap: 5px; }
+  .nav-user-profile .material-symbols-outlined { font-size: 15px; }
+}
+
+/* Small Screen Navigation Adjustments */
+@media (max-width: 480px) {
+  .nav-inner { padding: 0 12px; }
+  .nav-brand { font-size: 15px; gap: 4px; }
+  .nav-brand span:last-child { display: none; }
+  .nav-links { gap: 12px; }
+  .nav-links a:not(.btn) { font-size: 12px; }
   .nav-auth { gap: 8px; }
-  .nav-auth .btn { padding: 8px 16px; font-size: 13px; }
+  .nav-auth .btn { padding: 6px 10px; font-size: 11px; height: 26px; }
+  .nav-user-profile { font-size: 11px; gap: 4px; }
+  .nav-user-profile .material-symbols-outlined { font-size: 13px; }
+}
+
+/* Mobile & Tablet Hero Spacing — more room below fixed nav */
+@media (max-width: 1024px) {
+  .hero { padding-top: 200px !important; padding-bottom: 72px !important; }
+  .section { padding-top: 72px !important; padding-bottom: 72px !important; }
+}
+
+@media (max-width: 768px) {
+  .hero { padding-top: 180px !important; padding-bottom: 56px !important; }
+  .section { padding-top: 56px !important; padding-bottom: 56px !important; }
+}
+
+@media (max-width: 480px) {
+  .hero { padding-top: 150px !important; padding-bottom: 40px !important; }
+  .section { padding-top: 48px !important; padding-bottom: 48px !important; }
 }
 
 /* Floating Desktop Sidebars removed as it breaks layout. Effect applied to .app-sidebar instead */

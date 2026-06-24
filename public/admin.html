@@ -1337,13 +1337,22 @@
 
       function updateAdminNotificationBadge() {
         const badge = document.getElementById('adminNotificationBadge');
+        const unread = currentNotifications.filter(n => !n.is_read).length;
         if (badge) {
-          const unread = currentNotifications.filter(n => !n.is_read).length;
           if (unread > 0) {
             badge.textContent = unread > 9 ? '9+' : unread;
             badge.style.display = 'flex';
           } else {
             badge.style.display = 'none';
+          }
+        }
+        const panelCount = document.getElementById('adminPanelNotificationCount');
+        if (panelCount) {
+          if (unread > 0) {
+            panelCount.textContent = unread + ' unread';
+            panelCount.style.display = 'inline';
+          } else {
+            panelCount.style.display = 'none';
           }
         }
       }
@@ -1945,7 +1954,10 @@
   <aside class="panel panel-right" id="panelAdminNotifications" aria-label="Notifications">
     <div class="panel-header"
       style="padding: 16px 24px; border-bottom: 1px solid var(--border-color); display: flex; justify-content: space-between; align-items: center;">
-      <h3 style="font-size: 16px;">Notifications</h3>
+      <div style="display:flex; align-items:center; gap:10px;">
+        <h3 style="font-size: 16px;">Notifications</h3>
+        <span id="adminPanelNotificationCount" style="display:none; font-size:11px; font-weight:600; color:var(--error); background:rgba(239,68,68,0.1); padding:2px 8px; border-radius:10px;"></span>
+      </div>
       <button id="closeAdminNotifications"><span class="material-symbols-outlined">close</span></button>
     </div>
     <div class="panel-body" id="adminNotificationsList" style="padding: 24px; overflow-y: auto;">

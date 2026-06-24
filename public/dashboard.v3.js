@@ -1417,6 +1417,15 @@ function escapeHTML(str) {
         badge.style.display = 'none';
       }
     }
+    const panelCount = document.getElementById('panelNotificationCount');
+    if (panelCount) {
+      if (notificationCount > 0) {
+        panelCount.textContent = notificationCount + ' unread';
+        panelCount.style.display = 'inline';
+      } else {
+        panelCount.style.display = 'none';
+      }
+    }
   }
 
   // ===== Settings =====

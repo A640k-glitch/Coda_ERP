@@ -687,15 +687,11 @@
             const navAuth = document.getElementById('apiNavAuth');
             if (navAuth) {
               const userName = data.user.name || data.user.email || 'User';
-              const initials = userName.split(' ').map(n => n[0]).join('').substring(0, 2).toUpperCase();
-              let adminBtn = '';
-              if (data.isAdmin) {
-                adminBtn = '<a href="/admin" class="btn btn-ghost btn-sm" style="display:flex; align-items:center; gap:8px;"><span class="material-symbols-outlined" style="font-size: 20px; color: var(--success, #10b981);">account_circle</span> Admin Panel</a>';
-              }
-              navAuth.innerHTML = adminBtn + `
-                <a href="/dashboard" class="btn btn-primary btn-sm" style="display:flex; align-items:center; gap:8px;">
-                  <div style="width:22px; height:22px; border-radius:50%; background:rgba(255,255,255,0.2); display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700;">${initials}</div>
-                  Dashboard
+              const displayName = data.business ? data.business.name : userName;
+              navAuth.innerHTML = `
+                <a href="/dashboard" class="nav-user-profile">
+                  <span class="material-symbols-outlined" style="font-size: 20px;">person</span>
+                  <span>${displayName}</span>
                 </a>
               `;
             }
