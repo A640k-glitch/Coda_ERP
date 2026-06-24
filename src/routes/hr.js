@@ -4,8 +4,11 @@ const router = express.Router();
 const hr = require('../modules/hr');
 const { db } = require('../db');
 const { requireAuth, requireBusiness, logAudit } = require('../auth');
+const { requireTierModule } = require('../entitlements');
 
 router.use(requireAuth, requireBusiness);
+const { generateId } = require('../utils');
+router.use(requireTierModule('hr'));
 
 router.post('/employees/batch-delete', (req, res) => {
   const { ids } = req.body;
@@ -76,6 +79,20 @@ router.post('/payroll/disburse', (req, res) => {
       ]
     });
     logAudit(req.businessId, req.user.id, 'payroll.disburse', { total: summary.totalMonthlyGross });
+    
+    // Create a notification for payroll disbursement
+    const notifId = generateId('notif');
+    const grossFormatted = new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN', minimumFractionDigits: 0 }).format(summary.totalMonthlyGross);
+    db.prepare(`
+      INSERT INTO notifications (id, business_id, title, message, type, target_view, target_item_id)
+      VALUES (?, ?, 'Payroll Disbursed', ?, 'success', 'accounting', ?)
+    `).run(
+      notifId,
+      req.businessId,
+      `Monthly payroll of ${grossFormatted} disbursed for ${summary.count} active employees.`,
+      entry.id
+    );
+
     res.json({ success: true, entry, summary });
   } catch (err) {
     res.status(400).json({ error: err.message });
@@ -83,4 +100,3 @@ router.post('/payroll/disburse', (req, res) => {
 });
 
 module.exports = router;
-

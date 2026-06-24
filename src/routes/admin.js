@@ -107,6 +107,9 @@ router.post('/me/tier', (req, res) => {
 
 router.get('/analytics/overview', (req, res) => {
   const totalUsers = db.prepare('SELECT COUNT(*) AS c FROM users').get().c;
+  const activeUsers = db.prepare("SELECT COUNT(*) AS c FROM users WHERE status = 'active' OR status IS NULL").get().c;
+  const suspendedUsers = db.prepare("SELECT COUNT(*) AS c FROM users WHERE status = 'suspended'").get().c;
+  const blockedUsers = db.prepare("SELECT COUNT(*) AS c FROM users WHERE status = 'blocked'").get().c;
   const totalBusinesses = db.prepare('SELECT COUNT(*) AS c FROM businesses').get().c;
   const activeSubscriptions = db.prepare("SELECT COUNT(*) AS c FROM subscriptions WHERE status = 'active'").get().c;
   const paidRevenue = db.prepare("SELECT COALESCE(SUM(amount), 0) AS total FROM payments WHERE status = 'paid'").get().total;
@@ -119,6 +122,9 @@ router.get('/analytics/overview', (req, res) => {
   res.json({
     overview: {
       totalUsers,
+      activeUsers,
+      suspendedUsers,
+      blockedUsers,
       totalBusinesses,
       activeSubscriptions,
       paidRevenue,
@@ -216,6 +222,77 @@ router.get('/audit-log', (req, res) => {
     LIMIT ? OFFSET ?
   `).all(limit, offset);
   res.json({ entries, pagination: { page, limit, total, pages: Math.ceil(total / limit) } });
+});
+
+const fs = require('fs');
+const path = require('path');
+
+function maskEnvValue(val) {
+  if (!val) return '';
+  if (val.length <= 8) return '*'.repeat(val.length);
+  return val.substring(0, 4) + '*'.repeat(Math.max(0, val.length - 8)) + val.substring(val.length - 4);
+}
+
+router.get('/config/env', (req, res) => {
+  try {
+    const envPath = path.join(process.cwd(), '.env');
+    let envData = {};
+    if (fs.existsSync(envPath)) {
+      const content = fs.readFileSync(envPath, 'utf8');
+      content.split('\n').forEach(line => {
+        const match = line.match(/^([^=]+)=(.*)$/);
+        if (match) {
+          envData[match[1].trim()] = maskEnvValue(match[2].trim());
+        }
+      });
+    }
+    res.json({ success: true, data: envData });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.post('/config/env', (req, res) => {
+  try {
+    const envPath = path.join(process.cwd(), '.env');
+    const updates = req.body;
+    let lines = [];
+    if (fs.existsSync(envPath)) {
+      lines = fs.readFileSync(envPath, 'utf8').split('\n');
+    }
+    
+    const ALLOWED_KEYS = ['ALLOWED_ORIGINS', 'CODA_ADMIN_EMAIL'];
+    
+    for (const [key, val] of Object.entries(updates)) {
+      if (!ALLOWED_KEYS.includes(key)) continue;
+      if (!val || val.includes('****') || val.includes('***')) continue; 
+      if (typeof val !== 'string' || val.includes('\n') || val.includes('\r')) continue;
+      if (typeof key !== 'string' || key.includes('\n') || key.includes('\r')) continue;
+      
+      let found = false;
+      for (let i = 0; i < lines.length; i++) {
+        if (lines[i].startsWith(key + '=')) {
+          lines[i] = `${key}=${val}`;
+          found = true;
+          break;
+        }
+      }
+      if (!found) {
+        lines.push(`${key}=${val}`);
+      }
+    }
+    
+    fs.writeFileSync(envPath, lines.join('\n'));
+    
+    for (const [key, val] of Object.entries(updates)) {
+      if (val && !val.includes('****') && !val.includes('***')) process.env[key] = val;
+    }
+    
+    logAudit(req.user.business_id, req.user.id, 'admin.config.update', { keys: Object.keys(updates) });
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 module.exports = router;

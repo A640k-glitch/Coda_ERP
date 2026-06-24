@@ -4,14 +4,16 @@ const accounting = require('./accounting');
 const inventory = require('./inventory');
 const hr = require('./hr');
 const { toCSV } = require('../utils');
+const { getBusinessTier, tierAllows } = require('../entitlements');
 
 function financialSummary(businessId) {
   const { from, to } = currentMonth();
   const pl = accounting.incomeStatement(businessId, { from, to });
+  const expenses = (pl.operatingExpenses || 0) + (pl.costOfGoodsSold || 0);
   return {
     period: { from, to },
     revenue: pl.revenue,
-    expenses: pl.expenses + pl.costOfGoodsSold,
+    expenses,
     profit: pl.netProfit,
     currency: 'NGN',
   };
@@ -41,12 +43,16 @@ function revenueLast6Months(businessId) {
 
 function dashboard(businessId) {
   const fin = financialSummary(businessId);
-  const lowStock = inventory.lowStockAlerts(businessId);
-  const recentSales = inventory.listSales(businessId, { limit: 5 });
-  const customerCount = db.prepare('SELECT COUNT(*) AS c FROM customers WHERE business_id = ?').get(businessId).c;
-  const employeeCount = db.prepare("SELECT COUNT(*) AS c FROM employees WHERE business_id = ? AND status = 'active'").get(businessId).c;
-  const productCount = db.prepare('SELECT COUNT(*) AS c FROM products WHERE business_id = ?').get(businessId).c;
-  const openLeads = db.prepare("SELECT COUNT(*) AS c FROM leads WHERE business_id = ? AND status NOT IN ('won','lost')").get(businessId).c;
+  const tier = getBusinessTier(businessId);
+  const hasInventory = tierAllows(tier, 'inventory');
+  const hasCrm = tierAllows(tier, 'crm');
+  const hasHr = tierAllows(tier, 'hr');
+  const lowStock = hasInventory ? inventory.lowStockAlerts(businessId) : [];
+  const recentSales = hasInventory ? inventory.listSales(businessId, { limit: 5 }) : [];
+  const customerCount = hasCrm ? db.prepare('SELECT COUNT(*) AS c FROM customers WHERE business_id = ?').get(businessId).c : 0;
+  const employeeCount = hasHr ? db.prepare("SELECT COUNT(*) AS c FROM employees WHERE business_id = ? AND status = 'active'").get(businessId).c : 0;
+  const productCount = hasInventory ? db.prepare('SELECT COUNT(*) AS c FROM products WHERE business_id = ?').get(businessId).c : 0;
+  const openLeads = hasCrm ? db.prepare("SELECT COUNT(*) AS c FROM leads WHERE business_id = ? AND status NOT IN ('won','lost')").get(businessId).c : 0;
   return {
     kpi: {
       revenue: fin.revenue,
@@ -57,6 +63,12 @@ function dashboard(businessId) {
       productCount,
       openLeads,
       lowStockCount: lowStock.length,
+    },
+    tier,
+    entitlements: {
+      inventory: hasInventory,
+      crm: hasCrm,
+      hr: hasHr,
     },
     revenue6m: revenueLast6Months(businessId),
     lowStock: lowStock.slice(0, 5),

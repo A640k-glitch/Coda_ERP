@@ -12,6 +12,14 @@ const config = require('./src/config');
 const { attachUser, requireAuth, requireBusiness, requireAdmin } = require('./src/auth');
 const { db } = require('./src/db');
 const { csrfProtection } = require('./src/csrf');
+const { escapeHtml } = require('./src/utils');
+const rateLimit = require('express-rate-limit');
+
+const onboardLimiter = rateLimit({
+  windowMs: 15 * 60 * 1000,
+  max: 5,
+  message: { error: 'Too many onboard requests from this IP, please try again after 15 minutes' }
+});
 
 const app = express();
 
@@ -50,7 +58,7 @@ app.use(cookieParser());
 app.use(attachUser);
 
 // CSRF middleware
-const csrfBypassRoutes = ['/api/v1/compliance/validate'];
+const csrfBypassRoutes = ['/api/v1/compliance/validate', '/api/v1/auth/appeal'];
 app.use((req, res, next) => {
   if (csrfBypassRoutes.includes(req.path)) {
     return next();
@@ -77,12 +85,15 @@ app.use('/api/v1/subscription', require('./src/routes/subscription'));
 app.use('/api/v1/reconciliation', require('./src/routes/reconciliation'));
 app.use('/api/v1/admin', require('./src/routes/admin'));
 app.use('/api/v1/notifications', require('./src/routes/notifications'));
+app.use('/api/v1/integrations', require('./src/routes/integrations'));
+app.use('/api/v1/macro', require('./src/routes/macro'));
+app.use('/api/v1/config/public', require('./src/routes/public-config'));
 
 
 // Backward-compat: the original /api/v1/business/onboard endpoint
 const subscription = require('./src/modules/subscription');
 const accounting = require('./src/modules/accounting');
-app.post('/api/v1/business/onboard', requireAuth, (req, res) => {
+app.post('/api/v1/business/onboard', onboardLimiter, requireAuth, (req, res) => {
   try {
     const { businessName, registrationNumber, businessType, contactEmail, contactPhone, subscriptionTier, address } = req.body;
     if (!businessName || !registrationNumber || !contactEmail) {
@@ -92,10 +103,15 @@ app.post('/api/v1/business/onboard', requireAuth, (req, res) => {
       return res.status(400).json({ success: false, error: 'Invalid CAC registration format (e.g. RC1234567)' });
     }
     const businessId = 'BIZ_' + Date.now() + '_' + Math.random().toString(36).slice(2, 9);
+    
+    const safeBusinessName = escapeHtml(businessName);
+    const safeAddress = escapeHtml(address);
+    const safePhone = escapeHtml(contactPhone);
+
     db.prepare(
       `INSERT INTO businesses (id, name, cac_number, business_type, address, phone, email, tier, subscription_status)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'active')`
-    ).run(businessId, businessName, registrationNumber, businessType || 'limited', address || null, contactPhone || null, contactEmail, subscriptionTier || 'starter');
+    ).run(businessId, safeBusinessName, registrationNumber, businessType || 'limited', safeAddress || null, safePhone || null, contactEmail, subscriptionTier || 'starter');
     const { seedAccounts } = require('./src/db');
     seedAccounts(businessId);
     const sub = subscription.createSubscription(businessId, subscriptionTier || 'starter');
@@ -163,6 +179,9 @@ app.get('/forgot-password', (req, res) => {
 app.get('/reset-password', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'reset-password.html'));
 });
+app.get('/blocked', (req, res) => {
+  res.sendFile(path.join(__dirname, 'public', 'blocked.html'));
+});
 
 // Static frontend
 app.use(express.static(path.join(__dirname, 'public')));
@@ -202,7 +221,7 @@ if (require.main === module) {
   API:        http://localhost:${PORT}/api/v1
   Health:     http://localhost:${PORT}/healthz
 
-  Tiers: Starter ₦15,000 | Professional ₦45,000 | Enterprise Custom
+  Tiers: Starter ₦${config.subscriptionTiers.starter.price.toLocaleString()} | Professional ₦${config.subscriptionTiers.professional.price.toLocaleString()} | Enterprise ₦${config.subscriptionTiers.enterprise.price.toLocaleString()}
     `);
   });
 }

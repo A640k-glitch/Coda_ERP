@@ -364,130 +364,112 @@
 
     <!-- Main Content Panel -->
     <main class="app-main" id="mainContent">
-      <!-- 1. Overview Screen -->
-      <section class="module-view" id="view-overview">
-        <div class="page-header">
-          <h1>Dashboard Overview</h1>
+      <section class="module-view active" id="view-overview">
+        <div class="module-header">
+          <h2>Dashboard Overview</h2>
           <p>Real-time corporate position and performance statement.</p>
         </div>
 
-        <div class="stats-strip">
-          <div class="stat-item" id="statCardRevenue" style="cursor: pointer;">
-            <div class="stat-header">
-              <span class="stat-icon green"><span class="material-symbols-outlined">trending_up</span></span>
-              <span class="stat-trend up" id="kpiRevenueTrend">+12.5%</span>
-            </div>
-            <div class="stat-label">Revenue MTD</div>
-            <div class="stat-value" id="kpiRevenue">₦ 0</div>
-            <div class="stat-sub">vs last month</div>
+        <!-- NEW Top Bar: Search + Quick Actions -->
+        <div class="fusion-top-bar">
+          <div class="fusion-search">
+            <span class="material-symbols-outlined search-icon">search</span>
+            <input type="text" placeholder="Search transactions, customers, or type a command...">
+            <kbd>⌘K</kbd>
           </div>
-          <div class="stat-item divider"></div>
-
-          <div class="stat-item" id="statCardExpenses" style="cursor: pointer;">
-            <div class="stat-header">
-              <span class="stat-icon copper"><span class="material-symbols-outlined">payments</span></span>
-              <span class="stat-trend down" id="kpiExpenseTrend">+3.2%</span>
-            </div>
-            <div class="stat-label">Expenses MTD</div>
-            <div class="stat-value" id="kpiExpense">₦ 0</div>
-            <div class="stat-sub">vs last month</div>
-          </div>
-          <div class="stat-item divider"></div>
-
-          <div class="stat-item" id="statCardProfit" style="cursor: pointer;">
-            <div class="stat-header">
-              <span class="stat-icon teal"><span class="material-symbols-outlined">savings</span></span>
-              <span class="stat-trend up" id="kpiProfitTrend">+8.7%</span>
-            </div>
-            <div class="stat-label">Net Income</div>
-            <div class="stat-value" id="kpiProfit">₦ 0</div>
-            <div class="stat-sub">Calculated Profit</div>
-          </div>
-          <div class="stat-item divider"></div>
-
-          <div class="stat-item" id="statCardTax" style="cursor: pointer;">
-            <div class="stat-header">
-              <span class="stat-icon dark"><span class="material-symbols-outlined">receipt_long</span></span>
-              <span class="stat-trend neutral" id="kpiTaxTrend">₦ 0</span>
-            </div>
-            <div class="stat-label">Tax Reserve</div>
-            <div class="stat-value" id="kpiTax">VAT + WHT + PAYE</div>
-            <div class="stat-sub">computed reserves</div>
+          <div class="fusion-quick-actions">
+            <button class="quick-action-pill" id="quickCreateInvoice"><span class="material-symbols-outlined">receipt_long</span> Create Invoice</button>
+            <button class="quick-action-pill" id="quickRecordExpense"><span class="material-symbols-outlined">payments</span> Record Expense</button>
+            <button class="quick-action-pill" id="quickAddCustomer" data-requires-module="crm"><span class="material-symbols-outlined">person_add</span> Add Customer</button>
+            <button class="quick-action-pill" id="quickViewReports"><span class="material-symbols-outlined">analytics</span> View Reports</button>
           </div>
         </div>
 
-        <!-- Operations Summary Row -->
-        <div class="stats-strip" style="margin-top: 24px; margin-bottom: 24px; background: rgba(255,255,255,0.05); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 16px 24px; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; box-shadow: var(--shadow-sm);">
-          <div id="card-inventory" style="cursor:pointer;">
-            <div style="font-size: 11px; color: var(--text-muted); font-weight:700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">Inventory</div>
-            <div id="summaryProductCount" style="font-size: 20px; font-weight:800; color: var(--slate-900); margin-bottom: 2px;">0 Products</div>
-            <div id="summaryLowStockCount" style="font-size: 11px; color: var(--error); font-weight: 500;">0 Low stock alerts</div>
-          </div>
-          <div id="card-crm" style="cursor:pointer; border-left: 1px solid var(--border-color); padding-left: 20px;">
-            <div style="font-size: 11px; color: var(--text-muted); font-weight:700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">Customers</div>
-            <div id="summaryCustomerCount" style="font-size: 20px; font-weight:800; color: var(--slate-900); margin-bottom: 2px;">0 Customers</div>
-            <div id="summaryLeadCount" style="font-size: 11px; color: var(--teal-600); font-weight: 500;">0 Open leads</div>
-          </div>
-          <div id="card-hr" style="cursor:pointer; border-left: 1px solid var(--border-color); padding-left: 20px;">
-            <div style="font-size: 11px; color: var(--text-muted); font-weight:700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">Employees</div>
-            <div id="summaryEmployeeCount" style="font-size: 20px; font-weight:800; color: var(--slate-900); margin-bottom: 2px;">0 Staff</div>
-            <div style="font-size: 11px; color: var(--text-muted); font-weight: 500;">Active payroll</div>
-          </div>
-          <div id="card-tax" style="cursor:pointer; border-left: 1px solid var(--border-color); padding-left: 20px;">
-            <div style="font-size: 11px; color: var(--text-muted); font-weight:700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 4px;">Tax Estimates</div>
-            <div id="summaryTaxStatus" style="font-size: 20px; font-weight:800; color: var(--copper-600); margin-bottom: 2px;">Up to date</div>
-            <div style="font-size: 11px; color: var(--text-muted); font-weight: 500;">Compliance checks OK</div>
-          </div>
-        </div>
-
-        <div class="dashboard-grid">
-          <div class="chart-card">
-            <div class="table-card-header" style="justify-content: space-between;">
-              <div style="display: flex; align-items: center; gap: 8px;">
-                <h3>Monthly Cash Flow</h3>
-                <span style="font-size: 11px; color: var(--text-muted);">6 month trend</span>
+        <!-- Main 30/70 Split Layout -->
+        <div class="fusion-grid">
+          
+          <!-- LEFT: The Wallet (30%) -->
+          <div class="fusion-wallet-col">
+            <!-- Unique Coda Premium Wallet Card -->
+            <div class="wallet-card">
+              <div class="wallet-glow"></div>
+              <div class="wallet-header">
+                <span class="wallet-label">NET INCOME</span>
+                <span class="wallet-trend up" id="kpiProfitTrend">+8.7%</span>
               </div>
-              <div class="chart-type-toggle">
-                <button class="active" id="btnChartLine" aria-label="Line Chart"><span class="material-symbols-outlined">show_chart</span></button>
-                <button id="btnChartBar" aria-label="Bar Chart"><span class="material-symbols-outlined">bar_chart</span></button>
+              <div class="wallet-balance" id="kpiProfit">₦ 0</div>
+              
+              <div class="wallet-split">
+                <div class="wallet-split-item">
+                  <span class="split-label">Revenue MTD</span>
+                  <span class="split-val" id="kpiRevenue">₦ 0</span>
+                </div>
+                <div class="wallet-split-item">
+                  <span class="split-label">Expenses MTD</span>
+                  <span class="split-val" id="kpiExpense">₦ 0</span>
+                </div>
               </div>
             </div>
-            <div class="chart-canvas-wrap" style="padding: 16px;">
-              <canvas id="revenueChart"></canvas>
-            </div>
-          </div>
-          <div class="chart-card">
-            <div class="table-card-header">
-              <h3>Expense Categories</h3>
-              <span style="font-size: 11px; color: var(--text-muted);">Current month</span>
-            </div>
-            <div class="chart-canvas-wrap" style="padding: 16px;">
-              <canvas id="expenseChart"></canvas>
-            </div>
-          </div>
-        </div>
 
-        <div class="table-card">
-          <div class="table-card-header">
-            <h3>Recent Ledger Entries</h3>
-            <span style="font-size: 11px; color: var(--text-muted);">Latest 10 logs</span>
+            <!-- Expense Doughnut under the wallet -->
+            <div class="chart-card fusion-card">
+              <div class="table-card-header">
+                <h3>Expense Breakdown</h3>
+                <span style="font-size: 11px; color: var(--text-muted);">MTD</span>
+              </div>
+              <div class="chart-canvas-wrap" style="padding: 16px; min-height: 240px;">
+                <canvas id="expenseChart"></canvas>
+              </div>
+            </div>
+            
+            <!-- Operations Summary -->
+            <div class="operations-mini-card">
+              <div class="op-mini-item" id="card-inventory">
+                <span class="material-symbols-outlined op-icon">inventory_2</span>
+                <div>
+                  <div class="op-val" id="summaryProductCount">0 Products</div>
+                  <div class="op-sub error" id="summaryLowStockCount">0 Low stock</div>
+                </div>
+              </div>
+              <div class="op-mini-item" id="card-crm">
+                <span class="material-symbols-outlined op-icon">groups</span>
+                <div>
+                  <div class="op-val" id="summaryCustomerCount">0 Customers</div>
+                  <div class="op-sub teal" id="summaryLeadCount">0 Open leads</div>
+                </div>
+              </div>
+            </div>
           </div>
-          <div class="table-wrap">
-            <table class="transactions-table">
-              <thead>
-                <tr>
-                  <th style="width: 36px;"><input type="checkbox" class="select-all" onclick="toggleSelectAll(this)"></th>
-                  <th>Date</th>
-                  <th>Journal description</th>
-                  <th>Category</th>
-                  <th style="text-align: right;">Debit / Credit</th>
-                  <th>Type</th>
-                  <th>Status</th>
-                  <th style="width: 80px;">Actions</th>
-                </tr>
-              </thead>
-              <tbody id="transactionsBody"></tbody>
-            </table>
+
+          <!-- RIGHT: Operations (70%) -->
+          <div class="fusion-ops-col">
+            <!-- Cash Flow Chart -->
+            <div class="chart-card fusion-card ops-chart-card">
+              <div class="table-card-header" style="justify-content: space-between;">
+                <div style="display: flex; align-items: center; gap: 8px;">
+                  <h3>Monthly Cash Flow</h3>
+                  <span style="font-size: 11px; color: var(--text-muted);">6 month trend</span>
+                </div>
+                <div class="chart-type-toggle">
+                  <button class="active" id="btnChartLine" aria-label="Line Chart"><span class="material-symbols-outlined">show_chart</span></button>
+                  <button id="btnChartBar" aria-label="Bar Chart"><span class="material-symbols-outlined">bar_chart</span></button>
+                </div>
+              </div>
+              <div class="chart-canvas-wrap" style="padding: 16px; height: 300px;">
+                <canvas id="revenueChart"></canvas>
+              </div>
+            </div>
+
+            <!-- Recent Activity Feed -->
+            <div class="table-card fusion-card activity-card">
+              <div class="table-card-header">
+                <h3>Recent Activity</h3>
+                <span style="font-size: 11px; color: var(--text-muted);">Latest transactions</span>
+              </div>
+              <div class="activity-feed" id="transactionsBody">
+                <!-- Populated by JS -->
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -508,30 +490,11 @@
           </div>
         </div>
 
-        <div class="ledger-grid">
+        <div class="ledger-grid" id="accountingLedgerGrid">
+          <!-- Dynamically populated from accounts-with-balances API -->
           <div class="ledger-card">
-            <h4>
-              <span>Naira Current Account</span>
-              <span class="badge badge-success">Active</span>
-            </h4>
-            <div class="ledger-metric cur-amount" data-value="14850200">₦14,850,200</div>
-            <div class="text-muted" style="font-size: 11px;">Union Bank · 1024***89</div>
-          </div>
-          <div class="ledger-card">
-            <h4>
-              <span>USD Dom Account</span>
-              <span class="badge badge-success">Active</span>
-            </h4>
-            <div class="ledger-metric" style="color: var(--teal-600);">$42,500</div>
-            <div class="text-muted" style="font-size: 11px;">Access Bank · FX values</div>
-          </div>
-          <div class="ledger-card">
-            <h4>
-              <span>Trade Receivables</span>
-              <span class="badge badge-warning">Review</span>
-            </h4>
-            <div class="ledger-metric cur-amount" data-value="3120400">₦3,120,400</div>
-            <div class="text-muted" style="font-size: 11px;">Unpaid invoices total</div>
+            <h4><span>Loading accounts...</span></h4>
+            <div class="ledger-metric" style="color: var(--text-muted);">—</div>
           </div>
         </div>
 
@@ -591,28 +554,54 @@
         <div class="module-header">
           <h2>Bank Reconciliation</h2>
           <div class="module-actions">
-            <button class="btn btn-secondary" id="btnSimulateBankSync">Simulate Bank Sync</button>
+            <button class="btn btn-primary" id="btnSyncBankFeed">Sync Bank Feed</button>
           </div>
         </div>
 
-        <div style="display: flex; gap: 24px; margin-top: 24px;">
-          <!-- Left: Bank Statement -->
-          <div style="flex: 1; display: flex; flex-direction: column; gap: 16px;">
-            <h3 style="font-size: 16px; color: var(--slate-800);">Bank Statement (Unreconciled)</h3>
-            <div id="reconBankFeedList" style="display: flex; flex-direction: column; gap: 12px;">
-              <!-- Populated via JS -->
-              <div style="padding: 24px; text-align: center; color: var(--text-muted); background: white; border: 1px dashed var(--border-color); border-radius: var(--radius-md);">
-                No pending bank transactions. Click "Simulate Bank Sync" to fetch new data.
-              </div>
+        <!-- Summary Stats -->
+        <div id="reconSummary" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-top: 20px;">
+          <div class="premium-kpi-card">
+            <div class="premium-kpi-header">
+              <span class="premium-kpi-title">Unreconciled</span>
+              <span class="material-symbols-outlined" style="color: var(--text-muted); font-size: 18px;">pending</span>
             </div>
+            <div class="premium-kpi-val" id="reconUnrecCount">0</div>
+            <div class="premium-kpi-meta" id="reconUnrecAmount">₦ 0</div>
           </div>
-
-          <!-- Right: Suggested Coda Ledger Matches -->
-          <div style="flex: 1; display: flex; flex-direction: column; gap: 16px;">
-            <h3 style="font-size: 16px; color: var(--slate-800);">Coda Ledger Matches</h3>
-            <div id="reconLedgerMatchList" style="display: flex; flex-direction: column; gap: 12px;">
-              <!-- Populated via JS -->
+          <div class="premium-kpi-card">
+            <div class="premium-kpi-header">
+              <span class="premium-kpi-title">Reconciled</span>
+              <span class="material-symbols-outlined" style="color: var(--success); font-size: 18px;">check_circle</span>
             </div>
+            <div class="premium-kpi-val" id="reconRecCount" style="color: var(--success);">0</div>
+            <div class="premium-kpi-meta">Matched transactions</div>
+          </div>
+          <div class="premium-kpi-card">
+            <div class="premium-kpi-header">
+              <span class="premium-kpi-title">Ledger Entries</span>
+              <span class="material-symbols-outlined" style="color: var(--text-muted); font-size: 18px;">receipt_long</span>
+            </div>
+            <div class="premium-kpi-val" id="reconJeCount">0</div>
+            <div class="premium-kpi-meta">Matched journal entries</div>
+          </div>
+          <div class="premium-kpi-card">
+            <div class="premium-kpi-header">
+              <span class="premium-kpi-title">Match Rate</span>
+              <span class="material-symbols-outlined" style="color: var(--text-muted); font-size: 18px;">percent</span>
+            </div>
+            <div class="premium-kpi-val" id="reconMatchRate">0%</div>
+            <div class="premium-kpi-meta">Auto-match accuracy</div>
+          </div>
+        </div>
+
+        <div style="margin-top: 28px;">
+          <div style="display: grid; grid-template-columns: 1fr 60px 1fr; gap: 16px; padding: 0 16px; margin-bottom: 12px; font-weight: 700; font-size: 13px; color: var(--slate-500); text-transform: uppercase; letter-spacing: 0.05em;">
+            <div>Bank Statement Transaction</div>
+            <div style="text-align: center;">Link</div>
+            <div>Coda Ledger Suggestion / Action</div>
+          </div>
+          <div id="reconComparisonContainer" style="display: flex; flex-direction: column; gap: 12px;">
+            <!-- Populated via JS -->
           </div>
         </div>
       </section>
@@ -651,6 +640,28 @@
                   <tr><td colspan="9" style="text-align: center; color: var(--text-muted); padding: 24px;">Loading inventory...</td></tr>
                 </tbody>
               </table>
+          </div>
+        </div>
+
+        <div class="table-card" style="margin-top: 24px;">
+          <div class="table-card-header">
+            <h3>Recent Purchase Orders Log</h3>
+          </div>
+          <div class="table-wrap">
+            <table class="data-table">
+              <thead>
+                <tr>
+                  <th>Order ID</th>
+                  <th>Supplier Name</th>
+                  <th>Expected Delivery</th>
+                  <th style="text-align: right;">Total Amount</th>
+                  <th>Status</th>
+                </tr>
+              </thead>
+              <tbody id="poTableBody">
+                <tr><td colspan="5" style="text-align: center; color: var(--text-muted); padding: 24px;">No purchase orders found.</td></tr>
+              </tbody>
+            </table>
           </div>
         </div>
       </section>
@@ -756,27 +767,7 @@
                 </tr>
               </thead>
               <tbody id="taxTableBody">
-                <tr>
-                  <td>June 2026</td>
-                  <td>Value Added Tax (VAT 7.5%)</td>
-                  <td>₦12,400,000</td>
-                  <td>₦930,000</td>
-                  <td><span class="badge badge-warning">Pending Filing</span></td>
-                </tr>
-                <tr>
-                  <td>May 2026</td>
-                  <td>VAT Remitted</td>
-                  <td>₦10,800,000</td>
-                  <td>₦810,000</td>
-                  <td><span class="badge badge-success">Receipt Remitted</span></td>
-                </tr>
-                <tr>
-                  <td>June 2026</td>
-                  <td>PAYE Tax Liability</td>
-                  <td>₦1,370,000</td>
-                  <td>₦155,100</td>
-                  <td><span class="badge badge-warning">Pending Filing</span></td>
-                </tr>
+                <tr><td colspan="5" style="text-align: center; color: var(--text-muted); padding: 24px;">Loading tax data...</td></tr>
               </tbody>
             </table>
           </div>
@@ -812,19 +803,19 @@
                 <tr>
                   <td>Profit &amp; Loss Statement (P&amp;L)</td>
                   <td>IFRS / GAAP Compliant</td>
-                  <td>Jan 1, 2026 - Jun 15, 2026</td>
+                  <td class="report-period">—</td>
                   <td><button class="btn btn-secondary btn-sm">PDF Download</button></td>
                 </tr>
                 <tr>
                   <td>Trial Balance Sheet</td>
                   <td>Double-Entry Bookkeeping</td>
-                  <td>As of Jun 15, 2026</td>
-                  <td><button class="btn btn-secondary btn-sm">XLSX Download</button></td>
+                  <td class="report-period-asof">—</td>
+                  <td><button class="btn btn-secondary btn-sm">CSV Download</button></td>
                 </tr>
                 <tr>
                   <td>General Ledger Accounts Export</td>
                   <td>Complete Audit Trail Log</td>
-                  <td>Jan 1, 2026 - Jun 15, 2026</td>
+                  <td class="report-period">—</td>
                   <td><button class="btn btn-secondary btn-sm">CSV Download</button></td>
                 </tr>
               </tbody>
@@ -863,8 +854,8 @@
       <button onclick="window.location.href='/'" style="position:absolute; top:12px; right:12px; background:none; border:none; color:var(--text-muted); cursor:pointer;">
         <span class="material-symbols-outlined">close</span>
       </button>
-      <h2 style="font-size: 18px; margin-bottom: 8px;">Switch accounts</h2>
-      <p class="sub" style="margin-bottom:20px">Your session needs validation.</p>
+      <h2 style="font-size: 18px; margin-bottom: 8px;">Session Expired</h2>
+      <p class="sub" style="margin-bottom:20px">Your session has ended. Please sign in again.</p>
       <a href="/login" class="btn btn-primary" style="width:100%; justify-content:center; text-decoration:none;">
         <span class="material-symbols-outlined">login</span>
         Sign in to Coda
@@ -1007,8 +998,6 @@
   });
 </script>
 
-</body>
-</html>
 
 <div class="modal-overlay" id="termsModal" style="position:fixed;inset:0;background:rgba(15,23,42,0.6);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:1000;">
   <div style="background:#fff;width:100%;max-width:500px;border-radius:14px;padding:32px;position:relative;max-height:80vh;overflow-y:auto;box-shadow:0 20px 25px -5px rgba(15,23,42,0.06);">
@@ -1037,8 +1026,6 @@
     <button class="modal-close-btn" style="display:inline-flex;align-items:center;justify-content:center;font-family:Inter,sans-serif;font-weight:600;font-size:13px;padding:10px 20px;border-radius:6px;border:1px solid #0f172a;background:#0f172a;color:#fff;cursor:pointer;width:100%;margin-top:16px;height:40px;">Acknowledge</button>
   </div>
 </div>
-
-
 
 <div class="modal-overlay" id="supportModal" style="position:fixed;inset:0;background:rgba(15,23,42,0.6);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:1000;">
   <div style="background:#fff;width:100%;max-width:500px;border-radius:14px;padding:32px;position:relative;max-height:80vh;overflow-y:auto;box-shadow:0 20px 25px -5px rgba(15,23,42,0.06);">
@@ -1107,3 +1094,5 @@
   </div>
 </div>
 
+</body>
+</html>

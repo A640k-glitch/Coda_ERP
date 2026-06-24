@@ -235,7 +235,10 @@
           <span>Coda</span>
         </div>
         <h1>Start your free trial</h1>
-        <p class="sub">14 days trial account, no card details needed.</p>
+        <p class="sub" style="margin-bottom: 12px;">14 days trial account, no card details needed.</p>
+        <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 20px; display: flex; align-items: center; gap: 4px;">
+          <span style="color: var(--error); font-weight: bold;">*</span> indicates a required field
+        </p>
 
         <form id="signupForm" autocomplete="off">
           <input type="hidden" id="signupTier" value="professional">
@@ -251,23 +254,39 @@
 
           <div class="field-row">
             <div class="form-group">
-              <label class="form-label" for="signupName">Full Name</label>
+              <label class="form-label" for="signupName">Full Name <span style="color: var(--error);">*</span></label>
               <input class="form-control" type="text" id="signupName" placeholder="Adebayo Ogundele" required autocomplete="name">
             </div>
             <div class="form-group">
-              <label class="form-label" for="signupEmail">Email Address</label>
+              <label class="form-label" for="signupEmail">Email Address <span style="color: var(--error);">*</span></label>
               <input class="form-control" type="email" id="signupEmail" placeholder="hello@firm.com" required autocomplete="email">
             </div>
           </div>
 
-          <div class="form-group">
-            <label class="form-label" for="signupPassword">Password</label>
-            <input class="form-control" type="password" id="signupPassword" placeholder="Minimum 8 characters" required minlength="8" autocomplete="new-password">
+          <div class="field-row">
+            <div class="form-group">
+              <label class="form-label" for="signupPassword">Password <span style="color: var(--error);">*</span></label>
+              <div class="password-wrapper">
+                <input class="form-control" type="password" id="signupPassword" placeholder="Minimum 8 characters" required minlength="8" autocomplete="new-password">
+                <button type="button" class="toggle-password-btn" onclick="togglePasswordVisibility('signupPassword', this)" aria-label="Toggle password visibility">
+                  <span class="material-symbols-outlined">visibility</span>
+                </button>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label" for="signupConfirmPassword">Confirm Password <span style="color: var(--error);">*</span></label>
+              <div class="password-wrapper">
+                <input class="form-control" type="password" id="signupConfirmPassword" placeholder="Re-enter password" required minlength="8" autocomplete="new-password">
+                <button type="button" class="toggle-password-btn" onclick="togglePasswordVisibility('signupConfirmPassword', this)" aria-label="Toggle password visibility">
+                  <span class="material-symbols-outlined">visibility</span>
+                </button>
+              </div>
+            </div>
           </div>
 
           <div class="field-row">
             <div class="form-group">
-              <label class="form-label" for="signupBusinessName">Business Name</label>
+              <label class="form-label" for="signupBusinessName">Business Name <span style="color: var(--error);">*</span></label>
               <input class="form-control" type="text" id="signupBusinessName" placeholder="Reni Mercantile Ltd" required autocomplete="organization">
             </div>
             <div class="form-group">
@@ -377,14 +396,20 @@
         const userName = document.getElementById('signupName').value.trim();
         const email = document.getElementById('signupEmail').value.trim();
         const password = document.getElementById('signupPassword').value;
+        const confirmPassword = document.getElementById('signupConfirmPassword').value;
         const businessName = document.getElementById('signupBusinessName').value.trim();
         const phone = document.getElementById('signupPhone').value.trim();
         const cac = document.getElementById('signupCAC').value.trim();
         const type = document.getElementById('signupType').value;
         const tier = tierInput.value;
 
-        if (!userName || !email || !password || !businessName) {
+        if (!userName || !email || !password || !confirmPassword || !businessName) {
           resultEl.textContent = 'Please fill in all required fields';
+          resultEl.className = 'auth-result show error';
+          return;
+        }
+        if (password !== confirmPassword) {
+          resultEl.textContent = 'Passwords do not match';
           resultEl.className = 'auth-result show error';
           return;
         }
@@ -448,6 +473,20 @@
           submitBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size:18px">rocket_launch</span> Start Free Trial';
         }
       });
+
+      function togglePasswordVisibility(inputId, btn) {
+        const input = document.getElementById(inputId);
+        if (!input) return;
+        const icon = btn.querySelector('.material-symbols-outlined');
+        if (input.type === 'password') {
+          input.type = 'text';
+          if (icon) icon.textContent = 'visibility_off';
+        } else {
+          input.type = 'password';
+          if (icon) icon.textContent = 'visibility';
+        }
+      }
+      window.togglePasswordVisibility = togglePasswordVisibility;
     })();
   </script>
 <div class="modal-overlay" id="termsModal" style="position:fixed;inset:0;background:rgba(15,23,42,0.6);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:1000;">

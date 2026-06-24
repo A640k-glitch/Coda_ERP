@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Account Restricted – Coda</title>
+  <meta name="theme-color" content="#0f172a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Coda">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon-v4.png">
+  <link rel="manifest" href="site.webmanifest">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+  <style>
+    body { margin: 0; min-height: 100vh; display: flex; background: var(--slate-50); }
+    .blocked-container {
+      display: flex; width: 100%; min-height: 100vh; align-items: center; justify-content: center; padding: 32px;
+    }
+    .blocked-card {
+      max-width: 480px; width: 100%; background: #fff; border-radius: 16px; padding: 48px;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.04);
+      text-align: center; border: 1px solid var(--border-color);
+      animation: cardEnter 0.5s cubic-bezier(0.34,1.56,0.64,1) both;
+    }
+    @keyframes cardEnter {
+      from { opacity: 0; transform: translateY(24px) scale(0.96); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
+    }
+    .blocked-icon {
+      width: 72px; height: 72px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 24px; font-size: 36px;
+      animation: iconPulse 0.6s 0.3s ease both;
+    }
+    @keyframes iconPulse {
+      0%   { transform: scale(0.5); opacity: 0; }
+      60%  { transform: scale(1.1); }
+      100% { transform: scale(1); opacity: 1; }
+    }
+    .blocked-icon.suspended { background: #fef3c7; color: #d97706; }
+    .blocked-icon.blocked { background: #fee2e2; color: #dc2626; }
+    .blocked-icon.deleted { background: #e2e8f0; color: #64748b; }
+    .blocked-title {
+      font-size: 22px; font-weight: 800; color: var(--slate-900); margin-bottom: 8px; letter-spacing: -0.02em;
+    }
+    .blocked-subtitle {
+      font-size: 14px; color: var(--text-secondary); margin-bottom: 32px; line-height: 1.6;
+    }
+    .blocked-detail {
+      background: var(--slate-50); border: 1px solid var(--border-color); border-radius: 10px;
+      padding: 16px; margin-bottom: 24px; text-align: left;
+    }
+    .blocked-detail-row {
+      display: flex; justify-content: space-between; align-items: center; padding: 6px 0; font-size: 13px;
+    }
+    .blocked-detail-label { color: var(--text-muted); font-weight: 500; }
+    .blocked-detail-value { color: var(--slate-900); font-weight: 600; }
+    .blocked-detail-value.status-suspended { color: #d97706; }
+    .blocked-detail-value.status-blocked { color: #dc2626; }
+    .blocked-actions { display: flex; flex-direction: column; gap: 12px; margin-top: 8px; }
+    .blocked-appeal-btn {
+      display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+      padding: 12px 24px; border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer;
+      border: 1px solid transparent; font-family: inherit; transition: all 0.15s;
+    }
+    .blocked-appeal-btn.primary {
+      background: var(--teal-600, #0d9488); color: #fff; border-color: var(--teal-600, #0d9488);
+    }
+    .blocked-appeal-btn.primary:hover { background: var(--teal-700, #0f766e); }
+    .blocked-appeal-btn.primary:disabled { opacity: 0.5; cursor: not-allowed; }
+    .blocked-appeal-btn.secondary {
+      background: #fff; color: var(--slate-700); border-color: var(--slate-200);
+    }
+    .blocked-appeal-btn.secondary:hover { background: var(--slate-50); }
+    .blocked-contact {
+      margin-top: 24px; padding-top: 24px; border-top: 1px solid var(--border-color);
+      font-size: 12.5px; color: var(--text-muted); line-height: 1.6;
+    }
+    .blocked-contact a { color: var(--teal-600); font-weight: 500; text-decoration: none; }
+    .blocked-contact a:hover { text-decoration: underline; }
+    .appeal-success {
+      background: #ecfdf5; border: 1px solid #a7f3d0; border-radius: 10px; padding: 16px;
+      margin-top: 16px; display: none; text-align: left;
+    }
+    .appeal-success.show { display: block; }
+    .appeal-success-title { font-size: 13px; font-weight: 600; color: #065f46; margin-bottom: 4px; }
+    .appeal-success-text { font-size: 12.5px; color: #047857; line-height: 1.5; }
+    .blocked-brand {
+      display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 28px;
+      color: var(--slate-900); justify-content: center; margin-bottom: 36px; text-decoration: none;
+      animation: brandFade 0.4s ease both;
+    }
+    .blocked-brand svg { width: 48px; height: 48px; }
+    @keyframes brandFade {
+      from { opacity: 0; transform: translateY(-8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @media (max-width: 600px) {
+      .blocked-card { padding: 32px 24px; }
+      .blocked-title { font-size: 20px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="blocked-container">
+    <div class="blocked-card">
+      <a href="/" class="blocked-brand">
+        <svg viewBox="20 20 54 58" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="38" y="22" width="34" height="14" rx="3" fill="#0d9488"/>
+          <rect x="22" y="32" width="18" height="38" rx="3.5" fill="currentColor"/>
+          <rect x="34" y="62" width="38" height="14" rx="3" fill="currentColor"/>
+        </svg>
+        Coda
+      </a>
+
+      <div class="blocked-icon" id="blockedIcon">
+        <span class="material-symbols-outlined" id="blockedIconText">block</span>
+      </div>
+
+      <h1 class="blocked-title" id="blockedTitle">Account Restricted</h1>
+      <p class="blocked-subtitle" id="blockedSubtitle">
+        Your account has been restricted and you no longer have access to the platform.
+      </p>
+
+      <div class="blocked-detail" id="blockedDetail">
+        <div class="blocked-detail-row">
+          <span class="blocked-detail-label">Status</span>
+          <span class="blocked-detail-value" id="statusValue">—</span>
+        </div>
+        <div class="blocked-detail-row">
+          <span class="blocked-detail-label">Account</span>
+          <span class="blocked-detail-value" id="emailValue">—</span>
+        </div>
+        <div class="blocked-detail-row">
+          <span class="blocked-detail-label">Reason</span>
+          <span class="blocked-detail-value" id="reasonValue">—</span>
+        </div>
+      </div>
+
+      <div class="blocked-actions" id="blockedActions">
+        <button class="blocked-appeal-btn primary" id="appealBtn" onclick="submitAppeal()">
+          <span class="material-symbols-outlined" style="font-size:18px;">gavel</span>
+          Appeal This Decision
+        </button>
+        <button class="blocked-appeal-btn secondary" onclick="window.location.href='/login'">
+          <span class="material-symbols-outlined" style="font-size:18px;">login</span>
+          Try Signing In
+        </button>
+      </div>
+
+      <div class="appeal-success" id="appealSuccess">
+        <div class="appeal-success-title">Appeal Submitted</div>
+        <div class="appeal-success-text">
+          Your appeal has been sent to our admin team for review. You will be contacted at your email address once a decision is made.
+        </div>
+      </div>
+
+      <div class="blocked-contact">
+        <p>Need help? Contact our support team at <a href="mailto:support@codatechnologies.com">support@codatechnologies.com</a></p>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      'use strict';
+
+      const params = new URLSearchParams(window.location.search);
+      const status = params.get('status') || 'restricted';
+      const email = params.get('email') || '';
+      const reason = params.get('reason') || '';
+
+      const icon = document.getElementById('blockedIcon');
+      const iconText = document.getElementById('blockedIconText');
+      const title = document.getElementById('blockedTitle');
+      const subtitle = document.getElementById('blockedSubtitle');
+      const statusVal = document.getElementById('statusValue');
+      const emailVal = document.getElementById('emailValue');
+      const reasonVal = document.getElementById('reasonValue');
+      const actions = document.getElementById('blockedActions');
+      const appealBtn = document.getElementById('appealBtn');
+
+      if (status === 'suspended') {
+        icon.className = 'blocked-icon suspended';
+        iconText.textContent = 'pause';
+        title.textContent = 'Account Suspended';
+        subtitle.textContent = 'Your account has been suspended temporarily. This is usually due to a policy violation or security concern. You may appeal this decision below.';
+        statusVal.textContent = 'Suspended';
+        statusVal.className = 'blocked-detail-value status-suspended';
+        actions.style.display = 'flex';
+      } else if (status === 'blocked') {
+        icon.className = 'blocked-icon blocked';
+        iconText.textContent = 'block';
+        title.textContent = 'Account Blocked';
+        subtitle.textContent = 'Your account has been blocked and you no longer have access to the platform. This may have been due to a serious policy violation or security concern. You may appeal this decision below.';
+        statusVal.textContent = 'Blocked';
+        statusVal.className = 'blocked-detail-value status-blocked';
+        actions.style.display = 'flex';
+      } else if (status === 'deleted') {
+        icon.className = 'blocked-icon deleted';
+        iconText.textContent = 'delete_forever';
+        title.textContent = 'Account Deleted';
+        subtitle.textContent = 'This account has been permanently deleted and no longer exists. If you believe this was done in error, please contact our support team.';
+        statusVal.textContent = 'Deleted';
+        statusVal.className = 'blocked-detail-value';
+        actions.style.display = 'none';
+      } else {
+        icon.className = 'blocked-icon blocked';
+        iconText.textContent = 'warning';
+        title.textContent = 'Account Restricted';
+        subtitle.textContent = 'Your account has been restricted. Please contact support for more information.';
+        statusVal.textContent = 'Restricted';
+        statusVal.className = 'blocked-detail-value';
+        actions.style.display = 'none';
+      }
+
+      emailVal.textContent = email || 'Not available';
+      reasonVal.textContent = reason || 'Not specified';
+
+      if (!email) {
+        document.getElementById('blockedDetail').style.display = 'none';
+      }
+
+      window.submitAppeal = async function() {
+        appealBtn.disabled = true;
+        appealBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size:18px;animation:spin 1s linear infinite;">progress_activity</span> Submitting...';
+
+        try {
+          const res = await fetch('/api/v1/auth/appeal', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: email, status: status })
+          });
+          const data = await res.json();
+
+          if (res.ok) {
+            actions.style.display = 'none';
+            var successEl = document.getElementById('appealSuccess');
+            successEl.classList.add('show');
+            var countdownEl = document.createElement('div');
+            countdownEl.style.cssText = 'margin-top:12px;font-size:12.5px;color:#047857;font-weight:500;';
+            countdownEl.textContent = 'Redirecting to login in 6 seconds...';
+            successEl.appendChild(countdownEl);
+            var remaining = 6;
+            var timer = setInterval(function() {
+              remaining--;
+              countdownEl.textContent = 'Redirecting to login in ' + remaining + ' seconds...';
+              if (remaining <= 0) {
+                clearInterval(timer);
+                window.location.href = '/login';
+              }
+            }, 1000);
+          } else {
+            appealBtn.disabled = false;
+            appealBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size:18px;">gavel</span> Appeal This Decision';
+            alert(data.error || 'Failed to submit appeal. Please try again or contact support.');
+          }
+        } catch (err) {
+          appealBtn.disabled = false;
+          appealBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size:18px;">gavel</span> Appeal This Decision';
+          alert('Network error. Please try again.');
+        }
+      };
+    })();
+  </script>
+  <style>@keyframes spin{from{transform:rotate(0)}to{transform:rotate(360deg)}}</style>
+</body>
+</html>

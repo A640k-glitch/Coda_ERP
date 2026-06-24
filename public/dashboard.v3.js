@@ -1,3 +1,10 @@
+function escapeHTML(str) {
+  if (str === null || str === undefined) return '';
+  return String(str).replace(/[&<>"']/g, function(m) {
+    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "\'": '&#039;' }[m];
+  });
+}
+
 // Dashboard App Logic - Secure Version
 (function() {
   'use strict';
@@ -5,12 +12,37 @@
   // ===== State =====
   let currentUser = null;
   let currentView = 'overview';
+  let currentAllowedViews = ['overview'];
+
+  const tierModules = {
+    starter: ['overview', 'accounting', 'reconciliation', 'tax', 'reports'],
+    professional: ['overview', 'accounting', 'reconciliation', 'tax', 'reports', 'crm', 'hr'],
+    enterprise: ['overview', 'accounting', 'reconciliation', 'inventory', 'crm', 'hr', 'tax', 'reports']
+  };
+
+  function normalizeTier(tier) {
+    return String(tier || 'starter').toLowerCase();
+  }
+
+  function allowedViewsForTier(tier) {
+    return tierModules[normalizeTier(tier)] || tierModules.starter;
+  }
+
+  function canUseModule(moduleName) {
+    return currentAllowedViews.includes(moduleName);
+  }
+
+  function requireModule(moduleName) {
+    if (canUseModule(moduleName)) return true;
+    showToast('Upgrade Required', `${escapeHTML(moduleName)} is not available on your current tier.`, 'warning');
+    return false;
+  }
 
   // Search targets per view (hoisted so switchView can reset them)
   const viewSearchTargets = {
     overview: ['#transactionsBody tr'],
     accounting: ['#accountingTransactionsBody tr', '#coaTableBody tr'],
-    reconciliation: ['#reconBankFeedList > div', '#reconLedgerMatchList > div'],
+    reconciliation: ['.recon-comparison-card'],
     inventory: ['#inventoryTableBody tr'],
     crm: ['#crmTableBody tr'],
     hr: ['#hrTableBody tr'],
@@ -27,8 +59,8 @@
     toast.innerHTML = `
       <span class="material-symbols-outlined">${icons[type]}</span>
       <div class="toast-content">
-        <div class="toast-title">${title}</div>
-        <div class="toast-message">${message}</div>
+        <div class="toast-title">${escapeHTML(title)}</div>
+        <div class="toast-message">${escapeHTML(message)}</div>
       </div>
       <button class="toast-close" aria-label="Dismiss"><span class="material-symbols-outlined">close</span></button>
     `;
@@ -55,6 +87,112 @@
     return d.toLocaleDateString('en-NG', { day: '2-digit', month: 'short', year: 'numeric' });
   }
 
+  function transactionTotal(tx) {
+    return (tx.lines || []).reduce((sum, line) => sum + Number(line.debit || 0), 0);
+  }
+
+  function buildTransactionPreview(tx) {
+    const lines = (tx.lines || []).map(line => {
+      const account = `${escapeHTML(line.account_code || line.accountCode || '')} ${escapeHTML(line.account_name || line.accountName || '')}`.trim() || 'Account';
+      const debit = Number(line.debit || 0);
+      const credit = Number(line.credit || 0);
+      const side = debit > 0 ? `Debit ${formatCurrency(debit)}` : `Credit ${formatCurrency(credit)}`;
+      return `${account}: ${side}`;
+    });
+    return [
+      tx.description || 'Journal Entry',
+      `Date: ${formatDate(tx.date)}`,
+      tx.reference ? `Reference: ${tx.reference}` : null,
+      `Total: ${formatCurrency(transactionTotal(tx))}`,
+      lines.length ? `Lines:\n${lines.join('\n')}` : null
+    ].filter(Boolean).join('\n');
+  }
+
+  function attachTransactionPreview(el, tx) {
+    if (!el) return;
+    el.classList.add('tx-preview-source');
+    el.tabIndex = 0;
+    el.dataset.preview = buildTransactionPreview(tx);
+  }
+
+  function initTransactionPreviewTooltip() {
+    const tooltip = document.createElement('div');
+    tooltip.className = 'tx-preview-tooltip';
+    tooltip.setAttribute('role', 'tooltip');
+    document.body.appendChild(tooltip);
+
+    const show = (target) => {
+      if (!target?.dataset.preview) return;
+      tooltip.textContent = target.dataset.preview;
+      tooltip.classList.add('visible');
+      const rect = target.getBoundingClientRect();
+      const width = Math.min(360, window.innerWidth - 24);
+      tooltip.style.maxWidth = width + 'px';
+      const left = Math.min(Math.max(12, rect.left + 12), window.innerWidth - width - 12);
+      const top = Math.min(rect.bottom + 10, window.innerHeight - tooltip.offsetHeight - 12);
+      tooltip.style.left = left + 'px';
+      tooltip.style.top = Math.max(12, top) + 'px';
+    };
+    const hide = () => tooltip.classList.remove('visible');
+
+    document.addEventListener('mouseover', e => show(e.target.closest('.tx-preview-source')));
+    document.addEventListener('focusin', e => show(e.target.closest('.tx-preview-source')));
+    document.addEventListener('mouseout', e => {
+      if (e.target.closest('.tx-preview-source')) hide();
+    });
+    document.addEventListener('focusout', e => {
+      if (e.target.closest('.tx-preview-source')) hide();
+    });
+    window.addEventListener('scroll', hide, true);
+  }
+
+  // ===== Redirect helper: check stored user status and send to /blocked if suspended/blocked =====
+  function redirectAuth() {
+    try {
+      const stored = JSON.parse(localStorage.getItem('coda_user') || 'null');
+      const status = stored && stored.status;
+      const email = stored && stored.email;
+      const isRestricted = status === 'suspended' || status === 'blocked';
+
+      localStorage.removeItem('coda_user');
+      localStorage.removeItem('coda_token');
+
+      if (isRestricted) {
+        // Show branded overlay so the user sees WHY they are being redirected
+        var overlay = document.createElement('div');
+        overlay.style.cssText = 'position:fixed;inset:0;z-index:999999;background:rgba(15,23,42,0.92);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .3s ease;';
+        var isBlocked = status === 'blocked';
+        var accentColor = isBlocked ? '#dc2626' : '#d97706';
+        var icon = isBlocked ? 'block' : 'pause';
+        var label = isBlocked ? 'Account Blocked' : 'Account Suspended';
+        overlay.innerHTML = '<div style="text-align:center;color:#fff;max-width:380px;padding:32px;">'
+          + '<div style="width:64px;height:64px;border-radius:50%;background:' + accentColor + '20;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;">'
+          + '<span class="material-symbols-outlined" style="font-size:32px;color:' + accentColor + ';">' + icon + '</span></div>'
+          + '<h2 style="font-size:20px;font-weight:800;margin:0 0 8px;letter-spacing:-0.02em;">' + label + '</h2>'
+          + '<p style="font-size:14px;color:rgba(255,255,255,0.6);margin:0 0 24px;line-height:1.5;">Your account has been ' + status + ' by an administrator. You will be redirected shortly.</p>'
+          + '<div style="width:100%;height:3px;background:rgba(255,255,255,0.1);border-radius:2px;overflow:hidden;">'
+          + '<div style="width:0%;height:100%;background:' + accentColor + ';border-radius:2px;animation:progressShrink 2.5s linear forwards;"></div></div></div>';
+
+        // Inject progress bar keyframes
+        var style = document.createElement('style');
+        style.textContent = '@keyframes progressShrink{from{width:100%}to{width:0%}}';
+        document.head.appendChild(style);
+
+        document.body.appendChild(overlay);
+        requestAnimationFrame(function() { overlay.style.opacity = '1'; });
+
+        setTimeout(function() {
+          window.location.href = '/blocked?status=' + status + '&email=' + encodeURIComponent(email || '') + '&reason=' + encodeURIComponent('Account ' + status + ' by administrator');
+        }, 2500);
+        return true;
+      }
+    } catch (_) {}
+    localStorage.removeItem('coda_user');
+    localStorage.removeItem('coda_token');
+    window.location.href = '/login';
+    return false;
+  }
+
   // ===== Auth Check =====
   async function verifyAuth() {
     try {
@@ -69,6 +207,11 @@
         }
         window.__isAdmin = data.isAdmin === true;
         return true;
+      }
+      // Session invalid — could be blocked/suspended after login
+      if (res.status === 401 || res.status === 403) {
+        redirectAuth();
+        return false;
       }
     } catch (e) {
       // Ignore - will redirect
@@ -111,8 +254,17 @@
             }
           }
           return originalFetch(input, init).then(res => {
-            if (res.status === 401 && currentUser) {
-              window.location.href = '/login';
+            if ((res.status === 401 || res.status === 403) && currentUser) {
+              redirectAuth();
+            }
+            const url = typeof input === 'string' ? input : input.url;
+            if (res.ok && ['POST', 'PUT', 'DELETE', 'PATCH'].includes(method) && url && url.includes('/api/v1/') && !url.includes('/auth/')) {
+              setTimeout(() => {
+                if (typeof window._codaLoadKPIs === 'function') window._codaLoadKPIs();
+                if (typeof window._codaUpdateCharts === 'function') window._codaUpdateCharts();
+                if (typeof window._codaRenderAccounts === 'function') window._codaRenderAccounts();
+                if (typeof window._codaRenderTransactions === 'function') window._codaRenderTransactions();
+              }, 300);
             }
             return res;
           });
@@ -158,7 +310,9 @@
     document.addEventListener('visibilitychange', function onVis() {
       if (document.visibilityState === 'visible' && currentUser) {
         fetch('/api/v1/auth/me', { credentials: 'include' }).then(r => {
-          if (!r.ok) window.location.href = '/login';
+          if (!r.ok) {
+            redirectAuth();
+          }
         });
       }
     });
@@ -168,7 +322,7 @@
       userInfo.innerHTML = `
         <div class="user-avatar">${currentUser.name?.charAt(0)?.toUpperCase() || 'A'}</div>
         <div class="user-details">
-          <div class="user-name">${currentUser.name}</div>
+          <div class="user-name">${escapeHTML(currentUser.name)}</div>
           <div class="user-role">${currentUser.tier || 'professional'}</div>
         </div>
       `;
@@ -189,13 +343,9 @@
 
     // Apply Tier Restrictions
     function applyTierRestrictions(tier) {
-      const t = (tier || 'starter').toLowerCase();
-      const modules = {
-        starter: ['overview', 'accounting', 'reconciliation', 'tax', 'reports'],
-        professional: ['overview', 'accounting', 'reconciliation', 'tax', 'reports', 'crm', 'hr'],
-        enterprise: ['overview', 'accounting', 'reconciliation', 'inventory', 'crm', 'hr', 'tax', 'reports']
-      };
-      const allowed = modules[t] || modules.starter;
+      const t = normalizeTier(tier);
+      const allowed = allowedViewsForTier(t);
+      currentAllowedViews = allowed;
       
       document.querySelectorAll('.nav-item[data-view]').forEach(el => {
         const view = el.getAttribute('data-view');
@@ -239,10 +389,19 @@
           } else {
             el.style.display = '';
             el.style.cursor = 'pointer';
-            el.addEventListener('click', () => switchView(key));
+            if (!el.dataset.boundTierNav) {
+              el.addEventListener('click', () => switchView(key));
+              el.dataset.boundTierNav = 'true';
+            }
           }
         }
       }
+
+      document.querySelectorAll('[data-requires-module]').forEach(el => {
+        const moduleName = el.getAttribute('data-requires-module');
+        el.style.display = allowed.includes(moduleName) ? '' : 'none';
+      });
+
       return allowed;
     }
 
@@ -250,10 +409,18 @@
 
     // Initialize components
     initCharts();
+    initTransactionPreviewTooltip();
     fetchNotifications();
     loadSettings();
     fetchBusinessData();
     updateNotificationBadge();
+
+    // Set dynamic report dates in UI
+    const currentMonthName = new Date().toLocaleDateString('en-NG', { month: 'long', year: 'numeric' });
+    const currentDateFormatted = new Date().toLocaleDateString('en-NG', { day: 'numeric', month: 'long', year: 'numeric' });
+    document.querySelectorAll('.report-period').forEach(el => el.textContent = currentMonthName);
+    document.querySelectorAll('.report-period-asof').forEach(el => el.textContent = 'As of ' + currentDateFormatted);
+
 
     // Event listeners
     setupEventListeners();
@@ -571,10 +738,19 @@
 
     // Global Search Filter (Per User Local Search for active view)
     // viewSearchTargets is defined at IIFE scope (hoisted for switchView access)
-    const searchInput = document.getElementById('globalSearch');
-    if (searchInput) {
-      searchInput.addEventListener('input', (e) => {
+    const searchInputs = [
+      document.getElementById('globalSearch'),
+      document.querySelector('.fusion-search input')
+    ].filter(Boolean);
+
+    searchInputs.forEach(input => {
+      input.addEventListener('input', (e) => {
         const query = e.target.value.toLowerCase();
+        // Synchronize search text across both search boxes
+        searchInputs.forEach(otherInput => {
+          if (otherInput !== input) otherInput.value = e.target.value;
+        });
+
         const targets = viewSearchTargets[currentView] || [];
         targets.forEach(sel => {
           document.querySelectorAll(sel).forEach(el => {
@@ -584,12 +760,42 @@
           });
         });
       });
-    }
+    });
+
+    // ⌘K or Ctrl+K shortcut to focus active view search bar
+    document.addEventListener('keydown', (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        const activeSearch = currentView === 'overview' 
+          ? document.querySelector('.fusion-search input') 
+          : document.getElementById('globalSearch');
+        activeSearch?.focus();
+      }
+    });
+
+    document.getElementById('quickCreateInvoice')?.addEventListener('click', () => {
+      document.getElementById('btnNewInvoice')?.click();
+    });
+    document.getElementById('quickRecordExpense')?.addEventListener('click', () => {
+      document.getElementById('btnNewJournal')?.click();
+    });
+    document.getElementById('quickAddCustomer')?.addEventListener('click', () => {
+      if (!canUseModule('crm')) return;
+      document.getElementById('btnNewCustomer')?.click();
+    });
+    document.getElementById('quickViewReports')?.addEventListener('click', () => {
+      switchView('reports');
+    });
   }
 
   let currentLoadPromise = Promise.resolve();
 
   function switchView(viewName) {
+    if (!canUseModule(viewName)) {
+      showToast('Upgrade Required', `${escapeHTML(viewName)} is not available on your current tier.`, 'warning');
+      viewName = 'overview';
+    }
+
     // Clear search and reset all hidden rows when switching views
     const searchInput = document.getElementById('globalSearch');
     if (searchInput) searchInput.value = '';
@@ -615,7 +821,7 @@
     };
     pageTitle.textContent = labels[viewName] || 'Dashboard';
     moduleViews.forEach(v => {
-      v.classList.toggle('active', v.id === `view-${viewName}`);
+      v.classList.toggle('active', v.id === `view-${escapeHTML(viewName)}`);
     });
 
     // Force style/layout reflow before removing early styles to ensure zero-flicker rendering
@@ -638,6 +844,7 @@
   let revenueChart, expenseChart;
 
   const expenseChartColors = {
+    '5000': '#7C3AED',
     '6000': '#2A8566',
     '6100': '#B8652E',
     '6200': '#34A87A',
@@ -748,7 +955,7 @@
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, pointStyle: 'circle', padding: 20, font: { size: 12, family: 'Inter' }, color: '#4B5563' } }, tooltip: { callbacks: { label: ctx => ctx.label + ': ' + (typeof getActiveCurrencySymbol === 'function' ? getActiveCurrencySymbol() : '₦') + ctx.raw.toLocaleString() + 'k' } } }
+          plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, pointStyle: 'circle', padding: 20, font: { size: 12, family: 'Inter' }, color: '#4B5563' } }, tooltip: { callbacks: { label: ctx => ctx.label + ': ' + formatCurrency(ctx.raw) } } }
         }
       });
     }
@@ -767,7 +974,7 @@
       const errorRow = '<tr><td colspan="8" style="text-align: center; color: var(--error); padding: 24px;">Failed to load transactions.</td></tr>';
       
       if (!data.transactions || data.transactions.length === 0) {
-        if (tbodyOverview) tbodyOverview.innerHTML = noTxRow;
+        if (tbodyOverview) tbodyOverview.innerHTML = '<div style="text-align:center; padding:24px; color:var(--text-muted);">No activity found.</div>';
         if (tbodyAccounting) tbodyAccounting.innerHTML = noTxRow;
         return;
       }
@@ -781,10 +988,10 @@
           <tr data-id="${t.id}" data-idx="${i}">
             <td class="checkbox-col"><input type="checkbox" class="row-select" value="${t.id}" onclick="updateBatchActionBar()"></td>
             <td>${formatDate(t.date)}</td>
-            <td>${t.description || 'Journal Entry'}</td>
-            <td>${t.type || 'Journal'}</td>
+            <td>${escapeHTML(t.description || 'Journal Entry')}</td>
+            <td>${escapeHTML(t.type || 'Journal')}</td>
             <td class="amount positive" style="text-align: right;">${formatCurrency(total)}</td>
-            <td><span class="badge badge-info">${t.type || 'Ledger'}</span></td>
+            <td><span class="badge badge-info">${escapeHTML(t.type || 'Ledger')}</span></td>
             <td><span class="badge badge-success">Posted</span></td>
             <td class="actions-col">
               <button class="btn-icon btn-edit" title="Edit">
@@ -798,11 +1005,37 @@
         `;
       }).join('');
       
-      if (tbodyOverview) { tbodyOverview.innerHTML = rowsHtml; tbodyOverview.querySelectorAll('.btn-edit').forEach(b => b.remove()); txs.forEach((t, i) => { const row = tbodyOverview.querySelector(`tr[data-idx="${i}"]`); if (row) row.dataset.item = JSON.stringify(t); }); }
-      if (tbodyAccounting) { tbodyAccounting.innerHTML = rowsHtml; txs.forEach((t, i) => { const row = tbodyAccounting.querySelector(`tr[data-idx="${i}"]`); if (row) row.dataset.item = JSON.stringify(t); }); }
+      const activityHtml = txs.map((t, i) => {
+        let total = 0;
+        t.lines?.forEach(l => total += l.debit);
+        const isExp = t.type === 'Expense' || (t.description || '').toLowerCase().includes('expense');
+        const iconCls = isExp ? 'expense' : 'income';
+        const iconName = isExp ? 'payments' : 'account_balance_wallet';
+        const amtCls = isExp ? 'negative' : 'positive';
+        const sign = isExp ? '-' : '+';
+        
+        return `
+          <div class="activity-item" data-id="${t.id}" data-idx="${i}">
+            <div class="act-left">
+              <div class="act-icon ${iconCls}"><span class="material-symbols-outlined">${iconName}</span></div>
+              <div class="act-details">
+                <span class="act-title">${escapeHTML(t.description || 'Journal Entry')}</span>
+                <span class="act-date">${formatDate(t.date)}</span>
+              </div>
+            </div>
+            <div class="act-right">
+              <span class="act-amount ${amtCls}">${sign}${formatCurrency(total)}</span>
+              <span class="act-status">Posted</span>
+            </div>
+          </div>
+        `;
+      }).join('');
+
+      if (tbodyOverview) { tbodyOverview.innerHTML = activityHtml; txs.forEach((t, i) => { const row = tbodyOverview.querySelector(`.activity-item[data-idx="${i}"]`); if (row) { row.dataset.item = JSON.stringify(t); attachTransactionPreview(row, t); } }); }
+      if (tbodyAccounting) { tbodyAccounting.innerHTML = rowsHtml; txs.forEach((t, i) => { const row = tbodyAccounting.querySelector(`tr[data-idx="${i}"]`); if (row) { row.dataset.item = JSON.stringify(t); attachTransactionPreview(row, t); } }); }
     } catch (e) {
       console.error(e);
-      if (tbodyOverview) tbodyOverview.innerHTML = errorRow;
+      if (tbodyOverview) tbodyOverview.innerHTML = '<div style="text-align:center; padding:24px; color:var(--error);">Failed to load activity.</div>';
       if (tbodyAccounting) tbodyAccounting.innerHTML = errorRow;
     }
   }
@@ -828,6 +1061,25 @@
       const totalTax = (kpi.revenue * 0.075) + (kpi.profit > 0 ? kpi.profit * 0.3 : 0);
       if (kpiTx) kpiTx.textContent = formatCurrency(totalTax);
 
+      // Calculate KPI trend from revenue6m
+      const rev6m = data.dashboard?.revenue6m;
+      const trendEl = document.getElementById('kpiProfitTrend');
+      if (trendEl && rev6m && rev6m.values && rev6m.values.length >= 2) {
+        const curr = rev6m.values[rev6m.values.length - 1];
+        const prev = rev6m.values[rev6m.values.length - 2];
+        if (prev > 0) {
+          const pct = ((curr - prev) / prev * 100).toFixed(1);
+          trendEl.textContent = (pct >= 0 ? '+' : '') + pct + '%';
+          trendEl.className = 'wallet-trend ' + (pct >= 0 ? 'up' : 'down');
+        } else if (curr > 0) {
+          trendEl.textContent = '+100%';
+          trendEl.className = 'wallet-trend up';
+        } else {
+          trendEl.textContent = '0%';
+          trendEl.className = 'wallet-trend';
+        }
+      }
+
       // Update Operations Summary stats
       const pCount = document.getElementById('summaryProductCount');
       const lsCount = document.getElementById('summaryLowStockCount');
@@ -835,13 +1087,19 @@
       const lCount = document.getElementById('summaryLeadCount');
       const eCount = document.getElementById('summaryEmployeeCount');
       
-      if (pCount) pCount.textContent = `${kpi.productCount} Products`;
-      if (lsCount) lsCount.textContent = `${kpi.lowStockCount} Low stock items`;
-      if (cCount) cCount.textContent = `${kpi.customerCount} Customers`;
-      if (lCount) lCount.textContent = `${kpi.openLeads} Open sales leads`;
-      if (eCount) eCount.textContent = `${kpi.employeeCount} Employees`;
+      if (pCount) pCount.textContent = `${escapeHTML(kpi.productCount)} Products`;
+      if (lsCount) lsCount.textContent = `${escapeHTML(kpi.lowStockCount)} Low stock items`;
+      if (cCount) cCount.textContent = `${escapeHTML(kpi.customerCount)} Customers`;
+      if (lCount) lCount.textContent = `${escapeHTML(kpi.openLeads)} Open sales leads`;
+      if (eCount) eCount.textContent = `${escapeHTML(kpi.employeeCount)} Employees`;
+      
+      // Update charts if data exists and function hasn't been extracted
+      if (data.dashboard.revenue6m && typeof updateChartsData !== 'function') {
+        // Fallback or setup for updateChartsData could go here, but we will define it below.
+      }
+      
     } catch (e) {
-      console.error('Failed to load KPIs:', e);
+      console.error('Failed to load KPIs', e);
     }
   }
 
@@ -867,11 +1125,19 @@
       if (incRes.ok) {
         const incData = await incRes.json();
         const expenses = incData.report?.breakdown?.expenses || [];
-        const filtered = expenses.filter(e => e.code !== '5000');
-        if (expenseChart && filtered.length) {
-          expenseChart.data.labels = filtered.map(e => e.name);
-          expenseChart.data.datasets[0].data = filtered.map(e => e.amount);
-          expenseChart.data.datasets[0].backgroundColor = filtered.map(e => expenseChartColors[e.code] || '#94A3B8');
+        const filtered = expenses
+          .map(e => ({ ...e, amount: Number(e.amount) || 0 }))
+          .filter(e => e.amount > 0);
+        if (expenseChart) {
+          if (filtered.length) {
+            expenseChart.data.labels = filtered.map(e => e.name);
+            expenseChart.data.datasets[0].data = filtered.map(e => e.amount);
+            expenseChart.data.datasets[0].backgroundColor = filtered.map(e => expenseChartColors[e.code] || '#94A3B8');
+          } else {
+            expenseChart.data.labels = ['No Expenses Yet'];
+            expenseChart.data.datasets[0].data = [1];
+            expenseChart.data.datasets[0].backgroundColor = ['#e2e8f0'];
+          }
           expenseChart.update();
         }
       }
@@ -891,17 +1157,32 @@
         return;
       }
       
+      const cashAcct = data.accounts.find(a => a.code === '1000');
       const bankAcct = data.accounts.find(a => a.code === '1100');
       const receivableAcct = data.accounts.find(a => a.code === '1200');
       
-      const ledgerMetrics = document.querySelectorAll('#view-accounting .ledger-metric');
-      if (ledgerMetrics.length >= 3) {
-        if (bankAcct) {
-          ledgerMetrics[0].textContent = formatCurrency(bankAcct.balance);
-        }
-        if (receivableAcct) {
-          ledgerMetrics[2].textContent = formatCurrency(receivableAcct.balance);
-        }
+      // Dynamically render ledger cards from real data
+      const ledgerGrid = document.getElementById('accountingLedgerGrid');
+      if (ledgerGrid) {
+        const cards = [
+          { label: 'Cash Account', acct: cashAcct, code: '1000', icon: 'account_balance_wallet' },
+          { label: 'Bank Account', acct: bankAcct, code: '1100', icon: 'account_balance' },
+          { label: 'Trade Receivables', acct: receivableAcct, code: '1200', icon: 'receipt_long' }
+        ];
+        ledgerGrid.innerHTML = cards.map(c => {
+          const bal = c.acct ? c.acct.balance : 0;
+          const hasReview = c.code === '1200' && bal > 0;
+          return `
+            <div class="ledger-card">
+              <h4>
+                <span>${c.label}</span>
+                <span class="badge ${hasReview ? 'badge-warning' : 'badge-success'}">${hasReview ? 'Review' : 'Active'}</span>
+              </h4>
+              <div class="ledger-metric">${formatCurrency(bal)}</div>
+              <div class="text-muted" style="font-size: 11px;">Account ${c.code} · ${c.acct ? c.acct.name : 'N/A'}</div>
+            </div>
+          `;
+        }).join('');
       }
       
       tbody.innerHTML = data.accounts.map((a, i) => {
@@ -913,8 +1194,8 @@
         return `
           <tr data-id="${a.id}" data-idx="${i}">
             <td class="checkbox-col"><input type="checkbox" class="row-select" value="${a.id}" onclick="updateBatchActionBar()"></td>
-            <td><code>${a.code}</code></td>
-            <td>${a.name}</td>
+            <td><code>${escapeHTML(a.code)}</code></td>
+            <td>${escapeHTML(a.name)}</td>
             <td>${classification}</td>
             <td style="text-align: right; font-weight: 700;">${formatCurrency(a.balance)}</td>
             <td>${statusBadge}</td>
@@ -946,6 +1227,12 @@
     await updateChartsData();
   }
 
+  // Expose live-update functions on window so the global fetch interceptor can call them
+  window._codaLoadKPIs = loadKPIs;
+  window._codaUpdateCharts = updateChartsData;
+  window._codaRenderAccounts = renderAccounts;
+  window._codaRenderTransactions = renderTransactions;
+
   document.getElementById('btnNewJournal')?.addEventListener('click', () => {
     showModal('New Journal Entry', [
       { label: 'Description', name: 'description' },
@@ -959,12 +1246,15 @@
           date: new Date().toISOString(),
           description: data.description,
           lines: [
-            { account: '1000', debit: data.amount, credit: 0 },
-            { account: '4000', debit: 0, credit: data.amount }
+            { account: '5000', debit: data.amount, credit: 0 }, // Expense increases (debit)
+            { account: '1000', debit: 0, credit: data.amount }  // Cash decreases (credit)
           ]
         })
       });
-      if (!res.ok) throw new Error('Failed to post journal entry');
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.error || 'Failed to post journal entry');
+      }
       showToast('Success', 'Journal entry posted', 'success');
       loadAccounting();
     });
@@ -1019,31 +1309,100 @@
     
     container.innerHTML = notificationsData.map(n => {
       const timeStr = typeof formatDate === 'function' ? formatDate(n.created_at) : new Date(n.created_at).toLocaleString();
+      const toggleIcon = n.is_read ? 'undo' : 'check_circle';
+      const toggleTitle = n.is_read ? 'Keep Unread' : 'Done / Mark as Read';
+      const toggleColor = n.is_read ? 'rgba(255,255,255,0.4)' : 'var(--success)';
       return `
-      <div class="notification-item${n.is_read ? '' : ' unread'}" data-id="${n.id}" style="cursor: pointer; padding: 16px; margin-bottom: 12px; border-radius: 12px; background: rgba(15, 23, 42, 0.95); display: flex; gap: 14px; opacity: ${n.is_read ? 0.7 : 1}; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(8px);">
+      <div class="notification-item${n.is_read ? '' : ' unread'}" data-id="${n.id}" style="cursor: pointer; padding: 16px; margin-bottom: 12px; border-radius: 12px; background: rgba(15, 23, 42, 0.95); display: flex; gap: 14px; opacity: ${n.is_read ? 0.7 : 1}; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(8px); transition: transform 0.2s ease, box-shadow 0.2s ease;">
         <div class="notification-icon ${n.type}" style="display:flex;align-items:center;justify-content:center;width:28px;height:28px;flex-shrink:0; border-radius: 50%; background: rgba(255,255,255,0.05);">
           <span class="material-symbols-outlined" style="font-size: 18px; color: var(--${n.type === 'error' ? 'error' : n.type === 'warning' ? 'warning' : n.type === 'success' ? 'success' : 'info'});">${n.type === 'success' ? 'check_circle' : n.type === 'error' ? 'error' : n.type === 'warning' ? 'warning' : 'info'}</span>
         </div>
-        <div class="notification-content" style="flex:1;">
-          <div class="notification-title" style="font-weight: 600; font-size: 14px; margin-bottom: 4px; color: #ffffff;">${n.title}</div>
-          <div class="notification-message" style="font-size: 13px; color: rgba(255,255,255,0.7); line-height: 1.5; margin-bottom: 6px;">${n.message}</div>
+        <div class="notification-content" style="flex:1; min-width: 0;">
+          <div class="notification-title" style="font-weight: 600; font-size: 14px; margin-bottom: 4px; color: #ffffff; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">${escapeHTML(n.title)}</div>
+          <div class="notification-message" style="font-size: 13px; color: rgba(255,255,255,0.7); line-height: 1.5; margin-bottom: 6px; word-break: break-word;">${escapeHTML(n.message)}</div>
           <div class="notification-time" style="font-size: 11px; color: rgba(255,255,255,0.4); font-weight: 500;">${timeStr}</div>
+        </div>
+        <div style="display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+          <button class="btn-notif-toggle" title="${toggleTitle}" style="background: none; border: none; color: ${toggleColor}; cursor: pointer; padding: 6px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: background 0.2s ease;" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background='none'">
+            <span class="material-symbols-outlined" style="font-size: 18px;">${toggleIcon}</span>
+          </button>
         </div>
       </div>
     `;
     }).join('');
 
     container.querySelectorAll('.notification-item').forEach(item => {
-      item.addEventListener('click', async () => {
+      // Flow 1: Toggle read/unread state manually without navigating
+      const toggleBtn = item.querySelector('.btn-notif-toggle');
+      if (toggleBtn) {
+        toggleBtn.addEventListener('click', async (e) => {
+          e.stopPropagation(); // Stop navigation click
+          const id = item.dataset.id;
+          const notif = notificationsData.find(n => n.id === id);
+          if (!notif) return;
+
+          const wasRead = notif.is_read;
+          const newRead = wasRead ? 0 : 1;
+          notif.is_read = newRead;
+
+          item.classList.toggle('unread', !newRead);
+          item.style.opacity = newRead ? '0.7' : '1';
+
+          const iconSpan = toggleBtn.querySelector('.material-symbols-outlined');
+          if (iconSpan) {
+            iconSpan.textContent = newRead ? 'undo' : 'check_circle';
+            toggleBtn.title = newRead ? 'Keep Unread' : 'Done / Mark as Read';
+            toggleBtn.style.color = newRead ? 'rgba(255,255,255,0.4)' : 'var(--success)';
+          }
+
+          notificationCount = notificationsData.filter(n => !n.is_read).length;
+          updateNotificationBadge();
+
+          const endpoint = newRead ? 'read' : 'unread';
+          await fetch(`/api/v1/notifications/${id}/${endpoint}`, { method: 'PATCH', credentials: 'include' });
+        });
+      }
+
+      // Flow 2: Click to view details, navigate, and highlight target element
+      item.addEventListener('click', async (e) => {
+        if (e.target.closest('.btn-notif-toggle')) return;
+
         const id = item.dataset.id;
         const notif = notificationsData.find(n => n.id === id);
-        if (notif && !notif.is_read) {
+        if (!notif) return;
+
+        // Auto mark as read on click
+        if (!notif.is_read) {
           notif.is_read = true;
           item.classList.remove('unread');
-          item.style.opacity = '0.6';
+          item.style.opacity = '0.7';
           notificationCount = Math.max(0, notificationCount - 1);
           updateNotificationBadge();
           await fetch('/api/v1/notifications/' + id + '/read', { method: 'PATCH', credentials: 'include' });
+        }
+
+        // Actionable Routing with highlight
+        if (notif.target_view) {
+          switchView(notif.target_view);
+          closeAllPanels();
+
+          if (notif.target_item_id) {
+            setTimeout(() => {
+              const targetEl = document.querySelector(`[data-id="${notif.target_item_id}"]`) || 
+                               document.getElementById(notif.target_item_id) ||
+                               document.querySelector(`tr[data-id="${notif.target_item_id}"]`) ||
+                               document.getElementById(`match-row-${notif.target_item_id}`) ||
+                               Array.from(document.querySelectorAll('tr')).find(tr => tr.textContent.includes(notif.target_item_id));
+
+              if (targetEl) {
+                targetEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                targetEl.classList.add('notification-action-glow');
+                setTimeout(() => {
+                  targetEl.classList.remove('notification-action-glow');
+                }, 3000);
+              }
+            }, 600); // 600ms delay to let data load completely
+          }
         }
       });
     });
@@ -1082,57 +1441,78 @@
   // ===== Bank Reconciliation Logic =====
   async function loadReconciliation() {
     try {
-      const res = await fetch('/api/v1/reconciliation/pending');
-      const data = await res.json();
-      const listLeft = document.getElementById('reconBankFeedList');
-      const listRight = document.getElementById('reconLedgerMatchList');
-      
-      if (!data.transactions || data.transactions.length === 0) {
-        listLeft.innerHTML = `<div style="padding: 24px; text-align: center; color: var(--text-muted); background: white; border: 1px dashed var(--border-color); border-radius: var(--radius-md);">No pending bank transactions. Click "Simulate Bank Sync" to fetch new data.</div>`;
-        listRight.innerHTML = '';
+      const [pendingRes, summaryRes] = await Promise.all([
+        fetch('/api/v1/reconciliation/pending'),
+        fetch('/api/v1/reconciliation/summary')
+      ]);
+      const { transactions } = await pendingRes.json();
+      const { summary } = await summaryRes.json();
+
+      // Update summary cards
+      const total = summary.unreconciledCount + summary.reconciledCount;
+      document.getElementById('reconUnrecCount').textContent = summary.unreconciledCount;
+      document.getElementById('reconUnrecAmount').textContent = formatCurrency(summary.unreconciledAmount);
+      document.getElementById('reconRecCount').textContent = summary.reconciledCount;
+      document.getElementById('reconJeCount').textContent = summary.matchedJournalEntries;
+      document.getElementById('reconMatchRate').textContent = total > 0 ? Math.round((summary.reconciledCount / total) * 100) + '%' : '0%';
+
+      const container = document.getElementById('reconComparisonContainer');
+      if (!container) return;
+
+      if (!transactions || transactions.length === 0) {
+        const emptyHtml = `
+          <div style="padding: 48px 32px; text-align: center; color: var(--text-muted); background: white; border: 1px dashed var(--border-color); border-radius: var(--radius-lg); margin-top: 12px; width: 100%; box-sizing: border-box;">
+            <span class="material-symbols-outlined" style="font-size: 48px; color: var(--slate-300); display: block; margin-bottom: 12px;">account_balance</span>
+            <div style="font-weight: 600; color: var(--slate-700); margin-bottom: 6px; font-size: 15px;">No unreconciled bank transactions</div>
+            <div style="font-size: 13px; max-width: 400px; margin: 0 auto; line-height: 1.5;">Bank transactions will appear here when synced via your Mono integration. Click "Sync Bank Feed" in the header to get started.</div>
+          </div>`;
+        container.innerHTML = emptyHtml;
         return;
       }
-      
-      listLeft.innerHTML = '';
-      listRight.innerHTML = '';
-      
-      data.transactions.forEach((tx) => {
-        // Left Side: Bank TX
-        const leftHtml = `
-          <div class="recon-row">
-            <div style="display: flex; justify-content: space-between;">
-              <span style="font-weight: 600; color: var(--slate-900);">${tx.description}</span>
-              <span style="font-weight: 600; color: ${tx.amount > 0 ? 'var(--success)' : 'var(--error)'};">${formatCurrency(Math.abs(tx.amount))}</span>
-            </div>
-            <div style="font-size: 13px; color: var(--text-muted); display: flex; justify-content: space-between;">
-              <span>${tx.date}</span>
-              <span>Ref: ${tx.reference || 'N/A'}</span>
-            </div>
-          </div>
-        `;
-        listLeft.insertAdjacentHTML('beforeend', leftHtml);
-        
-        // Right Side: Suggested Match or Add Button
-        let rightHtml = '';
-        if (tx.suggestedMatch) {
-          rightHtml = `
-            <div class="recon-match" id="match-row-${tx.id}" style="background: var(--teal-50); border: 1px solid var(--teal-200);">
-              <div>
-                <div style="font-weight: 600; color: var(--teal-800); font-size: 14px;">Ledger Entry Match</div>
-                <div style="font-size: 13px; color: var(--teal-700);">${tx.suggestedMatch.date} • ${formatCurrency(Math.abs(tx.suggestedMatch.debit - tx.suggestedMatch.credit))}</div>
+
+      container.innerHTML = '';
+
+      transactions.forEach((tx) => {
+        const rightHtml = tx.suggestedMatch 
+          ? `<div style="min-width: 0; flex: 1;">
+               <div style="font-weight: 600; color: var(--teal-800); font-size: 14px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap;">${tx.suggestedMatch.description || 'Journal entry'}</div>
+               <div style="font-size: 12px; color: var(--teal-700);">${tx.suggestedMatch.date} &bull; ${formatCurrency(Math.abs(tx.suggestedMatch.amount))}</div>
+             </div>
+             <button class="btn btn-primary btn-sm" style="flex-shrink: 0;" onclick="confirmReconciliation('${(tx.id||'').replace(/'/g,"\\u0027")}', '${(tx.suggestedMatch.id||'').replace(/'/g,"\\u0027")}')">Match</button>`
+          : `<div style="min-width: 0; flex: 1;">
+               <div style="font-size: 13px; color: var(--text-muted); font-style: italic;">No matching ledger entry found.</div>
+             </div>
+             <button class="btn btn-secondary btn-sm" style="flex-shrink: 0;" onclick="addAsNewLedger('${(tx.id||'').replace(/'/g,"\\u0027")}', ${tx.amount}, '${(tx.description||'').replace(/'/g,"\\u0027")}', '${(tx.date||'').replace(/'/g,"\\u0027")}')">Create &amp; Match</button>`;
+
+        const comparisonHtml = `
+          <div class="recon-comparison-card" data-id="${tx.id}" style="display: grid; grid-template-columns: 1fr 60px 1fr; align-items: center; border: 1px solid var(--border-color); border-radius: var(--radius-lg); background: white; box-shadow: var(--shadow-sm); overflow: hidden; width: 100%; box-sizing: border-box;">
+            <!-- Left Side: Bank Statement -->
+            <div style="padding: 16px; border-right: 1px dashed var(--border-color); display: flex; flex-direction: column; gap: 6px; min-width: 0;">
+              <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;">
+                <span style="font-weight: 600; color: var(--slate-900); font-size: 14px; text-overflow: ellipsis; overflow: hidden; white-space: nowrap; flex: 1;" title="${tx.description || 'Untitled transaction'}">${tx.description || 'Untitled transaction'}</span>
+                <span style="font-weight: 700; font-size: 14px; color: ${tx.amount > 0 ? 'var(--success)' : 'var(--error)'}; white-space: nowrap; flex-shrink: 0;">
+                  ${tx.amount > 0 ? '+' : '-'}${formatCurrency(Math.abs(tx.amount))}
+                </span>
               </div>
-              <button class="btn btn-primary btn-sm" onclick="confirmReconciliation('${(tx.id || '').replace(/'/g, '\\u0027')}', '${(tx.suggestedMatch ? tx.suggestedMatch.id || '' : '').replace(/'/g, '\\u0027')}')">Match</button>
+              <div style="font-size: 12px; color: var(--text-muted); display: flex; justify-content: space-between; gap: 8px;">
+                <span>${tx.date}</span>
+                <span style="text-overflow: ellipsis; overflow: hidden; white-space: nowrap;" title="Ref: ${tx.reference || 'N/A'}">Ref: ${tx.reference || 'N/A'}</span>
+              </div>
             </div>
-          `;
-        } else {
-          rightHtml = `
-            <div class="recon-match" id="match-row-${tx.id}" style="background: var(--slate-50); border: 1px dashed var(--slate-300);">
-              <div style="font-size: 14px; color: var(--text-muted);">No exact match found in ledger.</div>
-              <button class="btn btn-secondary btn-sm" onclick="addAsNewLedger('${(tx.id || '').replace(/'/g, '\\u0027')}', ${tx.amount}, '${(tx.description || '').replace(/'/g, '\\u0027')}', '${(tx.date || '').replace(/'/g, '\\u0027')}')">Add to Ledger</button>
+
+            <!-- Middle Connector -->
+            <div style="padding: 0 14px; display: flex; align-items: center; justify-content: center; background: white; z-index: 2;">
+              <div style="width: 32px; height: 32px; border-radius: 50%; background: ${tx.suggestedMatch ? 'var(--teal-50)' : 'var(--slate-50)'}; color: ${tx.suggestedMatch ? 'var(--teal-600)' : 'var(--slate-400)'}; display: flex; align-items: center; justify-content: center; border: 1px solid ${tx.suggestedMatch ? 'var(--teal-200)' : 'var(--slate-200)'};">
+                <span class="material-symbols-outlined" style="font-size: 18px;">${tx.suggestedMatch ? 'link' : 'trending_flat'}</span>
+              </div>
             </div>
-          `;
-        }
-        listRight.insertAdjacentHTML('beforeend', rightHtml);
+
+            <!-- Right Side: Match Action -->
+            <div id="match-row-${tx.id}" style="padding: 16px; display: flex; align-items: center; justify-content: space-between; gap: 16px; min-width: 0; background: ${tx.suggestedMatch ? 'rgba(20, 184, 166, 0.02)' : 'transparent'};">
+              ${rightHtml}
+            </div>
+          </div>`;
+        container.insertAdjacentHTML('beforeend', comparisonHtml);
       });
     } catch (e) {
       console.error(e);
@@ -1140,41 +1520,39 @@
     }
   }
 
-  // Expose to window for inline onclick handlers
+
   window.confirmReconciliation = async (bankTxId, journalEntryId) => {
     try {
-      const btn = document.getElementById(`match-row-${bankTxId}`)?.querySelector('button');
+      const row = document.getElementById(`match-row-${bankTxId}`);
+      const btn = row?.querySelector('button');
       btn.disabled = true;
       btn.textContent = 'Matching...';
-      
+
       const res = await fetch('/api/v1/reconciliation/match', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ bankTxId, journalEntryId })
       });
       if (res.ok) {
-        showToast('Matched!', 'Transaction successfully reconciled.', 'success');
-        document.getElementById(`match-row-${bankTxId}`).innerHTML = '<div style="color: var(--success); font-weight: bold; width: 100%; text-align: center;">✓ Reconciled</div>';
-        setTimeout(() => loadReconciliation(), 1500);
+        showToast('Reconciled', 'Bank transaction matched to ledger entry.', 'success');
+        row.innerHTML = '<div style="color: var(--success); font-weight: 600; width: 100%; text-align: center; padding: 4px 0;">✓ Reconciled</div>';
+        setTimeout(() => loadReconciliation(), 1200);
       } else {
-        showToast('Error', 'Failed to reconcile transaction.', 'error');
+        const err = await res.json().catch(() => ({}));
+        showToast('Error', err.error || 'Failed to reconcile.', 'error');
         btn.disabled = false;
         btn.textContent = 'Match';
       }
-    } catch (e) {
-      console.error(e);
-    }
+    } catch (e) { console.error(e); }
   };
 
   window.addAsNewLedger = async (bankTxId, amount, desc, date) => {
     try {
-      const btn = document.getElementById(`match-row-${bankTxId}`)?.querySelector('button');
+      const row = document.getElementById(`match-row-${bankTxId}`);
+      const btn = row?.querySelector('button');
       btn.disabled = true;
-      btn.textContent = 'Adding...';
+      btn.textContent = 'Creating...';
 
-      // Create a quick transaction payload. We assume Bank Account is 1100.
-      // If it's a deposit (amount > 0), debit bank, credit sales.
-      // If it's a withdrawal (amount < 0), credit bank, debit general expense.
       const isDeposit = amount > 0;
       const absAmount = Math.abs(amount);
       const newTransaction = {
@@ -1193,19 +1571,39 @@
       });
 
       if (res.ok) {
-        showToast('Added!', 'New ledger entry created and reconciled.', 'success');
-        document.getElementById(`match-row-${bankTxId}`).innerHTML = '<div style="color: var(--success); font-weight: bold; width: 100%; text-align: center;">✓ Added & Reconciled</div>';
-        setTimeout(() => loadReconciliation(), 1500);
+        showToast('Created & Matched', 'New ledger entry created and reconciled.', 'success');
+        row.innerHTML = '<div style="color: var(--success); font-weight: 600; width: 100%; text-align: center; padding: 4px 0;">✓ Created & Reconciled</div>';
+        setTimeout(() => loadReconciliation(), 1200);
       } else {
-        const err = await res.json();
-        showToast('Error', err.error || 'Failed to add ledger entry.', 'error');
+        const err = await res.json().catch(() => ({}));
+        showToast('Error', err.error || 'Failed to create ledger entry.', 'error');
         btn.disabled = false;
-        btn.textContent = 'Add to Ledger';
+        btn.textContent = 'Create & Match';
       }
-    } catch (e) {
-      console.error(e);
-    }
+    } catch (e) { console.error(e); }
   };
+
+  document.getElementById('btnSyncBankFeed')?.addEventListener('click', () => {
+    showModal('Sync Bank Statement via Mono', [
+      { label: 'Mono Account ID', name: 'accountId', type: 'text', value: 'mono_acc_nigeria' }
+    ], async (data) => {
+      const res = await fetch('/api/v1/reconciliation/sync', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}));
+        throw new Error(err.error || 'Failed to sync bank statement.');
+      }
+      const resData = await res.json();
+      showToast('Sync Successful', `Imported ${resData.count} new bank transactions.`, 'success');
+      loadReconciliation();
+      if (typeof window._codaLoadKPIs === 'function') window._codaLoadKPIs();
+      if (typeof window._codaUpdateCharts === 'function') window._codaUpdateCharts();
+      if (typeof window._codaRenderAccounts === 'function') window._codaRenderAccounts();
+    });
+  });
 
   // ===== Global Action Modal System =====
   function showModal(title, fields, onSubmit) {
@@ -1506,47 +1904,79 @@
   
   // Inventory Loader
   async function loadInventory() {
+    if (!canUseModule('inventory')) return;
     const tbody = document.getElementById('inventoryTableBody');
-    if (!tbody) return;
-    try {
-      const res = await fetch('/api/v1/inventory/products');
-      const data = await res.json();
-      if (!data.products || data.products.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="9" style="text-align: center; color: var(--text-muted); padding: 24px;">No products found.</td></tr>';
-        return;
+    const poTbody = document.getElementById('poTableBody');
+
+    // 1. Load Products
+    if (tbody) {
+      try {
+        const res = await fetch('/api/v1/inventory/products');
+        const data = await res.json();
+        if (!data.products || data.products.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="9" style="text-align: center; color: var(--text-muted); padding: 24px;">No products found.</td></tr>';
+        } else {
+          tbody.innerHTML = data.products.map((p, i) => `
+            <tr data-id="${p.id}" data-idx="${i}">
+              <td class="checkbox-col"><input type="checkbox" class="row-select" value="${p.id}" onclick="updateBatchActionBar()"></td>
+              <td class="id-col">${p.id}</td>
+              <td><code>${escapeHTML(p.sku || 'N/A')}</code></td>
+              <td style="font-weight: 500; color: var(--text-primary);">${escapeHTML(p.name)}</td>
+              <td>${formatCurrency(p.cost_price)}</td>
+              <td>${formatCurrency(p.sell_price)}</td>
+              <td>${p.stock_level} units</td>
+              <td>${p.stock_level <= p.reorder_point ? '<span class="status-badge status-pending">Low Stock</span>' : '<span class="status-badge status-active">Optimal</span>'}</td>
+              <td class="actions-col">
+                <button class="btn-icon btn-edit" title="Edit">
+                  <span class="material-symbols-outlined">edit</span>
+                </button>
+                <button class="btn-icon btn-icon-danger btn-delete" title="Delete">
+                  <span class="material-symbols-outlined">delete</span>
+                </button>
+              </td>
+            </tr>
+          `).join('');
+          data.products.forEach((p, i) => {
+            const row = tbody.querySelector(`tr[data-idx="${i}"]`);
+            if (row) row.dataset.item = JSON.stringify(p);
+          });
+        }
+      } catch (e) {
+        console.error(e);
+        tbody.innerHTML = '<tr><td colspan="9" style="text-align: center; color: var(--error); padding: 24px;">Failed to load products.</td></tr>';
       }
-      tbody.innerHTML = data.products.map((p, i) => `
-        <tr data-id="${p.id}" data-idx="${i}">
-          <td class="checkbox-col"><input type="checkbox" class="row-select" value="${p.id}" onclick="updateBatchActionBar()"></td>
-          <td class="id-col">${p.id}</td>
-          <td><code>${p.sku || 'N/A'}</code></td>
-          <td style="font-weight: 500; color: var(--text-primary);">${p.name}</td>
-          <td>${formatCurrency(p.cost_price)}</td>
-          <td>${formatCurrency(p.sell_price)}</td>
-          <td>${p.stock_level} units</td>
-          <td>${p.stock_level <= p.reorder_point ? '<span class="status-badge status-pending">Low Stock</span>' : '<span class="status-badge status-active">Optimal</span>'}</td>
-          <td class="actions-col">
-            <button class="btn-icon btn-edit" title="Edit">
-              <span class="material-symbols-outlined">edit</span>
-            </button>
-            <button class="btn-icon btn-icon-danger btn-delete" title="Delete">
-              <span class="material-symbols-outlined">delete</span>
-            </button>
-          </td>
-        </tr>
-      `).join('');
-      // Store full data in dataset after DOM insertion
-      data.products.forEach((p, i) => {
-        const row = tbody.querySelector(`tr[data-idx="${i}"]`);
-        if (row) row.dataset.item = JSON.stringify(p);
-      });
-    } catch (e) {
-      console.error(e);
-      showToast('Error', 'Failed to load inventory', 'error');
+    }
+
+    // 2. Load Purchase Orders
+    if (poTbody) {
+      try {
+        const res = await fetch('/api/v1/inventory/purchase-orders');
+        const data = await res.json();
+        if (!data.purchaseOrders || data.purchaseOrders.length === 0) {
+          poTbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--text-muted); padding: 24px;">No purchase orders found.</td></tr>';
+        } else {
+          poTbody.innerHTML = data.purchaseOrders.map((po) => {
+            const supplierName = po.description.replace('PO to ', '');
+            return `
+              <tr>
+                <td><code>${escapeHTML(po.id)}</code></td>
+                <td style="font-weight: 500; color: var(--text-primary);">${supplierName}</td>
+                <td>${formatDate(po.date)}</td>
+                <td style="text-align: right; font-weight: 700; color: var(--text-primary);">${formatCurrency(po.amount)}</td>
+                <td><span class="status-badge status-active">Ordered</span></td>
+              </tr>
+            `;
+          }).join('');
+        }
+      } catch (e) {
+        console.error(e);
+        poTbody.innerHTML = '<tr><td colspan="5" style="text-align: center; color: var(--error); padding: 24px;">Failed to load purchase orders.</td></tr>';
+      }
     }
   }
 
   document.getElementById('btnNewProduct')?.addEventListener('click', () => {
+    if (!requireModule('inventory')) return;
     showModal('Add New Product', [
       { label: 'Product Name', name: 'name' },
       { label: 'SKU', name: 'sku', required: false },
@@ -1560,7 +1990,7 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
       });
-      if (!res.ok) throw new Error('Failed to add product');
+      if (!res.ok) { const e = await res.json().catch(() => ({})); throw new Error(e.error || 'Failed to add product'); }
       showToast('Success', 'Product added successfully', 'success');
       loadInventory();
     });
@@ -1568,6 +1998,7 @@
 
   // CRM Loader
   async function loadCRM() {
+    if (!canUseModule('crm')) return;
     const tbody = document.getElementById('crmTableBody');
     if (!tbody) return;
     try {
@@ -1581,10 +2012,10 @@
         <tr data-id="${c.id}" data-idx="${i}">
           <td class="checkbox-col"><input type="checkbox" class="row-select" value="${c.id}" onclick="updateBatchActionBar()"></td>
           <td class="id-col">${c.id}</td>
-          <td style="font-weight: 500; color: var(--text-primary);">${c.name}</td>
-          <td>${c.email || 'N/A'}</td>
-          <td>${c.phone || 'N/A'}</td>
-          <td>${c.tin || 'N/A'}</td>
+          <td style="font-weight: 500; color: var(--text-primary);">${escapeHTML(c.name)}</td>
+          <td>${escapeHTML(c.email || 'N/A')}</td>
+          <td>${escapeHTML(c.phone || 'N/A')}</td>
+          <td>${escapeHTML(c.tin || 'N/A')}</td>
           <td>${formatDate(c.created_at)}</td>
           <td class="actions-col">
             <button class="btn-icon btn-edit" title="Edit">
@@ -1607,6 +2038,7 @@
   }
 
   document.getElementById('btnNewCustomer')?.addEventListener('click', () => {
+    if (!requireModule('crm')) return;
     showModal('Add New Customer', [
       { label: 'Company / Name', name: 'name' },
       { label: 'Email', name: 'email', type: 'email', required: false },
@@ -1619,7 +2051,7 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
       });
-      if (!res.ok) throw new Error('Failed to add customer');
+      if (!res.ok) { const e = await res.json().catch(() => ({})); throw new Error(e.error || 'Failed to add customer'); }
       showToast('Success', 'Customer added successfully', 'success');
       loadCRM();
     });
@@ -1627,6 +2059,7 @@
 
   // HR Loader
   async function loadHR() {
+    if (!canUseModule('hr')) return;
     const tbody = document.getElementById('hrTableBody');
     if (!tbody) return;
     try {
@@ -1640,9 +2073,9 @@
         <tr data-id="${e.id}" data-idx="${i}">
           <td class="checkbox-col"><input type="checkbox" class="row-select" value="${e.id}" onclick="updateBatchActionBar()"></td>
           <td class="id-col">${e.id}</td>
-          <td style="font-weight: 500; color: var(--text-primary);">${e.name}</td>
-          <td>${e.role || 'N/A'}</td>
-          <td>${e.email || 'N/A'}</td>
+          <td style="font-weight: 500; color: var(--text-primary);">${escapeHTML(e.name)}</td>
+          <td>${escapeHTML(e.role || 'N/A')}</td>
+          <td>${escapeHTML(e.email || 'N/A')}</td>
           <td>${formatCurrency(e.salary)}</td>
           <td><span class="status-badge status-${e.status === 'active' ? 'active' : 'inactive'}">${e.status.toUpperCase()}</span></td>
           <td class="actions-col">
@@ -1666,6 +2099,7 @@
   }
 
   document.getElementById('btnNewEmployee')?.addEventListener('click', () => {
+    if (!requireModule('hr')) return;
     showModal('Add New Employee', [
       { label: 'Full Name', name: 'name' },
       { label: 'Email', name: 'email', type: 'email', required: false },
@@ -1677,7 +2111,7 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
       });
-      if (!res.ok) throw new Error('Failed to add employee');
+      if (!res.ok) { const e = await res.json().catch(() => ({})); throw new Error(e.error || 'Failed to add employee'); }
       showToast('Success', 'Employee added successfully', 'success');
       loadHR();
     });
@@ -1757,28 +2191,6 @@
     btn.textContent = 'Recalculate liabilities';
   });
 
-  document.getElementById('btnSimulateBankSync')?.addEventListener('click', async () => {
-    try {
-      const btn = document.getElementById('btnSimulateBankSync');
-      const original = btn.textContent;
-      btn.disabled = true;
-      btn.textContent = 'Syncing...';
-      
-      const res = await fetch('/api/v1/reconciliation/import', { method: 'POST' });
-      if (res.ok) {
-        showToast('Sync Complete', 'New bank transactions imported.', 'success');
-        loadReconciliation();
-      }
-      
-      btn.disabled = false;
-      btn.textContent = original;
-    } catch (e) {
-      console.error(e);
-      showToast('Sync Failed', 'Failed to pull from bank feed.', 'error');
-      document.getElementById('btnSimulateBankSync').disabled = false;
-    }
-  });
-
   // ===== Remaining Unwired Buttons =====
   
   // Helper to parse CSV quote-correctly
@@ -1842,9 +2254,9 @@
     
     const previewRows = customers.slice(0, 5).map(c => `
       <tr>
-        <td style="font-weight:600; padding:6px; font-size:12px; color: #fff;">${c.name}</td>
-        <td style="padding:6px; font-size:12px; color: rgba(255,255,255,0.7);">${c.email || 'N/A'}</td>
-        <td style="padding:6px; font-size:12px; color: rgba(255,255,255,0.7);">${c.phone || 'N/A'}</td>
+        <td style="font-weight:600; padding:6px; font-size:12px; color: #fff;">${escapeHTML(c.name)}</td>
+        <td style="padding:6px; font-size:12px; color: rgba(255,255,255,0.7);">${escapeHTML(c.email || 'N/A')}</td>
+        <td style="padding:6px; font-size:12px; color: rgba(255,255,255,0.7);">${escapeHTML(c.phone || 'N/A')}</td>
       </tr>
     `).join('');
     
@@ -1938,7 +2350,7 @@
           lines
         })
       });
-      if (!res.ok) throw new Error('Failed to record transaction');
+      if (!res.ok) { const e = await res.json().catch(() => ({})); throw new Error(e.error || 'Failed to record transaction'); }
       showToast('Success', 'Transaction recorded successfully.', 'success');
       loadAccounting();
     });
@@ -1963,7 +2375,10 @@
           ]
         })
       });
-      if (!res.ok) throw new Error('Failed to create invoice transaction');
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.error || 'Failed to create invoice transaction');
+      }
       showToast('Invoice Created', `Invoice for ${data.customer} created successfully.`, 'success');
       loadAccounting();
     });
@@ -1986,6 +2401,7 @@
   });
 
   document.getElementById('btnNewPurchaseOrder')?.addEventListener('click', () => {
+    if (!requireModule('inventory')) return;
     showModal('Create Purchase Order', [
       { label: 'Supplier Name', name: 'supplier' },
       { label: 'Total Amount (' + (typeof getActiveCurrencySymbol === 'function' ? getActiveCurrencySymbol() : '₦') + ')', name: 'amount', type: 'number', step: '0.01' },
@@ -2000,21 +2416,24 @@
           description: `PO to ${data.supplier}`,
           lines: [
             { account: '6400', debit: amount, credit: 0 },
-            { account: '2010', debit: 0, credit: amount }
+            { account: '2000', debit: 0, credit: amount }
           ]
         })
       });
-      if (!res.ok) throw new Error('Failed to record Purchase Order');
+      if (!res.ok) { const e = await res.json().catch(() => ({})); throw new Error(e.error || 'Failed to record Purchase Order'); }
       showToast('PO Created', `Purchase order sent to ${data.supplier} and recorded in ledger.`, 'success');
       loadAccounting();
+      loadInventory();
     });
   });
 
   document.getElementById('btnAddFirstProduct')?.addEventListener('click', () => {
+    if (!requireModule('inventory')) return;
     document.getElementById('btnNewProduct')?.click();
   });
 
   document.getElementById('btnImportCustomers')?.addEventListener('click', () => {
+    if (!requireModule('crm')) return;
     const input = document.createElement('input');
     input.type = 'file';
     input.accept = '.csv';
@@ -2045,10 +2464,12 @@
   });
 
   document.getElementById('btnAddFirstCustomer')?.addEventListener('click', () => {
+    if (!requireModule('crm')) return;
     document.getElementById('btnNewCustomer')?.click();
   });
 
   document.getElementById('btnAddFirstEmployee')?.addEventListener('click', () => {
+    if (!requireModule('hr')) return;
     document.getElementById('btnNewEmployee')?.click();
   });
 
@@ -2065,12 +2486,12 @@
           date: new Date().toISOString(),
           description: `VAT Return Filed - ${data.period}`,
           lines: [
-            { account: '2010', debit: vat, credit: 0 },
+            { account: '2100', debit: vat, credit: 0 },
             { account: '1100', debit: 0, credit: vat }
           ]
         })
       });
-      if (!res.ok) throw new Error('Filing failed');
+      if (!res.ok) { const e = await res.json().catch(() => ({})); throw new Error(e.error || 'VAT filing failed'); }
       showToast('Filed', `VAT returns for ${data.period} filed and payment remitted successfully.`, 'success');
       loadAccounting();
       loadTax();
@@ -2099,7 +2520,23 @@
   });
 
   document.getElementById('btnCustomReport')?.addEventListener('click', () => {
-    showToast('Filters', 'Report filter sidebar opened.', 'info');
+    showModal('Configure Report Export', [
+      { label: 'Statement', name: 'statement', type: 'select', options: ['Profit & Loss PDF', 'Profit & Loss CSV', 'Balance Sheet CSV', 'General Ledger CSV'], value: 'Profit & Loss PDF' },
+      { label: 'From', name: 'from', type: 'date', required: false },
+      { label: 'To', name: 'to', type: 'date', required: false }
+    ], async (data) => {
+      const params = new URLSearchParams();
+      if (data.from) params.set('from', new Date(data.from).toISOString());
+      if (data.to) params.set('to', new Date(data.to).toISOString());
+      const qs = params.toString() ? '?' + params.toString() : '';
+      const routes = {
+        'Profit & Loss PDF': '/api/v1/subscription/exports/financial.pdf',
+        'Profit & Loss CSV': '/api/v1/subscription/exports/financial.csv',
+        'Balance Sheet CSV': '/api/v1/subscription/exports/balance-sheet.csv',
+        'General Ledger CSV': '/api/v1/subscription/exports/ledger.csv'
+      };
+      window.location.href = (routes[data.statement] || routes['Profit & Loss PDF']) + qs;
+    });
   });
 
   document.getElementById('btnGenerateReport')?.addEventListener('click', () => {
@@ -2112,8 +2549,8 @@
     btn.disabled = true;
     btn.innerHTML = '<span class="material-symbols-outlined" style="animation:spin 1s linear infinite; font-size: 16px; vertical-align: middle; margin-right: 4px;">refresh</span> Updating...';
     try {
-      await new Promise(r => setTimeout(r, 600));
-      showToast('Updated', 'Report records refreshed.', 'success');
+      await Promise.all([loadAccounting(), loadTax(), updateChartsData()]);
+      showToast('Updated', 'Financial reports refreshed from the ledger.', 'success');
     } catch (e) {
       showToast('Error', 'Connection issue', 'error');
     } finally {
@@ -2219,8 +2656,5 @@
   document.getElementById('batchStatusActive')?.addEventListener('click', () => batchSetStatus('active'));
   document.getElementById('batchStatusInactive')?.addEventListener('click', () => batchSetStatus('inactive'));
 
-  // Spin animation
-  const style = document.createElement('style');
-  style.textContent = '@keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }';
-  document.head.appendChild(style);
+  // Animations and notification glow are loaded from styles.css
 })();

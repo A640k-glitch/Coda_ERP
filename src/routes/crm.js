@@ -4,8 +4,10 @@ const router = express.Router();
 const crm = require('../modules/crm');
 const { db } = require('../db');
 const { requireAuth, requireBusiness, logAudit } = require('../auth');
+const { requireTierModule } = require('../entitlements');
 
 router.use(requireAuth, requireBusiness);
+router.use(requireTierModule('crm'));
 
 router.post('/customers/batch-delete', (req, res) => {
   const { ids } = req.body;

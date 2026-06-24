@@ -368,6 +368,13 @@
     .toast-info { border-left: 3px solid var(--teal-500); }
   </style>
   <script>
+      function escapeHTML(str) {
+        if (str === null || str === undefined) return '';
+        return String(str).replace(/[&<>"']/g, function(m) {
+          return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "\'": '&#039;' }[m];
+        });
+      }
+
     if (localStorage.getItem('coda_sidebar_collapsed') === 'true' && window.innerWidth > 1024) {
       document.documentElement.classList.add('sidebar-collapsed-pref');
     }
@@ -415,6 +422,10 @@
             <button class="nav-item" data-tab="requests">
               <span class="material-symbols-outlined">notifications</span>
               <span>Requests</span>
+            </button>
+            <button class="nav-item" data-tab="integrations">
+              <span class="material-symbols-outlined">extension</span>
+              <span>Integrations</span>
             </button>
           </div>
           <div class="nav-section">
@@ -517,10 +528,26 @@
           <button class="admin-tab" data-tab="requests">Requests</button>
           <button class="admin-tab" data-tab="analytics">Analytics</button>
           <button class="admin-tab" data-tab="audit">Audit Log</button>
+          <button class="admin-tab" data-tab="integrations">Integrations</button>
         </div>
 
         <!-- Users Panel -->
         <div class="admin-panel" id="panel-users">
+          <!-- Users Panel Overview -->
+          <div style="display:flex; gap:16px; margin-bottom:16px;">
+            <div style="background:#fff; border:1px solid var(--border-color); border-radius:8px; padding:12px 16px; flex:1;">
+              <div style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Active Users</div>
+              <div id="summaryActiveUsers" style="font-size:20px; font-weight:800; margin-top:4px; color:var(--teal-600);">-</div>
+            </div>
+            <div style="background:#fff; border:1px solid var(--border-color); border-radius:8px; padding:12px 16px; flex:1;">
+              <div style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Suspended Accounts</div>
+              <div id="summarySuspendedUsers" style="font-size:20px; font-weight:800; margin-top:4px; color:var(--copper-600);">-</div>
+            </div>
+            <div style="background:#fff; border:1px solid var(--border-color); border-radius:8px; padding:12px 16px; flex:1;">
+              <div style="font-size:11px; font-weight:700; color:var(--text-muted); text-transform:uppercase;">Blocked Accounts</div>
+              <div id="summaryBlockedUsers" style="font-size:20px; font-weight:800; margin-top:4px; color:var(--error);">-</div>
+            </div>
+          </div>
           <div class="admin-table-wrap">
             <table class="admin-table">
               <thead>
@@ -650,6 +677,51 @@
             </div>
           </div>
         </div>
+
+        <!-- Integrations Panel -->
+        <div class="admin-panel" id="panel-integrations">
+          <div class="chart-row">
+            <div class="chart-card" style="grid-column: 1 / -1;">
+              <h3 style="margin-bottom: 8px;">Platform API Keys</h3>
+              <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 24px;">Configure the live environment variables for external integrations. Changes are saved securely to the backend <code>.env</code> file. Do not expose these to clients.</p>
+              
+              <div id="integrationsFormWrapper">
+                <form id="integrationsForm" style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                  <div class="form-group">
+                    <label class="form-label" for="env-mono">Mono API Key (Bank Sync)</label>
+                    <input class="form-control" type="password" id="env-mono" name="MONO_SECRET_KEY" placeholder="sk_live_...">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="env-paystack">Paystack Secret Key (Payments)</label>
+                    <input class="form-control" type="password" id="env-paystack" name="PAYSTACK_SECRET_KEY" placeholder="sk_live_...">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="env-qoreid">QoreID API Key (CAC Verify)</label>
+                    <input class="form-control" type="password" id="env-qoreid" name="QOREID_SECRET_KEY" placeholder="...">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="env-firs">FIRS TaxPromax API Key</label>
+                    <input class="form-control" type="password" id="env-firs" name="FIRS_API_KEY" placeholder="...">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="env-termii">Termii API Key (SMS)</label>
+                    <input class="form-control" type="password" id="env-termii" name="TERMII_API_KEY" placeholder="...">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="env-sendgrid">SendGrid API Key (Email)</label>
+                    <input class="form-control" type="password" id="env-sendgrid" name="SENDGRID_API_KEY" placeholder="SG....">
+                  </div>
+                  <div class="form-group" style="grid-column: 1 / -1;">
+                    <button type="submit" class="btn btn-primary" id="btnSaveEnv">
+                      <span class="material-symbols-outlined" style="font-size: 16px;">save</span> Save Configuration
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
@@ -663,8 +735,8 @@
       <button onclick="window.location.href='/'" style="position:absolute; top:12px; right:12px; background:none; border:none; color:var(--text-muted); cursor:pointer;">
         <span class="material-symbols-outlined">close</span>
       </button>
-      <h2 style="font-size: 18px; margin-bottom: 8px;">Switch accounts</h2>
-      <p class="sub" style="margin-bottom:20px">Your session needs validation.</p>
+      <h2 style="font-size: 18px; margin-bottom: 8px;">Session Expired</h2>
+      <p class="sub" style="margin-bottom:20px">Your session has ended. Please sign in again.</p>
       <a href="/login" class="btn btn-primary" style="width:100%; justify-content:center; text-decoration:none;">
         <span class="material-symbols-outlined">login</span>
         Sign in to Coda
@@ -695,7 +767,7 @@
         if (!container) return;
         const toast = document.createElement('div');
         toast.className = 'toast toast-' + (type || 'success');
-        toast.innerHTML = '<div class="toast-title">' + title + '</div><div class="toast-message">' + message + '</div>';
+        toast.innerHTML = '<div class="toast-title">' + escapeHTML(title) + '</div><div class="toast-message">' + escapeHTML(message) + '</div>';
         container.appendChild(toast);
         setTimeout(() => { toast.remove(); }, 4000);
       }
@@ -713,6 +785,50 @@
       }
 
       let csrfToken = '';
+
+      function redirectAuth() {
+        try {
+          const stored = JSON.parse(localStorage.getItem('coda_user') || 'null');
+          const status = stored && stored.status;
+          const email = stored && stored.email;
+          const isRestricted = status === 'suspended' || status === 'blocked';
+
+          localStorage.removeItem('coda_user');
+          localStorage.removeItem('coda_token');
+
+          if (isRestricted) {
+            var overlay = document.createElement('div');
+            overlay.style.cssText = 'position:fixed;inset:0;z-index:999999;background:rgba(15,23,42,0.92);backdrop-filter:blur(8px);display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .3s ease;';
+            var isBlocked = status === 'blocked';
+            var accentColor = isBlocked ? '#dc2626' : '#d97706';
+            var icon = isBlocked ? 'block' : 'pause';
+            var label = isBlocked ? 'Account Blocked' : 'Account Suspended';
+            overlay.innerHTML = '<div style="text-align:center;color:#fff;max-width:380px;padding:32px;">'
+              + '<div style="width:64px;height:64px;border-radius:50%;background:' + accentColor + '20;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;">'
+              + '<span class="material-symbols-outlined" style="font-size:32px;color:' + accentColor + ';">' + icon + '</span></div>'
+              + '<h2 style="font-size:20px;font-weight:800;margin:0 0 8px;letter-spacing:-0.02em;">' + label + '</h2>'
+              + '<p style="font-size:14px;color:rgba(255,255,255,0.6);margin:0 0 24px;line-height:1.5;">Your account has been ' + status + ' by an administrator. You will be redirected shortly.</p>'
+              + '<div style="width:100%;height:3px;background:rgba(255,255,255,0.1);border-radius:2px;overflow:hidden;">'
+              + '<div style="width:0%;height:100%;background:' + accentColor + ';border-radius:2px;animation:progressShrink 2.5s linear forwards;"></div></div></div>';
+
+            var style = document.createElement('style');
+            style.textContent = '@keyframes progressShrink{from{width:100%}to{width:0%}}';
+            document.head.appendChild(style);
+
+            document.body.appendChild(overlay);
+            requestAnimationFrame(function() { overlay.style.opacity = '1'; });
+
+            setTimeout(function() {
+              window.location.href = '/blocked?status=' + status + '&email=' + encodeURIComponent(email || '') + '&reason=' + encodeURIComponent('Account ' + status + ' by administrator');
+            }, 2500);
+            return true;
+          }
+        } catch (_) {}
+        localStorage.removeItem('coda_user');
+        localStorage.removeItem('coda_token');
+        window.location.href = '/login';
+        return false;
+      }
 
       async function initCsrf() {
         try {
@@ -737,8 +853,15 @@
                 }
               }
               return originalFetch(input, init).then(res => {
-                if (res.status === 401 && currentUser) {
-                  window.location.href = '/login';
+                if ((res.status === 401 || res.status === 403) && currentUser) {
+                  redirectAuth();
+                }
+                const url = typeof input === 'string' ? input : input.url;
+                if (res.ok && ['POST', 'PUT', 'DELETE', 'PATCH'].includes(method) && url && url.includes('/api/v1/') && !url.includes('/auth/')) {
+                  setTimeout(() => {
+                    if (typeof loadOverview === 'function') loadOverview();
+                    if (typeof loadAnalytics === 'function') loadAnalytics();
+                  }, 300);
                 }
                 return res;
               });
@@ -752,11 +875,11 @@
       async function fetchWithAuth(url) {
         const res = await fetch(url, { credentials: 'include' });
         if (res.status === 401) { 
-          window.location.href = '/login'; 
+          redirectAuth();
           return null; 
         }
         if (res.status === 403) { 
-          window.location.href = '/dashboard'; 
+          redirectAuth();
           return null; 
         }
         return res.ok ? res.json() : null;
@@ -783,6 +906,15 @@
 
         const override = document.getElementById('early-admin-override');
         if (override) override.remove();
+      }
+
+      function switchAdminView(tab) {
+        switchTab(tab);
+        if (tab === 'analytics') loadAnalytics();
+        if (tab === 'audit') loadAuditLog(1);
+        if (tab === 'requests') loadNotifications();
+        if (tab === 'users') loadUsers(1);
+        if (tab === 'businesses') loadBusinesses(1);
       }
 
       document.querySelectorAll('.admin-tab').forEach(tab => {
@@ -858,7 +990,7 @@
 
       function showAdminModal(title, text, confirmBtn, isDanger, onConfirm) {
         const overlay = document.createElement('div');
-        overlay.style.cssText = 'position:fixed; top:0; left:0; width:100vw; height:100vh; background:rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; z-index:9999; opacity:0; transition: opacity 0.2s;';
+        overlay.style.cssText = 'position:fixed; inset:0; background:rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; z-index:9999; opacity:0; transition: opacity 0.2s;';
         
         const modal = document.createElement('div');
         modal.style.cssText = 'background:#fff; border-radius:12px; padding:24px; width:400px; max-width:90%; box-shadow:0 10px 25px rgba(0,0,0,0.2); transform: scale(0.95); transition: transform 0.2s cubic-bezier(0.34, 1.56, 0.64, 1);';
@@ -866,7 +998,7 @@
         const btnClass = isDanger ? 'btn-danger' : 'btn-primary';
         
         modal.innerHTML = `
-          <h3 style="margin-bottom:12px; font-size:18px;">${title}</h3>
+          <h3 style="margin-bottom:12px; font-size:18px;">${escapeHTML(title)}</h3>
           <p style="margin-bottom:24px; color:var(--text-secondary); font-size:14px; line-height:1.5;">${text}</p>
           <div style="display:flex; justify-content:flex-end; gap:12px;">
             <button class="btn btn-outline" id="btnAdminModalCancel">Cancel</button>
@@ -876,6 +1008,7 @@
         
         overlay.appendChild(modal);
         document.body.appendChild(overlay);
+        document.body.classList.add('no-scroll');
         
         requestAnimationFrame(() => {
           overlay.style.opacity = '1';
@@ -885,6 +1018,7 @@
         const close = () => {
           overlay.style.opacity = '0';
           modal.style.transform = 'scale(0.95)';
+          document.body.classList.remove('no-scroll');
           setTimeout(() => overlay.remove(), 200);
         };
         
@@ -916,12 +1050,11 @@
         const actionMap = { 'active': 'Activate', 'blocked': 'Block', 'suspended': 'Suspend' };
         const label = actionMap[status] || status;
         const isDanger = status === 'blocked' || status === 'suspended';
-        
         showAdminModal(
-          label + ' User', 
-          'Are you sure you want to ' + label.toLowerCase() + ' this user? This will affect their ability to access the platform.', 
-          label,
-          isDanger,
+          'Confirm Action',
+          'Change this user\'s status to ' + status.toUpperCase() + '?',
+          'Confirm',
+          status === 'blocked',
           async () => {
             const res = await fetch('/api/v1/admin/users/' + userId + '/status', {
               method: 'PATCH',
@@ -934,6 +1067,7 @@
             }
             showToast('Updated', 'User has been ' + status + '.', 'success');
             loadUsers(usersPage);
+            loadOverview();
           }
         );
       }
@@ -955,6 +1089,7 @@
             }
             showToast('Deleted', 'User has been permanently deleted.', 'success');
             loadUsers(usersPage);
+            loadOverview();
           }
         );
       }
@@ -975,74 +1110,15 @@
           showToast('Error', 'Failed to update business tier.', 'error');
         }
         loadUsers(usersPage);
+        loadOverview();
       }
       
-      let currentNotifications = [];
+            let currentNotifications = [];
 
-      async function loadNotifications() {
-        const data = await fetchWithAuth('/api/v1/notifications');
-        if (!data) return;
-        const tbody = document.getElementById('notificationsBody');
-        if (!data.notifications || !data.notifications.length) {
-          tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:40px;color:var(--text-muted);">No pending requests.</td></tr>';
-          return;
-        }
-        currentNotifications = data.notifications;
-        tbody.innerHTML = data.notifications.map(n => {
-          const isRead = n.is_read === 1;
-          const readStyle = isRead ? 'opacity: 0.6;' : 'font-weight: 600;';
-          let actionBtn = '';
-          if (n.title === 'Upgrade Request' && !isRead) {
-            actionBtn = `<button class="btn btn-xs btn-outline" onclick="approveUpgradeFromNotification('${n.id}', '${n.business_id}')">Approve</button>`;
-          }
-          if (!isRead) {
-            actionBtn += `<button class="btn btn-xs btn-outline" style="margin-left:4px;" onclick="markNotificationRead('${n.id}')">Dismiss</button>`;
-          } else {
-            actionBtn = '<span style="color:var(--text-muted); font-size:11px;">Processed</span>';
-          }
-          return `<tr style="${readStyle}">
-            <td>${n.title}</td>
-            <td>${n.message}</td>
-            <td style="white-space:nowrap;">${formatDate(n.created_at)}</td>
-            <td><div style="display:flex; gap:4px; flex-wrap:nowrap; align-items:center;">${actionBtn}</div></td>
-          </tr>`;
-        }).join('');
-        
-        // Also populate the notification slider panel
-        const panelList = document.getElementById('adminNotificationsList');
-        if (panelList) {
-          if (data.notifications.length === 0) {
-            panelList.innerHTML = '<div style="text-align:center; padding: 40px 0; color:var(--text-muted);">No new notifications.</div>';
-          } else {
-            panelList.innerHTML = data.notifications.map(n => {
-              const isRead = n.is_read === 1;
-              const timeStr = formatDate(n.created_at);
-              const type = n.type || 'info';
-              const iconColor = type === 'error' ? 'var(--error)' : type === 'warning' ? 'var(--warning)' : type === 'success' ? 'var(--success)' : 'var(--teal-500)';
-              const iconName = type === 'success' ? 'check_circle' : type === 'error' ? 'error' : type === 'warning' ? 'warning' : 'info';
-              return `
-                <div class="notification-item${isRead ? '' : ' unread'}" data-id="${n.id}" onclick="markNotificationRead('${n.id}')" style="cursor: pointer; padding: 16px; margin-bottom: 12px; border-radius: 12px; background: rgba(15, 23, 42, 0.95); display: flex; gap: 14px; opacity: ${isRead ? 0.7 : 1}; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(8px); text-align: left;">
-                  <div class="notification-icon ${type}" style="display:flex;align-items:center;justify-content:center;width:28px;height:28px;flex-shrink:0; border-radius: 50%; background: rgba(255,255,255,0.05);">
-                    <span class="material-symbols-outlined" style="font-size: 18px; color: ${iconColor};">${iconName}</span>
-                  </div>
-                  <div class="notification-content" style="flex:1;">
-                    <div class="notification-title" style="font-weight: 600; font-size: 14px; margin-bottom: 4px; color: #ffffff;">${n.title}</div>
-                    <div class="notification-message" style="font-size: 13px; color: rgba(255,255,255,0.7); line-height: 1.5; margin-bottom: 6px;">${n.message}</div>
-                    <div class="notification-time" style="font-size: 11px; color: rgba(255,255,255,0.4); font-weight: 500; display:flex; justify-content:space-between; align-items:center;">
-                      <span>${timeStr}</span>
-                      ${!isRead ? `<span style="color:var(--teal-400); font-weight:600; font-size:11px;">Dismiss</span>` : ''}
-                    </div>
-                  </div>
-                </div>
-              `;
-            }).join('');
-          }
-        }
-        
-        // Update badge
+      function updateAdminNotificationBadge() {
         const badge = document.getElementById('adminNotificationBadge');
         if (badge) {
-          const unread = data.notifications.filter(n => n.is_read === 0).length;
+          const unread = currentNotifications.filter(n => !n.is_read).length;
           if (unread > 0) {
             badge.textContent = unread > 9 ? '9+' : unread;
             badge.style.display = 'flex';
@@ -1052,7 +1128,152 @@
         }
       }
 
-      async function approveUpgradeFromNotification(id, businessId) {
+      function renderNotificationsTable() {
+        const tbody = document.getElementById('notificationsBody');
+        if (!tbody) return;
+        if (!currentNotifications.length) {
+          tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:40px;color:var(--text-muted);">No pending requests.</td></tr>';
+          return;
+        }
+        tbody.innerHTML = currentNotifications.map(n => {
+          const isRead = n.is_read === 1;
+          const readStyle = isRead ? 'opacity: 0.6;' : 'font-weight: 600;';
+          let actionBtn = '';
+          if (n.title === 'Upgrade Request' && !isRead) {
+            actionBtn = `<button class="btn btn-xs btn-outline" onclick="approveUpgradeFromNotification('${n.id}', '${n.business_id}')">Approve</button>`;
+          }
+          const toggleLabel = isRead ? 'Mark Unread' : 'Dismiss';
+          const toggleIcon = isRead ? 'mark_email_unread' : 'check_circle';
+          actionBtn += `<button class="btn btn-xs btn-outline" style="margin-left:4px;" onclick="adminToggleNotification('${n.id}', ${isRead ? 0 : 1})"><span class="material-symbols-outlined" style="font-size:14px; vertical-align:middle;">${toggleIcon}</span> ${toggleLabel}</button>`;
+          return `<tr data-id="${n.id}" style="${readStyle}">
+            <td>${escapeHTML(n.title)}</td>
+            <td>${escapeHTML(n.message)}</td>
+            <td style="white-space:nowrap;">${formatDate(n.created_at)}</td>
+            <td><div style="display:flex; gap:4px; flex-wrap:nowrap; align-items:center;">${actionBtn}</div></td>
+          </tr>`;
+        }).join('');
+      }
+
+      function renderNotificationsPanel() {
+        const panelList = document.getElementById('adminNotificationsList');
+        if (!panelList) return;
+        if (!currentNotifications.length) {
+          panelList.innerHTML = '<div style="text-align:center; padding: 40px 0; color:var(--text-muted);">No new notifications.</div>';
+          return;
+        }
+        panelList.innerHTML = currentNotifications.map(n => {
+          const isRead = n.is_read === 1;
+          const timeStr = formatDate(n.created_at);
+          const type = n.type || 'info';
+          const iconColor = type === 'error' ? 'var(--error)' : type === 'warning' ? 'var(--warning)' : type === 'success' ? 'var(--success)' : 'var(--teal-500)';
+          const iconName = type === 'success' ? 'check_circle' : type === 'error' ? 'error' : type === 'warning' ? 'warning' : 'info';
+          const toggleIcon = isRead ? 'undo' : 'check_circle';
+          const toggleTitle = isRead ? 'Mark as unread' : 'Mark as read';
+          const toggleColor = isRead ? 'rgba(255,255,255,0.4)' : 'var(--success)';
+          const targetView = n.type === 'upgrade_request' ? 'requests' : null;
+          return `
+            <div class="notification-item${isRead ? '' : ' unread'}" data-id="${n.id}" data-target-view="${targetView || ''}" style="cursor: pointer; padding: 16px; margin-bottom: 12px; border-radius: 12px; background: rgba(15, 23, 42, 0.95); display: flex; gap: 14px; opacity: ${isRead ? 0.7 : 1}; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(8px); text-align: left; transition: transform 0.2s ease, box-shadow 0.2s ease;">
+              <div class="notification-icon ${type}" style="display:flex;align-items:center;justify-content:center;width:28px;height:28px;flex-shrink:0; border-radius: 50%; background: rgba(255,255,255,0.05);">
+                <span class="material-symbols-outlined" style="font-size: 18px; color: ${iconColor};">${iconName}</span>
+              </div>
+              <div class="notification-content" style="flex:1; min-width: 0;">
+                <div class="notification-title" style="font-weight: 600; font-size: 14px; margin-bottom: 4px; color: #ffffff;">${escapeHTML(n.title)}</div>
+                <div class="notification-message" style="font-size: 13px; color: rgba(255,255,255,0.7); line-height: 1.5; margin-bottom: 6px; word-break: break-word;">${escapeHTML(n.message)}</div>
+                <div class="notification-time" style="font-size: 11px; color: rgba(255,255,255,0.4); font-weight: 500;">${timeStr}</div>
+              </div>
+              <div style="display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
+                <button class="btn-notif-toggle" title="${toggleTitle}" style="background: none; border: none; color: ${toggleColor}; cursor: pointer; padding: 6px; border-radius: 50%; display: flex; align-items: center; justify-content: center; transition: background 0.2s ease;" onmouseover="this.style.background='rgba(255,255,255,0.05)'" onmouseout="this.style.background='none'">
+                  <span class="material-symbols-outlined" style="font-size: 18px;">${toggleIcon}</span>
+                </button>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        panelList.querySelectorAll('.notification-item').forEach(card => {
+          const toggleBtn = card.querySelector('.btn-notif-toggle');
+          if (toggleBtn) {
+            toggleBtn.addEventListener('click', async (e) => {
+              e.stopPropagation();
+              const id = card.dataset.id;
+              const notif = currentNotifications.find(n => n.id === id);
+              if (!notif) return;
+
+              const newRead = notif.is_read ? 0 : 1;
+              notif.is_read = newRead;
+
+              card.classList.toggle('unread', !newRead);
+              card.style.opacity = newRead ? '0.7' : '1';
+              const iconSpan = toggleBtn.querySelector('.material-symbols-outlined');
+              if (iconSpan) {
+                iconSpan.textContent = newRead ? 'undo' : 'check_circle';
+                toggleBtn.title = newRead ? 'Mark as unread' : 'Mark as read';
+                toggleBtn.style.color = newRead ? 'rgba(255,255,255,0.4)' : 'var(--success)';
+              }
+
+              updateAdminNotificationBadge();
+              renderNotificationsTable();
+
+              const endpoint = newRead ? 'read' : 'unread';
+              await fetch('/api/v1/notifications/' + id + '/' + endpoint, { method: 'PATCH', credentials: 'include' });
+            });
+          }
+
+          card.addEventListener('click', (e) => {
+            if (e.target.closest('.btn-notif-toggle')) return;
+            const nId = card.dataset.id;
+            const targetView = card.dataset.targetView;
+            const notif = currentNotifications.find(n => n.id === nId);
+            if (!notif) return;
+
+            if (!notif.is_read) {
+              notif.is_read = 1;
+              card.classList.remove('unread');
+              card.style.opacity = '0.7';
+              updateAdminNotificationBadge();
+              renderNotificationsTable();
+              fetch('/api/v1/notifications/' + nId + '/read', { method: 'PATCH', credentials: 'include' });
+            }
+
+            const panel = document.getElementById('panelAdminNotifications');
+            panel.classList.remove('open');
+            document.body.classList.remove('no-scroll');
+
+            if (targetView) {
+              switchTab(targetView);
+              setTimeout(() => {
+                const row = document.querySelector('#notificationsBody tr[data-id="' + nId + '"]');
+                if (row) {
+                  row.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                  row.classList.add('notification-action-glow');
+                  setTimeout(() => row.classList.remove('notification-action-glow'), 3000);
+                }
+              }, 300);
+            }
+          });
+        });
+      }
+
+      async function loadNotifications() {
+        const data = await fetchWithAuth('/api/v1/notifications');
+        if (!data) return;
+        currentNotifications = data.notifications || [];
+        renderNotificationsTable();
+        renderNotificationsPanel();
+        updateAdminNotificationBadge();
+      }
+
+      async function adminToggleNotification(id, newReadState) {
+        const notif = currentNotifications.find(n => n.id === id);
+        if (!notif) return;
+        notif.is_read = newReadState;
+        updateAdminNotificationBadge();
+        renderNotificationsTable();
+        renderNotificationsPanel();
+        const endpoint = newReadState ? 'read' : 'unread';
+        await fetch('/api/v1/notifications/' + id + '/' + endpoint, { method: 'PATCH', credentials: 'include' });
+      }
+async function approveUpgradeFromNotification(id, businessId) {
         const notif = currentNotifications.find(n => n.id === id);
         let tier = 'professional';
         if (notif && notif.message.toLowerCase().includes('enterprise')) tier = 'enterprise';
@@ -1070,15 +1291,14 @@
           showToast('Approved', 'Business upgraded to ' + tier, 'success');
           await fetch('/api/v1/notifications/' + id + '/read', { method: 'PATCH' });
           loadNotifications();
+          loadOverview();
+          loadAnalytics();
         } else {
           showToast('Error', 'Failed to upgrade business.', 'error');
         }
       }
 
-      async function markNotificationRead(id) {
-        await fetch('/api/v1/notifications/' + id + '/read', { method: 'PATCH' });
-        loadNotifications();
-      }
+
 
       async function loadOverview() {
         const data = await fetchWithAuth('/api/v1/admin/analytics/overview');
@@ -1090,6 +1310,15 @@
         document.getElementById('kpiRevenue').textContent = formatCurrency(o.paidRevenue);
         document.getElementById('kpiRevenueSub').textContent = o.totalBusinesses > 0 ? formatCurrency(Math.round(o.paidRevenue / o.totalBusinesses)) + ' avg/business' : '';
         document.getElementById('kpiSignups').textContent = o.signupsThisMonth.toLocaleString();
+        
+        // Populate specific users panel stats
+        const elActive = document.getElementById('summaryActiveUsers');
+        if (elActive) elActive.textContent = (o.activeUsers || 0).toLocaleString();
+        const elSuspended = document.getElementById('summarySuspendedUsers');
+        if (elSuspended) elSuspended.textContent = (o.suspendedUsers || 0).toLocaleString();
+        const elBlocked = document.getElementById('summaryBlockedUsers');
+        if (elBlocked) elBlocked.textContent = (o.blockedUsers || 0).toLocaleString();
+        
         document.getElementById('adminLastUpdated').textContent = 'Updated ' + new Date().toLocaleString('en-NG');
       }
 
@@ -1146,11 +1375,15 @@
       }
 
       async function loadAnalytics() {
-        const [signupData, revenueData] = await Promise.all([
+        const [overviewDataRes, signupDataRes, revenueDataRes] = await Promise.all([
+          fetchWithAuth('/api/v1/admin/analytics/overview'),
           fetchWithAuth('/api/v1/admin/analytics/signups'),
           fetchWithAuth('/api/v1/admin/analytics/revenue'),
         ]);
-        if (!signupData || !revenueData) return;
+        if (!overviewDataRes || !signupDataRes || !revenueDataRes) return;
+        const overviewData = overviewDataRes;
+        const signupData = signupDataRes;
+        const revenueData = revenueDataRes;
 
         const colors = { green: '#0d9488', copper: '#d97706', bgLight: '#f1f5f9', border: '#e2e8f0' };
 
@@ -1200,13 +1433,13 @@
 
         if (tierChart) tierChart.destroy();
         const tCtx = document.getElementById('tierChart')?.getContext('2d');
-        if (tCtx && revenueData.revenueByTier) {
-          const tiers = revenueData.revenueByTier;
+        if (tCtx && overviewData.overview?.tierDistribution) {
+          const tiers = overviewData.overview.tierDistribution;
           tierChart = new Chart(tCtx, {
             type: 'doughnut',
             data: {
               labels: tiers.map(t => t.tier || 'unknown'),
-              datasets: [{ data: tiers.map(t => t.total), backgroundColor: ['#0d9488', '#d97706', '#0f172a'], borderWidth: 0, cutout: '65%' }]
+              datasets: [{ data: tiers.map(t => t.count), backgroundColor: ['#0d9488', '#d97706', '#0f172a'], borderWidth: 0, cutout: '65%' }]
             },
             options: {
               responsive: true, maintainAspectRatio: false,
@@ -1277,7 +1510,7 @@
 
         const ui = document.getElementById('adminUserInfo');
         if (ui && currentUser) {
-          ui.innerHTML = '<div class="user-avatar">' + (currentUser.name?.charAt(0)?.toUpperCase() || 'A') + '</div><div class="user-details"><div class="user-name">' + (currentUser.name || '') + '</div><div class="user-role">Platform Admin</div></div>';
+          ui.innerHTML = '<div class="user-avatar">' + escapeHTML(currentUser.name)?.charAt(0)?.toUpperCase() || 'A') + '</div><div class="user-details"><div class="user-name">' + escapeHTML(currentUser.name) || '') + '</div><div class="user-role">Platform Admin</div></div>';
         }
 
         // Wire up the global search box for the active admin tab
@@ -1336,7 +1569,7 @@
       window.adminDeleteUser = adminDeleteUser;
       window.adminChangeUserTier = adminChangeUserTier;
       window.approveUpgradeFromNotification = approveUpgradeFromNotification;
-      window.markNotificationRead = markNotificationRead;
+      window.adminToggleNotification = adminToggleNotification;
     })();
   </script>
 
@@ -1399,8 +1632,57 @@
         });
       }
     });
-  });
-</script>
+      async function loadIntegrations() {
+        const res = await fetchWithAuth('/api/v1/admin/config/env');
+        if (res && res.success && res.data) {
+          for (const [key, val] of Object.entries(res.data)) {
+            const el = document.querySelector(`input[name="${key}"]`);
+            if (el) el.value = val; // val will be masked, e.g. "sk_live_****abcd"
+          }
+        }
+      }
+
+      document.getElementById('integrationsForm')?.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('btnSaveEnv');
+        btn.disabled = true;
+        btn.innerHTML = 'Saving...';
+        
+        const formData = new FormData(e.target);
+        const payload = Object.fromEntries(formData.entries());
+        
+        try {
+          const res = await fetch('/api/v1/admin/config/env', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+          });
+          const data = await res.json();
+          if (res.ok && data.success) {
+            showToast('Integrations Saved', 'Environment variables updated securely.', 'success');
+          } else {
+            showToast('Error', data.error || 'Failed to save configuration.', 'error');
+          }
+        } catch (err) {
+          showToast('Error', err.message, 'error');
+        } finally {
+          btn.disabled = false;
+          btn.innerHTML = '<span class="material-symbols-outlined" style="font-size: 16px;">save</span> Save Configuration';
+        }
+      });
+      
+      // Also intercept the switchTab for integrations
+      document.querySelectorAll('.admin-tab').forEach(tab => {
+        tab.addEventListener('click', () => {
+          const t = tab.dataset.tab;
+          if (t === 'integrations') loadIntegrations();
+        });
+      });
+
+    })();
+  </script>
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
@@ -1464,16 +1746,8 @@
     document.body.classList.remove('no-scroll');
   });
 
-  // Close panel if clicked outside
-  document.addEventListener('click', (e) => {
-    const panel = document.getElementById('panelAdminNotifications');
-    const btn = document.getElementById('btnAdminNotifications');
-    if (panel && panel.classList.contains('open')) {
-      if (!panel.contains(e.target) && (!btn || !btn.contains(e.target))) {
-        panel.classList.remove('open');
-        document.body.classList.remove('no-scroll');
-      }
-    }
+  document.getElementById('btnAdminNotifications')?.addEventListener('click', (e) => {
+    e.stopPropagation();
   });
 </script>
 </body>

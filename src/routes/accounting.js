@@ -42,9 +42,13 @@ router.get('/transactions/:id', (req, res) => {
 });
 
 router.post('/transactions', (req, res) => {
-  const tx = accounting.recordTransaction(req.businessId, req.user.id, req.body);
-  logAudit(req.businessId, req.user.id, 'transaction.create', { description: tx.description, id: tx.id });
-  res.status(201).json({ transaction: tx });
+  try {
+    const tx = accounting.recordTransaction(req.businessId, req.user.id, req.body);
+    logAudit(req.businessId, req.user.id, 'transaction.create', { description: tx.description, id: tx.id });
+    res.status(201).json({ transaction: tx });
+  } catch (err) {
+    res.status(400).json({ error: err.message });
+  }
 });
 
 router.patch('/transactions/:id', (req, res) => {

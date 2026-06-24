@@ -57,6 +57,16 @@ function asyncHandler(fn) {
   return (req, res, next) => Promise.resolve(fn(req, res, next)).catch(next);
 }
 
+function escapeHtml(unsafe) {
+  if (unsafe == null) return '';
+  return String(unsafe)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
+
 module.exports = {
   generateId,
   generateApiKey,
@@ -68,4 +78,5 @@ module.exports = {
   csvEscape,
   toCSV,
   asyncHandler,
+  escapeHtml,
 };

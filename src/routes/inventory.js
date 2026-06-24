@@ -4,8 +4,10 @@ const router = express.Router();
 const inventory = require('../modules/inventory');
 const { db } = require('../db');
 const { requireAuth, requireBusiness, logAudit } = require('../auth');
+const { requireTierModule } = require('../entitlements');
 
 router.use(requireAuth, requireBusiness);
+router.use(requireTierModule('inventory'));
 
 router.post('/products/batch-delete', (req, res) => {
   const { ids } = req.body;
@@ -70,8 +72,20 @@ router.get('/sales', (req, res) => {
   });
 });
 
-router.get('/low-stock', (req, res) => {
-  res.json({ products: inventory.lowStockAlerts(req.businessId) });
+router.get('/purchase-orders', (req, res) => {
+  try {
+    const pos = db.prepare(`
+      SELECT je.id, je.date, je.description, jl.credit AS amount
+      FROM journal_entries je
+      JOIN journal_lines jl ON je.id = jl.entry_id
+      JOIN accounts a ON jl.account_id = a.id
+      WHERE je.business_id = ? AND je.description LIKE 'PO to %' AND a.code = '2000'
+      ORDER BY je.date DESC
+    `).all(req.businessId);
+    res.json({ purchaseOrders: pos });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 module.exports = router;

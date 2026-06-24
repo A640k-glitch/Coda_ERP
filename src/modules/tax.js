@@ -68,7 +68,19 @@ function generateTaxReport(businessId, period) {
       .get(...revenueAccounts, businessId, from, to);
     revenue = r.total;
   }
-  const vatPayable = +(revenue * config.taxRates.vat).toFixed(2);
+  const vatAccount = db.prepare("SELECT id FROM accounts WHERE business_id = ? AND code = '2100'").get(businessId);
+  let vatPaid = 0;
+  if (vatAccount) {
+    const r = db.prepare(`
+      SELECT COALESCE(SUM(jl.debit), 0) AS total
+      FROM journal_lines jl
+      JOIN journal_entries je ON je.id = jl.entry_id
+      WHERE jl.account_id = ? AND je.business_id = ?
+        AND je.date >= ? AND je.date <= ?
+    `).get(vatAccount.id, businessId, from, to);
+    vatPaid = r.total;
+  }
+  const vatPayable = Math.max(0, +(revenue * config.taxRates.vat - vatPaid).toFixed(2));
 
   // CIT: 30% of net profit
   const expenseAccounts = db
@@ -92,6 +104,20 @@ function generateTaxReport(businessId, period) {
   const netProfit = revenue - expenses;
   const cit = +Math.max(0, netProfit * config.taxRates.cit).toFixed(2);
 
+  // PAYE payable: credit balance of account 2300 (credits from payroll disburse - debits from tax pay)
+  const payeAccount = db.prepare("SELECT id FROM accounts WHERE business_id = ? AND code = '2300'").get(businessId);
+  let payePayable = 0;
+  if (payeAccount) {
+    const payeBal = db.prepare(`
+      SELECT COALESCE(SUM(jl.credit - jl.debit), 0) AS total
+      FROM journal_lines jl
+      JOIN journal_entries je ON je.id = jl.entry_id
+      WHERE jl.account_id = ? AND je.business_id = ?
+        AND je.date >= ? AND je.date <= ?
+    `).get(payeAccount.id, businessId, from, to);
+    payePayable = Math.max(0, +payeBal.total.toFixed(2));
+  }
+
   return {
     businessId,
     period: { from, to },
@@ -99,9 +125,11 @@ function generateTaxReport(businessId, period) {
     expenses,
     netProfit,
     vat: { payable: vatPayable, receivable: 0, netVAT: vatPayable },
+    vatPayable, // For frontend
     wht: { deducted: 0, creditable: 0 },
     cit,
-    paye: 0, // populated from payroll if needed
+    paye: payePayable,
+    payePayable, // For frontend
     filingDeadlines: getFilingDeadlines(),
     paymentInstructions: getPaymentInstructions(),
     currency: 'NGN',

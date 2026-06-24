@@ -233,6 +233,8 @@ function migrate() {
       message TEXT NOT NULL,
       type TEXT NOT NULL DEFAULT 'info',
       is_read INTEGER NOT NULL DEFAULT 0,
+      target_view TEXT,
+      target_item_id TEXT,
       created_at TEXT NOT NULL DEFAULT (datetime('now')),
       FOREIGN KEY (business_id) REFERENCES businesses(id) ON DELETE CASCADE,
       FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
@@ -246,6 +248,8 @@ function migrate() {
   try { db.exec("ALTER TABLE users ADD COLUMN password_reset_token TEXT DEFAULT NULL;"); } catch(e) {}
   try { db.exec("ALTER TABLE users ADD COLUMN password_reset_expires TEXT DEFAULT NULL;"); } catch(e) {}
   try { db.exec("ALTER TABLE users ADD COLUMN status TEXT NOT NULL DEFAULT 'active';"); } catch(e) {}
+  try { db.exec("ALTER TABLE notifications ADD COLUMN target_view TEXT;"); } catch(e) {}
+  try { db.exec("ALTER TABLE notifications ADD COLUMN target_item_id TEXT;"); } catch(e) {}
 }
 
 migrate();

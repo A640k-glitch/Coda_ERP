@@ -74,10 +74,47 @@ async function fetchTickerData() {
     console.error('Failed to fetch fiat data', err);
   }
 
-  // 3. Add static financial platform data
-  tickerItems.push({ label: 'Default Tax Rate', value: '10.0%', colorClass: 'brand-green' });
-  tickerItems.push({ label: 'VAT', value: '7.5%', colorClass: 'brand-green' });
-  tickerItems.push({ label: 'Processing Fee', value: '1.5%', colorClass: 'brand-green' });
+  // 3. Fetch macro-economic indicators from backend
+  try {
+    const macroRes = await fetch('/api/v1/macro');
+    if (macroRes.ok) {
+      const macro = await macroRes.json();
+      if (macro.ngnUsd) {
+        tickerItems.push({ label: 'NGN/USD', value: `₦${macro.ngnUsd.toLocaleString(undefined, {minimumFractionDigits: 2, maximumFractionDigits: 2})}`, colorClass: 'brand-green' });
+      }
+      if (macro.inflation) {
+        tickerItems.push({ label: macro.inflation.label, value: `${macro.inflation.value}%`, colorClass: 'brand-green' });
+      }
+      if (macro.interestRate) {
+        tickerItems.push({ label: macro.interestRate.label, value: `${macro.interestRate.value}%`, colorClass: 'brand-green' });
+      }
+      if (macro.gdpGrowth) {
+        tickerItems.push({ label: macro.gdpGrowth.label, value: `${macro.gdpGrowth.value}%`, colorClass: 'brand-green' });
+      }
+    }
+  } catch (err) {
+    console.error('Failed to fetch macro data', err);
+  }
+
+  // 4. Fetch static platform config from backend
+  try {
+    const configRes = await fetch('/api/v1/config/public');
+    if (configRes.ok) {
+      const cfg = await configRes.json();
+      if (cfg.taxRates) {
+        tickerItems.push({ label: 'Default Tax Rate', value: `${cfg.taxRates.defaultRate}%`, colorClass: 'brand-green' });
+        tickerItems.push({ label: 'VAT', value: `${cfg.taxRates.vat}%`, colorClass: 'brand-green' });
+      }
+      if (cfg.platformFees) {
+        tickerItems.push({ label: 'Processing Fee', value: `${cfg.platformFees.processingFee}%`, colorClass: 'brand-green' });
+      }
+      if (cfg.reserveTarget) {
+        tickerItems.push({ label: 'Target Reserve', value: `${cfg.reserveTarget}%`, colorClass: 'brand-green' });
+      }
+    }
+  } catch (err) {
+    console.error('Failed to fetch platform config', err);
+  }
 
   // Save to cache
   if (tickerItems.length > 0) {

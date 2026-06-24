@@ -5,7 +5,26 @@ const CURRENCY_MAP = {
   EUR: { symbol: '€', locale: 'de-DE', code: 'EUR' }
 };
 
-let exchangeRates = { NGN: 1, USD: 0.00067, EUR: 0.00062 }; // Fallback real rates
+let exchangeRates = { NGN: 1, USD: 0.00067, EUR: 0.00062 };
+let liveRatesLoaded = false;
+
+function showFallbackWarning() {
+  if (liveRatesLoaded) return;
+  const existing = document.getElementById('currency-fallback-warning');
+  if (existing) return;
+
+  const banner = document.createElement('div');
+  banner.id = 'currency-fallback-warning';
+  banner.style.cssText = 'position:fixed; top:0; left:0; right:0; background:#fef3c7; color:#92400e; text-align:center; padding:8px 16px; font-size:13px; font-weight:500; z-index:99999; border-bottom:1px solid #f59e0b; display:flex; align-items:center; justify-content:center; gap:8px;';
+  banner.innerHTML = '<span class="material-symbols-outlined" style="font-size:16px;">warning</span> Exchange rates temporarily unavailable — showing cached rates. <button onclick="this.parentElement.remove()" style="background:none; border:none; color:#92400e; cursor:pointer; font-size:16px; line-height:1; padding:0 4px;">&times;</button>';
+  document.body.prepend(banner);
+  setTimeout(() => banner.remove(), 10000);
+}
+
+function hideFallbackWarning() {
+  const banner = document.getElementById('currency-fallback-warning');
+  if (banner) banner.remove();
+}
 
 async function fetchExchangeRates() {
   try {
@@ -15,11 +34,14 @@ async function fetchExchangeRates() {
       if (data && data.rates) {
         exchangeRates.USD = data.rates.USD || exchangeRates.USD;
         exchangeRates.EUR = data.rates.EUR || exchangeRates.EUR;
+        liveRatesLoaded = true;
+        hideFallbackWarning();
         console.log('Live NGN exchange rates loaded:', exchangeRates);
       }
     }
   } catch (e) {
     console.warn('Failed to fetch live exchange rates, using fallbacks:', e);
+    showFallbackWarning();
   }
 }
 

@@ -4,7 +4,7 @@ const router = express.Router();
 const crypto = require('crypto');
 const rateLimit = require('express-rate-limit');
 const { db, seedAccounts } = require('../db');
-const { generateId, generateApiKey } = require('../utils');
+const { generateId, generateApiKey, escapeHtml } = require('../utils');
 const {
   hashPassword, verifyPassword, createSession, destroySession,
   setSessionCookie, clearSessionCookie, clearAuthCookies, requireAuth, logAudit,
@@ -69,24 +69,29 @@ router.post('/signup', signupLimiter, async (req, res) => {
   // Hash password using async bcrypt
   const hashedPassword = await hashPassword(password);
 
+  const safeName = escapeHtml(name);
+  const safeBusinessName = escapeHtml(businessName);
+  const safeAddress = escapeHtml(req.body.address);
+  const safePhone = escapeHtml(phone);
+
   const tx = db.transaction(() => {
     db.prepare(
       `INSERT INTO businesses (id, name, cac_number, business_type, address, phone, email, tier, subscription_status)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'trial')`
     ).run(
       businessId,
-      businessName,
+      safeBusinessName,
       cacNumber || null,
       businessType || 'limited',
-      req.body.address || null,
-      phone || null,
+      safeAddress || null,
+      safePhone || null,
       email,
       (tier && config.subscriptionTiers[tier]) ? tier : 'starter'
     );
     db.prepare(
       `INSERT INTO users (id, email, password_hash, name, business_id, role, api_key)
        VALUES (?, ?, ?, ?, ?, 'owner', ?)`
-    ).run(userId, email, hashedPassword, name, businessId, apiKey);
+    ).run(userId, email, hashedPassword, safeName, businessId, apiKey);
     seedAccounts(businessId);
   });
   tx();
@@ -98,8 +103,8 @@ router.post('/signup', signupLimiter, async (req, res) => {
   logAudit(businessId, userId, 'user.signup', { email });
 
   res.status(201).json({
-    user: { id: userId, email, name, business_id: businessId, role: 'owner' },
-    business: { id: businessId, name: businessName, tier: sub.tier, subscription_status: 'trial' },
+    user: { id: userId, email, name: safeName, business_id: businessId, role: 'owner', status: 'active' },
+    business: { id: businessId, name: safeBusinessName, tier: sub.tier, subscription_status: 'trial' },
     subscription: sub
   });
 });
@@ -112,6 +117,22 @@ router.post('/login', loginLimiter, async (req, res) => {
   const user = db.prepare('SELECT * FROM users WHERE email = ?').get(email);
   if (!user) {
     return res.status(401).json({ error: 'Invalid email or password' });
+  }
+
+  // Block suspended/blocked users from logging in — redirect to status page
+  if (user.status === 'blocked') {
+    clearAuthCookies(res);
+    return res.status(403).json({
+      error: 'This account has been blocked.',
+      redirect: `/blocked?status=blocked&email=${encodeURIComponent(user.email)}&reason=${encodeURIComponent('Account blocked by administrator')}`
+    });
+  }
+  if (user.status === 'suspended') {
+    clearAuthCookies(res);
+    return res.status(403).json({
+      error: 'This account has been suspended.',
+      redirect: `/blocked?status=suspended&email=${encodeURIComponent(user.email)}&reason=${encodeURIComponent('Account suspended by administrator')}`
+    });
   }
 
   // Check account lockout
@@ -149,7 +170,7 @@ router.post('/login', loginLimiter, async (req, res) => {
   const isAdmin = user.email === config.adminEmail;
 
   res.json({
-    user: { id: user.id, email: user.email, name: user.name, business_id: user.business_id, role: user.role },
+    user: { id: user.id, email: user.email, name: user.name, business_id: user.business_id, role: user.role, status: user.status },
     isAdmin
   });
 });
@@ -184,6 +205,13 @@ router.post('/forgot-password', forgotPasswordLimiter, async (req, res) => {
 
   const user = db.prepare('SELECT * FROM users WHERE email = ?').get(email);
   if (user) {
+    // Don't allow password reset for blocked/suspended accounts
+    if (user.status === 'blocked' || user.status === 'suspended') {
+      // Still return the same response to avoid leaking account status
+      res.json({ message: 'If the email exists in our system, a password reset link has been sent.' });
+      return;
+    }
+
     // Generate a secure plain token
     const plainToken = crypto.randomBytes(32).toString('hex');
     
@@ -216,6 +244,11 @@ router.post('/delete-account', requireAuth, async (req, res) => {
 
     const user = db.prepare('SELECT * FROM users WHERE id = ?').get(req.user.id);
     if (!user) return res.status(404).json({ error: 'User not found' });
+
+    // Block suspended/blocked users from self-service deletion
+    if (user.status === 'blocked' || user.status === 'suspended') {
+      return res.status(403).json({ error: 'This account has been restricted. Please contact support.' });
+    }
 
     const isMatch = await verifyPassword(password, user.password_hash);
     if (!isMatch) return res.status(403).json({ error: 'Incorrect password' });
@@ -265,6 +298,11 @@ router.post('/reset-password', async (req, res) => {
     return res.status(400).json({ error: 'Invalid or expired reset token' });
   }
 
+  // Block password reset for suspended/blocked accounts
+  if (user.status === 'blocked' || user.status === 'suspended') {
+    return res.status(403).json({ error: 'This account has been restricted. Please contact support.' });
+  }
+
   const expiresDate = new Date(user.password_reset_expires);
   if (expiresDate < new Date()) {
     return res.status(400).json({ error: 'Invalid or expired reset token' });
@@ -277,6 +315,44 @@ router.post('/reset-password', async (req, res) => {
   logAudit(user.business_id, user.id, 'user.password_reset_success', { email: user.email });
 
   res.json({ message: 'Password has been reset successfully.' });
+});
+
+// POST /api/v1/auth/appeal — submit an appeal for suspended/blocked account
+router.post('/appeal', async (req, res) => {
+  try {
+    const { email, status } = req.body || {};
+    if (!email) return res.status(400).json({ error: 'Email is required' });
+
+    const user = db.prepare('SELECT * FROM users WHERE email = ?').get(email);
+    if (!user) {
+      return res.status(404).json({ error: 'Account not found' });
+    }
+
+    const appealStatus = status || user.status;
+    if (appealStatus === 'active') {
+      return res.status(400).json({ error: 'Account is not restricted' });
+    }
+
+    // Create notification for admin
+    const notifId = generateId('notif');
+    const adminUser = db.prepare('SELECT * FROM users WHERE email = ?').get(config.adminEmail);
+    if (adminUser) {
+      db.prepare(
+        'INSERT INTO notifications (id, business_id, title, message) VALUES (?, ?, ?, ?)'
+      ).run(
+        notifId,
+        adminUser.business_id,
+        `Account Appeal: ${appealStatus}`,
+        `User ${user.name} (${user.email}) has submitted an appeal against their ${appealStatus} status.`
+      );
+    }
+
+    logAudit(user.business_id, user.id, 'user.appeal', { email: user.email, status: appealStatus });
+
+    res.json({ success: true, message: 'Your appeal has been submitted. Our admin team will review it.' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 module.exports = router;

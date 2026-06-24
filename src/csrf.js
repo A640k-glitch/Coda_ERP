@@ -1,10 +1,13 @@
 const { doubleCsrf } = require('csrf-csrf');
 
+const crypto = require('crypto');
+const fallbackSecret = crypto.randomBytes(32).toString('hex');
+
 const {
   generateCsrfToken,
   doubleCsrfProtection,
 } = doubleCsrf({
-  getSecret: () => process.env.CSRF_SECRET || 'coda_csrf_secret_key_1234567890_super_secure',
+  getSecret: () => process.env.CSRF_SECRET || fallbackSecret,
   cookieName: 'coda_csrf',
   cookieOptions: {
     path: '/',

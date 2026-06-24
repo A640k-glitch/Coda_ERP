@@ -87,6 +87,23 @@ function recordSale(businessId, userId, { product_id, qty, unit_price, customer_
        VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
     ).run(id, businessId, product_id, customer_id || null, q, price, total, cogs);
     db.prepare('UPDATE products SET stock_level = stock_level - ?, updated_at = datetime(\'now\') WHERE id = ?').run(q, product_id);
+    
+    // Create a low stock notification if level is below reorder point
+    const updatedProd = db.prepare('SELECT * FROM products WHERE id = ?').get(product_id);
+    if (updatedProd && updatedProd.stock_level <= updatedProd.reorder_point) {
+      const notifId = generateId('notif');
+      const activeNotif = db.prepare(`
+        SELECT id FROM notifications 
+        WHERE business_id = ? AND title = 'Low Stock Alert' AND target_item_id = ? AND is_read = 0
+      `).get(businessId, product_id);
+      if (!activeNotif) {
+        db.prepare(`
+          INSERT INTO notifications (id, business_id, title, message, type, target_view, target_item_id)
+          VALUES (?, ?, 'Low Stock Alert', ?, 'warning', 'inventory', ?)
+        `).run(notifId, businessId, `${updatedProd.name} is running low on stock (${updatedProd.stock_level} units left).`, product_id);
+      }
+    }
+
     // Post journal entry: Dr Cash (or AR), Cr Sales; Dr COGS, Cr Inventory
     accounting.recordTransaction(businessId, userId, {
       date: new Date().toISOString(),

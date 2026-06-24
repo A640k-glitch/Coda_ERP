@@ -10,11 +10,15 @@ function listAccounts(businessId) {
   return db.prepare('SELECT * FROM accounts WHERE business_id = ? ORDER BY code').all(businessId);
 }
 
-function getAccountBalance(businessId, accountId, asOf = null) {
+function getAccountBalance(businessId, accountId, asOf = null, from = null) {
   const params = [accountId];
   let dateClause = '';
+  if (from) {
+    dateClause += 'AND je.date >= ? ';
+    params.push(from);
+  }
   if (asOf) {
-    dateClause = 'AND je.date <= ?';
+    dateClause += 'AND je.date <= ?';
     params.push(asOf);
   }
   const row = db
@@ -31,12 +35,12 @@ function getAccountBalance(businessId, accountId, asOf = null) {
 }
 
 // Generic account-type balances
-function balancesByType(businessId, type, asOf = null) {
+function balancesByType(businessId, type, asOf = null, from = null) {
   const accounts = db
     .prepare('SELECT * FROM accounts WHERE business_id = ? AND type = ? ORDER BY code')
     .all(businessId, type);
   return accounts.map(a => {
-    const { debit, credit } = getAccountBalance(businessId, a.id, asOf);
+    const { debit, credit } = getAccountBalance(businessId, a.id, asOf, from);
     return { ...a, debit, credit, balance: debit - credit };
   });
 }
@@ -172,8 +176,8 @@ function balanceSheet(businessId, asOf = null) {
 function incomeStatement(businessId, { from, to } = {}) {
   const fromIso = from || new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString();
   const toIso = to || new Date().toISOString();
-  const revenue = balancesByType(businessId, 'revenue', toIso);
-  const expenses = balancesByType(businessId, 'expense', toIso);
+  const revenue = balancesByType(businessId, 'revenue', toIso, fromIso);
+  const expenses = balancesByType(businessId, 'expense', toIso, fromIso);
   // For revenue & expense, credit - debit (revenue up via credit; expense up via debit)
   const totalRevenue = -revenue.reduce((s, r) => s + r.balance, 0);
   const cogsItem = expenses.find(e => e.code === '5000');

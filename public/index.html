@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -16,7 +17,8 @@
   <link rel="manifest" href="site.webmanifest">
   <meta property="og:type" content="website">
   <meta property="og:title" content="Coda — Enterprise Fintech ERP">
-  <meta property="og:description" content="Premium Fintech ERP for Nigerian SMEs — accounting, inventory, CRM, HR, tax, and payments.">
+  <meta property="og:description"
+    content="Premium Fintech ERP for Nigerian SMEs — accounting, inventory, CRM, HR, tax, and payments.">
   <meta property="og:image" content="og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
@@ -24,55 +26,144 @@
   <meta name="twitter:image" content="og-image.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
+    rel="stylesheet">
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
   <link rel="stylesheet" href="styles.css">
   <style>
     /* Modal styles */
     .modal-overlay {
-      position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6);
-      backdrop-filter: blur(4px); display: none;
-      align-items: center; justify-content: center; z-index: 1000;
+      position: fixed;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.6);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
     }
-    .modal-overlay.active { display: flex; }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
     .legal-modal {
-      background: #fff; width: 100%; max-width: 500px;
-      border-radius: var(--radius-lg); padding: 32px;
-      position: relative; max-height: 80vh; overflow-y: auto;
+      background: #fff;
+      width: 100%;
+      max-width: 500px;
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      position: relative;
+      max-height: 80vh;
+      overflow-y: auto;
       box-shadow: var(--shadow-lg);
     }
+
     .legal-modal-close {
-      position: absolute; top: 24px; right: 24px;
-      background: none; border: none; cursor: pointer; color: var(--text-muted);
+      position: absolute;
+      top: 24px;
+      right: 24px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-muted);
     }
+
     .legal-modal-logo {
-      display: flex; align-items: center; gap: 8px; font-weight: 800; font-size: 18px; color: var(--slate-900); margin-bottom: 24px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 800;
+      font-size: 18px;
+      color: var(--slate-900);
+      margin-bottom: 24px;
     }
-    .legal-modal h2 { font-size: 20px; margin-bottom: 16px; }
-    .legal-modal p { font-size: 14px; color: var(--text-secondary); line-height: 1.6; margin-bottom: 12px; }
-    
+
+    .legal-modal h2 {
+      font-size: 20px;
+      margin-bottom: 16px;
+    }
+
+    .legal-modal p {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 12px;
+    }
+
     /* 21stdev Inspired KPI Cards for landing page features */
     .premium-kpi-grid {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin-top: 40px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 24px;
+      margin-top: 40px;
     }
+
     .premium-kpi-card {
-      background: #fff; border: 1px solid var(--border-color); border-radius: var(--radius-lg);
-      padding: 24px; box-shadow: var(--shadow-sm); display: flex; flex-direction: column; gap: 16px;
+      background: #fff;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius-lg);
+      padding: 24px;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
     }
+
     .premium-kpi-header {
-      display: flex; justify-content: space-between; align-items: flex-start;
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
     }
-    .premium-kpi-title { font-size: 14px; font-weight: 600; color: var(--text-secondary); }
-    .premium-kpi-val { font-size: 32px; font-weight: 800; color: var(--slate-900); letter-spacing: -0.02em; }
+
+    .premium-kpi-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-secondary);
+    }
+
+    .premium-kpi-val {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--slate-900);
+      letter-spacing: -0.02em;
+    }
+
     .premium-kpi-badge {
-      display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px; border-radius: 100px; font-size: 12px; font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 8px;
+      border-radius: 100px;
+      font-size: 12px;
+      font-weight: 600;
     }
-    .badge-up { background: var(--success-bg); color: var(--success); }
-    .badge-down { background: var(--error-bg); color: var(--error); }
+
+    .badge-up {
+      background: var(--success-bg);
+      color: var(--success);
+    }
+
+    .badge-down {
+      background: var(--error-bg);
+      color: var(--error);
+    }
 
     /* SVGs for Partners */
-    .trusted-svg { height: 28px; width: auto; opacity: 0.6; filter: grayscale(100%); transition: all 0.3s; cursor: pointer; }
-    .trusted-svg:hover { filter: grayscale(0%); opacity: 1; }
+    .trusted-svg {
+      height: 28px;
+      width: auto;
+      opacity: 0.6;
+      filter: grayscale(100%);
+      transition: all 0.3s;
+      cursor: pointer;
+    }
+
+    .trusted-svg:hover {
+      filter: grayscale(0%);
+      opacity: 1;
+    }
 
     /* Static Non-Scrollable Dashboard Mockup */
     .hero-mockup-scaler {
@@ -80,8 +171,10 @@
       max-width: 100%;
       margin: 64px auto 0;
       position: relative;
-      overflow: visible; /* Let scale happen cleanly */
+      overflow: visible;
+      /* Let scale happen cleanly */
     }
+
     .mockup-card {
       position: absolute;
       top: 0;
@@ -89,22 +182,42 @@
       width: 900px !important;
       min-width: 900px !important;
       height: 600px !important;
-      overflow: hidden; 
-      display: flex; 
-      background: var(--bg-app); 
+      overflow: hidden;
+      display: flex;
+      background: var(--bg-app);
       border: 1px solid var(--border-color);
-      border-radius: var(--radius-lg); 
-      box-shadow: var(--shadow-lg); 
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow-lg);
       text-align: left;
       transform-origin: top left;
     }
-    .mockup-body { overflow: hidden; padding: 24px; flex: 1; display: flex; flex-direction: column; }
-    .mockup-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; flex: 1; margin-top: 24px;}
-    .mockup-col { display: flex; flex-direction: column; gap: 24px; }
+
+    .mockup-body {
+      overflow: hidden;
+      padding: 24px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .mockup-grid {
+      display: grid;
+      grid-template-columns: 2fr 1fr;
+      gap: 24px;
+      flex: 1;
+      margin-top: 24px;
+    }
+
+    .mockup-col {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
 
     /* Interactive Live Demo Mockup CSS */
     .mockup-card {
-      cursor: default; /* Keep standard cursor when hovering manually */
+      cursor: default;
+      /* Keep standard cursor when hovering manually */
       display: flex;
       flex: 1;
       height: 100%;
@@ -115,34 +228,40 @@
     }
 
     .hero-layout {
-      max-width: 1440px !important; /* Widescreen breakout margin */
+      max-width: 1440px !important;
+      /* Widescreen breakout margin */
       width: 100%;
     }
+
     .hero-text-container {
       max-width: 900px;
       margin: 0 auto;
     }
+
     /* MacBook Mockup Device Frame Styles */
     .macbook-wrapper {
-      width: 1400px; /* Designed width for scaling */
+      width: 1400px;
+      /* Designed width for scaling */
       margin: 48px 0 0 0;
       position: absolute;
       left: 50%;
       background: none;
     }
-    
+
     .macbook-screen {
-      background: #0c0c0e; /* Matte black bezel */
+      background: #0c0c0e;
+      /* Matte black bezel */
       border-radius: 20px 20px 0 0;
-      padding: 20px 20px 28px 20px; /* Bezel padding */
+      padding: 20px 20px 28px 20px;
+      /* Bezel padding */
       position: relative;
-      box-shadow: 
-        inset 0 0 0 1px rgba(255,255,255,0.08),
-        0 20px 50px rgba(0,0,0,0.5),
-        0 6px 20px rgba(0,0,0,0.35);
+      box-shadow:
+        inset 0 0 0 1px rgba(255, 255, 255, 0.08),
+        0 20px 50px rgba(0, 0, 0, 0.5),
+        0 6px 20px rgba(0, 0, 0, 0.35);
       border: 3px solid #1a1a1c;
     }
-    
+
     /* Screen Camera */
     .macbook-screen::before {
       content: '';
@@ -156,12 +275,15 @@
       border-radius: 50%;
       border: 1.5px solid #2d2d30;
     }
-    
+
     /* Screen sheen overlay */
     .macbook-screen::after {
       content: '';
       position: absolute;
-      top: 0; right: 0; bottom: 0; left: 0;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      left: 0;
       background: linear-gradient(135deg, rgba(255, 255, 255, 0.03) 0%, rgba(255, 255, 255, 0) 50%);
       pointer-events: none;
       border-radius: 17px 17px 0 0;
@@ -174,7 +296,8 @@
       border-radius: 6px;
       overflow: hidden;
       width: 100%;
-      height: 760px; /* Taller display area for the bigger dashboard */
+      height: 760px;
+      /* Taller display area for the bigger dashboard */
       position: relative;
       display: flex;
     }
@@ -187,10 +310,10 @@
       position: relative;
       width: 104%;
       margin-left: -2%;
-      box-shadow: 0 10px 25px rgba(0,0,0,0.35);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
       z-index: 20;
     }
-    
+
     /* Open notch */
     .macbook-base::before {
       content: '';
@@ -212,7 +335,7 @@
       align-items: stretch;
       padding: 0;
       z-index: 10;
-      border-right: 1px solid rgba(255,255,255,0.05);
+      border-right: 1px solid rgba(255, 255, 255, 0.05);
       transition: width 0.3s cubic-bezier(0.25, 1, 0.5, 1);
       flex-shrink: 0;
     }
@@ -228,9 +351,11 @@
       transform-origin: top left;
       opacity: 1;
     }
+
     .mockup-cursor.clicking {
       transform: scale(0.8);
     }
+
     .mockup-nav-item {
       display: flex;
       align-items: center;
@@ -245,14 +370,17 @@
       height: auto !important;
       text-align: left;
     }
+
     .mockup-nav-item:hover {
       background: rgba(255, 255, 255, 0.06) !important;
       color: #ffffff !important;
     }
+
     .mockup-nav-item.active {
       background: var(--teal-600) !important;
       color: #ffffff !important;
     }
+
     /* Mockup Views Container & Views */
     .mockup-views-container {
       flex: 1;
@@ -261,20 +389,30 @@
       position: relative;
       overflow: hidden;
     }
+
     .mockup-view {
       display: none;
       flex-direction: column;
       flex: 1;
       animation: fadeMockupView 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
+
     .mockup-view.active {
       display: flex;
     }
+
     @keyframes fadeMockupView {
-      from { opacity: 0; transform: translateY(6px); }
-      to { opacity: 1; transform: translateY(0); }
+      from {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
     }
-    
+
     /* Mockup Table Styling */
     .mockup-table {
       width: 100%;
@@ -283,6 +421,7 @@
       font-size: 11px;
       margin-top: 4px;
     }
+
     .mockup-table th {
       padding: 8px 12px;
       color: var(--text-muted);
@@ -292,15 +431,18 @@
       font-size: 9px;
       letter-spacing: 0.05em;
     }
+
     .mockup-table td {
       padding: 8px 12px;
       border-bottom: 1px solid #f1f5f9;
       color: var(--slate-700);
       vertical-align: middle;
     }
+
     .mockup-table tr:last-child td {
       border-bottom: none;
     }
+
     .mockup-badge {
       display: inline-flex;
       align-items: center;
@@ -310,14 +452,17 @@
       font-weight: 600;
       line-height: 1;
     }
+
     .mockup-badge.badge-pending {
       background: #fef3c7;
       color: #d97706;
     }
+
     .mockup-badge.badge-success {
       background: #dcfce7;
       color: #16a34a;
     }
+
     .mockup-badge.badge-danger {
       background: #fee2e2;
       color: #dc2626;
@@ -329,23 +474,30 @@
         width: 56px !important;
         align-items: center !important;
       }
-      .sidebar-logo-text, .nav-section-title, .nav-text {
+
+      .sidebar-logo-text,
+      .nav-section-title,
+      .nav-text {
         display: none !important;
       }
+
       .sidebar-header {
         padding: 16px 0 !important;
         justify-content: center !important;
         width: 100% !important;
       }
+
       .mockup-sidebar .sidebar-nav {
         padding: 16px 0 !important;
       }
+
       .mockup-sidebar .nav-section {
         margin-bottom: 12px !important;
         display: flex;
         flex-direction: column;
         align-items: center;
       }
+
       .mockup-nav-item {
         justify-content: center !important;
         padding: 0 !important;
@@ -391,7 +543,7 @@
       position: relative;
       transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease, box-shadow 0.4s ease;
     }
-    
+
     .pricing-card-glass:hover {
       transform: translateY(-8px);
       border-color: rgba(20, 184, 166, 0.4);
@@ -404,7 +556,7 @@
       border: 1.5px solid rgba(20, 184, 166, 0.35);
       box-shadow: 0 15px 35px rgba(20, 184, 166, 0.04), 0 5px 15px rgba(0, 0, 0, 0.01);
     }
-    
+
     .pricing-card-glass.recommended:hover {
       border-color: rgba(20, 184, 166, 0.65);
       box-shadow: 0 25px 45px rgba(20, 184, 166, 0.08);
@@ -417,7 +569,7 @@
       color: #ffffff !important;
       box-shadow: 0 20px 45px rgba(0, 0, 0, 0.15) !important;
     }
-    
+
     .pricing-card-glass.dark-glass:hover {
       border-color: rgba(255, 255, 255, 0.2) !important;
       box-shadow: 0 30px 60px rgba(0, 0, 0, 0.25) !important;
@@ -430,7 +582,7 @@
       align-items: center;
       margin-bottom: 24px;
     }
-    
+
     .pricing-icon-wrap {
       width: 44px;
       height: 44px;
@@ -442,11 +594,11 @@
       justify-content: center;
       color: #0d9488;
     }
-    
+
     .pricing-icon-wrap .material-symbols-outlined {
       font-size: 24px;
     }
-    
+
     .pricing-badge-capsule {
       font-size: 11px;
       font-weight: 800;
@@ -458,13 +610,13 @@
       border: none !important;
       border-radius: 0 !important;
     }
-    
+
     .pricing-card-glass.recommended .pricing-badge-capsule {
       color: #0d9488 !important;
       background: none !important;
       border: none !important;
     }
-    
+
     .pricing-card-glass.dark-glass .pricing-badge-capsule {
       color: #2dd4bf !important;
       background: none !important;
@@ -477,15 +629,18 @@
       margin-bottom: 8px;
       letter-spacing: -0.02em;
     }
+
     .pricing-card-glass:not(.dark-glass) h3.pricing-card-title {
       color: var(--slate-900) !important;
     }
+
     .pricing-card-glass.dark-glass h3.pricing-card-title,
     .pricing-card-glass.dark-glass .pricing-card-title,
     .dark-glass h3 {
-      color: #2dd4bf !important; /* Brand green/teal */
+      color: #2dd4bf !important;
+      /* Brand green/teal */
     }
-    
+
     .pricing-card-desc {
       font-size: 14px;
       line-height: 1.5;
@@ -493,6 +648,7 @@
       margin-bottom: 28px;
       min-height: 42px;
     }
+
     .pricing-card-glass.dark-glass .pricing-card-desc {
       color: rgba(255, 255, 255, 0.7) !important;
     }
@@ -502,7 +658,7 @@
       flex-direction: column;
       margin-bottom: 32px;
     }
-    
+
     .pricing-price-large {
       font-size: 40px;
       font-weight: 850;
@@ -511,16 +667,18 @@
       display: flex;
       align-items: baseline;
     }
+
     .pricing-card-glass.dark-glass .pricing-price-large {
       color: #ffffff !important;
     }
-    
+
     .pricing-price-large span {
       font-size: 14px;
       color: var(--text-muted) !important;
       font-weight: 500;
       margin-left: 4px;
     }
+
     .pricing-card-glass.dark-glass .pricing-price-large span {
       color: rgba(255, 255, 255, 0.5) !important;
     }
@@ -530,6 +688,7 @@
       color: var(--text-muted) !important;
       margin-top: 4px;
     }
+
     .pricing-card-glass.dark-glass .pricing-price-sub {
       color: rgba(255, 255, 255, 0.5) !important;
     }
@@ -547,29 +706,35 @@
       transition: all 0.2s ease;
       cursor: pointer;
     }
+
     .btn-pricing-secondary {
       background: var(--slate-900);
       border: 1px solid var(--slate-900);
       color: #ffffff;
     }
+
     .btn-pricing-secondary:hover {
       background: var(--slate-800);
       border-color: var(--slate-800);
     }
+
     .btn-pricing-primary {
       background: var(--slate-900);
       border: 1px solid var(--slate-900);
       color: #ffffff;
     }
+
     .btn-pricing-primary:hover {
       background: var(--slate-800);
       border-color: var(--slate-800);
     }
+
     .btn-pricing-white {
       background: #ffffff;
       border: 1px solid #ffffff;
       color: var(--slate-950);
     }
+
     .btn-pricing-white:hover {
       background: rgba(255, 255, 255, 0.9);
       border-color: rgba(255, 255, 255, 0.9);
@@ -581,10 +746,11 @@
       border-top: 1px solid var(--border-color);
       padding-top: 24px;
     }
+
     .pricing-card-glass.dark-glass .pricing-features-section {
       border-top: 1px solid rgba(255, 255, 255, 0.1);
     }
-    
+
     .pricing-features-header {
       font-size: 11px;
       font-weight: 700;
@@ -593,13 +759,16 @@
       color: #0d9488 !important;
       margin-bottom: 16px;
     }
+
     .pricing-card-glass.dark-glass .pricing-features-header {
       color: #2dd4bf !important;
     }
+
     .pricing-features-header.add-on-header {
       color: var(--text-muted) !important;
       margin-top: 24px;
     }
+
     .pricing-card-glass.dark-glass .pricing-features-header.add-on-header {
       color: rgba(255, 255, 255, 0.5) !important;
     }
@@ -612,6 +781,7 @@
       flex-direction: column;
       gap: 12px;
     }
+
     .pricing-features-list li {
       display: flex;
       align-items: center;
@@ -620,6 +790,7 @@
       color: var(--text-secondary) !important;
       line-height: 1.4;
     }
+
     .pricing-card-glass.dark-glass .pricing-features-list li {
       color: rgba(255, 255, 255, 0.85) !important;
     }
@@ -629,19 +800,24 @@
       color: #0d9488 !important;
       font-weight: 700;
     }
+
     .pricing-card-glass.dark-glass .pricing-features-list li .check-icon {
       color: #2dd4bf !important;
     }
+
     .pricing-features-list li .add-icon {
       font-size: 18px;
       color: var(--text-muted) !important;
     }
+
     .pricing-card-glass.dark-glass .pricing-features-list li .add-icon {
       color: rgba(255, 255, 255, 0.4) !important;
     }
+
     .pricing-features-list li.muted-feature {
       color: var(--text-muted) !important;
     }
+
     .pricing-card-glass.dark-glass .pricing-features-list li.muted-feature {
       color: rgba(255, 255, 255, 0.4) !important;
     }
@@ -658,6 +834,7 @@
       max-width: none !important;
       width: 100% !important;
     }
+
     .features-section-dark::before {
       content: '';
       position: absolute;
@@ -669,6 +846,7 @@
       pointer-events: none;
       z-index: 1;
     }
+
     .features-section-dark::after {
       content: '';
       position: absolute;
@@ -680,17 +858,21 @@
       pointer-events: none;
       z-index: 1;
     }
+
     .features-section-dark .section-header {
       max-width: 600px;
       margin: 0 auto 56px;
       padding: 0 24px;
     }
+
     .features-section-dark .section-title {
       color: #ffffff !important;
     }
+
     .features-section-dark .section-desc {
       color: rgba(255, 255, 255, 0.6) !important;
     }
+
     .features-section-dark .premium-kpi-grid {
       display: grid !important;
       grid-template-columns: repeat(3, 1fr) !important;
@@ -701,6 +883,7 @@
       position: relative;
       z-index: 2;
     }
+
     .features-section-dark .feature-card-soft {
       background: rgba(10, 30, 27, 0.75) !important;
       backdrop-filter: blur(16px);
@@ -710,17 +893,20 @@
       box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05) !important;
       transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease, box-shadow 0.4s ease;
     }
+
     .features-section-dark .feature-card-soft:hover {
       transform: translateY(-6px) !important;
       border-color: rgba(20, 184, 166, 0.4) !important;
       box-shadow: 0 30px 60px rgba(20, 184, 166, 0.15), 0 20px 40px rgba(0, 0, 0, 0.3) !important;
     }
+
     .features-section-dark .feature-card-soft .fc-title {
       color: #ffffff !important;
       font-size: 20px;
       font-weight: 700;
       margin-bottom: 12px;
     }
+
     .features-section-dark .feature-card-soft .fc-desc {
       color: rgba(255, 255, 255, 0.7) !important;
       font-size: 14px;
@@ -732,6 +918,7 @@
       background: rgba(15, 23, 42, 0.4) !important;
       border: 1px solid rgba(255, 255, 255, 0.08) !important;
     }
+
     .features-section-dark .recon-item,
     .features-section-dark .entity-center,
     .features-section-dark .entity-node,
@@ -739,36 +926,45 @@
       background: rgba(15, 23, 42, 0.9) !important;
       border: 1px solid rgba(255, 255, 255, 0.15) !important;
       color: #ffffff !important;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.2) !important;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
     }
+
     .features-section-dark .recon-item-line {
       background: rgba(255, 255, 255, 0.15) !important;
     }
+
     .features-section-dark .recon-item-line.amount {
       background: rgba(20, 184, 166, 0.25) !important;
     }
+
     .features-section-dark .recon-line {
       background: rgba(255, 255, 255, 0.1) !important;
     }
+
     .features-section-dark .entity-line {
       background: rgba(255, 255, 255, 0.1) !important;
     }
+
     .features-section-dark .sec-ring {
       border-color: rgba(255, 255, 255, 0.1) !important;
     }
+
     .features-section-dark .sec-data-dot {
       background: rgba(20, 184, 166, 0.5) !important;
     }
+
     .features-section-dark .entity-center {
       color: #2dd4bf !important;
     }
+
     .features-section-dark .feature-card-soft:hover .entity-node {
       color: #2dd4bf !important;
       border-color: rgba(20, 184, 166, 0.4) !important;
       background: rgba(20, 184, 166, 0.1) !important;
     }
-    
+
     @media (max-width: 1024px) {
+
       .pricing-grid-glass,
       .features-section-dark .premium-kpi-grid {
         grid-template-columns: 1fr !important;
@@ -777,15 +973,17 @@
         margin-left: auto !important;
         margin-right: auto !important;
       }
+
       .pricing-card-glass {
         padding: 32px !important;
       }
+
       .btn-pricing {
         height: 38px;
         font-size: 12px;
       }
     }
-    
+
     @media (max-width: 768px) {
       .btn-pricing {
         height: 36px;
@@ -794,6 +992,7 @@
     }
   </style>
 </head>
+
 <body>
 
   <!-- Mockup Auto-Scaler Script -->
@@ -803,15 +1002,15 @@
       const wrapper = document.querySelector('.macbook-wrapper');
       if (!scaler || !wrapper) return;
       const width = scaler.getBoundingClientRect().width || scaler.clientWidth;
-      
+
       // Laptop mockup is designed at 1400px wide
       const scale = Math.min(1, (width - 32) / 1400);
-      
+
       wrapper.style.transform = `translateX(-50%) scale(${scale})`;
       wrapper.style.transformOrigin = `top center`;
-      
-      // Macbook designed height is ~822px (760px viewport + 48px bezels + 14px keyboard base)
-      scaler.style.height = `${822 * scale}px`;
+
+      // Macbook designed height is ~890px (760px viewport + 48px bezels + 14px keyboard base + 48px margin-top + shadow)
+      scaler.style.height = `${890 * scale}px`;
     }
     window.addEventListener('resize', scaleMockup);
     document.addEventListener('DOMContentLoaded', scaleMockup);
@@ -823,14 +1022,19 @@
   <nav class="nav" id="navbar">
     <div class="nav-inner">
       <a href="/" class="nav-brand">
-        <span class="brand-icon-box"><svg viewBox="20 20 54 58" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="38" y="22" width="34" height="14" rx="3" fill="#0d9488"/><rect x="22" y="32" width="18" height="38" rx="3.5" fill="currentColor"/><rect x="34" y="62" width="38" height="14" rx="3" fill="currentColor"/></svg></span>
+        <span class="brand-icon-box"><svg viewBox="20 20 54 58" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="38" y="22" width="34" height="14" rx="3" fill="#0d9488" />
+            <rect x="22" y="32" width="18" height="38" rx="3.5" fill="currentColor" />
+            <rect x="34" y="62" width="38" height="14" rx="3" fill="currentColor" />
+          </svg></span>
         <span>Coda</span>
       </a>
       <button class="nav-mobile-toggle" id="mobileMenuToggle" aria-label="Toggle menu">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-          <path d="M4 12L20 12" class="top-line"/>
-          <path d="M4 12H20" class="mid-line"/>
-          <path d="M4 12H20" class="bot-line"/>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <path d="M4 12L20 12" class="top-line" />
+          <path d="M4 12H20" class="mid-line" />
+          <path d="M4 12H20" class="bot-line" />
         </svg>
       </button>
       <div class="nav-links" id="navLinks">
@@ -839,7 +1043,9 @@
         <a href="api.html" class="nav-api-link">API Docs</a>
         <div class="nav-auth" id="navAuthArea">
           <!-- Populated by JS based on session -->
-          <a href="login.html" class="btn btn-sm" style="background-color: var(--teal-600, #0d9488); color: white; border: none; font-weight: 600;">Sign in</a>
+          <a href="login.html" class="btn btn-sm"
+            style="background-color: var(--teal-600, #0d9488); color: white; border: none; font-weight: 600;">Sign
+            in</a>
           <a href="signup.html" class="btn btn-primary btn-sm">Get started</a>
         </div>
       </div>
@@ -856,7 +1062,8 @@
           The definitive financial operating system for <span class="text-accent">high-growth business</span>
         </h1>
         <p class="hero-subtitle">
-          Unify your accounting, payroll, tax compliance, and inventory in one state-of-the-art platform. Built for performance and reliability.
+          Unify your accounting, payroll, tax compliance, and inventory in one state-of-the-art platform. Built for
+          performance and reliability.
         </p>
         <div class="hero-actions">
           <a href="signup.html" class="btn btn-primary btn-lg">
@@ -868,13 +1075,18 @@
 
       <!-- Interactive MacBook Live-Demo Dashboard Mockup -->
       <div class="hero-mockup-scaler">
+        <div style="text-align:center; margin-bottom:8px;">
+          <span style="display:inline-block; background:rgba(13,148,136,0.1); color:var(--teal-700); font-size:11px; font-weight:700; padding:4px 12px; border-radius:100px; letter-spacing:0.05em; text-transform:uppercase;">Sample Data for Illustration</span>
+        </div>
         <div class="macbook-wrapper">
           <div class="macbook-screen">
             <div class="macbook-display-content" id="hero-mockup-card">
               <!-- Simulated Custom Arrow Cursor -->
               <div class="mockup-cursor" id="mockup-simulated-cursor">
-                <svg width="14" height="20" viewBox="0 0 14 20" fill="none" xmlns="http://www.w3.org/2000/svg" style="display:block; filter: drop-shadow(0 2px 2.5px rgba(0,0,0,0.35));">
-                  <path d="M0 0V19L4.8 14.2H13.2L0 0Z" fill="black" stroke="white" stroke-width="1.5" stroke-linejoin="miter"/>
+                <svg width="14" height="20" viewBox="0 0 14 20" fill="none" xmlns="http://www.w3.org/2000/svg"
+                  style="display:block; filter: drop-shadow(0 2px 2.5px rgba(0,0,0,0.35));">
+                  <path d="M0 0V19L4.8 14.2H13.2L0 0Z" fill="black" stroke="white" stroke-width="1.5"
+                    stroke-linejoin="miter" />
                 </svg>
               </div>
 
@@ -884,13 +1096,17 @@
                   <div class="sidebar-header">
                     <a href="#!" class="sidebar-brand" style="text-decoration: none;">
                       <span class="brand-icon-box">
-                        <svg viewBox="20 20 54 58" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="38" y="22" width="34" height="14" rx="3" fill="#0d9488"/><rect x="22" y="32" width="18" height="38" rx="3.5" fill="currentColor"/><rect x="34" y="62" width="38" height="14" rx="3" fill="currentColor"/></svg>
+                        <svg viewBox="20 20 54 58" fill="none" xmlns="http://www.w3.org/2000/svg">
+                          <rect x="38" y="22" width="34" height="14" rx="3" fill="#0d9488" />
+                          <rect x="22" y="32" width="18" height="38" rx="3.5" fill="currentColor" />
+                          <rect x="34" y="62" width="38" height="14" rx="3" fill="currentColor" />
+                        </svg>
                       </span>
                       <span class="sidebar-logo-text">Coda ERP</span>
                       <span class="badge-subscription sidebar-logo-text">Pro</span>
                     </a>
                   </div>
-                  
+
                   <nav class="sidebar-nav">
                     <div class="nav-section">
                       <div class="nav-section-title">Overview</div>
@@ -899,7 +1115,7 @@
                         <span class="nav-text">Dashboard</span>
                       </button>
                     </div>
-                    
+
                     <div class="nav-section">
                       <div class="nav-section-title">Core Modules</div>
                       <button class="nav-item mockup-nav-item" data-view-idx="1">
@@ -927,7 +1143,7 @@
                         <span class="nav-text">Tax Center</span>
                       </button>
                     </div>
-                    
+
                     <div class="nav-section">
                       <div class="nav-section-title">Analytics</div>
                       <button class="nav-item mockup-nav-item" data-view-idx="7">
@@ -940,7 +1156,8 @@
               </div>
 
               <!-- Mockup Main Body -->
-              <div class="mockup-body" style="z-index: 5; background: var(--bg-app); flex: 1; display: flex; flex-direction: column; height: 100%; overflow: hidden;">
+              <div class="mockup-body"
+                style="z-index: 5; background: var(--bg-app); flex: 1; display: flex; flex-direction: column; height: 100%; overflow: hidden;">
                 <div class="mockup-topbar" style="margin-bottom: 18px; flex-shrink: 0;">
                   <span class="mockup-title" id="mockup-topbar-title">Dashboard Overview</span>
                   <div style="display:flex; gap:12px; align-items:center;">
@@ -954,69 +1171,95 @@
 
                   <!-- View 0: Overview -->
                   <div class="mockup-view active" id="mockup-view-0">
-                    <div class="premium-kpi-grid" style="margin-top:0; margin-bottom:0; grid-template-columns: repeat(4, 1fr); gap: 16px;">
+                    <div class="premium-kpi-grid"
+                      style="margin-top:0; margin-bottom:0; grid-template-columns: repeat(4, 1fr); gap: 16px;">
                       <div class="premium-kpi-card" style="padding:16px;" id="mockup-kpi-revenue">
                         <div class="premium-kpi-header">
                           <span class="premium-kpi-title">Total Revenue</span>
-                          <span class="material-symbols-outlined" style="color:var(--text-muted); font-size:18px;">more_horiz</span>
+                          <span class="material-symbols-outlined"
+                            style="color:var(--text-muted); font-size:18px;">more_horiz</span>
                         </div>
-                        <div class="premium-kpi-val" style="font-size:24px;">₦45.2M</div>
-                        <div><span class="premium-kpi-badge badge-up" style="font-size:10px; padding:2px 6px;"><span class="material-symbols-outlined" style="font-size:12px;">arrow_upward</span> 12.5%</span> <span style="font-size:11px; color:var(--text-muted);">vs last month</span></div>
+                        <div class="premium-kpi-val" style="font-size:24px;">₦45.2M <span style="font-size:9px; font-weight:500; color:var(--text-muted); background:rgba(0,0,0,0.04); padding:1px 5px; border-radius:3px; vertical-align:middle;">Sample</span></div>
+                        <div><span class="premium-kpi-badge badge-up" style="font-size:10px; padding:2px 6px;"><span
+                              class="material-symbols-outlined" style="font-size:12px;">arrow_upward</span> 12.5%</span>
+                          <span style="font-size:11px; color:var(--text-muted);">vs last month</span></div>
                       </div>
                       <div class="premium-kpi-card" style="padding:16px;">
                         <div class="premium-kpi-header">
                           <span class="premium-kpi-title">Active Customers</span>
-                          <span class="material-symbols-outlined" style="color:var(--text-muted); font-size:18px;">more_horiz</span>
+                          <span class="material-symbols-outlined"
+                            style="color:var(--text-muted); font-size:18px;">more_horiz</span>
                         </div>
-                        <div class="premium-kpi-val" style="font-size:24px;">1,248</div>
-                        <div><span class="premium-kpi-badge badge-up" style="font-size:10px; padding:2px 6px;"><span class="material-symbols-outlined" style="font-size:12px;">arrow_upward</span> 4.2%</span> <span style="font-size:11px; color:var(--text-muted);">vs last month</span></div>
+                        <div class="premium-kpi-val" style="font-size:24px;">1,248 <span style="font-size:9px; font-weight:500; color:var(--text-muted); background:rgba(0,0,0,0.04); padding:1px 5px; border-radius:3px; vertical-align:middle;">Sample</span></div>
+                        <div><span class="premium-kpi-badge badge-up" style="font-size:10px; padding:2px 6px;"><span
+                              class="material-symbols-outlined" style="font-size:12px;">arrow_upward</span> 4.2%</span>
+                          <span style="font-size:11px; color:var(--text-muted);">vs last month</span></div>
                       </div>
                       <div class="premium-kpi-card" style="padding:16px;">
                         <div class="premium-kpi-header">
                           <span class="premium-kpi-title">Churn Rate</span>
-                          <span class="material-symbols-outlined" style="color:var(--text-muted); font-size:18px;">more_horiz</span>
+                          <span class="material-symbols-outlined"
+                            style="color:var(--text-muted); font-size:18px;">more_horiz</span>
                         </div>
-                        <div class="premium-kpi-val" style="font-size:24px;">1.2%</div>
-                        <div><span class="premium-kpi-badge badge-down" style="font-size:10px; padding:2px 6px;"><span class="material-symbols-outlined" style="font-size:12px;">arrow_downward</span> -0.4%</span> <span style="font-size:11px; color:var(--text-muted);">vs last month</span></div>
+                        <div class="premium-kpi-val" style="font-size:24px;">1.2% <span style="font-size:9px; font-weight:500; color:var(--text-muted); background:rgba(0,0,0,0.04); padding:1px 5px; border-radius:3px; vertical-align:middle;">Sample</span></div>
+                        <div><span class="premium-kpi-badge badge-down" style="font-size:10px; padding:2px 6px;"><span
+                              class="material-symbols-outlined" style="font-size:12px;">arrow_downward</span>
+                            -0.4%</span> <span style="font-size:11px; color:var(--text-muted);">vs last month</span>
+                        </div>
                       </div>
                       <div class="premium-kpi-card" style="padding:16px;">
                         <div class="premium-kpi-header">
                           <span class="premium-kpi-title">Net Profit</span>
-                          <span class="material-symbols-outlined" style="color:var(--text-muted); font-size:18px;">more_horiz</span>
+                          <span class="material-symbols-outlined"
+                            style="color:var(--text-muted); font-size:18px;">more_horiz</span>
                         </div>
-                        <div class="premium-kpi-val" style="font-size:24px; color:var(--teal-600);">₦12.8M</div>
-                        <div><span class="premium-kpi-badge badge-up" style="font-size:10px; padding:2px 6px;"><span class="material-symbols-outlined" style="font-size:12px;">arrow_upward</span> 8.7%</span> <span style="font-size:11px; color:var(--text-muted);">Calculated</span></div>
+                        <div class="premium-kpi-val" style="font-size:24px; color:var(--teal-600);">₦12.8M <span style="font-size:9px; font-weight:500; color:var(--text-muted); background:rgba(0,0,0,0.04); padding:1px 5px; border-radius:3px; vertical-align:middle;">Sample</span></div>
+                        <div><span class="premium-kpi-badge badge-up" style="font-size:10px; padding:2px 6px;"><span
+                              class="material-symbols-outlined" style="font-size:12px;">arrow_upward</span> 8.7%</span>
+                          <span style="font-size:11px; color:var(--text-muted);">Calculated</span></div>
                       </div>
                     </div>
 
                     <!-- Operations Summary Row -->
-                    <div style="margin-top: 16px; margin-bottom: 0; background: rgba(13,148,136,0.03); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 12px 18px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; z-index: 5; position: relative;">
+                    <div
+                      style="margin-top: 16px; margin-bottom: 0; background: rgba(13,148,136,0.03); border: 1px solid var(--border-color); border-radius: var(--radius-lg); padding: 12px 18px; display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; z-index: 5; position: relative;">
                       <div>
-                        <div style="font-size: 9px; color: var(--text-muted); font-weight:700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 2px;">Inventory Stock</div>
+                        <div
+                          style="font-size: 9px; color: var(--text-muted); font-weight:700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 2px;">
+                          Inventory Stock</div>
                         <div style="font-size: 14px; font-weight:800; color: var(--slate-900);">148 Products</div>
                         <div style="font-size: 9px; color: var(--error); font-weight: 500;">3 Low stock items</div>
                       </div>
                       <div style="border-left: 1px solid var(--border-color); padding-left: 16px;">
-                        <div style="font-size: 9px; color: var(--text-muted); font-weight:700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 2px;">CRM &amp; Customers</div>
+                        <div
+                          style="font-size: 9px; color: var(--text-muted); font-weight:700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 2px;">
+                          CRM &amp; Customers</div>
                         <div style="font-size: 14px; font-weight:800; color: var(--slate-900);">248 Customers</div>
                         <div style="font-size: 9px; color: var(--teal-600); font-weight: 500;">14 Open sales leads</div>
                       </div>
                       <div style="border-left: 1px solid var(--border-color); padding-left: 16px;">
-                        <div style="font-size: 9px; color: var(--text-muted); font-weight:700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 2px;">Workforce (HR)</div>
+                        <div
+                          style="font-size: 9px; color: var(--text-muted); font-weight:700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 2px;">
+                          Workforce (HR)</div>
                         <div style="font-size: 14px; font-weight:800; color: var(--slate-900);">32 Employees</div>
-                        <div style="font-size: 9px; color: var(--text-muted); font-weight: 500;">Active payroll roster</div>
+                        <div style="font-size: 9px; color: var(--text-muted); font-weight: 500;">Active payroll roster
+                        </div>
                       </div>
                       <div style="border-left: 1px solid var(--border-color); padding-left: 16px;">
-                        <div style="font-size: 9px; color: var(--text-muted); font-weight:700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 2px;">Taxes Reserve</div>
+                        <div
+                          style="font-size: 9px; color: var(--text-muted); font-weight:700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 2px;">
+                          Taxes Reserve</div>
                         <div style="font-size: 14px; font-weight:800; color: var(--copper-600);">Calculated</div>
-                        <div style="font-size: 9px; color: var(--text-muted); font-weight: 500;">Nigerian FIRS compliant</div>
+                        <div style="font-size: 9px; color: var(--text-muted); font-weight: 500;">Nigerian FIRS compliant
+                        </div>
                       </div>
                     </div>
 
                     <div class="mockup-grid" style="margin-top: 16px; gap: 16px; flex: 1;">
                       <div class="mockup-col">
-                        <div style="background:#fff; border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:16px; flex:1; display:flex; flex-direction:column; justify-content:space-between;">
-                          <div style="font-size:13px; font-weight:600; margin-bottom:12px;">Recent Transactions</div>
+                        <div
+                          style="background:#fff; border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:16px; flex:1; display:flex; flex-direction:column; justify-content:space-between;">
+                          <div style="font-size:13px; font-weight:600; margin-bottom:12px;">Recent Transactions <span style="font-size:10px; font-weight:500; color:var(--text-muted); background:rgba(0,0,0,0.04); padding:2px 6px; border-radius:4px; margin-left:6px;">Sample</span></div>
                           <div style="display:flex; flex-direction:column; gap:4px; flex:1;">
                             <div class="mockup-tx" style="padding:10px 14px; font-size:11px;">
                               <span class="mockup-tx-name">Invoice #1042 — Enterprise Sub</span>
@@ -1046,25 +1289,34 @@
                         </div>
                       </div>
                       <div class="mockup-col">
-                        <div style="background:#fff; border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:16px; flex:1; display:flex; flex-direction:column; justify-content:space-between;">
+                        <div
+                          style="background:#fff; border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:16px; flex:1; display:flex; flex-direction:column; justify-content:space-between;">
                           <div style="font-size:13px; font-weight:600; margin-bottom:12px;">Expense Distribution</div>
-                          <div class="chart-canvas-wrap" style="padding: 16px; position:relative; width:100%; height:130px; display:flex; align-items:center; justify-content:center; flex:1;">
+                          <div class="chart-canvas-wrap"
+                            style="padding: 16px; position:relative; width:100%; height:130px; display:flex; align-items:center; justify-content:center; flex:1;">
                             <canvas id="mockupExpenseChart" style="max-height: 120px;"></canvas>
-                            <div style="position:absolute; display:flex; flex-direction:column; align-items:center; justify-content:center; pointer-events:none; top:50%; left:50%; transform:translate(-50%, -50%);">
+                            <div
+                              style="position:absolute; display:flex; flex-direction:column; align-items:center; justify-content:center; pointer-events:none; top:50%; left:50%; transform:translate(-50%, -50%);">
                               <div style="font-size:12px; font-weight:700; color:var(--slate-800);">₦8.45M</div>
                             </div>
                           </div>
                           <div style="display:flex; flex-direction:column; gap:8px; font-size:10px; margin-top:8px;">
                             <div style="display:flex; justify-content:space-between; align-items:center;">
-                              <div style="display:flex; align-items:center; gap:6px;"><span style="width:8px; height:8px; border-radius:50%; background:#2A8566; display:inline-block;"></span><span>Staff Payroll</span></div>
+                              <div style="display:flex; align-items:center; gap:6px;"><span
+                                  style="width:8px; height:8px; border-radius:50%; background:#2A8566; display:inline-block;"></span><span>Staff
+                                  Payroll</span></div>
                               <span style="font-weight:600;">₦7.33M (86%)</span>
                             </div>
                             <div style="display:flex; justify-content:space-between; align-items:center;">
-                              <div style="display:flex; align-items:center; gap:6px;"><span style="width:8px; height:8px; border-radius:50%; background:#B8652E; display:inline-block;"></span><span>Office Infrastructure</span></div>
+                              <div style="display:flex; align-items:center; gap:6px;"><span
+                                  style="width:8px; height:8px; border-radius:50%; background:#B8652E; display:inline-block;"></span><span>Office
+                                  Infrastructure</span></div>
                               <span style="font-weight:600;">₦920k (11%)</span>
                             </div>
                             <div style="display:flex; justify-content:space-between; align-items:center;">
-                              <div style="display:flex; align-items:center; gap:6px;"><span style="width:8px; height:8px; border-radius:50%; background:#94A3B8; display:inline-block;"></span><span>Miscellaneous</span></div>
+                              <div style="display:flex; align-items:center; gap:6px;"><span
+                                  style="width:8px; height:8px; border-radius:50%; background:#94A3B8; display:inline-block;"></span><span>Miscellaneous</span>
+                              </div>
                               <span style="font-weight:600;">₦200k (3%)</span>
                             </div>
                           </div>
@@ -1075,21 +1327,24 @@
 
                   <!-- View 1: Accounting -->
                   <div class="mockup-view" id="mockup-view-1">
-                    <div class="premium-kpi-grid" style="margin-top:0; margin-bottom:0; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+                    <div class="premium-kpi-grid"
+                      style="margin-top:0; margin-bottom:0; grid-template-columns: repeat(3, 1fr); gap: 16px;">
                       <div class="premium-kpi-card" style="padding:16px;" id="mockup-kpi-union">
                         <div class="premium-kpi-header">
-                          <span class="premium-kpi-title" style="color:var(--text-secondary);">Union Bank · 1024***89</span>
+                          <span class="premium-kpi-title" style="color:var(--text-secondary);">Union Bank ·
+                            1024***89</span>
                           <span class="mockup-badge badge-success" style="font-size: 8px;">Active</span>
                         </div>
-                        <div class="premium-kpi-val" style="font-size:24px;">₦14.8M</div>
+                        <div class="premium-kpi-val" style="font-size:24px;">₦14.8M <span style="font-size:9px; font-weight:500; color:var(--text-muted); background:rgba(0,0,0,0.04); padding:1px 5px; border-radius:3px; vertical-align:middle;">Sample</span></div>
                         <div style="font-size:11px; color:var(--text-muted);">Naira Current Account</div>
                       </div>
                       <div class="premium-kpi-card" style="padding:16px;">
                         <div class="premium-kpi-header">
-                          <span class="premium-kpi-title" style="color:var(--text-secondary);">Access Bank · Dom FX</span>
+                          <span class="premium-kpi-title" style="color:var(--text-secondary);">Access Bank · Dom
+                            FX</span>
                           <span class="mockup-badge badge-success" style="font-size: 8px;">Active</span>
                         </div>
-                        <div class="premium-kpi-val" style="font-size:24px; color:var(--teal-600);">$42,500</div>
+                        <div class="premium-kpi-val" style="font-size:24px; color:var(--teal-600);">$42,500 <span style="font-size:9px; font-weight:500; color:var(--text-muted); background:rgba(0,0,0,0.04); padding:1px 5px; border-radius:3px; vertical-align:middle;">Sample</span></div>
                         <div style="font-size:11px; color:var(--text-muted);">USD Account Value</div>
                       </div>
                       <div class="premium-kpi-card" style="padding:16px;">
@@ -1104,10 +1359,13 @@
 
                     <div class="mockup-grid" style="margin-top: 16px; gap: 16px; flex: 1; overflow: hidden;">
                       <div class="mockup-col">
-                        <div style="background:#fff; border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:16px; flex:1; display:flex; flex-direction:column; justify-content:space-between; overflow:hidden;">
-                          <div style="font-size:13px; font-weight:600; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
+                        <div
+                          style="background:#fff; border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:16px; flex:1; display:flex; flex-direction:column; justify-content:space-between; overflow:hidden;">
+                          <div
+                            style="font-size:13px; font-weight:600; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
                             <span>Double-Entry General Ledger</span>
-                            <span style="font-size:10px; color:var(--text-muted); font-weight:normal;">Real-time GAAP Reconciliation</span>
+                            <span style="font-size:10px; color:var(--text-muted); font-weight:normal;">Real-time GAAP
+                              Reconciliation</span>
                           </div>
                           <div style="flex:1; overflow:hidden;">
                             <table class="mockup-table">
@@ -1162,27 +1420,32 @@
                         </div>
                       </div>
                       <div class="mockup-col">
-                        <div style="background:#fff; border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:16px; flex:1; display:flex; flex-direction:column; gap:16px;">
+                        <div
+                          style="background:#fff; border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:16px; flex:1; display:flex; flex-direction:column; gap:16px;">
                           <div style="font-size:13px; font-weight:600;">Account Balance Ledger</div>
                           <div style="display:flex; flex-direction:column; gap:12px; font-size:11px; flex:1;">
-                            <div style="display:flex; justify-content:space-between; border-bottom: 1px solid var(--border-color); padding-bottom:6px;">
+                            <div
+                              style="display:flex; justify-content:space-between; border-bottom: 1px solid var(--border-color); padding-bottom:6px;">
                               <span style="color:var(--text-secondary);">Petty Cash Account</span>
                               <span style="font-weight:700;">₦150,000</span>
                             </div>
-                            <div style="display:flex; justify-content:space-between; border-bottom: 1px solid var(--border-color); padding-bottom:6px;">
+                            <div
+                              style="display:flex; justify-content:space-between; border-bottom: 1px solid var(--border-color); padding-bottom:6px;">
                               <span style="color:var(--text-secondary);">Tax Compliance Reserve</span>
                               <span style="font-weight:700; color:var(--copper-600);">₦1,340,000</span>
                             </div>
-                            <div style="display:flex; justify-content:space-between; border-bottom: 1px solid var(--border-color); padding-bottom:6px;">
+                            <div
+                              style="display:flex; justify-content:space-between; border-bottom: 1px solid var(--border-color); padding-bottom:6px;">
                               <span style="color:var(--text-secondary);">Retained Earnings</span>
                               <span style="font-weight:700; color:var(--teal-600);">₦12,450,000</span>
                             </div>
-                            <div style="display:flex; justify-content:space-between; border-bottom: 1px solid var(--border-color); padding-bottom:6px;">
+                            <div
+                              style="display:flex; justify-content:space-between; border-bottom: 1px solid var(--border-color); padding-bottom:6px;">
                               <span style="color:var(--text-secondary);">Share Capital Account</span>
                               <span style="font-weight:700;">₦5,000,000</span>
                             </div>
                           </div>
-                          
+
                           <div style="font-size:12px; font-weight:600; margin-top:8px;">Upcoming Payables</div>
                           <div style="display:flex; flex-direction:column; gap:10px; font-size:10px;">
                             <div style="display:flex; justify-content:space-between; align-items:center;">
@@ -1201,13 +1464,16 @@
 
                   <!-- View 2: Inventory -->
                   <div class="mockup-view" id="mockup-view-2">
-                    <div class="premium-kpi-grid" style="margin-top:0; margin-bottom:0; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+                    <div class="premium-kpi-grid"
+                      style="margin-top:0; margin-bottom:0; grid-template-columns: repeat(3, 1fr); gap: 16px;">
                       <div class="premium-kpi-card" style="padding:16px;" id="mockup-kpi-inventory">
                         <div class="premium-kpi-header">
-                          <span class="premium-kpi-title" style="color:var(--text-secondary);">Total Stock Valuation</span>
-                          <span class="material-symbols-outlined" style="color:var(--text-muted); font-size:18px;">warehouse</span>
+                          <span class="premium-kpi-title" style="color:var(--text-secondary);">Total Stock
+                            Valuation</span>
+                          <span class="material-symbols-outlined"
+                            style="color:var(--text-muted); font-size:18px;">warehouse</span>
                         </div>
-                        <div class="premium-kpi-val" style="font-size:24px;">₦22.4M</div>
+                        <div class="premium-kpi-val" style="font-size:24px;">₦22.4M <span style="font-size:9px; font-weight:500; color:var(--text-muted); background:rgba(0,0,0,0.04); padding:1px 5px; border-radius:3px; vertical-align:middle;">Sample</span></div>
                         <div style="font-size:11px; color:var(--text-muted);">Across 3 Depots</div>
                       </div>
                       <div class="premium-kpi-card" style="padding:16px;">
@@ -1215,25 +1481,29 @@
                           <span class="premium-kpi-title" style="color:var(--text-secondary);">Low Stock Warnings</span>
                           <span class="mockup-badge badge-danger" style="font-size: 8px;">Reorder</span>
                         </div>
-                        <div class="premium-kpi-val" style="font-size:24px; color:var(--error);">3 Items</div>
+                        <div class="premium-kpi-val" style="font-size:24px; color:var(--error);">3 Items <span style="font-size:9px; font-weight:500; color:var(--text-muted); background:rgba(0,0,0,0.04); padding:1px 5px; border-radius:3px; vertical-align:middle;">Sample</span></div>
                         <div style="font-size:11px; color:var(--text-muted);">Requires purchase action</div>
                       </div>
                       <div class="premium-kpi-card" style="padding:16px;">
                         <div class="premium-kpi-header">
                           <span class="premium-kpi-title" style="color:var(--text-secondary);">Active Products</span>
-                          <span class="material-symbols-outlined" style="color:var(--text-muted); font-size:18px;">category</span>
+                          <span class="material-symbols-outlined"
+                            style="color:var(--text-muted); font-size:18px;">category</span>
                         </div>
-                        <div class="premium-kpi-val" style="font-size:24px;">148 SKUs</div>
+                        <div class="premium-kpi-val" style="font-size:24px;">148 SKUs <span style="font-size:9px; font-weight:500; color:var(--text-muted); background:rgba(0,0,0,0.04); padding:1px 5px; border-radius:3px; vertical-align:middle;">Sample</span></div>
                         <div style="font-size:11px; color:var(--text-muted);">Live in system</div>
                       </div>
                     </div>
 
                     <div class="mockup-grid" style="margin-top: 16px; gap: 16px; flex: 1; overflow: hidden;">
                       <div class="mockup-col">
-                        <div style="background:#fff; border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:16px; flex:1; display:flex; flex-direction:column; justify-content:space-between; overflow:hidden;">
-                          <div style="font-size:13px; font-weight:600; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
+                        <div
+                          style="background:#fff; border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:16px; flex:1; display:flex; flex-direction:column; justify-content:space-between; overflow:hidden;">
+                          <div
+                            style="font-size:13px; font-weight:600; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
                             <span>Active Inventory Stock Levels</span>
-                            <span style="font-size:10px; color:var(--text-muted); font-weight:normal;">Real-time Depot Tracking</span>
+                            <span style="font-size:10px; color:var(--text-muted); font-weight:normal;">Real-time Depot
+                              Tracking</span>
                           </div>
                           <div style="flex:1; overflow:hidden;">
                             <table class="mockup-table">
@@ -1294,7 +1564,8 @@
                         </div>
                       </div>
                       <div class="mockup-col">
-                        <div style="background:#fff; border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:16px; flex:1; display:flex; flex-direction:column; gap:16px;">
+                        <div
+                          style="background:#fff; border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:16px; flex:1; display:flex; flex-direction:column; gap:16px;">
                           <div style="font-size:13px; font-weight:600;">Depot Asset Valuations</div>
                           <div style="display:flex; flex-direction:column; gap:12px; font-size:11px; flex:1;">
                             <div>
@@ -1302,27 +1573,39 @@
                                 <span style="color:var(--text-secondary);">Depot A (Ikeja Main)</span>
                                 <span style="font-weight:700;">₦14.2M</span>
                               </div>
-                              <div style="width:100%; height:6px; background:var(--slate-100); border-radius:3px; overflow:hidden;"><div style="width:65%; height:100%; background:var(--teal-600);"></div></div>
-                              <div style="font-size:9px; color:var(--text-muted); margin-top:2px;">Capacity: 65% utilization</div>
+                              <div
+                                style="width:100%; height:6px; background:var(--slate-100); border-radius:3px; overflow:hidden;">
+                                <div style="width:65%; height:100%; background:var(--teal-600);"></div>
+                              </div>
+                              <div style="font-size:9px; color:var(--text-muted); margin-top:2px;">Capacity: 65%
+                                utilization</div>
                             </div>
                             <div>
                               <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
                                 <span style="color:var(--text-secondary);">Depot B (Lekki Hub)</span>
                                 <span style="font-weight:700;">₦6.1M</span>
                               </div>
-                              <div style="width:100%; height:6px; background:var(--slate-100); border-radius:3px; overflow:hidden;"><div style="width:40%; height:100%; background:var(--teal-600);"></div></div>
-                              <div style="font-size:9px; color:var(--text-muted); margin-top:2px;">Capacity: 40% utilization</div>
+                              <div
+                                style="width:100%; height:6px; background:var(--slate-100); border-radius:3px; overflow:hidden;">
+                                <div style="width:40%; height:100%; background:var(--teal-600);"></div>
+                              </div>
+                              <div style="font-size:9px; color:var(--text-muted); margin-top:2px;">Capacity: 40%
+                                utilization</div>
                             </div>
                             <div>
                               <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
                                 <span style="color:var(--text-secondary);">Depot C (Port Harcourt)</span>
                                 <span style="font-weight:700;">₦2.1M</span>
                               </div>
-                              <div style="width:100%; height:6px; background:var(--slate-100); border-radius:3px; overflow:hidden;"><div style="width:15%; height:100%; background:var(--teal-600);"></div></div>
-                              <div style="font-size:9px; color:var(--text-muted); margin-top:2px;">Capacity: 15% utilization</div>
+                              <div
+                                style="width:100%; height:6px; background:var(--slate-100); border-radius:3px; overflow:hidden;">
+                                <div style="width:15%; height:100%; background:var(--teal-600);"></div>
+                              </div>
+                              <div style="font-size:9px; color:var(--text-muted); margin-top:2px;">Capacity: 15%
+                                utilization</div>
                             </div>
                           </div>
-                          
+
                           <div style="font-size:12px; font-weight:600; margin-top:8px;">Fast Moving Items</div>
                           <div style="display:flex; flex-direction:column; gap:8px; font-size:10px;">
                             <div style="display:flex; justify-content:space-between;">
@@ -1341,21 +1624,24 @@
 
                   <!-- View 3: Tax Center -->
                   <div class="mockup-view" id="mockup-view-3">
-                    <div class="premium-kpi-grid" style="margin-top:0; margin-bottom:0; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+                    <div class="premium-kpi-grid"
+                      style="margin-top:0; margin-bottom:0; grid-template-columns: repeat(3, 1fr); gap: 16px;">
                       <div class="premium-kpi-card" style="padding:16px;" id="mockup-kpi-tax">
                         <div class="premium-kpi-header">
-                          <span class="premium-kpi-title" style="color:var(--text-secondary);">VAT Liability (June)</span>
+                          <span class="premium-kpi-title" style="color:var(--text-secondary);">VAT Liability
+                            (June)</span>
                           <span class="mockup-badge badge-pending" style="font-size: 8px;">Draft</span>
                         </div>
-                        <div class="premium-kpi-val" style="font-size:24px;">₦930,000</div>
+                        <div class="premium-kpi-val" style="font-size:24px;">₦930,000 <span style="font-size:9px; font-weight:500; color:var(--text-muted); background:rgba(0,0,0,0.04); padding:1px 5px; border-radius:3px; vertical-align:middle;">Sample</span></div>
                         <div style="font-size:11px; color:var(--text-muted);">Due for filing soon</div>
                       </div>
                       <div class="premium-kpi-card" style="padding:16px;">
                         <div class="premium-kpi-header">
-                          <span class="premium-kpi-title" style="color:var(--text-secondary);">CIT Estimator (May)</span>
+                          <span class="premium-kpi-title" style="color:var(--text-secondary);">CIT Estimator
+                            (May)</span>
                           <span class="mockup-badge badge-success" style="font-size: 8px;">Settled</span>
                         </div>
-                        <div class="premium-kpi-val" style="font-size:24px; color:var(--success);">₦2.55M</div>
+                        <div class="premium-kpi-val" style="font-size:24px; color:var(--success);">₦2.55M <span style="font-size:9px; font-weight:500; color:var(--text-muted); background:rgba(0,0,0,0.04); padding:1px 5px; border-radius:3px; vertical-align:middle;">Sample</span></div>
                         <div style="font-size:11px; color:var(--text-muted);">Remitted to FIRS</div>
                       </div>
                       <div class="premium-kpi-card" style="padding:16px;">
@@ -1363,17 +1649,20 @@
                           <span class="premium-kpi-title" style="color:var(--text-secondary);">WHT Reserve (May)</span>
                           <span class="mockup-badge badge-success" style="font-size: 8px;">Settled</span>
                         </div>
-                        <div class="premium-kpi-val" style="font-size:24px;">₦410,000</div>
+                        <div class="premium-kpi-val" style="font-size:24px;">₦410,000 <span style="font-size:9px; font-weight:500; color:var(--text-muted); background:rgba(0,0,0,0.04); padding:1px 5px; border-radius:3px; vertical-align:middle;">Sample</span></div>
                         <div style="font-size:11px; color:var(--text-muted);">Fully filed &amp; cleared</div>
                       </div>
                     </div>
 
                     <div class="mockup-grid" style="margin-top: 16px; gap: 16px; flex: 1; overflow: hidden;">
                       <div class="mockup-col">
-                        <div style="background:#fff; border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:16px; flex:1; display:flex; flex-direction:column; justify-content:space-between; overflow:hidden;">
-                          <div style="font-size:13px; font-weight:600; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
+                        <div
+                          style="background:#fff; border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:16px; flex:1; display:flex; flex-direction:column; justify-content:space-between; overflow:hidden;">
+                          <div
+                            style="font-size:13px; font-weight:600; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
                             <span>Calculated Tax Reserve Liability</span>
-                            <span style="font-size:10px; color:var(--text-muted); font-weight:normal;">Nigerian FIRS Compliance</span>
+                            <span style="font-size:10px; color:var(--text-muted); font-weight:normal;">Nigerian FIRS
+                              Compliance</span>
                           </div>
                           <div style="flex:1; overflow:hidden;">
                             <table class="mockup-table">
@@ -1428,24 +1717,28 @@
                         </div>
                       </div>
                       <div class="mockup-col">
-                        <div style="background:#fff; border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:16px; flex:1; display:flex; flex-direction:column; gap:16px;">
+                        <div
+                          style="background:#fff; border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:16px; flex:1; display:flex; flex-direction:column; gap:16px;">
                           <div style="font-size:13px; font-weight:600;">Tax Compliance Calendar</div>
                           <div style="display:flex; flex-direction:column; gap:12px; font-size:11px; flex:1;">
-                            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom:6px;">
+                            <div
+                              style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom:6px;">
                               <div>
                                 <div style="font-weight:700;">CAC Annual Returns</div>
                                 <div style="font-size:9px; color:var(--text-muted);">Due Dec 2026</div>
                               </div>
                               <span class="mockup-badge badge-success">Compliant</span>
                             </div>
-                            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom:6px;">
+                            <div
+                              style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom:6px;">
                               <div>
                                 <div style="font-weight:700;">VAT Remittance</div>
                                 <div style="font-size:9px; color:var(--text-muted);">Due 21 Jun 2026</div>
                               </div>
                               <span class="mockup-badge badge-pending">Pending</span>
                             </div>
-                            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom:6px;">
+                            <div
+                              style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom:6px;">
                               <div>
                                 <div style="font-weight:700;">WHT Remittance</div>
                                 <div style="font-size:9px; color:var(--text-muted);">Due 30 Jun 2026</div>
@@ -1453,13 +1746,16 @@
                               <span class="mockup-badge badge-success">Filed &amp; Paid</span>
                             </div>
                           </div>
-                          
+
                           <div style="font-size:12px; font-weight:600; margin-top:8px;">FIRS API Integration</div>
-                          <div style="background:var(--slate-50); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:10px; display:flex; align-items:center; gap:8px;">
-                            <span style="width:8px; height:8px; border-radius:50%; background:var(--success); display:inline-block;"></span>
+                          <div
+                            style="background:var(--slate-50); border:1px solid var(--border-color); border-radius:var(--radius-sm); padding:10px; display:flex; align-items:center; gap:8px;">
+                            <span
+                              style="width:8px; height:8px; border-radius:50%; background:var(--success); display:inline-block;"></span>
                             <div style="font-size:10px; font-weight:500;">Gateway Status: Connected</div>
                           </div>
-                          <div style="font-size:9px; color:var(--text-muted); line-height:1.4;">Automated TIN query and direct tax credit posting enabled. Compliant under FIRS e-filing v2.</div>
+                          <div style="font-size:9px; color:var(--text-muted); line-height:1.4;">Automated TIN query and
+                            direct tax credit posting enabled. Compliant under FIRS e-filing v2.</div>
                         </div>
                       </div>
                     </div>
@@ -1467,13 +1763,15 @@
 
                   <!-- View 4: Reconciliation -->
                   <div class="mockup-view" id="mockup-view-4">
-                    <div class="premium-kpi-grid" style="margin-top:0; margin-bottom:0; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+                    <div class="premium-kpi-grid"
+                      style="margin-top:0; margin-bottom:0; grid-template-columns: repeat(3, 1fr); gap: 16px;">
                       <div class="premium-kpi-card" style="padding:16px;" id="mockup-kpi-recon">
                         <div class="premium-kpi-header">
                           <span class="premium-kpi-title" style="color:var(--text-secondary);">Unreconciled Feed</span>
-                          <span class="material-symbols-outlined" style="color:var(--text-muted); font-size:18px;">sync_alt</span>
+                          <span class="material-symbols-outlined"
+                            style="color:var(--text-muted); font-size:18px;">sync_alt</span>
                         </div>
-                        <div class="premium-kpi-val" style="font-size:24px;">₦1.45M</div>
+                        <div class="premium-kpi-val" style="font-size:24px;">₦1.45M <span style="font-size:9px; font-weight:500; color:var(--text-muted); background:rgba(0,0,0,0.04); padding:1px 5px; border-radius:3px; vertical-align:middle;">Sample</span></div>
                         <div style="font-size:11px; color:var(--text-muted);">2 bank feeds pending</div>
                       </div>
                       <div class="premium-kpi-card" style="padding:16px;">
@@ -1481,13 +1779,14 @@
                           <span class="premium-kpi-title" style="color:var(--text-secondary);">Auto Match Rate</span>
                           <span class="mockup-badge badge-success" style="font-size: 8px;">98.2%</span>
                         </div>
-                        <div class="premium-kpi-val" style="font-size:24px; color:var(--teal-600);">98.2%</div>
+                        <div class="premium-kpi-val" style="font-size:24px; color:var(--teal-600);">98.2% <span style="font-size:9px; font-weight:500; color:var(--text-muted); background:rgba(0,0,0,0.04); padding:1px 5px; border-radius:3px; vertical-align:middle;">Sample</span></div>
                         <div style="font-size:11px; color:var(--text-muted);">Direct Plaid syncing</div>
                       </div>
                       <div class="premium-kpi-card" style="padding:16px;">
                         <div class="premium-kpi-header">
                           <span class="premium-kpi-title" style="color:var(--text-secondary);">Reconciled (MTD)</span>
-                          <span class="material-symbols-outlined" style="color:var(--text-muted); font-size:18px;">done_all</span>
+                          <span class="material-symbols-outlined"
+                            style="color:var(--text-muted); font-size:18px;">done_all</span>
                         </div>
                         <div class="premium-kpi-val" style="font-size:24px;">1,048 tx</div>
                         <div style="font-size:11px; color:var(--text-muted);">Fully balanced</div>
@@ -1496,10 +1795,13 @@
 
                     <div class="mockup-grid" style="margin-top: 16px; gap: 16px; flex: 1; overflow: hidden;">
                       <div class="mockup-col">
-                        <div style="background:#fff; border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:16px; flex:1; display:flex; flex-direction:column; justify-content:space-between; overflow:hidden;">
-                          <div style="font-size:13px; font-weight:600; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
+                        <div
+                          style="background:#fff; border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:16px; flex:1; display:flex; flex-direction:column; justify-content:space-between; overflow:hidden;">
+                          <div
+                            style="font-size:13px; font-weight:600; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
                             <span>Bank Reconciliation Simulator</span>
-                            <span style="font-size:10px; color:var(--text-muted); font-weight:normal;">AI-Powered Ledger Match</span>
+                            <span style="font-size:10px; color:var(--text-muted); font-weight:normal;">AI-Powered Ledger
+                              Match</span>
                           </div>
                           <div style="flex:1; overflow:hidden;">
                             <table class="mockup-table">
@@ -1547,24 +1849,28 @@
                         </div>
                       </div>
                       <div class="mockup-col">
-                        <div style="background:#fff; border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:16px; flex:1; display:flex; flex-direction:column; gap:16px;">
+                        <div
+                          style="background:#fff; border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:16px; flex:1; display:flex; flex-direction:column; gap:16px;">
                           <div style="font-size:13px; font-weight:600;">Connected Bank Accounts</div>
                           <div style="display:flex; flex-direction:column; gap:12px; font-size:11px; flex:1;">
-                            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom:6px;">
+                            <div
+                              style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom:6px;">
                               <div>
                                 <div style="font-weight:700;">Union Bank Current</div>
                                 <div style="font-size:9px; color:var(--text-muted);">Synced: 5m ago</div>
                               </div>
                               <span class="mockup-badge badge-success">Online</span>
                             </div>
-                            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom:6px;">
+                            <div
+                              style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom:6px;">
                               <div>
                                 <div style="font-weight:700;">Access Bank Dom FX</div>
                                 <div style="font-size:9px; color:var(--text-muted);">Synced: 1h ago</div>
                               </div>
                               <span class="mockup-badge badge-success">Online</span>
                             </div>
-                            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom:6px;">
+                            <div
+                              style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom:6px;">
                               <div>
                                 <div style="font-weight:700;">GTBank checking</div>
                                 <div style="font-size:9px; color:var(--text-muted);">Credentials expired</div>
@@ -1572,7 +1878,7 @@
                               <span class="mockup-badge badge-pending">Plaid Auth</span>
                             </div>
                           </div>
-                          
+
                           <div style="font-size:12px; font-weight:600; margin-top:8px;">AI Reconciliation Settings</div>
                           <div style="display:flex; flex-direction:column; gap:8px; font-size:10px;">
                             <div style="display:flex; justify-content:space-between;">
@@ -1591,13 +1897,16 @@
 
                   <!-- View 5: CRM -->
                   <div class="mockup-view" id="mockup-view-5">
-                    <div class="premium-kpi-grid" style="margin-top:0; margin-bottom:0; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+                    <div class="premium-kpi-grid"
+                      style="margin-top:0; margin-bottom:0; grid-template-columns: repeat(3, 1fr); gap: 16px;">
                       <div class="premium-kpi-card" style="padding:16px;" id="mockup-kpi-crm">
                         <div class="premium-kpi-header">
-                          <span class="premium-kpi-title" style="color:var(--text-secondary);">Active Business Clients</span>
-                          <span class="material-symbols-outlined" style="color:var(--text-muted); font-size:18px;">groups</span>
+                          <span class="premium-kpi-title" style="color:var(--text-secondary);">Active Business
+                            Clients</span>
+                          <span class="material-symbols-outlined"
+                            style="color:var(--text-muted); font-size:18px;">groups</span>
                         </div>
-                        <div class="premium-kpi-val" style="font-size:24px;">248 Clients</div>
+                        <div class="premium-kpi-val" style="font-size:24px;">248 Clients <span style="font-size:9px; font-weight:500; color:var(--text-muted); background:rgba(0,0,0,0.04); padding:1px 5px; border-radius:3px; vertical-align:middle;">Sample</span></div>
                         <div style="font-size:11px; color:var(--text-muted);">Enterprise database</div>
                       </div>
                       <div class="premium-kpi-card" style="padding:16px;">
@@ -1605,25 +1914,29 @@
                           <span class="premium-kpi-title" style="color:var(--text-secondary);">Open Sales Leads</span>
                           <span class="mockup-badge badge-pending" style="font-size: 8px;">Active</span>
                         </div>
-                        <div class="premium-kpi-val" style="font-size:24px; color:var(--teal-600);">14 Leads</div>
+                        <div class="premium-kpi-val" style="font-size:24px; color:var(--teal-600);">14 Leads <span style="font-size:9px; font-weight:500; color:var(--text-muted); background:rgba(0,0,0,0.04); padding:1px 5px; border-radius:3px; vertical-align:middle;">Sample</span></div>
                         <div style="font-size:11px; color:var(--text-muted);">MTD Sales Pipeline</div>
                       </div>
                       <div class="premium-kpi-card" style="padding:16px;">
                         <div class="premium-kpi-header">
                           <span class="premium-kpi-title" style="color:var(--text-secondary);">Sales Conversion</span>
-                          <span class="material-symbols-outlined" style="color:var(--text-muted); font-size:18px;">trending_up</span>
+                          <span class="material-symbols-outlined"
+                            style="color:var(--text-muted); font-size:18px;">trending_up</span>
                         </div>
-                        <div class="premium-kpi-val" style="font-size:24px;">8.4%</div>
+                        <div class="premium-kpi-val" style="font-size:24px;">8.4% <span style="font-size:9px; font-weight:500; color:var(--text-muted); background:rgba(0,0,0,0.04); padding:1px 5px; border-radius:3px; vertical-align:middle;">Sample</span></div>
                         <div style="font-size:11px; color:var(--text-muted);">+1.2% this quarter</div>
                       </div>
                     </div>
 
                     <div class="mockup-grid" style="margin-top: 16px; gap: 16px; flex: 1; overflow: hidden;">
                       <div class="mockup-col">
-                        <div style="background:#fff; border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:16px; flex:1; display:flex; flex-direction:column; justify-content:space-between; overflow:hidden;">
-                          <div style="font-size:13px; font-weight:600; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
+                        <div
+                          style="background:#fff; border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:16px; flex:1; display:flex; flex-direction:column; justify-content:space-between; overflow:hidden;">
+                          <div
+                            style="font-size:13px; font-weight:600; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
                             <span>Registered Business Clients</span>
-                            <span style="font-size:10px; color:var(--text-muted); font-weight:normal;">VIP Corporate Tier</span>
+                            <span style="font-size:10px; color:var(--text-muted); font-weight:normal;">VIP Corporate
+                              Tier</span>
                           </div>
                           <div style="flex:1; overflow:hidden;">
                             <table class="mockup-table">
@@ -1671,7 +1984,8 @@
                         </div>
                       </div>
                       <div class="mockup-col">
-                        <div style="background:#fff; border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:16px; flex:1; display:flex; flex-direction:column; gap:16px;">
+                        <div
+                          style="background:#fff; border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:16px; flex:1; display:flex; flex-direction:column; gap:16px;">
                           <div style="font-size:13px; font-weight:600;">Sales Pipeline Status</div>
                           <div style="display:flex; flex-direction:column; gap:12px; font-size:11px; flex:1;">
                             <div>
@@ -1679,27 +1993,39 @@
                                 <span style="color:var(--text-secondary);">1. Contacted / Discovery</span>
                                 <span style="font-weight:700;">5 Leads</span>
                               </div>
-                              <div style="width:100%; height:6px; background:var(--slate-100); border-radius:3px; overflow:hidden;"><div style="width:35%; height:100%; background:var(--teal-600);"></div></div>
-                              <div style="font-size:9px; color:var(--text-muted); margin-top:2px;">Est Value: ₦1.2M</div>
+                              <div
+                                style="width:100%; height:6px; background:var(--slate-100); border-radius:3px; overflow:hidden;">
+                                <div style="width:35%; height:100%; background:var(--teal-600);"></div>
+                              </div>
+                              <div style="font-size:9px; color:var(--text-muted); margin-top:2px;">Est Value: ₦1.2M
+                              </div>
                             </div>
                             <div>
                               <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
                                 <span style="color:var(--text-secondary);">2. Proposal Sent</span>
                                 <span style="font-weight:700;">6 Leads</span>
                               </div>
-                              <div style="width:100%; height:6px; background:var(--slate-100); border-radius:3px; overflow:hidden;"><div style="width:55%; height:100%; background:var(--teal-600);"></div></div>
-                              <div style="font-size:9px; color:var(--text-muted); margin-top:2px;">Est Value: ₦3.4M</div>
+                              <div
+                                style="width:100%; height:6px; background:var(--slate-100); border-radius:3px; overflow:hidden;">
+                                <div style="width:55%; height:100%; background:var(--teal-600);"></div>
+                              </div>
+                              <div style="font-size:9px; color:var(--text-muted); margin-top:2px;">Est Value: ₦3.4M
+                              </div>
                             </div>
                             <div>
                               <div style="display:flex; justify-content:space-between; margin-bottom:4px;">
                                 <span style="color:var(--text-secondary);">3. Negotiation</span>
                                 <span style="font-weight:700;">3 Leads</span>
                               </div>
-                              <div style="width:100%; height:6px; background:var(--slate-100); border-radius:3px; overflow:hidden;"><div style="width:20%; height:100%; background:var(--teal-600);"></div></div>
-                              <div style="font-size:9px; color:var(--text-muted); margin-top:2px;">Est Value: ₦1.8M</div>
+                              <div
+                                style="width:100%; height:6px; background:var(--slate-100); border-radius:3px; overflow:hidden;">
+                                <div style="width:20%; height:100%; background:var(--teal-600);"></div>
+                              </div>
+                              <div style="font-size:9px; color:var(--text-muted); margin-top:2px;">Est Value: ₦1.8M
+                              </div>
                             </div>
                           </div>
-                          
+
                           <div style="font-size:12px; font-weight:600; margin-top:8px;">Realized Revenue MTD</div>
                           <div style="display:flex; justify-content:space-between; align-items:center; font-size:10px;">
                             <span style="color:var(--text-muted);">8 Won Deals Total</span>
@@ -1712,13 +2038,15 @@
 
                   <!-- View 6: HR -->
                   <div class="mockup-view" id="mockup-view-6">
-                    <div class="premium-kpi-grid" style="margin-top:0; margin-bottom:0; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+                    <div class="premium-kpi-grid"
+                      style="margin-top:0; margin-bottom:0; grid-template-columns: repeat(3, 1fr); gap: 16px;">
                       <div class="premium-kpi-card" style="padding:16px;" id="mockup-kpi-hr">
                         <div class="premium-kpi-header">
                           <span class="premium-kpi-title" style="color:var(--text-secondary);">Total Workforce</span>
-                          <span class="material-symbols-outlined" style="color:var(--text-muted); font-size:18px;">badge</span>
+                          <span class="material-symbols-outlined"
+                            style="color:var(--text-muted); font-size:18px;">badge</span>
                         </div>
-                        <div class="premium-kpi-val" style="font-size:24px;">32 Employees</div>
+                        <div class="premium-kpi-val" style="font-size:24px;">32 Employees <span style="font-size:9px; font-weight:500; color:var(--text-muted); background:rgba(0,0,0,0.04); padding:1px 5px; border-radius:3px; vertical-align:middle;">Sample</span></div>
                         <div style="font-size:11px; color:var(--text-muted);">Active roster</div>
                       </div>
                       <div class="premium-kpi-card" style="padding:16px;">
@@ -1726,25 +2054,30 @@
                           <span class="premium-kpi-title" style="color:var(--text-secondary);">Monthly Payroll</span>
                           <span class="mockup-badge badge-success" style="font-size: 8px;">Disbursed</span>
                         </div>
-                        <div class="premium-kpi-val" style="font-size:24px;">₦8.45M</div>
+                        <div class="premium-kpi-val" style="font-size:24px;">₦8.45M <span style="font-size:9px; font-weight:500; color:var(--text-muted); background:rgba(0,0,0,0.04); padding:1px 5px; border-radius:3px; vertical-align:middle;">Sample</span></div>
                         <div style="font-size:11px; color:var(--text-muted);">June disburse completed</div>
                       </div>
                       <div class="premium-kpi-card" style="padding:16px;">
                         <div class="premium-kpi-header">
-                          <span class="premium-kpi-title" style="color:var(--text-secondary);">Statutory Deductions</span>
-                          <span class="material-symbols-outlined" style="color:var(--text-muted); font-size:18px;">account_balance_wallet</span>
+                          <span class="premium-kpi-title" style="color:var(--text-secondary);">Statutory
+                            Deductions</span>
+                          <span class="material-symbols-outlined"
+                            style="color:var(--text-muted); font-size:18px;">account_balance_wallet</span>
                         </div>
-                        <div class="premium-kpi-val" style="font-size:24px;">₦1.12M</div>
+                        <div class="premium-kpi-val" style="font-size:24px;">₦1.12M <span style="font-size:9px; font-weight:500; color:var(--text-muted); background:rgba(0,0,0,0.04); padding:1px 5px; border-radius:3px; vertical-align:middle;">Sample</span></div>
                         <div style="font-size:11px; color:var(--text-muted);">PAYE + Pension reserve</div>
                       </div>
                     </div>
 
                     <div class="mockup-grid" style="margin-top: 16px; gap: 16px; flex: 1; overflow: hidden;">
                       <div class="mockup-col">
-                        <div style="background:#fff; border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:16px; flex:1; display:flex; flex-direction:column; justify-content:space-between; overflow:hidden;">
-                          <div style="font-size:13px; font-weight:600; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
+                        <div
+                          style="background:#fff; border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:16px; flex:1; display:flex; flex-direction:column; justify-content:space-between; overflow:hidden;">
+                          <div
+                            style="font-size:13px; font-weight:600; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
                             <span>Employee Monthly Deductions Ledger</span>
-                            <span style="font-size:10px; color:var(--text-muted); font-weight:normal;">June Payroll Run</span>
+                            <span style="font-size:10px; color:var(--text-muted); font-weight:normal;">June Payroll
+                              Run</span>
                           </div>
                           <div style="flex:1; overflow:hidden;">
                             <table class="mockup-table">
@@ -1792,24 +2125,28 @@
                         </div>
                       </div>
                       <div class="mockup-col">
-                        <div style="background:#fff; border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:16px; flex:1; display:flex; flex-direction:column; gap:16px;">
+                        <div
+                          style="background:#fff; border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:16px; flex:1; display:flex; flex-direction:column; gap:16px;">
                           <div style="font-size:13px; font-weight:600;">Disbursement Status</div>
                           <div style="display:flex; flex-direction:column; gap:12px; font-size:11px; flex:1;">
-                            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom:6px;">
+                            <div
+                              style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom:6px;">
                               <div>
                                 <div style="font-weight:700;">Base Salary Payments</div>
                                 <div style="font-size:9px; color:var(--text-muted);">To 32 employees</div>
                               </div>
                               <span class="mockup-badge badge-success">Disbursed</span>
                             </div>
-                            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom:6px;">
+                            <div
+                              style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom:6px;">
                               <div>
                                 <div style="font-weight:700;">PAYE Tax Remittance</div>
                                 <div style="font-size:9px; color:var(--text-muted);">To LIRS/State IRS</div>
                               </div>
                               <span class="mockup-badge badge-success">Remitted</span>
                             </div>
-                            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom:6px;">
+                            <div
+                              style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom:6px;">
                               <div>
                                 <div style="font-weight:700;">Pension Fund Reserve</div>
                                 <div style="font-size:9px; color:var(--text-muted);">To PenCom PFA</div>
@@ -1817,7 +2154,7 @@
                               <span class="mockup-badge badge-success">Remitted</span>
                             </div>
                           </div>
-                          
+
                           <div style="font-size:12px; font-weight:600; margin-top:8px;">Next Payroll Schedule</div>
                           <div style="display:flex; flex-direction:column; gap:4px; font-size:10px;">
                             <div style="font-weight:700; color:var(--slate-800);">28th June 2026</div>
@@ -1830,13 +2167,15 @@
 
                   <!-- View 7: Reports -->
                   <div class="mockup-view" id="mockup-view-7">
-                    <div class="premium-kpi-grid" style="margin-top:0; margin-bottom:0; grid-template-columns: repeat(3, 1fr); gap: 16px;">
+                    <div class="premium-kpi-grid"
+                      style="margin-top:0; margin-bottom:0; grid-template-columns: repeat(3, 1fr); gap: 16px;">
                       <div class="premium-kpi-card" style="padding:16px;" id="mockup-kpi-reports">
                         <div class="premium-kpi-header">
                           <span class="premium-kpi-title" style="color:var(--text-secondary);">Cash Flow Ratio</span>
-                          <span class="material-symbols-outlined" style="color:var(--text-muted); font-size:18px;">monitoring</span>
+                          <span class="material-symbols-outlined"
+                            style="color:var(--text-muted); font-size:18px;">monitoring</span>
                         </div>
-                        <div class="premium-kpi-val" style="font-size:24px;">1.48</div>
+                        <div class="premium-kpi-val" style="font-size:24px;">1.48 <span style="font-size:9px; font-weight:500; color:var(--text-muted); background:rgba(0,0,0,0.04); padding:1px 5px; border-radius:3px; vertical-align:middle;">Sample</span></div>
                         <div style="font-size:11px; color:var(--text-muted);">Healthy working capital</div>
                       </div>
                       <div class="premium-kpi-card" style="padding:16px;">
@@ -1844,25 +2183,30 @@
                           <span class="premium-kpi-title" style="color:var(--text-secondary);">EBITDA Margin</span>
                           <span class="mockup-badge badge-success" style="font-size: 8px;">22.4%</span>
                         </div>
-                        <div class="premium-kpi-val" style="font-size:24px; color:var(--teal-600);">22.4%</div>
+                        <div class="premium-kpi-val" style="font-size:24px; color:var(--teal-600);">22.4% <span style="font-size:9px; font-weight:500; color:var(--text-muted); background:rgba(0,0,0,0.04); padding:1px 5px; border-radius:3px; vertical-align:middle;">Sample</span></div>
                         <div style="font-size:11px; color:var(--text-muted);">Current financial year</div>
                       </div>
                       <div class="premium-kpi-card" style="padding:16px;">
                         <div class="premium-kpi-header">
-                          <span class="premium-kpi-title" style="color:var(--text-secondary);">Quick Ratio (Acid Test)</span>
-                          <span class="material-symbols-outlined" style="color:var(--text-muted); font-size:18px;">speed</span>
+                          <span class="premium-kpi-title" style="color:var(--text-secondary);">Quick Ratio (Acid
+                            Test)</span>
+                          <span class="material-symbols-outlined"
+                            style="color:var(--text-muted); font-size:18px;">speed</span>
                         </div>
-                        <div class="premium-kpi-val" style="font-size:24px;">1.15</div>
+                        <div class="premium-kpi-val" style="font-size:24px;">1.15 <span style="font-size:9px; font-weight:500; color:var(--text-muted); background:rgba(0,0,0,0.04); padding:1px 5px; border-radius:3px; vertical-align:middle;">Sample</span></div>
                         <div style="font-size:11px; color:var(--text-muted);">Ideal liquid target</div>
                       </div>
                     </div>
 
                     <div class="mockup-grid" style="margin-top: 16px; gap: 16px; flex: 1; overflow: hidden;">
                       <div class="mockup-col">
-                        <div style="background:#fff; border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:16px; flex:1; display:flex; flex-direction:column; justify-content:space-between; overflow:hidden;">
-                          <div style="font-size:13px; font-weight:600; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
+                        <div
+                          style="background:#fff; border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:16px; flex:1; display:flex; flex-direction:column; justify-content:space-between; overflow:hidden;">
+                          <div
+                            style="font-size:13px; font-weight:600; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
                             <span>Generated Board Reports</span>
-                            <span style="font-size:10px; color:var(--text-muted); font-weight:normal;">Automated GAAP Compliant</span>
+                            <span style="font-size:10px; color:var(--text-muted); font-weight:normal;">Automated GAAP
+                              Compliant</span>
                           </div>
                           <div style="flex:1; overflow:hidden;">
                             <table class="mockup-table">
@@ -1910,29 +2254,36 @@
                         </div>
                       </div>
                       <div class="mockup-col">
-                        <div style="background:#fff; border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:16px; flex:1; display:flex; flex-direction:column; gap:16px;">
+                        <div
+                          style="background:#fff; border:1px solid var(--border-color); border-radius:var(--radius-lg); padding:16px; flex:1; display:flex; flex-direction:column; gap:16px;">
                           <div style="font-size:13px; font-weight:600;">Audit & Compliance</div>
                           <div style="display:flex; flex-direction:column; gap:12px; font-size:11px; flex:1;">
-                            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom:6px;">
+                            <div
+                              style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom:6px;">
                               <span style="color:var(--text-secondary);">IFRS Accounting Grade</span>
                               <span style="font-weight:700; color:var(--teal-600);">98% Score</span>
                             </div>
-                            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom:6px;">
+                            <div
+                              style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom:6px;">
                               <span style="color:var(--text-secondary);">Audit Log Integrity</span>
                               <span style="font-weight:700; color:var(--success);">100% Intact</span>
                             </div>
-                            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom:6px;">
+                            <div
+                              style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom:6px;">
                               <span style="color:var(--text-secondary);">CAC Form upload</span>
                               <span style="font-weight:700;">CAC-7 Active</span>
                             </div>
-                            <div style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom:6px;">
+                            <div
+                              style="display:flex; justify-content:space-between; align-items:center; border-bottom: 1px solid var(--border-color); padding-bottom:6px;">
                               <span style="color:var(--text-secondary);">NDPR Data Privacy</span>
                               <span style="font-weight:700; color:var(--success);">Compliant</span>
                             </div>
                           </div>
-                          
+
                           <div style="font-size:12px; font-weight:600; margin-top:8px;">Compliance Actions</div>
-                          <div style="font-size:10px; color:var(--text-muted); line-height:1.4;">All financial reports are locked and sealed with SHA-256 digital signatures at the end of each fiscal month to guarantee auditing integrity.</div>
+                          <div style="font-size:10px; color:var(--text-muted); line-height:1.4;">All financial reports
+                            are locked and sealed with SHA-256 digital signatures at the end of each fiscal month to
+                            guarantee auditing integrity.</div>
                         </div>
                       </div>
                     </div>
@@ -1953,17 +2304,18 @@
     <div class="section-header reveal">
       <h2 class="section-title">Enterprise grade, without the complexity.</h2>
       <p class="section-desc">
-        We've engineered Coda from the ground up to provide unparalleled financial clarity. 
+        We've engineered Coda from the ground up to provide unparalleled financial clarity.
         Advanced tools, beautiful interfaces, and uncompromising accuracy.
       </p>
     </div>
-    
+
     <div class="premium-kpi-grid reveal">
       <!-- Card 1: Automated Reconciliation -->
       <div class="feature-card-soft">
         <h3 class="fc-title">Automated Reconciliation</h3>
         <p class="fc-desc">
-          Connect your bank accounts securely and let Coda automatically match transactions to invoices and expenses with 99.9% accuracy.
+          Connect your bank accounts securely and let Coda automatically match transactions to invoices and expenses
+          with 99.9% accuracy.
         </p>
         <div class="fc-illus-container">
           <div class="recon-illus">
@@ -1989,20 +2341,24 @@
       <div class="feature-card-soft">
         <h3 class="fc-title">Multi-Entity Management</h3>
         <p class="fc-desc">
-          Manage multiple businesses or subsidiaries under a single login. Consolidated reporting and inter-company transfers handled seamlessly.
+          Manage multiple businesses or subsidiaries under a single login. Consolidated reporting and inter-company
+          transfers handled seamlessly.
         </p>
         <div class="fc-illus-container">
           <div class="entity-illus">
             <!-- connecting lines -->
-            <div class="entity-line" style="width:40px; height:2px; top:32px; left:32px; transform:rotate(45deg);"></div>
-            <div class="entity-line" style="width:40px; height:2px; bottom:32px; left:40px; transform:rotate(-30deg);"></div>
-            <div class="entity-line" style="width:40px; height:2px; top:48px; right:32px; transform:rotate(150deg);"></div>
-            
+            <div class="entity-line" style="width:40px; height:2px; top:32px; left:32px; transform:rotate(45deg);">
+            </div>
+            <div class="entity-line" style="width:40px; height:2px; bottom:32px; left:40px; transform:rotate(-30deg);">
+            </div>
+            <div class="entity-line" style="width:40px; height:2px; top:48px; right:32px; transform:rotate(150deg);">
+            </div>
+
             <!-- center dash -->
             <div class="entity-center">
               <span class="material-symbols-outlined">space_dashboard</span>
             </div>
-            
+
             <!-- entity nodes -->
             <div class="entity-node n1">US</div>
             <div class="entity-node n2">UK</div>
@@ -2015,7 +2371,8 @@
       <div class="feature-card-soft">
         <h3 class="fc-title">Bank-Level Security</h3>
         <p class="fc-desc">
-          Your data is encrypted at rest and in transit. Granular role-based access control ensures employees only see what they need to see.
+          Your data is encrypted at rest and in transit. Granular role-based access control ensures employees only see
+          what they need to see.
         </p>
         <div class="fc-illus-container">
           <div class="security-illus">
@@ -2045,17 +2402,17 @@
         <div class="pricing-header-row">
           <span class="pricing-badge-capsule">Starter Pack</span>
         </div>
-        
+
         <h3 class="pricing-card-title">Starter</h3>
         <p class="pricing-card-desc">For early-stage operations &amp; startups managing core ledgers.</p>
-        
+
         <div class="pricing-price-wrap">
-          <div class="pricing-price-large">₦15,000<span>/month</span></div>
-          <div class="pricing-price-sub">or ₦150,000 billed annually</div>
+          <div class="pricing-price-large">₦5,000<span>/month</span></div>
+          <div class="pricing-price-sub">or ₦54,000 billed annually</div>
         </div>
-        
+
         <a href="signup.html?tier=starter" class="btn-pricing btn-pricing-secondary">Start Free Trial</a>
-        
+
         <div class="pricing-features-section">
           <div class="pricing-features-header">Included</div>
           <ul class="pricing-features-list">
@@ -2080,7 +2437,7 @@
               <span>P&amp;L &amp; Balance Sheet Reports</span>
             </li>
           </ul>
-          
+
           <div class="pricing-features-header add-on-header">Available to Add</div>
           <ul class="pricing-features-list">
             <li class="muted-feature">
@@ -2104,17 +2461,17 @@
         <div class="pricing-header-row">
           <span class="pricing-badge-capsule">Recommended Package</span>
         </div>
-        
+
         <h3 class="pricing-card-title">Business Suite</h3>
         <p class="pricing-card-desc">Complete suite for scaling companies needing advanced compliance.</p>
-        
+
         <div class="pricing-price-wrap">
-          <div class="pricing-price-large">₦45,000<span>/month</span></div>
-          <div class="pricing-price-sub">or ₦450,000 billed annually</div>
+          <div class="pricing-price-large">₦15,000<span>/month</span></div>
+          <div class="pricing-price-sub">or ₦162,000 billed annually</div>
         </div>
-        
+
         <a href="signup.html?tier=professional" class="btn-pricing btn-pricing-primary">Get Business Suite</a>
-        
+
         <div class="pricing-features-section">
           <div class="pricing-features-header">Included</div>
           <ul class="pricing-features-list">
@@ -2143,7 +2500,7 @@
               <span>Bank Auto-Reconciliation</span>
             </li>
           </ul>
-          
+
           <div class="pricing-features-header add-on-header">Available to Add</div>
           <ul class="pricing-features-list">
             <li class="muted-feature">
@@ -2167,17 +2524,18 @@
         <div class="pricing-header-row">
           <span class="pricing-badge-capsule">Highest-Touch Package</span>
         </div>
-        
+
         <h3 class="pricing-card-title">Enterprise</h3>
         <p class="pricing-card-desc">For high-volume commerce, multi-entity operations &amp; custom SLAs.</p>
-        
+
         <div class="pricing-price-wrap">
-          <div class="pricing-price-large">₦150,000<span>/month</span></div>
-          <div class="pricing-price-sub">or ₦1,500,000 billed annually</div>
+          <div class="pricing-price-large">₦45,000<span>/month</span></div>
+          <div class="pricing-price-sub">or ₦486,000 billed annually</div>
         </div>
-        
-        <a href="mailto:sales@coda.com?subject=Enterprise%20Plan%20Inquiry" class="btn-pricing btn-pricing-white">Contact Sales</a>
-        
+
+        <a href="mailto:sales@coda.com?subject=Enterprise%20Plan%20Inquiry"
+          class="btn-pricing btn-pricing-white">Contact Sales</a>
+
         <div class="pricing-features-section">
           <div class="pricing-features-header">Included</div>
           <ul class="pricing-features-list">
@@ -2206,7 +2564,7 @@
               <span>24/7 SLA Support &amp; Training</span>
             </li>
           </ul>
-          
+
           <div class="pricing-features-header add-on-header">Available to Add</div>
           <ul class="pricing-features-list">
             <li class="muted-feature">
@@ -2228,12 +2586,21 @@
     <div class="legal-modal">
       <button class="legal-modal-close"><span class="material-symbols-outlined">close</span></button>
       <div class="legal-modal-logo">
-        <span class="brand-icon-box brand-icon-sm"><svg viewBox="20 20 54 58" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="38" y="22" width="34" height="14" rx="3" fill="#0d9488"/><rect x="22" y="32" width="18" height="38" rx="3.5" fill="currentColor"/><rect x="34" y="62" width="38" height="14" rx="3" fill="currentColor"/></svg></span>
+        <span class="brand-icon-box brand-icon-sm"><svg viewBox="20 20 54 58" fill="none"
+            xmlns="http://www.w3.org/2000/svg">
+            <rect x="38" y="22" width="34" height="14" rx="3" fill="#0d9488" />
+            <rect x="22" y="32" width="18" height="38" rx="3.5" fill="currentColor" />
+            <rect x="34" y="62" width="38" height="14" rx="3" fill="currentColor" />
+          </svg></span>
         <span>Coda</span>
       </div>
       <h2>Terms of Service</h2>
-      <p>By accessing Coda's enterprise financial systems, you agree to these Terms of Service. As a financial operating system, you entrust us with critical business data; in turn, you agree to use the platform lawfully and maintain the confidentiality of your account credentials.</p>
-      <p>While Coda guarantees 99.9% uptime and rigorous data backups for our core ERP features, the platform is provided without liability for indirect business losses. You remain responsible for the accuracy of the financial and tax data you input into the system.</p>
+      <p>By accessing Coda's enterprise financial systems, you agree to these Terms of Service. As a financial operating
+        system, you entrust us with critical business data; in turn, you agree to use the platform lawfully and maintain
+        the confidentiality of your account credentials.</p>
+      <p>While Coda guarantees 99.9% uptime and rigorous data backups for our core ERP features, the platform is
+        provided without liability for indirect business losses. You remain responsible for the accuracy of the
+        financial and tax data you input into the system.</p>
       <button class="btn btn-primary" style="width:100%; margin-top:16px;">Acknowledge</button>
     </div>
   </div>
@@ -2242,12 +2609,23 @@
     <div class="legal-modal">
       <button class="legal-modal-close"><span class="material-symbols-outlined">close</span></button>
       <div class="legal-modal-logo">
-        <span class="brand-icon-box brand-icon-sm"><svg viewBox="20 20 54 58" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="38" y="22" width="34" height="14" rx="3" fill="#0d9488"/><rect x="22" y="32" width="18" height="38" rx="3.5" fill="currentColor"/><rect x="34" y="62" width="38" height="14" rx="3" fill="currentColor"/></svg></span>
+        <span class="brand-icon-box brand-icon-sm"><svg viewBox="20 20 54 58" fill="none"
+            xmlns="http://www.w3.org/2000/svg">
+            <rect x="38" y="22" width="34" height="14" rx="3" fill="#0d9488" />
+            <rect x="22" y="32" width="18" height="38" rx="3.5" fill="currentColor" />
+            <rect x="34" y="62" width="38" height="14" rx="3" fill="currentColor" />
+          </svg></span>
         <span>Coda</span>
       </div>
       <h2>Privacy Policy</h2>
-      <p>Coda acts as a data processor for your business. We securely process your financial, payroll, employee, and customer data exclusively to provide our ERP services. We employ industry-standard AES-256 encryption and strict access controls to ensure your corporate data remains confidential, compliant with financial regulations, and is never sold to third parties.</p>
-      <p>We only ask for personal information when we truly need it to provide a service to you. We collect it by fair and lawful means, with your knowledge and consent. We also let you know why we’re collecting it and how it will be used. We don't share any personally identifying information publicly or with third-parties, except when required to by law.</p>
+      <p>Coda acts as a data processor for your business. We securely process your financial, payroll, employee, and
+        customer data exclusively to provide our ERP services. We employ industry-standard AES-256 encryption and strict
+        access controls to ensure your corporate data remains confidential, compliant with financial regulations, and is
+        never sold to third parties.</p>
+      <p>We only ask for personal information when we truly need it to provide a service to you. We collect it by fair
+        and lawful means, with your knowledge and consent. We also let you know why we’re collecting it and how it will
+        be used. We don't share any personally identifying information publicly or with third-parties, except when
+        required to by law.</p>
       <button class="btn btn-primary" style="width:100%; margin-top:16px;">Acknowledge</button>
     </div>
   </div>
@@ -2256,56 +2634,7 @@
   <div class="financial-ticker-wrap" style="margin-top: 0; margin-bottom: 0;">
     <div class="financial-ticker">
       <div class="ticker-track">
-        <span>Default Tax Rate: 10%</span>
-        <span class="ticker-divider">•</span>
-        <span>VAT: 7.5%</span>
-        <span class="ticker-divider">•</span>
-        <span>Processing Fee: 1.5%</span>
-        <span class="ticker-divider">•</span>
-        <span>Target Reserve: 20%</span>
-        <span class="ticker-divider">•</span>
-        <span>Inflation Rate: 28.9%</span>
-        <span class="ticker-divider">•</span>
-        <span>Base Interest Rate: 18.75%</span>
-        <span class="ticker-divider">•</span>
-        <span>NGN/USD: 1,450</span>
-        <span class="ticker-divider">•</span>
-        <span>GDP Growth: 3.2%</span>
-        <span class="ticker-divider">•</span>
-        <!-- Duplicate for seamless looping -->
-        <span>Default Tax Rate: 10%</span>
-        <span class="ticker-divider">•</span>
-        <span>VAT: 7.5%</span>
-        <span class="ticker-divider">•</span>
-        <span>Processing Fee: 1.5%</span>
-        <span class="ticker-divider">•</span>
-        <span>Target Reserve: 20%</span>
-        <span class="ticker-divider">•</span>
-        <span>Inflation Rate: 28.9%</span>
-        <span class="ticker-divider">•</span>
-        <span>Base Interest Rate: 18.75%</span>
-        <span class="ticker-divider">•</span>
-        <span>NGN/USD: 1,450</span>
-        <span class="ticker-divider">•</span>
-        <span>GDP Growth: 3.2%</span>
-        <span class="ticker-divider">•</span>
-        <!-- Third duplicate to match React component logic -->
-        <span>Default Tax Rate: 10%</span>
-        <span class="ticker-divider">•</span>
-        <span>VAT: 7.5%</span>
-        <span class="ticker-divider">•</span>
-        <span>Processing Fee: 1.5%</span>
-        <span class="ticker-divider">•</span>
-        <span>Target Reserve: 20%</span>
-        <span class="ticker-divider">•</span>
-        <span>Inflation Rate: 28.9%</span>
-        <span class="ticker-divider">•</span>
-        <span>Base Interest Rate: 18.75%</span>
-        <span class="ticker-divider">•</span>
-        <span>NGN/USD: 1,450</span>
-        <span class="ticker-divider">•</span>
-        <span>GDP Growth: 3.2%</span>
-        <span class="ticker-divider">•</span>
+        <!-- Populated dynamically by ticker.js -->
       </div>
     </div>
   </div>
@@ -2316,12 +2645,16 @@
       <div class="dark-footer-top">
         <div class="footer-brand-column">
           <a href="/" class="nav-brand" style="color: #ffffff !important; margin-bottom: 16px;">
-            <span class="brand-icon-box"><svg viewBox="20 20 54 58" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="38" y="22" width="34" height="14" rx="3" fill="#0d9488"/><rect x="22" y="32" width="18" height="38" rx="3.5" fill="currentColor"/><rect x="34" y="62" width="38" height="14" rx="3" fill="currentColor"/></svg></span>
+            <span class="brand-icon-box"><svg viewBox="20 20 54 58" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="38" y="22" width="34" height="14" rx="3" fill="#0d9488" />
+                <rect x="22" y="32" width="18" height="38" rx="3.5" fill="currentColor" />
+                <rect x="34" y="62" width="38" height="14" rx="3" fill="currentColor" />
+              </svg></span>
             <span>Coda</span>
           </a>
           <p class="brand-tagline">The definitive financial operating system for high-growth enterprise businesses.</p>
         </div>
-        
+
         <div class="footer-links-column">
           <h4>Product</h4>
           <ul>
@@ -2330,7 +2663,7 @@
             <li><a href="api.html" class="link-accent">API Documentation</a></li>
           </ul>
         </div>
-        
+
         <div class="footer-links-column">
           <h4>Legal</h4>
           <ul>
@@ -2338,16 +2671,17 @@
             <li><a href="#!" class="legal-trigger-privacy">Privacy Policy</a></li>
           </ul>
         </div>
-        
+
         <div class="footer-vertical-divider"></div>
-        
+
         <div class="footer-description-column">
           <p>
-            Coda is built to comply with Nigerian GAAP and IFRS accounting standards. WHT, VAT, and PAYE tax compliance is automated in accordance with FIRS guidelines. Secured under NDPR regulations.
+            Coda is built to comply with Nigerian GAAP and IFRS accounting standards. WHT, VAT, and PAYE tax compliance
+            is automated in accordance with FIRS guidelines. Secured under NDPR regulations.
           </p>
         </div>
       </div>
-      
+
       <div class="dark-footer-bottom">
         <div class="giant-coda-text">Coda</div>
         <div class="footer-copyright-info">
@@ -2407,8 +2741,8 @@
   </script>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
   <script src="ticker.js"></script>
-  
-  <!-- Interactive Live-Demo Mockup Script -->
+
+      <!-- Interactive Live-Demo Mockup Script -->
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       // Initialize mockup expense doughnut chart
@@ -2432,7 +2766,7 @@
               legend: { display: false },
               tooltip: {
                 callbacks: {
-                  label: ctx => ctx.label + ': ₦' + (ctx.raw * 1000).toLocaleString()
+                  label: ctx => ctx.label + ': ₦' + (ctx.raw * 1000).toLocaleString() + ' (Sample)'
                 }
               }
             }
@@ -2496,7 +2830,7 @@
 
       function switchView(idx) {
         activeIdx = idx;
-        
+
         // Update tabs active state
         tabs.forEach(tab => tab.classList.remove('active'));
         const activeTab = card.querySelector(`.mockup-nav-item[data-view-idx="${idx}"]`);
@@ -2535,7 +2869,7 @@
         // 1. Move to next tab in the sequence
         seqIdx = (seqIdx + 1) % autoplaySequence.length;
         activeIdx = autoplaySequence[seqIdx];
-        
+
         const targetTab = card.querySelector(`.mockup-nav-item[data-view-idx="${activeIdx}"]`);
         if (!targetTab) return;
 
@@ -2544,11 +2878,11 @@
 
           // 2. Click effect (scale scale-down)
           cursor.classList.add('clicking');
-          
+
           setTimeout(() => {
             if (isHovered) return;
             cursor.classList.remove('clicking');
-            
+
             // 3. Switch active view
             switchView(activeIdx);
 
@@ -2583,7 +2917,7 @@
       // Mouse leave: Reshow custom cursor, align cursor position, schedule autoplay resume
       card.addEventListener('mouseleave', () => {
         isHovered = false;
-        
+
         // Place simulated cursor immediately on currently active tab so it doesn't jump
         const currentTab = card.querySelector(`.mockup-nav-item[data-view-idx="${activeIdx}"]`);
         if (currentTab) {
@@ -2626,59 +2960,60 @@
     });
   </script>
 
-<script id="modal-fix-script">
-  document.addEventListener('DOMContentLoaded', function() {
-    function openModal(id) {
-      var m = document.getElementById(id);
-      if (m) {
-        document.body.classList.add('no-scroll');
-        var dm = document.querySelector('.dashboard-main'); if(dm) dm.style.overflow = 'hidden';
-        var am = document.querySelector('.admin-main'); if(am) am.style.overflow = 'hidden';
-        m.style.setProperty('display', 'flex', 'important');
-        m.classList.add('active');
-        m.style.zIndex = '999999';
-        m.style.opacity = '1';
-        m.style.visibility = 'visible';
+  <script id="modal-fix-script">
+    document.addEventListener('DOMContentLoaded', function () {
+      function openModal(id) {
+        var m = document.getElementById(id);
+        if (m) {
+          document.body.classList.add('no-scroll');
+          var dm = document.querySelector('.dashboard-main'); if (dm) dm.style.overflow = 'hidden';
+          var am = document.querySelector('.admin-main'); if (am) am.style.overflow = 'hidden';
+          m.style.setProperty('display', 'flex', 'important');
+          m.classList.add('active');
+          m.style.zIndex = '999999';
+          m.style.opacity = '1';
+          m.style.visibility = 'visible';
+        }
       }
-    }
-    function closeModal(id) {
-      var m = document.getElementById(id);
-      if (m) {
-        document.body.classList.remove('no-scroll');
-        var dm = document.querySelector('.dashboard-main'); if(dm) dm.style.overflow = '';
-        var am = document.querySelector('.admin-main'); if(am) am.style.overflow = '';
-        m.style.setProperty('display', 'none', 'important');
-        m.classList.remove('active');
+      function closeModal(id) {
+        var m = document.getElementById(id);
+        if (m) {
+          document.body.classList.remove('no-scroll');
+          var dm = document.querySelector('.dashboard-main'); if (dm) dm.style.overflow = '';
+          var am = document.querySelector('.admin-main'); if (am) am.style.overflow = '';
+          m.style.setProperty('display', 'none', 'important');
+          m.classList.remove('active');
+        }
       }
-    }
-    
-    document.querySelectorAll('.legal-trigger-privacy').forEach(function(el) {
-      el.addEventListener('click', function(e) {
-        e.preventDefault();
-        openModal('privacyModal');
-      });
-    });
-    
-    document.querySelectorAll('.legal-trigger-terms').forEach(function(el) {
-      el.addEventListener('click', function(e) {
-        e.preventDefault();
-        openModal('termsModal');
-      });
-    });
 
-    // Close buttons
-    ['privacyModal', 'termsModal'].forEach(function(id) {
-      var m = document.getElementById(id);
-      if (m) {
-        var buttons = m.querySelectorAll('.modal-close-btn, .legal-modal-close, button.btn-primary');
-        buttons.forEach(function(btn) {
-          btn.addEventListener('click', function() {
-            closeModal(id);
-          });
+      document.querySelectorAll('.legal-trigger-privacy').forEach(function (el) {
+        el.addEventListener('click', function (e) {
+          e.preventDefault();
+          openModal('privacyModal');
         });
-      }
+      });
+
+      document.querySelectorAll('.legal-trigger-terms').forEach(function (el) {
+        el.addEventListener('click', function (e) {
+          e.preventDefault();
+          openModal('termsModal');
+        });
+      });
+
+      // Close buttons
+      ['privacyModal', 'termsModal'].forEach(function (id) {
+        var m = document.getElementById(id);
+        if (m) {
+          var buttons = m.querySelectorAll('.modal-close-btn, .legal-modal-close, button.btn-primary');
+          buttons.forEach(function (btn) {
+            btn.addEventListener('click', function () {
+              closeModal(id);
+            });
+          });
+        }
+      });
     });
-  });
-</script>
+  </script>
 </body>
+
 </html>
