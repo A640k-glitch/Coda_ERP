@@ -967,6 +967,20 @@
     
     window._showSignupView = showSignupView;
     window._showSigninView = showSigninView;
+
+    let csrfToken = '';
+    async function fetchCsrfToken() {
+      try {
+        const res = await fetch('/api/v1/auth/csrf-token');
+        if (res.ok) {
+          const data = await res.json();
+          csrfToken = data.csrfToken;
+        }
+      } catch (err) {
+        console.error('Failed to load CSRF token:', err);
+      }
+    }
+    window.addEventListener('DOMContentLoaded', fetchCsrfToken);
     
     // Login form handler
     const loginForm = document.getElementById('popupLoginForm');
@@ -994,7 +1008,8 @@
           const res = await fetch('/api/v1/auth/login', {
             method: 'POST',
             headers: { 
-              'Content-Type': 'application/json'
+              'Content-Type': 'application/json',
+              'x-csrf-token': csrfToken
             },
             body: JSON.stringify({ email, password })
           });
@@ -1034,6 +1049,76 @@
     const container = document.getElementById('authPopoutContainer');
     const closeBtn = document.getElementById('authPopoutClose');
     const inlineContent = document.getElementById('inlineAuthContent');
+
+    // Signup form handler
+    const signupForm = document.getElementById('signupForm');
+    const signupSubmit = document.getElementById('signupSubmit');
+    const signupResult = document.getElementById('signupResult');
+
+    if (signupForm) {
+      signupForm.addEventListener('submit', async e => {
+        e.preventDefault();
+        
+        const pwd = document.getElementById('signupPassword').value;
+        const confirm = document.getElementById('signupConfirmPassword').value;
+        
+        if (pwd !== confirm) {
+          signupResult.textContent = 'Passwords do not match';
+          signupResult.className = 'auth-result show error';
+          return;
+        }
+
+        const payload = {
+          tier: document.getElementById('signupTier').value,
+          name: document.getElementById('signupName').value,
+          email: document.getElementById('signupEmail').value,
+          password: pwd,
+          businessName: document.getElementById('signupBusinessName').value,
+          phone: document.getElementById('signupPhone').value,
+          cac: document.getElementById('signupCAC').value,
+          type: document.getElementById('signupType').value
+        };
+
+        signupSubmit.disabled = true;
+        signupSubmit.innerHTML = 'Creating Account...';
+        signupResult.classList.remove('show', 'success', 'error');
+
+        try {
+          const res = await fetch('/api/v1/auth/signup', {
+            method: 'POST',
+            headers: { 
+              'Content-Type': 'application/json',
+              'x-csrf-token': csrfToken
+            },
+            body: JSON.stringify(payload)
+          });
+          const data = await res.json();
+          
+          if (!res.ok) {
+            signupResult.textContent = data.error || 'Signup failed';
+            signupResult.className = 'auth-result show error';
+            return;
+          }
+          
+          signupResult.textContent = 'Account created successfully! Redirecting...';
+          signupResult.className = 'auth-result show success';
+          signupForm.reset();
+          
+          if (data.token) {
+            localStorage.setItem('coda_token', data.token);
+            localStorage.setItem('coda_user', JSON.stringify(data.user));
+          }
+          
+          setTimeout(() => window.top.location.href = '/dashboard', 900);
+        } catch (err) {
+          signupResult.textContent = 'Network error. Please try again.';
+          signupResult.className = 'auth-result show error';
+        } finally {
+          signupSubmit.disabled = false;
+          signupSubmit.innerHTML = '<span class="material-symbols-outlined" style="font-size:18px">rocket_launch</span> Create Account';
+        }
+      });
+    }
     
     document.querySelectorAll('.trigger-auth, .trigger-auth-signin, #btnExpandAuth').forEach(btn => {
       btn.addEventListener('click', (e) => {
