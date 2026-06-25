@@ -4672,7 +4672,12 @@ body.no-scroll .admin-main {
     }
     @media (max-width: 900px) {
       .auth-brand-panel { display: none; }
-      .auth-form-panel { max-width: 100%; padding: 32px 24px; }
+      .auth-form-panel {
+        max-width: 100%;
+        padding: 32px 24px;
+        /* Teal top accent bar on mobile */
+        border-top: 3px solid #0d9488;
+      }
       .auth-form-wrap { max-width: 100%; }
       .field-row { grid-template-columns: 1fr; gap: 0; }
       .mobile-logo {
@@ -4689,6 +4694,54 @@ body.no-scroll .admin-main {
         width: 32px;
         height: 32px;
       }
+      /* Teal logo icon on mobile */
+      .mobile-logo .brand-icon-box { color: #0d9488; }
+      /* Ensure inputs are comfortably sized on mobile */
+      .auth-form-panel .form-input,
+      .auth-form-panel input[type="text"],
+      .auth-form-panel input[type="email"],
+      .auth-form-panel input[type="password"],
+      .auth-form-panel select {
+        height: 48px;
+        font-size: 15px;
+        padding: 0 14px;
+      }
+      .auth-form-panel .btn-primary {
+        height: 48px;
+        font-size: 15px;
+      }
+      .auth-form-wrap h1 {
+        font-size: 26px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .auth-form-panel { padding: 24px 16px; }
+      .auth-form-wrap h1 { font-size: 22px; }
+      .auth-form-panel .form-input,
+      .auth-form-panel input[type="text"],
+      .auth-form-panel input[type="email"],
+      .auth-form-panel input[type="password"],
+      .auth-form-panel select {
+        height: 44px;
+        font-size: 14px;
+      }
+      #authTabSwitcher button { font-size: 12px; padding: 8px 12px; }
+    }
+
+    @media (max-width: 360px) {
+      .auth-form-panel { padding: 20px 12px; }
+      .auth-form-wrap h1 { font-size: 19px; }
+      .auth-form-panel .form-input,
+      .auth-form-panel input[type="text"],
+      .auth-form-panel input[type="email"],
+      .auth-form-panel input[type="password"],
+      .auth-form-panel select {
+        height: 42px;
+        font-size: 13px;
+      }
+      #authTabSwitcher button { font-size: 11px; padding: 7px 10px; }
+      .auth-form-wrap p.sub { font-size: 12px; }
     }
 
 /* Shimmer Button Effect */

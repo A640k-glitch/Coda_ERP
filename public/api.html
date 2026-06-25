@@ -246,7 +246,6 @@
       .api-container {
         grid-template-columns: 1fr;
       }
-
       .api-code-panel {
         position: static;
       }
@@ -254,52 +253,51 @@
 
     @media (max-width: 768px) {
       .api-container {
+        grid-template-columns: 1fr;
         padding: 0 16px;
         gap: 20px;
-        margin-top: 64px;
+        margin-top: 72px;
       }
-
+      /* Hide sticky right code panel on mobile — keep docs readable */
+      .api-code-panel {
+        display: none;
+      }
+      .api-docs-panel {
+        width: 100%;
+      }
       .api-header h1 {
-        font-size: 24px;
+        font-size: 22px;
       }
-
       .api-header p {
-        font-size: 14px;
+        font-size: 13px;
       }
-
       .api-card-wrapper {
         padding: 16px;
       }
-
       .api-card-wrapper h3 {
         font-size: 14px;
       }
-
       .code-console {
-        padding: 16px;
+        padding: 14px;
         font-size: 11px;
       }
-
       .try-console {
-        padding: 16px;
+        padding: 14px;
       }
-
       .result-display {
         padding: 12px;
         font-size: 11px;
         min-height: 60px;
       }
-
       .api-keys-section {
-        padding: 16px;
+        padding: 14px;
       }
-
       .tabs-nav {
-        gap: 8px;
+        gap: 6px;
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
+        padding-bottom: 4px;
       }
-
       .tab-btn {
         font-size: 12px;
         white-space: nowrap;
@@ -325,6 +323,45 @@
       .code-console {
         padding: 12px;
         font-size: 10px;
+      }
+    }
+
+    @media (max-width: 320px) {
+      .api-container {
+        padding: 0 8px;
+        gap: 12px;
+        margin-top: 56px;
+      }
+      .api-header h1 {
+        font-size: 17px;
+      }
+      .api-header p {
+        font-size: 12px;
+      }
+      .api-card-wrapper {
+        padding: 10px;
+      }
+      .api-card-wrapper h3 {
+        font-size: 12px;
+        gap: 6px;
+      }
+      .code-console {
+        padding: 10px;
+        font-size: 9px;
+        line-height: 1.5;
+      }
+      .result-display {
+        font-size: 10px;
+        padding: 10px;
+        min-height: 50px;
+      }
+      .method-badge {
+        font-size: 9px;
+        padding: 2px 6px;
+      }
+      .tab-btn {
+        font-size: 11px;
+        padding: 5px 0;
       }
     }
   </style>
@@ -856,8 +893,8 @@
           
           <!-- Auth Tab Switcher -->
           <div id="authTabSwitcher" style="display: flex; gap: 0; margin-bottom: 24px; border-radius: 12px; background: var(--surface, #f1f5f9); padding: 4px; border: 1px solid var(--border-color, #e2e8f0);">
-            <button type="button" id="tabSignup" class="auth-tab-btn active" style="flex: 1; padding: 10px 16px; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; background: #fff; color: var(--slate-900, #0f172a); box-shadow: 0 1px 3px rgba(0,0,0,0.08);">Create Account</button>
-            <button type="button" id="tabSignin" class="auth-tab-btn" style="flex: 1; padding: 10px 16px; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; background: transparent; color: var(--text-muted, #94a3b8);">Sign In</button>
+            <button type="button" id="tabSignup" class="auth-tab-btn active" style="flex: 1; padding: 10px 16px; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; background: #0d9488; color: #ffffff; box-shadow: 0 2px 8px rgba(13,148,136,0.35);">Create Account</button>
+            <button type="button" id="tabSignin" class="auth-tab-btn" style="flex: 1; padding: 10px 16px; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; background: transparent; color: var(--text-muted, #64748b);">Sign In</button>
           </div>
           
           <!-- SIGNUP VIEW -->
@@ -1029,13 +1066,13 @@
       if(viewSignup) viewSignup.style.display = 'block';
       if(viewSignin) viewSignin.style.display = 'none';
       if(tabSignup) {
-        tabSignup.style.background = '#fff';
-        tabSignup.style.color = 'var(--slate-900, #0f172a)';
-        tabSignup.style.boxShadow = '0 1px 3px rgba(0,0,0,0.08)';
+        tabSignup.style.background = '#0d9488';
+        tabSignup.style.color = '#ffffff';
+        tabSignup.style.boxShadow = '0 2px 8px rgba(13,148,136,0.35)';
       }
       if(tabSignin) {
         tabSignin.style.background = 'transparent';
-        tabSignin.style.color = 'var(--text-muted, #94a3b8)';
+        tabSignin.style.color = '#64748b';
         tabSignin.style.boxShadow = 'none';
       }
     }
@@ -1044,13 +1081,13 @@
       if(viewSignup) viewSignup.style.display = 'none';
       if(viewSignin) viewSignin.style.display = 'block';
       if(tabSignin) {
-        tabSignin.style.background = '#fff';
-        tabSignin.style.color = 'var(--slate-900, #0f172a)';
-        tabSignin.style.boxShadow = '0 1px 3px rgba(0,0,0,0.08)';
+        tabSignin.style.background = '#0d9488';
+        tabSignin.style.color = '#ffffff';
+        tabSignin.style.boxShadow = '0 2px 8px rgba(13,148,136,0.35)';
       }
       if(tabSignup) {
         tabSignup.style.background = 'transparent';
-        tabSignup.style.color = 'var(--text-muted, #94a3b8)';
+        tabSignup.style.color = '#64748b';
         tabSignup.style.boxShadow = 'none';
       }
     }

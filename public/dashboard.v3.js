@@ -1173,7 +1173,7 @@ function escapeHTML(str) {
           const bal = c.acct ? c.acct.balance : 0;
           const hasReview = c.code === '1200' && bal > 0;
           return `
-            <div class="ledger-card">
+            <div class="ledger-card glass-panel hover-lift">
               <h4>
                 <span>${c.label}</span>
                 <span class="badge ${hasReview ? 'badge-warning' : 'badge-success'}">${hasReview ? 'Review' : 'Active'}</span>

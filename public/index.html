@@ -1114,52 +1114,50 @@
     }
 
     .features-section-dark .feature-card-soft {
-      background: #ffffff !important;
-      border: 1px solid rgba(226, 232, 240, 0.8) !important;
-      color: var(--slate-900) !important;
+      background: #083331 !important;
+      border: 1px solid rgba(13, 148, 136, 0.25) !important;
+      color: #ffffff !important;
       border-radius: 16px !important;
       position: relative !important;
       box-shadow:
-        0 4px 20px -2px rgba(148, 163, 184, 0.08),
-        0 2px 6px -1px rgba(0, 0, 0, 0.02) !important;
-      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease, box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), background 0.4s ease;
+        0 4px 24px -4px rgba(0, 0, 0, 0.35),
+        0 1px 6px -1px rgba(0, 0, 0, 0.2) !important;
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease, box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
       overflow: hidden;
       display: flex;
       flex-direction: column;
     }
 
-    /* Subtle top gradient accent line for premium gold look */
+    /* Gold top accent line */
     .features-section-dark .feature-card-soft::before {
       content: '';
       position: absolute;
       top: 0;
       left: 0;
       right: 0;
-      height: 4px;
-      background: linear-gradient(90deg, #d4a85d 0%, #b8652e 100%);
+      height: 2px;
+      background: linear-gradient(90deg, #d4a85d 0%, #f0c678 50%, #d4a85d 100%);
       z-index: 5;
     }
 
     .features-section-dark .feature-card-soft:hover {
       transform: translateY(-6px) !important;
-      border-color: rgba(212, 168, 93, 0.4) !important;
-      background: rgba(255, 255, 255, 0.95) !important;
-      backdrop-filter: blur(8px) !important;
-      -webkit-backdrop-filter: blur(8px) !important;
+      border-color: rgba(212, 168, 93, 0.5) !important;
       box-shadow:
-        0 20px 40px -15px rgba(184, 101, 46, 0.08),
-        0 8px 24px -10px rgba(0, 0, 0, 0.04) !important;
+        0 24px 48px -12px rgba(0, 0, 0, 0.5),
+        0 0 0 1px rgba(212, 168, 93, 0.2),
+        0 0 32px -8px rgba(13, 148, 136, 0.25) !important;
     }
 
     .features-section-dark .feature-card-soft .fc-title {
-      color: var(--slate-900) !important;
+      color: #ffffff !important;
       font-size: 20px;
       font-weight: 700;
       margin-bottom: 10px;
     }
 
     .features-section-dark .feature-card-soft .fc-desc {
-      color: var(--slate-600) !important;
+      color: #a7f3d0 !important;
       font-size: 14px;
       line-height: 1.6;
     }
@@ -1169,8 +1167,8 @@
     }
 
     .features-section-dark .fc-illus-container {
-      background: var(--slate-50) !important;
-      border-top: 1px solid #e2e8f0 !important;
+      background: rgba(0, 0, 0, 0.25) !important;
+      border-top: 1px solid rgba(13, 148, 136, 0.2) !important;
       border-radius: 0 0 var(--radius-lg) var(--radius-lg) !important;
       display: flex;
       align-items: center;
@@ -1181,8 +1179,8 @@
     }
 
     .features-section-dark .feature-card-soft:hover .fc-illus-container {
-      background: #f0fdfa !important;
-      border-top-color: #99f6e4 !important;
+      background: rgba(0, 0, 0, 0.15) !important;
+      border-top-color: rgba(13, 148, 136, 0.4) !important;
     }
 
     /* ==========================================
@@ -3717,8 +3715,8 @@
           
           <!-- Auth Tab Switcher -->
           <div id="authTabSwitcher" style="display: flex; gap: 0; margin-bottom: 24px; border-radius: 12px; background: var(--surface, #f1f5f9); padding: 4px; border: 1px solid var(--border-color, #e2e8f0);">
-            <button type="button" id="tabSignup" class="auth-tab-btn active" style="flex: 1; padding: 10px 16px; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; background: #fff; color: var(--slate-900, #0f172a); box-shadow: 0 1px 3px rgba(0,0,0,0.08);">Create Account</button>
-            <button type="button" id="tabSignin" class="auth-tab-btn" style="flex: 1; padding: 10px 16px; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; background: transparent; color: var(--text-muted, #94a3b8);">Sign In</button>
+            <button type="button" id="tabSignup" class="auth-tab-btn active" style="flex: 1; padding: 10px 16px; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; background: #0d9488; color: #ffffff; box-shadow: 0 2px 8px rgba(13,148,136,0.35);">Create Account</button>
+            <button type="button" id="tabSignin" class="auth-tab-btn" style="flex: 1; padding: 10px 16px; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; background: transparent; color: var(--text-muted, #64748b);">Sign In</button>
           </div>
           
           <!-- SIGNUP VIEW -->
@@ -3890,13 +3888,13 @@
       if(viewSignup) viewSignup.style.display = 'block';
       if(viewSignin) viewSignin.style.display = 'none';
       if(tabSignup) {
-        tabSignup.style.background = '#fff';
-        tabSignup.style.color = 'var(--slate-900, #0f172a)';
-        tabSignup.style.boxShadow = '0 1px 3px rgba(0,0,0,0.08)';
+        tabSignup.style.background = '#0d9488';
+        tabSignup.style.color = '#ffffff';
+        tabSignup.style.boxShadow = '0 2px 8px rgba(13,148,136,0.35)';
       }
       if(tabSignin) {
         tabSignin.style.background = 'transparent';
-        tabSignin.style.color = 'var(--text-muted, #94a3b8)';
+        tabSignin.style.color = '#64748b';
         tabSignin.style.boxShadow = 'none';
       }
     }
@@ -3905,13 +3903,13 @@
       if(viewSignup) viewSignup.style.display = 'none';
       if(viewSignin) viewSignin.style.display = 'block';
       if(tabSignin) {
-        tabSignin.style.background = '#fff';
-        tabSignin.style.color = 'var(--slate-900, #0f172a)';
-        tabSignin.style.boxShadow = '0 1px 3px rgba(0,0,0,0.08)';
+        tabSignin.style.background = '#0d9488';
+        tabSignin.style.color = '#ffffff';
+        tabSignin.style.boxShadow = '0 2px 8px rgba(13,148,136,0.35)';
       }
       if(tabSignup) {
         tabSignup.style.background = 'transparent';
-        tabSignup.style.color = 'var(--text-muted, #94a3b8)';
+        tabSignup.style.color = '#64748b';
         tabSignup.style.boxShadow = 'none';
       }
     }
