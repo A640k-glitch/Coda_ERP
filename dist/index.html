@@ -461,8 +461,9 @@
       position: relative;
       box-shadow:
         inset 0 0 0 1px rgba(255, 255, 255, 0.4),
-        0 20px 50px rgba(0, 0, 0, 0.5),
-        0 6px 20px rgba(0, 0, 0, 0.35);
+        0 25px 60px rgba(212, 168, 93, 0.12), /* Subtle gold back-glow */
+        0 20px 50px rgba(0, 0, 0, 0.4),
+        0 6px 20px rgba(0, 0, 0, 0.3);
       border: 3px solid #b0b0b8;
     }
 
@@ -510,7 +511,9 @@
       position: relative;
       width: 104%;
       margin-left: -2%;
-      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35);
+      box-shadow:
+        0 14px 35px rgba(212, 168, 93, 0.22), /* Subtle gold desk-glow */
+        0 10px 25px rgba(0, 0, 0, 0.35);
       z-index: 20;
     }
 
@@ -707,6 +710,22 @@
         height: 40px !important;
         border-radius: 8px !important;
         gap: 0 !important;
+      }
+
+      .mockup-sidebar .sidebar-promo-card,
+      .mockup-sidebar .mockup-sidebar-user-details,
+      .mockup-sidebar .mockup-sidebar-logout {
+        display: none !important;
+      }
+
+      .mockup-sidebar .sidebar-footer {
+        padding: 8px !important;
+        border-top: none !important;
+      }
+
+      .mockup-sidebar .mockup-sidebar-user-row {
+        justify-content: center !important;
+        padding: 4px 0 !important;
       }
     }
 
@@ -1095,26 +1114,40 @@
 
     .features-section-dark .feature-card-soft {
       background: #ffffff !important;
-      border: 1px solid #e2e8f0 !important;
-      border-left: 3px solid var(--teal-500) !important;
+      border: 1px solid rgba(226, 232, 240, 0.8) !important;
       color: var(--slate-900) !important;
-      border-radius: var(--radius-lg) !important;
+      border-radius: 16px !important;
+      position: relative !important;
       box-shadow:
-        0 1px 3px rgba(0,0,0,0.06),
-        0 4px 12px rgba(0,0,0,0.08),
-        0 16px 40px rgba(0,0,0,0.06) !important;
-      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.3s ease, box-shadow 0.3s ease;
+        0 4px 20px -2px rgba(148, 163, 184, 0.08),
+        0 2px 6px -1px rgba(0, 0, 0, 0.02) !important;
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease, box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1), background 0.4s ease;
       overflow: hidden;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* Subtle top gradient accent line for premium gold look */
+    .features-section-dark .feature-card-soft::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, #d4a85d 0%, #b8652e 100%);
+      z-index: 5;
     }
 
     .features-section-dark .feature-card-soft:hover {
-      transform: translateY(-5px) !important;
-      border-left-color: var(--teal-400) !important;
-      border-color: #cbd5e1 !important;
+      transform: translateY(-6px) !important;
+      border-color: rgba(212, 168, 93, 0.4) !important;
+      background: rgba(255, 255, 255, 0.95) !important;
+      backdrop-filter: blur(8px) !important;
+      -webkit-backdrop-filter: blur(8px) !important;
       box-shadow:
-        0 2px 4px rgba(0,0,0,0.06),
-        0 8px 24px rgba(0,0,0,0.10),
-        0 24px 56px rgba(13,148,136,0.10) !important;
+        0 20px 40px -15px rgba(184, 101, 46, 0.08),
+        0 8px 24px -10px rgba(0, 0, 0, 0.04) !important;
     }
 
     .features-section-dark .feature-card-soft .fc-title {
@@ -1761,7 +1794,7 @@
     }
   
 </style>
-  <link rel="stylesheet" crossorigin href="/assets/index-0tSt_rmc.css">
+  <link rel="stylesheet" crossorigin href="/assets/index-D5SWE8vL.css">
 </head>
 
 <body>
@@ -1930,15 +1963,15 @@
                       <p class="promo-desc" style="font-size: 9px; color: rgba(255,255,255,0.6); margin-bottom: 6px;">Multi-depot inventory &amp; API access.</p>
                       <button style="width: 100%; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.2); color: #ffffff; font-size: 9px; font-weight: 600; padding: 4px 8px; border-radius: 5px; cursor: default;">Upgrade Plan</button>
                     </div>
-                    <div style="display: flex; align-items: center; gap: 8px; padding: 6px 4px;">
+                    <div class="mockup-sidebar-user-row" style="display: flex; align-items: center; gap: 8px; padding: 6px 4px;">
                       <div style="width: 24px; height: 24px; border-radius: 50%; background: linear-gradient(135deg, var(--teal-600), var(--teal-400)); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
                         <span style="font-size: 10px; font-weight: 700; color: #fff;">AK</span>
                       </div>
-                      <div style="flex: 1; min-width: 0;">
+                      <div class="mockup-sidebar-user-details" style="flex: 1; min-width: 0;">
                         <div style="font-size: 10px; font-weight: 600; color: var(--slate-200); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Demo User</div>
                         <div style="font-size: 9px; color: var(--slate-500); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">demo@coda.app</div>
                       </div>
-                      <span class="material-symbols-outlined" style="font-size: 14px; color: var(--slate-500);">logout</span>
+                      <span class="material-symbols-outlined mockup-sidebar-logout" style="font-size: 14px; color: var(--slate-500);">logout</span>
                     </div>
                   </div>
                 </aside>
@@ -2157,22 +2190,22 @@
 
                     <!-- Ledger Account Cards -->
                     <div class="ledger-grid" style="margin-top: 0; gap: 10px; grid-template-columns: repeat(4, 1fr);">
-                      <div class="ledger-card" style="padding: 10px;">
+                      <div class="ledger-card glass-panel hover-lift" style="padding: 10px;">
                         <h4 style="font-size: 10px; margin-bottom: 6px;">Petty Cash</h4>
                         <div class="ledger-metric" style="font-size: 16px;">₦150,000 <span style="font-size:8px; font-weight:500; color:var(--text-muted); background:rgba(0,0,0,0.04); padding:1px 4px; border-radius:3px; vertical-align:middle;">Sample</span></div>
                         <div style="font-size: 8px; color: var(--text-muted);">Current Asset</div>
                       </div>
-                      <div class="ledger-card" style="padding: 10px;">
+                      <div class="ledger-card glass-panel hover-lift" style="padding: 10px;">
                         <h4 style="font-size: 10px; margin-bottom: 6px;">Tax Reserve</h4>
                         <div class="ledger-metric" style="font-size: 16px;">₦1,340,000 <span style="font-size:8px; font-weight:500; color:var(--text-muted); background:rgba(0,0,0,0.04); padding:1px 4px; border-radius:3px; vertical-align:middle;">Sample</span></div>
                         <div style="font-size: 8px; color: var(--text-muted);">Liability</div>
                       </div>
-                      <div class="ledger-card" style="padding: 10px;">
+                      <div class="ledger-card glass-panel hover-lift" style="padding: 10px;">
                         <h4 style="font-size: 10px; margin-bottom: 6px;">Retained Earnings</h4>
                         <div class="ledger-metric" style="font-size: 16px;">₦12,450,000 <span style="font-size:8px; font-weight:500; color:var(--text-muted); background:rgba(0,0,0,0.04); padding:1px 4px; border-radius:3px; vertical-align:middle;">Sample</span></div>
                         <div style="font-size: 8px; color: var(--text-muted);">Equity</div>
                       </div>
-                      <div class="ledger-card" style="padding: 10px;">
+                      <div class="ledger-card glass-panel hover-lift" style="padding: 10px;">
                         <h4 style="font-size: 10px; margin-bottom: 6px;">Share Capital</h4>
                         <div class="ledger-metric" style="font-size: 16px;">₦5,000,000 <span style="font-size:8px; font-weight:500; color:var(--text-muted); background:rgba(0,0,0,0.04); padding:1px 4px; border-radius:3px; vertical-align:middle;">Sample</span></div>
                         <div style="font-size: 8px; color: var(--text-muted);">Equity</div>
@@ -2185,47 +2218,49 @@
                         <h3 style="font-size: 11px;">Chart of Accounts (GAAP)</h3>
                         <span style="font-size:8px; font-weight:500; color:var(--text-muted); background:rgba(0,0,0,0.04); padding:1px 4px; border-radius:3px;">Sample</span>
                       </div>
-                      <table class="mockup-table">
-                        <thead>
-                          <tr>
-                            <th>Code</th>
-                            <th>Account Name</th>
-                            <th>Classification</th>
-                            <th style="text-align: right;">Balance</th>
-                            <th>Status</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td>1010</td>
-                            <td>Petty Cash</td>
-                            <td>Current Asset</td>
-                            <td style="text-align: right; font-weight: 600;">₦150,000</td>
-                            <td><span class="mockup-badge badge-success">Active</span></td>
-                          </tr>
-                          <tr>
-                            <td>2020</td>
-                            <td>Tax Compliance Reserve</td>
-                            <td>Liability</td>
-                            <td style="text-align: right; font-weight: 600;">₦1,340,000</td>
-                            <td><span class="mockup-badge badge-success">Active</span></td>
-                          </tr>
-                          <tr>
-                            <td>3010</td>
-                            <td>Retained Earnings</td>
-                            <td>Equity</td>
-                            <td style="text-align: right; font-weight: 600;">₦12,450,000</td>
-                            <td><span class="mockup-badge badge-success">Active</span></td>
-                          </tr>
-                          <tr>
-                            <td>4010</td>
-                            <td>Revenue - Services</td>
-                            <td>Revenue</td>
-                            <td style="text-align: right; font-weight: 600;">₦45,200,000</td>
-                            <td><span class="mockup-badge badge-success">Active</span></td>
-                          </tr>
-                        </tbody>
-                      </table>
+                      <div class="table-wrap">
+                        <table class="mockup-table">
+                          <thead>
+                            <tr>
+                              <th>Code</th>
+                              <th>Account Name</th>
+                              <th>Classification</th>
+                              <th style="text-align: right;">Balance</th>
+                              <th>Status</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td>1010</td>
+                              <td>Petty Cash</td>
+                              <td>Current Asset</td>
+                              <td style="text-align: right; font-weight: 600;">₦150,000</td>
+                              <td><span class="mockup-badge badge-success">Active</span></td>
+                            </tr>
+                            <tr>
+                              <td>2020</td>
+                              <td>Tax Compliance Reserve</td>
+                              <td>Liability</td>
+                              <td style="text-align: right; font-weight: 600;">₦1,340,000</td>
+                              <td><span class="mockup-badge badge-success">Active</span></td>
+                            </tr>
+                            <tr>
+                              <td>3010</td>
+                              <td>Retained Earnings</td>
+                              <td>Equity</td>
+                              <td style="text-align: right; font-weight: 600;">₦12,450,000</td>
+                              <td><span class="mockup-badge badge-success">Active</span></td>
+                            </tr>
+                            <tr>
+                              <td>4010</td>
+                              <td>Revenue - Services</td>
+                              <td>Revenue</td>
+                              <td style="text-align: right; font-weight: 600;">₦45,200,000</td>
+                              <td><span class="mockup-badge badge-success">Active</span></td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
                     </div>
 
                     <!-- Recent Journal Entries -->
@@ -2233,44 +2268,46 @@
                       <div class="table-card-header" style="padding: 8px 12px;">
                         <h3 style="font-size: 11px;">Recent Journal Entries &amp; Ledger Activity</h3>
                       </div>
-                      <table class="mockup-table">
-                        <thead>
-                          <tr>
-                            <th>Date</th>
-                            <th>Journal Description</th>
-                            <th>Reference</th>
-                            <th style="text-align: right;">Amount</th>
-                            <th>Classification</th>
-                            <th>Status</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td>18 Jun</td>
-                            <td>Invoice #1043 — API Access</td>
-                            <td>INV-1043</td>
-                            <td style="text-align: right; font-weight: 600; color: var(--success);">+₦450,000</td>
-                            <td>Trade Receivables</td>
-                            <td><span class="mockup-badge badge-success">Posted</span></td>
-                          </tr>
-                          <tr>
-                            <td>17 Jun</td>
-                            <td>Web Hosting Service</td>
-                            <td>SUP-022</td>
-                            <td style="text-align: right; font-weight: 600; color: var(--error);">-₦120,000</td>
-                            <td>Operating Expense</td>
-                            <td><span class="mockup-badge badge-success">Posted</span></td>
-                          </tr>
-                          <tr>
-                            <td>16 Jun</td>
-                            <td>Invoice #1042 — Enterprise Sub</td>
-                            <td>INV-1042</td>
-                            <td style="text-align: right; font-weight: 600; color: var(--success);">+₦845,000</td>
-                            <td>Trade Receivables</td>
-                            <td><span class="mockup-badge badge-success">Posted</span></td>
-                          </tr>
-                        </tbody>
-                      </table>
+                      <div class="table-wrap">
+                        <table class="mockup-table">
+                          <thead>
+                            <tr>
+                              <th>Date</th>
+                              <th>Journal Description</th>
+                              <th>Reference</th>
+                              <th style="text-align: right;">Amount</th>
+                              <th>Classification</th>
+                              <th>Status</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td>18 Jun</td>
+                              <td>Invoice #1043 — API Access</td>
+                              <td>INV-1043</td>
+                              <td style="text-align: right; font-weight: 600; color: var(--success);">+₦450,000</td>
+                              <td>Trade Receivables</td>
+                              <td><span class="mockup-badge badge-success">Posted</span></td>
+                            </tr>
+                            <tr>
+                              <td>17 Jun</td>
+                              <td>Web Hosting Service</td>
+                              <td>SUP-022</td>
+                              <td style="text-align: right; font-weight: 600; color: var(--error);">-₦120,000</td>
+                              <td>Operating Expense</td>
+                              <td><span class="mockup-badge badge-success">Posted</span></td>
+                            </tr>
+                            <tr>
+                              <td>16 Jun</td>
+                              <td>Invoice #1042 — Enterprise Sub</td>
+                              <td>INV-1042</td>
+                              <td style="text-align: right; font-weight: 600; color: var(--success);">+₦845,000</td>
+                              <td>Trade Receivables</td>
+                              <td><span class="mockup-badge badge-success">Posted</span></td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
                     </div>
                   </div>
 
@@ -2296,62 +2333,64 @@
                         <h3 style="font-size: 11px;">Active Inventory Stock Levels</h3>
                         <span style="font-size:8px; font-weight:500; color:var(--text-muted); background:rgba(0,0,0,0.04); padding:1px 4px; border-radius:3px;">Sample</span>
                       </div>
-                      <table class="mockup-table">
-                        <thead>
-                          <tr>
-                            <th>Item ID</th>
-                            <th>SKU Code</th>
-                            <th>Product Description</th>
-                            <th style="text-align: right;">Unit Cost</th>
-                            <th style="text-align: right;">Sell Price</th>
-                            <th style="text-align: right;">Stock</th>
-                            <th style="text-align: right;">Reorder</th>
-                            <th>Status</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td>PROD-001</td>
-                            <td>MBP-M3-001</td>
-                            <td>MacBook Pro M3 Max</td>
-                            <td style="text-align: right;">₦1,850,000</td>
-                            <td style="text-align: right;">₦2,200,000</td>
-                            <td style="text-align: right; font-weight: 600;">42</td>
-                            <td style="text-align: right;">10</td>
-                            <td><span class="mockup-badge badge-success">Optimal</span></td>
-                          </tr>
-                          <tr>
-                            <td>PROD-002</td>
-                            <td>DEL-U32-4K</td>
-                            <td>Dell UltraSharp 32"</td>
-                            <td style="text-align: right;">₦620,000</td>
-                            <td style="text-align: right;">₦750,000</td>
-                            <td style="text-align: right; font-weight: 600;">15</td>
-                            <td style="text-align: right;">5</td>
-                            <td><span class="mockup-badge badge-success">Optimal</span></td>
-                          </tr>
-                          <tr>
-                            <td>PROD-003</td>
-                            <td>ERG-DSK-01</td>
-                            <td>Ergonomic Office Desk</td>
-                            <td style="text-align: right;">₦280,000</td>
-                            <td style="text-align: right;">₦350,000</td>
-                            <td style="text-align: right; font-weight: 600; color: var(--error);">8</td>
-                            <td style="text-align: right;">10</td>
-                            <td><span class="mockup-badge badge-danger">Low Stock</span></td>
-                          </tr>
-                          <tr>
-                            <td>PROD-005</td>
-                            <td>LOG-MX3S</td>
-                            <td>Logitech MX Master 3S</td>
-                            <td style="text-align: right;">₦85,000</td>
-                            <td style="text-align: right;">₦110,000</td>
-                            <td style="text-align: right; font-weight: 600; color: var(--error);">3</td>
-                            <td style="text-align: right;">10</td>
-                            <td><span class="mockup-badge badge-danger">Low Stock</span></td>
-                          </tr>
-                        </tbody>
-                      </table>
+                      <div class="table-wrap">
+                        <table class="mockup-table">
+                          <thead>
+                            <tr>
+                              <th>Item ID</th>
+                              <th>SKU Code</th>
+                              <th>Product Description</th>
+                              <th style="text-align: right;">Unit Cost</th>
+                              <th style="text-align: right;">Sell Price</th>
+                              <th style="text-align: right;">Stock</th>
+                              <th style="text-align: right;">Reorder</th>
+                              <th>Status</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td>PROD-001</td>
+                              <td>MBP-M3-001</td>
+                              <td>MacBook Pro M3 Max</td>
+                              <td style="text-align: right;">₦1,850,000</td>
+                              <td style="text-align: right;">₦2,200,000</td>
+                              <td style="text-align: right; font-weight: 600;">42</td>
+                              <td style="text-align: right;">10</td>
+                              <td><span class="mockup-badge badge-success">Optimal</span></td>
+                            </tr>
+                            <tr>
+                              <td>PROD-002</td>
+                              <td>DEL-U32-4K</td>
+                              <td>Dell UltraSharp 32"</td>
+                              <td style="text-align: right;">₦620,000</td>
+                              <td style="text-align: right;">₦750,000</td>
+                              <td style="text-align: right; font-weight: 600;">15</td>
+                              <td style="text-align: right;">5</td>
+                              <td><span class="mockup-badge badge-success">Optimal</span></td>
+                            </tr>
+                            <tr>
+                              <td>PROD-003</td>
+                              <td>ERG-DSK-01</td>
+                              <td>Ergonomic Office Desk</td>
+                              <td style="text-align: right;">₦280,000</td>
+                              <td style="text-align: right;">₦350,000</td>
+                              <td style="text-align: right; font-weight: 600; color: var(--error);">8</td>
+                              <td style="text-align: right;">10</td>
+                              <td><span class="mockup-badge badge-danger">Low Stock</span></td>
+                            </tr>
+                            <tr>
+                              <td>PROD-005</td>
+                              <td>LOG-MX3S</td>
+                              <td>Logitech MX Master 3S</td>
+                              <td style="text-align: right;">₦85,000</td>
+                              <td style="text-align: right;">₦110,000</td>
+                              <td style="text-align: right; font-weight: 600; color: var(--error);">3</td>
+                              <td style="text-align: right;">10</td>
+                              <td><span class="mockup-badge badge-danger">Low Stock</span></td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
                     </div>
 
                     <!-- Recent Purchase Orders -->
@@ -2359,33 +2398,35 @@
                       <div class="table-card-header" style="padding: 8px 12px;">
                         <h3 style="font-size: 11px;">Recent Purchase Orders Log</h3>
                       </div>
-                      <table class="mockup-table">
-                        <thead>
-                          <tr>
-                            <th>Order ID</th>
-                            <th>Supplier Name</th>
-                            <th>Expected Delivery</th>
-                            <th style="text-align: right;">Total Amount</th>
-                            <th>Status</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td>PO-2026-001</td>
-                            <td>TechDistributor Ltd</td>
-                            <td>30 Jun 2026</td>
-                            <td style="text-align: right; font-weight: 600;">₦4,200,000</td>
-                            <td><span class="mockup-badge badge-pending">Pending</span></td>
-                          </tr>
-                          <tr>
-                            <td>PO-2026-002</td>
-                            <td>OfficeMart Nigeria</td>
-                            <td>25 Jun 2026</td>
-                            <td style="text-align: right; font-weight: 600;">₦840,000</td>
-                            <td><span class="mockup-badge badge-success">Shipped</span></td>
-                          </tr>
-                        </tbody>
-                      </table>
+                      <div class="table-wrap">
+                        <table class="mockup-table">
+                          <thead>
+                            <tr>
+                              <th>Order ID</th>
+                              <th>Supplier Name</th>
+                              <th>Expected Delivery</th>
+                              <th style="text-align: right;">Total Amount</th>
+                              <th>Status</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td>PO-2026-001</td>
+                              <td>TechDistributor Ltd</td>
+                              <td>30 Jun 2026</td>
+                              <td style="text-align: right; font-weight: 600;">₦4,200,000</td>
+                              <td><span class="mockup-badge badge-pending">Pending</span></td>
+                            </tr>
+                            <tr>
+                              <td>PO-2026-002</td>
+                              <td>OfficeMart Nigeria</td>
+                              <td>25 Jun 2026</td>
+                              <td style="text-align: right; font-weight: 600;">₦840,000</td>
+                              <td><span class="mockup-badge badge-success">Shipped</span></td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
                     </div>
                   </div>
 
@@ -2411,40 +2452,42 @@
                         <h3 style="font-size: 11px;">Calculated Tax Reserve Liability</h3>
                         <span style="font-size:8px; font-weight:500; color:var(--text-muted); background:rgba(0,0,0,0.04); padding:1px 4px; border-radius:3px;">Sample</span>
                       </div>
-                      <table class="mockup-table">
-                        <thead>
-                          <tr>
-                            <th>Reporting Period</th>
-                            <th>Tax Bracket Type</th>
-                            <th style="text-align: right;">Calculated Base</th>
-                            <th style="text-align: right;">Deducted Liability</th>
-                            <th>Remittance Status</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td>June 2026</td>
-                            <td>VAT 7.5%</td>
-                            <td style="text-align: right;">₦12,400,000</td>
-                            <td style="text-align: right; font-weight: 600;">₦930,000</td>
-                            <td><span class="mockup-badge badge-pending">Pending Filing</span></td>
-                          </tr>
-                          <tr>
-                            <td>May 2026</td>
-                            <td>CIT</td>
-                            <td style="text-align: right;">₦8,500,000</td>
-                            <td style="text-align: right; font-weight: 600;">₦2,550,000</td>
-                            <td><span class="mockup-badge badge-success">Filed &amp; Paid</span></td>
-                          </tr>
-                          <tr>
-                            <td>May 2026</td>
-                            <td>WHT</td>
-                            <td style="text-align: right;">₦4,100,000</td>
-                            <td style="text-align: right; font-weight: 600;">₦410,000</td>
-                            <td><span class="mockup-badge badge-success">Filed &amp; Paid</span></td>
-                          </tr>
-                        </tbody>
-                      </table>
+                      <div class="table-wrap">
+                        <table class="mockup-table">
+                          <thead>
+                            <tr>
+                              <th>Reporting Period</th>
+                              <th>Tax Bracket Type</th>
+                              <th style="text-align: right;">Calculated Base</th>
+                              <th style="text-align: right;">Deducted Liability</th>
+                              <th>Remittance Status</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td>June 2026</td>
+                              <td>VAT 7.5%</td>
+                              <td style="text-align: right;">₦12,400,000</td>
+                              <td style="text-align: right; font-weight: 600;">₦930,000</td>
+                              <td><span class="mockup-badge badge-pending">Pending Filing</span></td>
+                            </tr>
+                            <tr>
+                              <td>May 2026</td>
+                              <td>CIT</td>
+                              <td style="text-align: right;">₦8,500,000</td>
+                              <td style="text-align: right; font-weight: 600;">₦2,550,000</td>
+                              <td><span class="mockup-badge badge-success">Filed &amp; Paid</span></td>
+                            </tr>
+                            <tr>
+                              <td>May 2026</td>
+                              <td>WHT</td>
+                              <td style="text-align: right;">₦4,100,000</td>
+                              <td style="text-align: right; font-weight: 600;">₦410,000</td>
+                              <td><span class="mockup-badge badge-success">Filed &amp; Paid</span></td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
                     </div>
                   </div>
 
@@ -2545,47 +2588,49 @@
                         <h3 style="font-size: 11px;">Registered Business Clients</h3>
                         <span style="font-size:8px; font-weight:500; color:var(--text-muted); background:rgba(0,0,0,0.04); padding:1px 4px; border-radius:3px;">Sample</span>
                       </div>
-                      <table class="mockup-table">
-                        <thead>
-                          <tr>
-                            <th>Client ID</th>
-                            <th>Company / Name</th>
-                            <th>Contact Email</th>
-                            <th>Phone Number</th>
-                            <th>Status</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td>CLI-001</td>
-                            <td>Acme Corporation</td>
-                            <td>billing@acme.com</td>
-                            <td>+234 803 123 4567</td>
-                            <td><span class="mockup-badge badge-success">Active</span></td>
-                          </tr>
-                          <tr>
-                            <td>CLI-002</td>
-                            <td>Globex Limited</td>
-                            <td>accounts@globex.com</td>
-                            <td>+234 812 987 6543</td>
-                            <td><span class="mockup-badge badge-success">Active</span></td>
-                          </tr>
-                          <tr>
-                            <td>CLI-003</td>
-                            <td>Initech Holdings</td>
-                            <td>info@initech.com</td>
-                            <td>+234 815 555 0199</td>
-                            <td><span class="mockup-badge badge-success">Active</span></td>
-                          </tr>
-                          <tr>
-                            <td>CLI-004</td>
-                            <td>Umbrella Corp</td>
-                            <td>finance@umbrella.com</td>
-                            <td>+234 902 444 8812</td>
-                            <td><span class="mockup-badge badge-pending">Pending</span></td>
-                          </tr>
-                        </tbody>
-                      </table>
+                      <div class="table-wrap">
+                        <table class="mockup-table">
+                          <thead>
+                            <tr>
+                              <th>Client ID</th>
+                              <th>Company / Name</th>
+                              <th>Contact Email</th>
+                              <th>Phone Number</th>
+                              <th>Status</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td>CLI-001</td>
+                              <td>Acme Corporation</td>
+                              <td>billing@acme.com</td>
+                              <td>+234 803 123 4567</td>
+                              <td><span class="mockup-badge badge-success">Active</span></td>
+                            </tr>
+                            <tr>
+                              <td>CLI-002</td>
+                              <td>Globex Limited</td>
+                              <td>accounts@globex.com</td>
+                              <td>+234 812 987 6543</td>
+                              <td><span class="mockup-badge badge-success">Active</span></td>
+                            </tr>
+                            <tr>
+                              <td>CLI-003</td>
+                              <td>Initech Holdings</td>
+                              <td>info@initech.com</td>
+                              <td>+234 815 555 0199</td>
+                              <td><span class="mockup-badge badge-success">Active</span></td>
+                            </tr>
+                            <tr>
+                              <td>CLI-004</td>
+                              <td>Umbrella Corp</td>
+                              <td>finance@umbrella.com</td>
+                              <td>+234 902 444 8812</td>
+                              <td><span class="mockup-badge badge-pending">Pending</span></td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
                     </div>
                   </div>
 
@@ -2611,52 +2656,54 @@
                         <h3 style="font-size: 11px;">Employee Monthly Deductions Ledger</h3>
                         <span style="font-size:8px; font-weight:500; color:var(--text-muted); background:rgba(0,0,0,0.04); padding:1px 4px; border-radius:3px;">Sample</span>
                       </div>
-                      <table class="mockup-table">
-                        <thead>
-                          <tr>
-                            <th>Emp ID</th>
-                            <th>Employee Name</th>
-                            <th>Role / Department</th>
-                            <th>Email</th>
-                            <th style="text-align: right;">Base Salary</th>
-                            <th>Status</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td>EMP-001</td>
-                            <td>Sarah Johnson</td>
-                            <td>CTO</td>
-                            <td>sarah@codaerp.com</td>
-                            <td style="text-align: right; font-weight: 600;">₦2,400,000</td>
-                            <td><span class="mockup-badge badge-success">Active</span></td>
-                          </tr>
-                          <tr>
-                            <td>EMP-002</td>
-                            <td>Michael Obi</td>
-                            <td>Lead Engineer</td>
-                            <td>michael@codaerp.com</td>
-                            <td style="text-align: right; font-weight: 600;">₦1,800,000</td>
-                            <td><span class="mockup-badge badge-success">Active</span></td>
-                          </tr>
-                          <tr>
-                            <td>EMP-003</td>
-                            <td>Amina Bello</td>
-                            <td>Finance Director</td>
-                            <td>amina@codaerp.com</td>
-                            <td style="text-align: right; font-weight: 600;">₦2,100,000</td>
-                            <td><span class="mockup-badge badge-success">Active</span></td>
-                          </tr>
-                          <tr>
-                            <td>EMP-004</td>
-                            <td>Chidi Okonkwo</td>
-                            <td>Product Manager</td>
-                            <td>chidi@codaerp.com</td>
-                            <td style="text-align: right; font-weight: 600;">₦1,500,000</td>
-                            <td><span class="mockup-badge badge-success">Active</span></td>
-                          </tr>
-                        </tbody>
-                      </table>
+                      <div class="table-wrap">
+                        <table class="mockup-table">
+                          <thead>
+                            <tr>
+                              <th>Emp ID</th>
+                              <th>Employee Name</th>
+                              <th>Role / Department</th>
+                              <th>Email</th>
+                              <th style="text-align: right;">Base Salary</th>
+                              <th>Status</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td>EMP-001</td>
+                              <td>Sarah Johnson</td>
+                              <td>CTO</td>
+                              <td>sarah@codaerp.com</td>
+                              <td style="text-align: right; font-weight: 600;">₦2,400,000</td>
+                              <td><span class="mockup-badge badge-success">Active</span></td>
+                            </tr>
+                            <tr>
+                              <td>EMP-002</td>
+                              <td>Michael Obi</td>
+                              <td>Lead Engineer</td>
+                              <td>michael@codaerp.com</td>
+                              <td style="text-align: right; font-weight: 600;">₦1,800,000</td>
+                              <td><span class="mockup-badge badge-success">Active</span></td>
+                            </tr>
+                            <tr>
+                              <td>EMP-003</td>
+                              <td>Amina Bello</td>
+                              <td>Finance Director</td>
+                              <td>amina@codaerp.com</td>
+                              <td style="text-align: right; font-weight: 600;">₦2,100,000</td>
+                              <td><span class="mockup-badge badge-success">Active</span></td>
+                            </tr>
+                            <tr>
+                              <td>EMP-004</td>
+                              <td>Chidi Okonkwo</td>
+                              <td>Product Manager</td>
+                              <td>chidi@codaerp.com</td>
+                              <td style="text-align: right; font-weight: 600;">₦1,500,000</td>
+                              <td><span class="mockup-badge badge-success">Active</span></td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
                     </div>
                   </div>
 
@@ -2682,36 +2729,38 @@
                         <h3 style="font-size: 11px;">Ready Financial Audited Statements</h3>
                         <span style="font-size:8px; font-weight:500; color:var(--text-muted); background:rgba(0,0,0,0.04); padding:1px 4px; border-radius:3px;">Sample</span>
                       </div>
-                      <table class="mockup-table">
-                        <thead>
-                          <tr>
-                            <th>Financial Statement Document</th>
-                            <th>Filing Standard</th>
-                            <th>Reporting Period</th>
-                            <th>Format Action</th>
-                          </tr>
-                        </thead>
-                        <tbody>
-                          <tr>
-                            <td>Profit &amp; Loss Statement (P&amp;L)</td>
-                            <td>IFRS / GAAP</td>
-                            <td>Q2 2026</td>
-                            <td><button class="btn btn-secondary btn-sm" style="height: 22px; font-size: 9px; padding: 0 8px;" disabled>PDF Download</button></td>
-                          </tr>
-                          <tr>
-                            <td>Trial Balance Sheet</td>
-                            <td>Double-Entry</td>
-                            <td>May 2026</td>
-                            <td><button class="btn btn-secondary btn-sm" style="height: 22px; font-size: 9px; padding: 0 8px;" disabled>CSV Download</button></td>
-                          </tr>
-                          <tr>
-                            <td>GL Accounts Export</td>
-                            <td>Audit Trail</td>
-                            <td>May 2026</td>
-                            <td><button class="btn btn-secondary btn-sm" style="height: 22px; font-size: 9px; padding: 0 8px;" disabled>CSV Download</button></td>
-                          </tr>
-                        </tbody>
-                      </table>
+                      <div class="table-wrap">
+                        <table class="mockup-table">
+                          <thead>
+                            <tr>
+                              <th>Financial Statement Document</th>
+                              <th>Filing Standard</th>
+                              <th>Reporting Period</th>
+                              <th>Format Action</th>
+                            </tr>
+                          </thead>
+                          <tbody>
+                            <tr>
+                              <td>Profit &amp; Loss Statement (P&amp;L)</td>
+                              <td>IFRS / GAAP</td>
+                              <td>Q2 2026</td>
+                              <td><button class="btn btn-secondary btn-sm" style="height: 22px; font-size: 9px; padding: 0 8px;" disabled>PDF Download</button></td>
+                            </tr>
+                            <tr>
+                              <td>Trial Balance Sheet</td>
+                              <td>Double-Entry</td>
+                              <td>May 2026</td>
+                              <td><button class="btn btn-secondary btn-sm" style="height: 22px; font-size: 9px; padding: 0 8px;" disabled>CSV Download</button></td>
+                            </tr>
+                            <tr>
+                              <td>GL Accounts Export</td>
+                              <td>Audit Trail</td>
+                              <td>May 2026</td>
+                              <td><button class="btn btn-secondary btn-sm" style="height: 22px; font-size: 9px; padding: 0 8px;" disabled>CSV Download</button></td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
                     </div>
                   </div>
 

@@ -4731,3 +4731,34 @@ body.no-scroll .admin-main {
   box-shadow: 0 10px 25px rgba(255, 255, 255, 0.25), 0 4px 10px rgba(0, 0, 0, 0.05) !important;
   transform: translateY(-1px);
 }
+
+/* Dense Ledger Style Rules - Shared Globally */
+.ledger-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  margin-top: 24px;
+}
+
+.ledger-card {
+  background: #ffffff;
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-lg);
+  padding: 16px;
+  box-shadow: var(--shadow-sm);
+}
+
+.ledger-card h4 {
+  font-size: 14px;
+  margin-bottom: 12px;
+  color: var(--slate-900);
+  display: flex;
+  justify-content: space-between;
+}
+
+.ledger-metric {
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  margin-bottom: 4px;
+}
