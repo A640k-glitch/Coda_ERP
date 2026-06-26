@@ -29,7 +29,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
     rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=mobile-responsive-20260626-5">
   <style>
     /* Custom styles for right sidebar panels and scroll mechanics */
     .app-shell {
@@ -41,6 +41,7 @@
       padding: 6px 12px;
       font-size: 12px;
       font-weight: 600;
+      min-height: 32px;
       border-radius: var(--radius-sm);
       border: 1px solid transparent;
       background: none;
@@ -61,6 +62,68 @@
 
     .settings-panel.active {
       display: block;
+    }
+
+    .panel-header {
+      box-sizing: border-box;
+    }
+
+    .panel-body {
+      box-sizing: border-box;
+    }
+
+    .settings-nav {
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 768px) {
+      .panel-header {
+        padding: 12px 16px !important;
+      }
+
+      .panel-body {
+        padding: 16px !important;
+      }
+
+      .settings-nav {
+        gap: 8px !important;
+        margin-bottom: 16px !important;
+      }
+
+      .settings-tab {
+        min-height: 44px;
+        padding: 10px 14px;
+        font-size: 13px;
+      }
+
+      .settings-panel {
+        padding-top: 12px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .panel-header {
+        padding: 10px 12px !important;
+      }
+
+      .panel-body {
+        padding: 14px !important;
+      }
+
+      .settings-nav {
+        gap: 6px !important;
+      }
+
+      .settings-tab {
+        flex: 1 1 calc(50% - 6px);
+        min-height: 44px;
+        padding: 10px 12px;
+        font-size: 12px;
+      }
+
+      .settings-tab:last-child {
+        flex-basis: 100%;
+      }
     }
 
     .integration-card {
@@ -122,6 +185,75 @@
     .app-shell.loaded {
       opacity: 1;
     }
+
+    /* Critical accounting ledger card layout. Keep inline so mobile/desktop share the same fill behavior. */
+    #accountingLedgerGrid {
+      display: grid !important;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)) !important;
+      gap: 16px !important;
+      align-items: stretch !important;
+      margin-top: 24px !important;
+      overflow: visible !important;
+      padding-bottom: 0 !important;
+    }
+
+    #accountingLedgerGrid>.ledger-card {
+      width: 100% !important;
+      min-width: 0 !important;
+      flex: none !important;
+      min-height: 144px !important;
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: space-between !important;
+      gap: 10px !important;
+      padding: 16px !important;
+      background: #ffffff !important;
+      border: 1px solid #e2e8f0 !important;
+      border-radius: 10px !important;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05) !important;
+    }
+
+    @media (max-width: 768px) {
+      #accountingLedgerGrid {
+        grid-template-columns: 1fr !important;
+        gap: 12px !important;
+      }
+
+      #accountingLedgerGrid>.ledger-card {
+        min-height: 128px !important;
+        padding: 14px !important;
+      }
+    }
+
+    @media (max-width: 480px) {
+      #accountingLedgerGrid>.ledger-card {
+        padding: 12px !important;
+        min-height: 110px !important;
+      }
+    }
+
+    @media (max-width: 360px) {
+      #accountingLedgerGrid>.ledger-card {
+        padding: 10px !important;
+        min-height: 100px !important;
+      }
+    }
+
+    #accountingLedgerGrid>.ledger-card h4 {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      gap: 10px !important;
+      margin: 0 !important;
+    }
+
+    #accountingLedgerGrid .ledger-title {
+      display: flex !important;
+      align-items: center !important;
+      gap: 8px !important;
+      min-width: 0 !important;
+    }
+
   </style>
   <script>
     if (localStorage.getItem('coda_sidebar_collapsed') === 'true' && window.innerWidth > 1024) {
@@ -510,9 +642,10 @@
 
         <div class="ledger-grid" id="accountingLedgerGrid">
           <!-- Dynamically populated from accounts-with-balances API -->
-          <div class="ledger-card glass-panel hover-lift">
-            <h4><span>Loading accounts...</span></h4>
-            <div class="ledger-metric" style="color: var(--text-muted);">—</div>
+          <div class="ledger-card">
+            <h4><span class="ledger-title">Loading accounts...</span></h4>
+            <div class="ledger-metric" style="color: var(--slate-400);">—</div>
+            <div class="text-muted">Fetching account data...</div>
           </div>
         </div>
 
@@ -949,7 +1082,7 @@
   <div class="toast-container" id="toastContainer"></div>
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
-  <script src="dashboard.v3.js"></script>
+  <script src="dashboard.v3.js?v=ledger-cards-20260626"></script>
 
   <script id="modal-fix-script">
     document.addEventListener('DOMContentLoaded', function () {

@@ -1173,13 +1173,13 @@ function escapeHTML(str) {
           const bal = c.acct ? c.acct.balance : 0;
           const hasReview = c.code === '1200' && bal > 0;
           return `
-            <div class="ledger-card glass-panel hover-lift">
+            <div class="ledger-card">
               <h4>
-                <span>${c.label}</span>
+                <span class="ledger-title"><span class="material-symbols-outlined">${c.icon}</span>${c.label}</span>
                 <span class="badge ${hasReview ? 'badge-warning' : 'badge-success'}">${hasReview ? 'Review' : 'Active'}</span>
               </h4>
               <div class="ledger-metric">${formatCurrency(bal)}</div>
-              <div class="text-muted" style="font-size: 11px;">Account ${c.code} · ${c.acct ? c.acct.name : 'N/A'}</div>
+              <div class="text-muted">Account ${c.code} · ${c.acct ? c.acct.name : 'N/A'}</div>
             </div>
           `;
         }).join('');

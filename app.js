@@ -1,6 +1,6 @@
 // Coda — Premium Fintech ERP for Nigerian SMEs
 // Entry point: wires Express, routes, middleware, and the static frontend.
-require('dotenv').config();
+require('dotenv').config({ quiet: true });
 
 const express = require('express');
 const cookieParser = require('cookie-parser');
@@ -180,7 +180,6 @@ app.get('/blocked', (req, res) => {
 });
 
 // Static frontend
-app.use(express.static(path.join(__dirname, 'dist')));
 app.use(express.static(path.join(__dirname, 'public')));
 
 // Health check
@@ -202,7 +201,7 @@ app.use((err, req, res, next) => {
 // Boot
 const PORT = process.env.PORT || 3100;
 if (require.main === module) {
-  app.listen(PORT, () => {
+  const server = app.listen(PORT, () => {
     console.log(`
   ╔══════════════════════════════════════════╗
   ║              C O D A                     ║
@@ -220,6 +219,15 @@ if (require.main === module) {
 
   Tiers: Starter ₦${config.subscriptionTiers.starter.price.toLocaleString()} | Professional ₦${config.subscriptionTiers.professional.price.toLocaleString()} | Enterprise ₦${config.subscriptionTiers.enterprise.price.toLocaleString()}
     `);
+  });
+
+  server.on('error', (err) => {
+    if (err.code === 'EADDRINUSE') {
+      console.error(`Port ${PORT} is already in use. Stop the existing server or set PORT to another value.`);
+    } else {
+      console.error('Failed to start server:', err);
+    }
+    process.exit(1);
   });
 }
 
