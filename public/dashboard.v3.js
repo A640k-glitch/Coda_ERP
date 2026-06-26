@@ -40,7 +40,7 @@ function escapeHTML(str) {
 
   // Search targets per view (hoisted so switchView can reset them)
   const viewSearchTargets = {
-    overview: ['#transactionsBody tr'],
+    overview: ['#transactionsBody .activity-item'],
     accounting: ['#accountingTransactionsBody tr', '#coaTableBody tr'],
     reconciliation: ['.recon-comparison-card'],
     inventory: ['#inventoryTableBody tr'],
@@ -738,19 +738,10 @@ function escapeHTML(str) {
 
     // Global Search Filter (Per User Local Search for active view)
     // viewSearchTargets is defined at IIFE scope (hoisted for switchView access)
-    const searchInputs = [
-      document.getElementById('globalSearch'),
-      document.querySelector('.fusion-search input')
-    ].filter(Boolean);
-
-    searchInputs.forEach(input => {
-      input.addEventListener('input', (e) => {
+    const searchInput = document.getElementById('globalSearch');
+    if (searchInput) {
+      searchInput.addEventListener('input', (e) => {
         const query = e.target.value.toLowerCase();
-        // Synchronize search text across both search boxes
-        searchInputs.forEach(otherInput => {
-          if (otherInput !== input) otherInput.value = e.target.value;
-        });
-
         const targets = viewSearchTargets[currentView] || [];
         targets.forEach(sel => {
           document.querySelectorAll(sel).forEach(el => {
@@ -760,16 +751,13 @@ function escapeHTML(str) {
           });
         });
       });
-    });
+    }
 
-    // ⌘K or Ctrl+K shortcut to focus active view search bar
+    // ⌘K or Ctrl+K shortcut to focus global search
     document.addEventListener('keydown', (e) => {
       if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
         e.preventDefault();
-        const activeSearch = currentView === 'overview' 
-          ? document.querySelector('.fusion-search input') 
-          : document.getElementById('globalSearch');
-        activeSearch?.focus();
+        document.getElementById('globalSearch')?.focus();
       }
     });
 

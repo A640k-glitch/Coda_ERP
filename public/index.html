@@ -194,7 +194,7 @@
 
     .mockup-body {
       overflow: hidden;
-      padding: 24px;
+      padding: 10px;
       flex: 1;
       display: flex;
       flex-direction: column;
@@ -394,7 +394,7 @@
 
     .mockup-body {
       overflow: hidden;
-      padding: 24px;
+      padding: 10px;
       flex: 1;
       display: flex;
       flex-direction: column;
@@ -532,7 +532,7 @@
     }
 
     .mockup-sidebar {
-      width: 280px;
+      width: 240px;
       background: var(--slate-950);
       display: flex;
       flex-direction: column;
@@ -544,6 +544,81 @@
       border-radius: var(--radius-lg);
       box-shadow: var(--shadow-lg);
       overflow: hidden;
+    }
+
+    /* Mockup sidebar — compact nav so it fits without scrolling */
+    .mockup-sidebar .sidebar-nav {
+      padding: 10px 12px !important;
+    }
+    .mockup-sidebar .nav-section {
+      margin-bottom: 8px !important;
+    }
+    .mockup-sidebar .nav-section-title {
+      margin-bottom: 3px !important;
+      font-size: 8px !important;
+    }
+    .mockup-sidebar .nav-item {
+      padding: 6px 10px !important;
+      font-size: 11px !important;
+    }
+    .mockup-sidebar .nav-item .material-symbols-outlined {
+      font-size: 16px !important;
+    }
+    .mockup-sidebar .sidebar-footer {
+      padding: 8px 12px !important;
+    }
+    .mockup-sidebar .sidebar-promo-card {
+      margin: 4px 6px !important;
+      padding: 8px 10px !important;
+    }
+    .mockup-sidebar .promo-desc {
+      margin-bottom: 6px !important;
+      font-size: 10px !important;
+    }
+    .mockup-sidebar .promo-title {
+      font-size: 11px !important;
+    }
+    .mockup-sidebar .btn-promo.btn-sm {
+      height: 24px !important;
+      padding: 2px 10px !important;
+      font-size: 10px !important;
+    }
+    .mockup-sidebar .btn-logout {
+      height: 28px !important;
+      padding: 4px 12px !important;
+      font-size: 11px !important;
+      margin-top: 6px !important;
+    }
+    .mockup-sidebar .btn-logout .material-symbols-outlined {
+      font-size: 14px !important;
+    }
+    .mockup-sidebar .user-info {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: flex-start !important;
+      gap: 6px !important;
+      padding: 4px 8px !important;
+    }
+    .mockup-sidebar .user-avatar {
+      width: 24px !important;
+      height: 24px !important;
+      font-size: 10px !important;
+      flex-shrink: 0 !important;
+    }
+    .mockup-sidebar .user-details {
+      flex: 1 !important;
+      min-width: 0 !important;
+      text-align: left !important;
+    }
+    .mockup-sidebar .user-name {
+      font-size: 10px !important;
+      line-height: 1.3 !important;
+      text-align: left !important;
+    }
+    .mockup-sidebar .user-role {
+      font-size: 8px !important;
+      line-height: 1.2 !important;
+      text-align: left !important;
     }
 
     /* Simulated Custom Arrow Cursor */
@@ -562,31 +637,6 @@
       transform: scale(0.8);
     }
 
-    .mockup-nav-item {
-      display: flex;
-      align-items: center;
-      justify-content: flex-start !important;
-      gap: 12px !important;
-      padding: 10px 16px !important;
-      border-radius: var(--radius-sm) !important;
-      color: var(--slate-400);
-      cursor: pointer;
-      transition: background 0.2s ease, color 0.2s ease;
-      width: 100% !important;
-      height: auto !important;
-      text-align: left;
-    }
-
-    .mockup-nav-item:hover {
-      background: rgba(255, 255, 255, 0.06) !important;
-      color: #ffffff !important;
-    }
-
-    .mockup-nav-item.active {
-      background: var(--teal-600) !important;
-      color: #ffffff !important;
-    }
-
     /* Mockup Views Container & Views */
     .mockup-views-container {
       flex: 1;
@@ -600,6 +650,9 @@
       display: none;
       flex-direction: column;
       flex: 1;
+      overflow: hidden;
+      padding: 8px 12px;
+      gap: 8px;
       animation: fadeMockupView 0.25s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
@@ -674,128 +727,206 @@
       color: #dc2626;
     }
 
-    .mockup-ledger-grid {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 10px;
-      margin-top: 0;
-    }
-
-    .mockup-ledger-card {
-      position: relative;
-      overflow: hidden;
-      min-width: 0;
-      min-height: 104px;
-      padding: 12px;
-      border: 1px solid rgba(203, 213, 225, 0.84);
-      border-radius: 8px;
-      background:
-        linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(248, 250, 252, 0.94)),
-        #ffffff;
-      box-shadow: 0 8px 18px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
-      gap: 8px;
-    }
-
-    .mockup-ledger-card::before {
-      content: '';
-      position: absolute;
-      inset: 0 auto 0 0;
-      width: 3px;
-      background: var(--teal-600);
-    }
-
-    .mockup-ledger-card.warning::before {
-      background: var(--warning);
-    }
-
-    .mockup-ledger-head {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 8px;
-      position: relative;
-      z-index: 1;
-    }
-
-    .mockup-ledger-title {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      min-width: 0;
-      color: var(--slate-900);
-      font-size: 11px;
-      font-weight: 800;
-      line-height: 1.2;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .mockup-ledger-title .material-symbols-outlined {
-      width: 22px;
-      height: 22px;
-      border-radius: 6px;
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      flex: 0 0 auto;
-      background: rgba(15, 23, 42, 0.04);
-      color: var(--slate-800);
-      font-size: 15px;
-    }
-
-    .mockup-ledger-value {
-      position: relative;
-      z-index: 1;
-      color: var(--slate-950);
-      font-size: 17px;
-      font-weight: 850;
-      line-height: 1.1;
-      letter-spacing: 0;
-      font-variant-numeric: tabular-nums;
-    }
-
-    .mockup-ledger-meta {
-      position: relative;
-      z-index: 1;
-      color: var(--text-muted);
-      font-size: 9px;
-      font-weight: 600;
-      line-height: 1.25;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .mockup-ledger-status {
-      flex: 0 0 auto;
-      border-radius: 999px;
-      padding: 3px 7px;
-      background: var(--success-bg);
-      color: var(--success);
+    .mockup-sample-badge {
       font-size: 8px;
-      font-weight: 800;
-      line-height: 1;
+      font-weight: 500;
+      color: var(--text-muted);
+      background: rgba(0,0,0,0.04);
+      padding: 1px 4px;
+      border-radius: 3px;
+      vertical-align: middle;
     }
 
-    .mockup-ledger-status.warning {
-      background: var(--warning-bg);
-      color: var(--warning);
+    /* Accounting ledger card layout — mirrors dashboard.html */
+    #accountingLedgerGrid {
+      display: grid !important;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)) !important;
+      gap: 16px !important;
+      align-items: stretch !important;
+      margin-top: 24px !important;
+      overflow: visible !important;
+      padding-bottom: 0 !important;
+    }
+
+    #accountingLedgerGrid>.ledger-card {
+      width: 100% !important;
+      min-width: 0 !important;
+      flex: none !important;
+      min-height: 144px !important;
+      display: flex !important;
+      flex-direction: column !important;
+      justify-content: space-between !important;
+      gap: 10px !important;
+      padding: 16px !important;
+      background: #ffffff !important;
+      border: 1px solid #e2e8f0 !important;
+      border-radius: 10px !important;
+      box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05) !important;
+    }
+
+    @media (max-width: 768px) {
+      #accountingLedgerGrid {
+        grid-template-columns: 1fr !important;
+        gap: 12px !important;
+      }
+      #accountingLedgerGrid>.ledger-card {
+        min-height: 128px !important;
+        padding: 14px !important;
+      }
+    }
+
+    @media (max-width: 480px) {
+      #accountingLedgerGrid>.ledger-card {
+        padding: 12px !important;
+        min-height: 110px !important;
+      }
+    }
+
+    @media (max-width: 360px) {
+      #accountingLedgerGrid>.ledger-card {
+        padding: 10px !important;
+        min-height: 100px !important;
+      }
+    }
+
+    #accountingLedgerGrid>.ledger-card h4 {
+      display: flex !important;
+      align-items: center !important;
+      justify-content: space-between !important;
+      gap: 10px !important;
+      margin: 0 !important;
+    }
+
+    #accountingLedgerGrid .ledger-title {
+      display: flex !important;
+      align-items: center !important;
+      gap: 8px !important;
+      min-width: 0 !important;
+    }
+
+    #mockup-view-1 .transactions-table {
+      font-size: 11px;
+    }
+    #mockup-view-1 .transactions-table th,
+    #mockup-view-1 .transactions-table td {
+      padding: 8px 10px;
+      font-size: 11px;
+    }
+    #mockup-view-1 .actions-col .btn-icon {
+      width: 24px;
+      height: 24px;
+    }
+    #mockup-view-1 .actions-col .btn-icon .material-symbols-outlined {
+      font-size: 14px;
+    }
+
+    /* Compact all mockup internal elements */
+    .mockup-view .fusion-grid { gap: 10px; }
+    .mockup-view .fusion-wallet-col,
+    .mockup-view .fusion-ops-col { gap: 8px; }
+    .mockup-view .module-header { margin-bottom: 6px; }
+    .mockup-view .module-header h2 { font-size: 15px; }
+    .mockup-view .table-card { margin-top: 8px; }
+    .mockup-view .table-card-header { padding: 6px 12px; }
+    .mockup-view .table-card-header h3 { font-size: 12px; }
+    .mockup-view .module-actions .btn { font-size: 11px; padding: 4px 10px; }
+    .mockup-view .module-actions .btn .material-symbols-outlined { font-size: 14px; }
+
+    /* Compact mockup overview */
+    #mockup-view-0 .wallet-card {
+      padding: 10px;
+      gap: 6px;
+    }
+    #mockup-view-0 .wallet-balance {
+      font-size: 22px;
+      margin-bottom: 0;
+    }
+    #mockup-view-0 .wallet-split { gap: 6px; padding-top: 8px; }
+    #mockup-view-0 .wallet-split-item .split-label { font-size: 10px; }
+    #mockup-view-0 .wallet-split-item .split-val { font-size: 13px; }
+    #mockup-view-0 .activity-card {
+      flex: 1;
+    }
+    #mockup-view-0 .activity-feed {
+      padding: 0 12px 4px !important;
+    }
+    #mockup-view-0 .mockup-tx {
+      padding: 5px 0 !important;
+    }
+    #mockup-view-0 .mockup-tx-name {
+      font-size: 12px;
+    }
+    #mockup-view-0 .mockup-tx-amount {
+      font-size: 12px;
+    }
+    #mockup-view-0 .fusion-top-bar { margin: 0 0 4px !important; }
+    #mockup-view-0 .quick-action-pill { font-size: 11px; padding: 4px 12px !important; }
+    #mockup-view-0 .quick-action-pill .material-symbols-outlined { font-size: 14px; }
+
+    /* Compact mockup accounting ledger */
+    #mockup-view-1 #accountingLedgerGrid {
+      margin-top: 8px !important;
+      gap: 10px !important;
+    }
+    #mockup-view-1 #accountingLedgerGrid>.ledger-card {
+      min-height: 90px !important;
+      padding: 12px !important;
+      gap: 6px !important;
+    }
+    #mockup-view-1 #accountingLedgerGrid .ledger-metric {
+      font-size: 16px;
+    }
+    #mockup-view-1 #accountingLedgerGrid h4 { font-size: 11px; }
+    #mockup-view-1 #accountingLedgerGrid .ledger-title .material-symbols-outlined { font-size: 16px; }
+    #mockup-view-1 #accountingLedgerGrid .badge { font-size: 9px; padding: 2px 7px; }
+    #mockup-view-1 #accountingLedgerGrid .text-muted { font-size: 10px; }
+    #mockup-view-1 .table-card { margin-top: 8px; }
+    #mockup-view-1 .table-card .table-card-header { padding: 6px 12px; }
+    #mockup-view-1 .table-card .table-card-header h3 { font-size: 11px; }
+    #mockup-view-1 .transactions-table { font-size: 11px; }
+    #mockup-view-1 .transactions-table th,
+    #mockup-view-1 .transactions-table td { padding: 6px 10px; font-size: 11px; }
+    #mockup-view-1 .transactions-table th { font-size: 9px; letter-spacing: 0.05em; }
+
+    /* Compact mockup bank reconciliation */
+    #mockup-view-4 .recon-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      margin-bottom: 4px;
+    }
+    #mockup-view-4 .recon-stats-grid .premium-kpi-card {
+      padding: 10px 12px;
+      gap: 4px;
+    }
+    #mockup-view-4 .recon-stats-grid .premium-kpi-header {
+      margin-bottom: 0;
+    }
+    #mockup-view-4 .recon-stats-grid .premium-kpi-title {
+      font-size: 10px;
+    }
+    #mockup-view-4 .recon-stats-grid .premium-kpi-val {
+      font-size: 16px;
+    }
+    #mockup-view-4 .premium-kpi-header .material-symbols-outlined {
+      font-size: 16px !important;
+    }
+    #mockup-view-4 .premium-kpi-meta {
+      font-size: 9px;
+    }
+    #mockup-view-4 .mockup-sample-badge {
+      font-size: 7px;
     }
 
     /* Responsive Sidebar within Macbook display */
     @media (max-width: 768px) {
       .mockup-sidebar {
-        width: 56px !important;
+        width: 48px !important;
         align-items: center !important;
       }
 
-      .sidebar-logo-text,
       .nav-section-title,
-      .nav-text {
+      .mockup-sidebar .nav-text {
         display: none !important;
       }
 
@@ -816,7 +947,7 @@
         align-items: center;
       }
 
-      .mockup-nav-item {
+      .mockup-sidebar .nav-item {
         justify-content: center !important;
         padding: 0 !important;
         width: 40px !important;
@@ -826,8 +957,7 @@
       }
 
       .mockup-sidebar .sidebar-promo-card,
-      .mockup-sidebar .mockup-sidebar-user-details,
-      .mockup-sidebar .mockup-sidebar-logout {
+      .mockup-sidebar .user-details {
         display: none !important;
       }
 
@@ -836,7 +966,7 @@
         border-top: none !important;
       }
 
-      .mockup-sidebar .mockup-sidebar-user-row {
+      .mockup-sidebar .user-info {
         justify-content: center !important;
         padding: 4px 0 !important;
       }
@@ -1226,7 +1356,7 @@
     }
 
     .features-section-dark .feature-card-soft {
-      background: #083331 !important;
+      background: linear-gradient(145deg, #0d3835 0%, #062624 100%) !important;
       border: 1px solid rgba(13, 148, 136, 0.25) !important;
       color: #ffffff !important;
       border-radius: 16px !important;
@@ -1240,24 +1370,12 @@
       flex-direction: column;
     }
 
-    /* Gold top accent line */
-    .features-section-dark .feature-card-soft::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      right: 0;
-      height: 2px;
-      background: linear-gradient(90deg, #d4a85d 0%, #f0c678 50%, #d4a85d 100%);
-      z-index: 5;
-    }
-
     .features-section-dark .feature-card-soft:hover {
       transform: translateY(-6px) !important;
-      border-color: rgba(212, 168, 93, 0.5) !important;
+      border-color: rgba(13, 148, 136, 0.5) !important;
       box-shadow:
         0 24px 48px -12px rgba(0, 0, 0, 0.5),
-        0 0 0 1px rgba(212, 168, 93, 0.2),
+        0 0 0 1px rgba(13, 148, 136, 0.2),
         0 0 32px -8px rgba(13, 148, 136, 0.25) !important;
     }
 
@@ -1305,351 +1423,110 @@
       height: auto;
     }
 
-    /* ========== Card 1: Reconciliation ========== */
-    .features-section-dark .recon-svg { max-width: 700px; }
-    .features-section-dark .recon-doc-bg { fill: var(--slate-50); stroke: var(--slate-200); stroke-width: 1; }
-    .features-section-dark .recon-doc-header { fill: var(--slate-100); }
-    .features-section-dark .recon-doc-label { fill: var(--slate-500); opacity: 0.5; }
-    .features-section-dark .recon-row { fill: var(--slate-200); transition: fill 0.35s ease; }
-    .features-section-dark .recon-row-hl { fill: var(--teal-400); }
-    .features-section-dark .recon-row-total { fill: var(--slate-200); }
+    /* ========== Card 1: Reconciliation — "Document Match" ========== */
+    .features-section-dark .recon-svg { max-width: 640px; }
+    .features-section-dark .recon-doc-body { fill: rgba(255,255,255,0.04); stroke: rgba(255,255,255,0.08); stroke-width: 1; transition: all 0.4s ease; }
+    .features-section-dark .recon-doc-head { fill: rgba(255,255,255,0.06); transition: all 0.4s ease; }
+    .features-section-dark .recon-doc-label { fill: var(--teal-400); opacity: 0.35; }
+    .features-section-dark .recon-row-r { fill: var(--teal-300); opacity: 0.25; transition: all 0.3s ease; }
+    .features-section-dark .recon-row-r.hl { fill: var(--teal-400); opacity: 0.35; }
+    .features-section-dark .recon-conn { stroke: var(--teal-500); stroke-width: 0.8; stroke-dasharray: 3 3; opacity: 0.25; transition: all 0.4s ease; }
+    .features-section-dark .recon-conn.hl { stroke: var(--teal-400); stroke-width: 1; stroke-dasharray: 4 2; opacity: 0.4; }
+    .features-section-dark .recon-check-ring { fill: none; stroke: var(--teal-500); stroke-width: 2; opacity: 0; transform: scale(0.3); transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
+    .features-section-dark .recon-check-path { stroke: #ffffff; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; fill: none; opacity: 0; stroke-dasharray: 30; stroke-dashoffset: 30; transition: all 0.5s ease; }
 
-    .features-section-dark .recon-dot { transition: fill 0.3s ease; }
-    .features-section-dark .recon-dot.dot-green { fill: var(--teal-400); }
-    .features-section-dark .recon-dot.dot-yellow { fill: var(--bronze-300); }
+    .features-section-dark .feature-card-soft:hover .recon-doc-body { fill: rgba(255,255,255,0.08); stroke: rgba(255,255,255,0.15); }
+    .features-section-dark .feature-card-soft:hover .recon-doc-head { fill: rgba(255,255,255,0.1); }
+    .features-section-dark .feature-card-soft:hover .recon-row-r { opacity: 0.5; fill: var(--teal-200); }
+    .features-section-dark .feature-card-soft:hover .recon-row-r.hl { opacity: 0.7; fill: var(--teal-300); }
+    .features-section-dark .feature-card-soft:hover .recon-conn { opacity: 0.5; stroke: var(--teal-400); }
+    .features-section-dark .feature-card-soft:hover .recon-conn.hl { opacity: 0.8; stroke: var(--teal-300); }
+    .features-section-dark .feature-card-soft:hover .recon-check-ring { opacity: 0.9; transform: scale(1); stroke: var(--teal-300); }
+    .features-section-dark .feature-card-soft:hover .recon-check-path { opacity: 1; stroke-dashoffset: 0; }
 
-    .features-section-dark .recon-flow-path {
-      fill: none; stroke: var(--bronze-300); stroke-width: 1.5; stroke-dasharray: 4 3;
-      transition: stroke 0.3s ease, stroke-dashoffset 0.6s ease;
-    }
-    .features-section-dark .recon-flow-arrow {
-      fill: none; stroke: var(--bronze-300); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round;
-      transition: stroke 0.3s ease;
-    }
-    .features-section-dark .recon-flow-dot { fill: var(--bronze-300); transition: fill 0.3s ease; }
-    .features-section-dark .recon-sync-ring {
-      fill: #ffffff; stroke: var(--bronze-200); stroke-width: 1.5;
-      transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1), stroke 0.3s ease;
-    }
-    .features-section-dark .recon-sync-arrow {
-      transition: stroke 0.3s ease;
-    }
-    .features-section-dark .recon-sync-tip { transition: stroke 0.3s ease; }
-
-    .features-section-dark .recon-left-doc { transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
-    .features-section-dark .recon-right-doc { transition: transform 0.5s cubic-bezier(0.34, 1.56, 0.64, 1); }
-
-    /* Reconciliation hover - 3 layers */
-    .features-section-dark .feature-card-soft:hover .recon-left-doc { transform: translateX(6px); }
-    .features-section-dark .feature-card-soft:hover .recon-right-doc { transform: translateX(-6px); }
-    .features-section-dark .feature-card-soft:hover .recon-doc-header { fill: var(--teal-100); }
-    .features-section-dark .feature-card-soft:hover .recon-row { fill: var(--teal-200); }
-    .features-section-dark .feature-card-soft:hover .recon-row-hl { fill: var(--teal-500); }
-    .features-section-dark .feature-card-soft:hover .recon-row-total { fill: var(--teal-300); }
-    .features-section-dark .feature-card-soft:hover .recon-dot.dot-green { fill: var(--teal-500); }
-    .features-section-dark .feature-card-soft:hover .recon-dot.dot-yellow { fill: var(--teal-400); }
-    .features-section-dark .feature-card-soft:hover .recon-flow-path {
-      stroke: var(--teal-400); stroke-dashoffset: -14;
-      animation: reconFlowSweep 0.8s linear infinite;
-    }
-    .features-section-dark .feature-card-soft:hover .recon-flow-arrow { stroke: var(--teal-400); }
-    .features-section-dark .feature-card-soft:hover .recon-flow-dot { fill: var(--teal-400); }
-    .features-section-dark .feature-card-soft:hover .recon-sync-ring {
-      transform: rotate(360deg); stroke: var(--teal-400);
-      animation: reconRingPulse 1s ease-in-out infinite alternate;
-    }
-    .features-section-dark .feature-card-soft:hover .recon-sync-arrow { stroke: var(--teal-500); }
-    .features-section-dark .recon-sync-tip { transition: stroke 0.3s ease; }
-
-    /* Multi-Entity: bronze -> slate */
+    /* ========== Card 2: Multi-Entity — "Entity Tree" ========== */
     .features-section-dark .entity-svg { max-width: 400px; }
-    .features-section-dark .entity-conn-line {
-      fill: none; stroke: var(--slate-200); stroke-width: 1.5; stroke-dasharray: 5 3;
-      transition: stroke 0.3s ease, stroke-dashoffset 0.5s ease;
-    }
-    .features-section-dark .entity-hub-ring {
-      fill: #ffffff; stroke: var(--slate-200); stroke-width: 1.5;
-      transition: stroke 0.3s ease;
-    }
-    .features-section-dark .entity-hub-core {
-      fill: var(--teal-500); transition: fill 0.3s ease;
-    }
-    .features-section-dark .entity-hub-icon {
-      fill: none; stroke: var(--teal-600); stroke-width: 1.5;
-    }
-    .features-section-dark .entity-hub-group {
-      transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
-      transform-origin: 250px 60px;
-    }
-    .features-section-dark .entity-card-bg {
-      fill: var(--slate-50); stroke: var(--slate-200); stroke-width: 1;
-      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), stroke 0.3s ease, box-shadow 0.3s ease;
-    }
-    .features-section-dark .entity-card-header { fill: var(--slate-100); }
-    .features-section-dark .entity-card-flag { fill: var(--slate-600); opacity: 0.7; }
-    .features-section-dark .entity-card-bar {
-      fill: var(--slate-200); transition: fill 0.3s ease, width 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
-    }
-    .features-section-dark .entity-card-trend {
-      fill: none; stroke: var(--bronze-300); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round;
-      transition: stroke 0.3s ease;
-    }
-    .features-section-dark .entity-card-dot {
-      fill: var(--teal-400); transition: fill 0.3s ease;
-    }
-    .features-section-dark .entity-card.c1 { transition: transform 0.3s ease; transform-origin: 74px 58px; }
-    .features-section-dark .entity-card.c2 { transition: transform 0.3s ease; transform-origin: 426px 58px; }
-    .features-section-dark .entity-card.c3 { transition: transform 0.3s ease; transform-origin: 250px 101px; }
+    .features-section-dark .entity-trunk { stroke: var(--teal-500); opacity: 0.3; }
+    .features-section-dark .entity-branch { stroke: var(--teal-500); opacity: 0.25; }
+    .features-section-dark .entity-branch-l { stroke: var(--teal-500); opacity: 0.2; }
+    .features-section-dark .entity-branch-c { stroke: var(--teal-500); opacity: 0.2; }
+    .features-section-dark .entity-branch-r { stroke: var(--teal-500); opacity: 0.2; }
+    .features-section-dark .entity-node { fill: none; stroke: var(--teal-500); stroke-width: 1.2; opacity: 0.5; transition: all 0.4s ease; }
+    .features-section-dark .entity-node.n1 { transform-origin: 110px 16px; }
+    .features-section-dark .entity-node.n2 { transform-origin: 200px 46px; }
+    .features-section-dark .entity-node.n3 { transform-origin: 290px 16px; }
+    .features-section-dark .entity-node-root { fill: none; stroke: var(--teal-400); stroke-width: 1.5; opacity: 0.6; transition: all 0.4s ease; transform-origin: 200px 86px; }
+    .features-section-dark .entity-bar { fill: var(--teal-400); opacity: 0.5; transition: all 0.3s ease; }
+    .features-section-dark .entity-interconn { fill: none; stroke: var(--teal-500); stroke-width: 0.8; stroke-dasharray: 2 2; opacity: 0.2; transition: opacity 0.4s ease; }
 
-    /* Entity hover - clearer motion */
-    .features-section-dark .feature-card-soft:hover .entity-hub-group {
-      transform: rotate(360deg);
-      animation: entityHubBreathe 1.4s ease-in-out infinite alternate;
-    }
-    .features-section-dark .feature-card-soft:hover .entity-hub-ring { stroke: var(--teal-400); }
-    .features-section-dark .feature-card-soft:hover .entity-hub-core { fill: var(--teal-400); }
-    .features-section-dark .feature-card-soft:hover .entity-conn-line {
-      stroke: var(--teal-300); stroke-dashoffset: -14;
-      animation: entityDashSweep 0.9s linear infinite;
-    }
-    .features-section-dark .feature-card-soft:hover .entity-card-bg {
-      transform: translateY(-4px); stroke: var(--teal-300);
-      animation: entityCardFloat 1.6s ease-in-out infinite alternate;
-    }
-    .features-section-dark .feature-card-soft:hover .entity-card-bar { fill: var(--teal-300); animation: entityBarDraw 0.7s ease-out forwards; }
-    .features-section-dark .feature-card-soft:hover .entity-card-trend { stroke: var(--teal-500); }
-    .features-section-dark .feature-card-soft:hover .entity-card-dot { animation: entityDotPulse 0.9s ease-in-out infinite alternate; }
-    .features-section-dark .feature-card-soft:hover .entity-card.c1 { transition-delay: 0s; }
-    .features-section-dark .feature-card-soft:hover .entity-card.c2 { transition-delay: 0.1s; }
-    .features-section-dark .feature-card-soft:hover .entity-card.c3 { transition-delay: 0.2s; }
+    .features-section-dark .feature-card-soft:hover .entity-node { stroke: var(--teal-300); opacity: 0.9; transform: scale(1.08); }
+    .features-section-dark .feature-card-soft:hover .entity-node.n1 { transition-delay: 0s; }
+    .features-section-dark .feature-card-soft:hover .entity-node.n2 { transition-delay: 0.08s; }
+    .features-section-dark .feature-card-soft:hover .entity-node.n3 { transition-delay: 0.15s; }
+    .features-section-dark .feature-card-soft:hover .entity-node-root { stroke: var(--teal-300); opacity: 1; }
+    .features-section-dark .feature-card-soft:hover .entity-bar { opacity: 0.9; fill: var(--teal-200); }
+    .features-section-dark .feature-card-soft:hover .entity-interconn { opacity: 0.5; }
 
-    /* ========== Card 3: Security ========== */
-    .features-section-dark .security-svg { max-width: 400px; }
-    .features-section-dark .sec-ring {
-      fill: none; stroke: var(--slate-200); stroke-width: 1.5;
-      transition: stroke 0.3s ease, stroke-width 0.3s ease;
-    }
-    .features-section-dark .sec-ring-outer {
-      transform-origin: 250px 60px;
-      transition: transform 0.8s linear, stroke 0.3s ease;
-    }
-    .features-section-dark .sec-ring-mid {
-      transform-origin: 250px 60px;
-      transition: transform 1.2s linear, stroke 0.3s ease;
-    }
-    .features-section-dark .sec-ring-inner {
-      transform-origin: 250px 60px;
-      transition: transform 0.6s linear, stroke 0.3s ease;
-    }
-    .features-section-dark .sec-orbital-dot {
-      fill: var(--teal-500); transition: fill 0.3s ease;
-    }
-    .features-section-dark .sec-shield-body {
-      fill: var(--slate-50); stroke: var(--slate-200); stroke-width: 1.5;
-      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), stroke 0.3s ease, fill 0.3s ease;
-      transform-origin: 250px 60px;
-    }
-    .features-section-dark .sec-lock-body {
-      fill: var(--slate-100); stroke: var(--slate-300); stroke-width: 1;
-      transition: fill 0.3s ease, stroke 0.3s ease;
-    }
-    .features-section-dark .sec-lock-shackle {
-      fill: none; stroke: var(--slate-300); stroke-width: 2; stroke-linecap: round;
-      transition: stroke 0.3s ease, transform 0.3s ease;
-      transform-origin: 250px 62px;
-    }
-    .features-section-dark .sec-lock-key { fill: var(--slate-300); transition: fill 0.3s ease; }
-    .features-section-dark .sec-lock-pin { stroke: var(--slate-300); stroke-width: 1.5; stroke-linecap: round; }
-    .features-section-dark .sec-padlock-body {
-      fill: var(--slate-100); stroke: var(--slate-200); stroke-width: 1;
-      transition: fill 0.3s ease, stroke 0.3s ease, transform 0.3s ease;
-    }
-    .features-section-dark .sec-padlock-shackle {
-      fill: none; stroke: var(--slate-200); stroke-width: 1.5; stroke-linecap: round;
-      transition: stroke 0.3s ease;
-    }
-    .features-section-dark .sec-padlock-key { fill: var(--slate-200); transition: fill 0.3s ease; }
-    .features-section-dark .sec-padlock-pin { stroke: var(--slate-200); stroke-width: 1; }
-    .features-section-dark .sec-padlock-line { stroke: var(--slate-200); stroke-width: 1; }
-    .features-section-dark .sec-conn-line {
-      stroke: var(--slate-100); stroke-width: 1; stroke-dasharray: 3 3;
-      transition: stroke 0.3s ease;
-    }
+    /* ========== Card 3: Security — "Layered Vault" ========== */
+    .features-section-dark .security-svg { max-width: 360px; }
+    .features-section-dark .sec-data-core { fill: var(--teal-400); opacity: 0.8; transition: all 0.4s ease; }
+    .features-section-dark .sec-data-ring { stroke: var(--teal-400); opacity: 0.5; transition: all 0.4s ease; }
+    .features-section-dark .sec-shield { stroke: var(--teal-500); opacity: 0.35; transform-origin: 200px 53px; transition: all 0.5s ease; }
+    .features-section-dark .sec-shield-check { stroke: var(--teal-400); opacity: 0.4; transition: all 0.5s ease; }
+    .features-section-dark .sec-key-ring { stroke: var(--teal-500); opacity: 0.25; transition: all 0.5s ease; transform-origin: 200px 50px; }
+    .features-section-dark .sec-key-stem { stroke: var(--teal-400); opacity: 0.5; transition: all 0.4s ease; }
+    .features-section-dark .sec-key-bit { stroke: var(--teal-400); opacity: 0.4; transition: all 0.4s ease; }
+    .features-section-dark .sec-key-pin { fill: var(--teal-400); opacity: 0.5; transition: all 0.4s ease; }
+    .features-section-dark .sec-tunnel-line { stroke: var(--teal-500); opacity: 0.2; transition: all 0.4s ease; }
+    .features-section-dark .sec-tunnel-dot { fill: var(--teal-400); opacity: 0.3; transition: all 0.4s ease; }
+    .features-section-dark .sec-padlock-body { stroke: var(--teal-500); opacity: 0.25; transition: all 0.4s ease; }
+    .features-section-dark .sec-padlock-shackle { stroke: var(--teal-500); opacity: 0.25; transition: all 0.4s ease; }
 
-    /* Security hover - 3 layers */
-    .features-section-dark .feature-card-soft:hover .sec-ring-outer {
-      transform: rotate(360deg); stroke: var(--teal-400);
-      animation: secRingOuter 2s linear infinite;
-    }
-    .features-section-dark .feature-card-soft:hover .sec-ring-mid {
-      transform: rotate(-180deg); stroke: var(--teal-300);
-      animation: secRingMid 3s linear infinite;
-    }
-    .features-section-dark .feature-card-soft:hover .sec-ring-inner {
-      transform: rotate(120deg); stroke: var(--teal-400);
-      animation: secRingInner 1.5s linear infinite;
-    }
-    .features-section-dark .feature-card-soft:hover .sec-orbital-dot {
-      animation: secOrbitDot 2s ease-in-out infinite alternate;
-    }
-    .features-section-dark .feature-card-soft:hover .sec-orbital-dot.d2 { animation-delay: 0.5s; }
-    .features-section-dark .feature-card-soft:hover .sec-orbital-dot.d3 { animation-delay: 1s; }
-    .features-section-dark .feature-card-soft:hover .sec-orbital-dot.d4 { animation-delay: 1.5s; }
-    .features-section-dark .feature-card-soft:hover .sec-shield-body {
-      transform: scale(1.12); stroke: var(--teal-400); fill: var(--teal-50);
-      animation: secShieldGlow 1s ease-in-out infinite alternate;
-    }
-    .features-section-dark .feature-card-soft:hover .sec-lock-body { fill: var(--teal-50); stroke: var(--teal-400); }
-    .features-section-dark .feature-card-soft:hover .sec-lock-shackle {
-      stroke: var(--teal-400); transform: translateY(-2px);
-    }
-    .features-section-dark .feature-card-soft:hover .sec-lock-key { fill: var(--teal-400); }
-    .features-section-dark .feature-card-soft:hover .sec-padlock-body {
-      fill: var(--teal-50); stroke: var(--teal-300);
-    }
-    .features-section-dark .feature-card-soft:hover .sec-padlock-shackle { stroke: var(--teal-300); }
-    .features-section-dark .feature-card-soft:hover .sec-padlock-key { fill: var(--teal-300); }
-    .features-section-dark .feature-card-soft:hover .sec-conn-line { stroke: var(--teal-200); }
+    .features-section-dark .feature-card-soft:hover .sec-data-core { fill: var(--teal-200); opacity: 1; }
+    .features-section-dark .feature-card-soft:hover .sec-data-ring { stroke: var(--teal-300); opacity: 0.8; transform: scale(1.15); }
+    .features-section-dark .feature-card-soft:hover .sec-shield { stroke: var(--teal-300); opacity: 0.7; transform: scale(1.08); }
+    .features-section-dark .feature-card-soft:hover .sec-shield-check { stroke: var(--teal-200); opacity: 1; }
+    .features-section-dark .feature-card-soft:hover .sec-key-ring { stroke: var(--teal-400); opacity: 0.5; transform: rotate(180deg); }
+    .features-section-dark .feature-card-soft:hover .sec-key-stem { stroke: var(--teal-300); opacity: 0.8; }
+    .features-section-dark .feature-card-soft:hover .sec-key-bit { stroke: var(--teal-300); opacity: 0.7; }
+    .features-section-dark .feature-card-soft:hover .sec-key-pin { fill: var(--teal-300); opacity: 0.8; }
+    .features-section-dark .feature-card-soft:hover .sec-tunnel-line { stroke: var(--teal-400); opacity: 0.5; }
+    .features-section-dark .feature-card-soft:hover .sec-tunnel-dot { fill: var(--teal-200); opacity: 0.7; }
+    .features-section-dark .feature-card-soft:hover .sec-tunnel-dot.d2 { transition-delay: 0.08s; }
+    .features-section-dark .feature-card-soft:hover .sec-tunnel-dot.d3 { transition-delay: 0.15s; }
+    .features-section-dark .feature-card-soft:hover .sec-tunnel-dot.d4 { transition-delay: 0.22s; }
+    .features-section-dark .feature-card-soft:hover .sec-padlock-body { stroke: var(--teal-400); opacity: 0.5; }
+    .features-section-dark .feature-card-soft:hover .sec-padlock-shackle { stroke: var(--teal-400); opacity: 0.5; }
 
-    /* ========== Card 4: Real-time Analytics ========== */
+    /* ========== Card 4: Analytics — "Dashboard Grid" ========== */
     .features-section-dark .analytics-svg { max-width: 700px; }
-    .features-section-dark .chart-axis { stroke: var(--bronze-200); stroke-width: 1.5; }
-    .features-section-dark .chart-grid { stroke: var(--bronze-100); stroke-width: 0.5; stroke-dasharray: 3 3; }
-    .features-section-dark .chart-line {
-      fill: none; stroke: var(--teal-500); stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round;
-      filter: drop-shadow(0 1px 4px rgba(20,184,166,0.3));
-      transition: stroke 0.3s ease, filter 0.3s ease;
-    }
-    .features-section-dark .chart-area {
-      transition: opacity 0.6s ease;
-    }
-    .features-section-dark .chart-dot {
-      fill: var(--teal-500);
-      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), fill 0.3s ease;
-    }
-    .features-section-dark .chart-dot.d1 { transform-origin: 80px 70px; }
-    .features-section-dark .chart-dot.d2 { transform-origin: 120px 56px; }
-    .features-section-dark .chart-dot.d3 { transform-origin: 160px 42px; }
-    .features-section-dark .chart-dot.d4 { transform-origin: 200px 38px; }
-    .features-section-dark .chart-dot.d5 { transform-origin: 240px 24px; }
-    .features-section-dark .chart-dot.d6 { transform-origin: 280px 22px; }
-    .features-section-dark .chart-dot-latest {
-      transform-origin: 320px 20px; fill: var(--teal-400); stroke: #fff; stroke-width: 2;
-    }
+    .features-section-dark .chart-card-bg { fill: rgba(255,255,255,0.04); stroke: rgba(255,255,255,0.06); stroke-width: 1; rx: 8; transition: all 0.4s ease; }
+    .features-section-dark .chart-card-label { fill: var(--teal-300); opacity: 0.3; }
+    .features-section-dark .chart-spark-path { stroke: var(--teal-400); opacity: 0.6; transition: all 0.4s ease; }
+    .features-section-dark .chart-spark-fill { opacity: 0.8; transition: opacity 0.5s ease; }
+    .features-section-dark .chart-spark-dot { fill: var(--teal-400); opacity: 0.7; transition: all 0.4s ease; }
+    .features-section-dark .chart-mini-bar { fill: var(--teal-500); opacity: 0.5; transition: all 0.4s ease; }
+    .features-section-dark .chart-kpi-val { fill: #ffffff; opacity: 0.5; }
+    .features-section-dark .chart-kpi-up { fill: var(--teal-500); opacity: 0.5; rx: 3; }
+    .features-section-dark .chart-kpi-flat { fill: var(--slate-500); opacity: 0.3; rx: 3; }
+    .features-section-dark .chart-arc-ring { stroke: rgba(255,255,255,0.08); }
+    .features-section-dark .chart-arc-progress { stroke: var(--teal-400); opacity: 0.6; transition: all 0.4s ease; stroke-dasharray: 40 100; }
+    .features-section-dark .chart-arc-text { fill: var(--teal-300); opacity: 0.7; }
 
-    .features-section-dark .chart-bar {
-      fill: url(#barGrad); rx: 3;
-      transition: opacity 0.4s ease;
-    }
-
-    .features-section-dark .chart-metric-bg {
-      fill: var(--slate-50); stroke: var(--slate-200); stroke-width: 1; rx: 10;
-      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1), stroke 0.3s ease;
-    }
-    .features-section-dark .chart-metric-divider { stroke: var(--slate-200); stroke-width: 1; }
-    .features-section-dark .metric-label { fill: var(--slate-400); }
-    .features-section-dark .metric-value { fill: var(--slate-700); }
-    .features-section-dark .metric-change { rx: 4; }
-    .features-section-dark .metric-change.metric-up { fill: var(--teal-400); }
-    .features-section-dark .metric-change.metric-flat { fill: var(--slate-300); }
-    .features-section-dark .metric-arrow-up {
-      fill: none; stroke: #ffffff; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round;
-    }
-
-    .features-section-dark .chart-bar-group .chart-bar:nth-child(2) { transition-delay: 0.04s; }
-    .features-section-dark .chart-bar-group .chart-bar:nth-child(3) { transition-delay: 0.08s; }
-    .features-section-dark .chart-bar-group .chart-bar:nth-child(4) { transition-delay: 0.12s; }
-    .features-section-dark .chart-bar-group .chart-bar:nth-child(5) { transition-delay: 0.16s; }
-    .features-section-dark .chart-bar-group .chart-bar:nth-child(6) { transition-delay: 0.2s; }
-    .features-section-dark .chart-bar-group .chart-bar:nth-child(7) { transition-delay: 0.24s; }
-
-    /* Analytics hover - 3 layers */
-    .features-section-dark .feature-card-soft:hover .chart-line {
-      stroke: var(--teal-400); filter: drop-shadow(0 1px 8px rgba(20,184,166,0.5));
-    }
-    .features-section-dark .feature-card-soft:hover .chart-area { opacity: 1; }
-    .features-section-dark .feature-card-soft:hover .chart-dot { transform: scale(1.5); fill: var(--teal-400); }
-    .features-section-dark .feature-card-soft:hover .chart-dot.d1 { transition-delay: 0.02s; }
-    .features-section-dark .feature-card-soft:hover .chart-dot.d2 { transition-delay: 0.04s; }
-    .features-section-dark .feature-card-soft:hover .chart-dot.d3 { transition-delay: 0.06s; }
-    .features-section-dark .feature-card-soft:hover .chart-dot.d4 { transition-delay: 0.08s; }
-    .features-section-dark .feature-card-soft:hover .chart-dot.d5 { transition-delay: 0.1s; }
-    .features-section-dark .feature-card-soft:hover .chart-dot.d6 { transition-delay: 0.12s; }
-    .features-section-dark .feature-card-soft:hover .chart-dot-latest {
-      animation: chartDotLatest 1s cubic-bezier(0.34, 1.56, 0.64, 1) infinite alternate;
-    }
-    .features-section-dark .feature-card-soft:hover .chart-bar { opacity: 0.85; }
-    .features-section-dark .feature-card-soft:hover .chart-metric-bg {
-      transform: translateY(-2px); stroke: var(--teal-300);
-    }
-    .features-section-dark .feature-card-soft:hover .metric-label { fill: var(--teal-200); }
-    .features-section-dark .feature-card-soft:hover .metric-value { fill: var(--teal-300); }
-    .features-section-dark .feature-card-soft:hover .metric-arrow-up {
-      animation: chartArrowBounce 0.6s ease-in-out infinite alternate;
-    }
-
-    /* ==============================
-       Keyframe Animations
-       ============================== */
-
-    /* Reconciliation: sync ring pulse */
-    @keyframes reconRingPulse {
-      0% { transform: rotate(0deg) scale(1.05); stroke: var(--teal-400); }
-      100% { transform: rotate(360deg) scale(1.15); stroke: var(--teal-500); }
-    }
-
-    /* Multi-Entity: clearer motion */
-    @keyframes entityDashSweep {
-      to { stroke-dashoffset: -28; }
-    }
-
-    @keyframes entityHubBreathe {
-      from { transform: rotate(0deg); }
-      to   { transform: rotate(360deg); }
-    }
-
-    @keyframes entityBarDraw {
-      from { width: 0; }
-      to   { width: 100%; }
-    }
-
-    /* Security: ring rotations */
-    @keyframes secRingOuter {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-    @keyframes secRingMid {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(-360deg); }
-    }
-    @keyframes secRingInner {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-
-    /* Security: orbitting dot */
-    @keyframes secOrbitDot {
-      0% { fill: var(--teal-400); }
-      100% { fill: var(--teal-300); transform: scale(1.4); }
-    }
-
-    /* Security: shield glow */
-    @keyframes secShieldGlow {
-      0% { transform: scale(1.08); stroke: var(--teal-400); }
-      100% { transform: scale(1.16); stroke: var(--teal-500); }
-    }
-
-    /* Analytics: latest dot */
-    @keyframes chartDotLatest {
-      0% { transform: scale(1.4); fill: var(--teal-400); }
-      100% { transform: scale(2); fill: var(--teal-300); }
-    }
-
-    /* Analytics: arrow bounce */
-    @keyframes chartArrowBounce {
-      0% { transform: translateY(0); }
-      100% { transform: translateY(-1.5px); }
-    }
+    .features-section-dark .feature-card-soft:hover .chart-card-bg { fill: rgba(255,255,255,0.08); stroke: rgba(255,255,255,0.12); }
+    .features-section-dark .feature-card-soft:hover .chart-spark-path { stroke: var(--teal-300); opacity: 1; }
+    .features-section-dark .feature-card-soft:hover .chart-spark-dot { fill: var(--teal-200); opacity: 1; transform: scale(1.4); }
+    .features-section-dark .feature-card-soft:hover .chart-mini-bar { opacity: 0.8; fill: var(--teal-400); }
+    .features-section-dark .feature-card-soft:hover .chart-mini-bar.b1 { transition-delay: 0s; }
+    .features-section-dark .feature-card-soft:hover .chart-mini-bar.b2 { transition-delay: 0.03s; }
+    .features-section-dark .feature-card-soft:hover .chart-mini-bar.b3 { transition-delay: 0.06s; }
+    .features-section-dark .feature-card-soft:hover .chart-mini-bar.b4 { transition-delay: 0.09s; }
+    .features-section-dark .feature-card-soft:hover .chart-mini-bar.b5 { transition-delay: 0.12s; }
+    .features-section-dark .feature-card-soft:hover .chart-mini-bar.b6 { transition-delay: 0.15s; }
+    .features-section-dark .feature-card-soft:hover .chart-mini-bar.b7 { transition-delay: 0.18s; }
+    .features-section-dark .feature-card-soft:hover .chart-mini-bar.b8 { transition-delay: 0.21s; }
+    .features-section-dark .feature-card-soft:hover .chart-arc-progress { stroke: var(--teal-300); opacity: 0.9; stroke-dasharray: 55 100; }
+    .features-section-dark .feature-card-soft:hover .chart-arc-text { fill: var(--teal-200); opacity: 1; }
 
     .hero-mobile-metrics {
       display: none;
@@ -1733,6 +1610,40 @@
       .features-section-dark .bento-wide,
       .features-section-dark .bento-narrow {
         grid-column: span 1 !important;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .features-section-dark .feature-card-soft .fc-content {
+        padding: 20px 16px 0 !important;
+      }
+      .features-section-dark .feature-card-soft .fc-title {
+        font-size: 17px !important;
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+      }
+      .features-section-dark .feature-card-soft .fc-desc {
+        font-size: 13px !important;
+      }
+      .pricing-card-glass {
+        padding: 20px 14px !important;
+      }
+      .pricing-card-title {
+        font-size: 22px !important;
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+      }
+      .pricing-price-large {
+        font-size: 32px !important;
+      }
+      .pricing-features-list li {
+        font-size: 12px !important;
+        overflow-wrap: break-word;
+        word-wrap: break-word;
+      }
+      .pricing-features-list li .check-icon,
+      .pricing-features-list li .add-icon {
+        flex-shrink: 0 !important;
       }
     }
     .auth-back {
@@ -1959,7 +1870,7 @@
         <a href="#features">Platform</a>
         <a href="#pricing">Pricing</a>
         <a href="api.html" class="nav-api-link">API Docs</a>
-        <div class="nav-auth" id="navAuthArea"><a href="#" class="btn btn-sm trigger-auth-signin" style="background: #0d9488; color: #ffffff; border: 1px solid #0d9488; font-weight: 600; margin-right: 8px;">Sign in</a></div>
+        <div class="nav-auth" id="navAuthArea"></div>
       </div>
     </div>
   </nav>
@@ -2003,11 +1914,11 @@
                 </svg>
               </div>
 
-              <!-- Sidebar matching Coda ERP dashboard -->
+              <!-- Sidebar — mirrors dashboard.html exactly -->
               <div class="mockup-sidebar">
                 <aside class="app-sidebar" style="height: 100%; margin: 0; border-radius: 0; box-shadow: none; display: flex; flex-direction: column; overflow: hidden;">
                   <div class="sidebar-header">
-                    <a href="#!" class="sidebar-brand" style="text-decoration: none;">
+                    <a href="/" class="sidebar-brand">
                       <span class="brand-icon-box">
                         <svg viewBox="20 20 54 58" fill="none" xmlns="http://www.w3.org/2000/svg">
                           <rect x="38" y="22" width="34" height="14" rx="3" fill="#0d9488" />
@@ -2015,12 +1926,15 @@
                           <rect x="34" y="62" width="38" height="14" rx="3" fill="currentColor" />
                         </svg>
                       </span>
-                      <span class="sidebar-logo-text">Coda ERP</span>
-                      <span class="badge-subscription sidebar-logo-text">Pro</span>
+                      <span>Coda ERP</span>
+                      <span class="badge-subscription">Pro</span>
                     </a>
+                    <button class="sidebar-close" aria-label="Close navigation">
+                      <span class="material-symbols-outlined">close</span>
+                    </button>
                   </div>
 
-                  <nav class="sidebar-nav" style="flex: 1; overflow-y: auto; overflow-x: hidden;">
+                  <nav class="sidebar-nav" id="sidebarNav">
                     <div class="nav-section">
                       <div class="nav-section-title">Overview</div>
                       <button class="nav-item mockup-nav-item active" data-view-idx="0">
@@ -2037,7 +1951,7 @@
                       </button>
                       <button class="nav-item mockup-nav-item" data-view-idx="4">
                         <span class="material-symbols-outlined">sync_alt</span>
-                        <span class="nav-text">Reconciliation</span>
+                        <span class="nav-text">Bank Reconciliation</span>
                       </button>
                       <button class="nav-item mockup-nav-item" data-view-idx="2">
                         <span class="material-symbols-outlined">inventory_2</span>
@@ -2064,25 +1978,33 @@
                         <span class="nav-text">Reports</span>
                       </button>
                     </div>
+
+                    <div class="nav-section" style="display:none">
+                      <div class="nav-section-title">Admin</div>
+                      <a href="/admin" class="nav-item nav-link-admin">
+                        <span class="material-symbols-outlined" style="color: var(--success, #10b981);">account_circle</span>
+                        <span class="nav-text">Admin Panel</span>
+                      </a>
+                    </div>
                   </nav>
 
-                  <!-- Sidebar Footer: Promo Card + User Row -->
-                  <div class="sidebar-footer" style="padding: 12px; border-top: 1px solid rgba(255,255,255,0.08); margin-top: auto;">
-                    <div class="sidebar-promo-card" style="background: linear-gradient(135deg, var(--teal-800) 0%, var(--teal-900) 100%); border-radius: 8px; padding: 10px 12px; margin-bottom: 8px;">
-                      <p class="promo-title" style="font-size: 10px; font-weight: 700; color: #ffffff; margin-bottom: 2px;">Enterprise Tier</p>
-                      <p class="promo-desc" style="font-size: 9px; color: rgba(255,255,255,0.6); margin-bottom: 6px;">Multi-depot inventory &amp; API access.</p>
-                      <button style="width: 100%; background: rgba(255,255,255,0.15); border: 1px solid rgba(255,255,255,0.2); color: #ffffff; font-size: 9px; font-weight: 600; padding: 4px 8px; border-radius: 5px; cursor: default;">Upgrade Plan</button>
+                  <div class="sidebar-footer">
+                    <div class="sidebar-promo-card">
+                      <p class="promo-title">Enterprise Tier</p>
+                      <p class="promo-desc">Multi-depot inventory and program access APIs.</p>
+                      <button class="btn btn-promo btn-sm" style="width: 100%;">Upgrade Plan</button>
                     </div>
-                    <div class="mockup-sidebar-user-row" style="display: flex; align-items: center; gap: 8px; padding: 6px 4px;">
-                      <div style="width: 24px; height: 24px; border-radius: 50%; background: linear-gradient(135deg, var(--teal-600), var(--teal-400)); display: flex; align-items: center; justify-content: center; flex-shrink: 0;">
-                        <span style="font-size: 10px; font-weight: 700; color: #fff;">AK</span>
+                    <div class="user-info" id="userInfo">
+                      <div class="user-avatar">D</div>
+                      <div class="user-details">
+                        <div class="user-name">Demo User</div>
+                        <div class="user-role">Professional</div>
                       </div>
-                      <div class="mockup-sidebar-user-details" style="flex: 1; min-width: 0;">
-                        <div style="font-size: 10px; font-weight: 600; color: var(--slate-200); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Demo User</div>
-                        <div style="font-size: 9px; color: var(--slate-500); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">demo@coda.app</div>
-                      </div>
-                      <span class="material-symbols-outlined mockup-sidebar-logout" style="font-size: 14px; color: var(--slate-500);">logout</span>
                     </div>
+                    <button class="btn btn-secondary btn-logout" style="width: 100%; margin-top: 8px;">
+                      <span class="material-symbols-outlined" style="font-size: 16px;">logout</span>
+                      <span>Sign Out</span>
+                    </button>
                   </div>
                 </aside>
               </div>
@@ -2125,133 +2047,144 @@
                 <div class="mockup-views-container">
 
                   <!-- View 0: Overview -->
-                  <div class="mockup-view active" id="mockup-view-0" style="overflow-y: auto; gap: 12px; padding: 0 4px;">
-                    <!-- Fusion Top Bar -->
-                    <div class="fusion-top-bar" style="flex-shrink: 0; margin: 0;">
-                      <div class="fusion-search" style="flex: 1; max-width: 380px;">
-                        <span class="material-symbols-outlined search-icon">search</span>
-                        <input type="text" placeholder="Search transactions, customers..." readonly>
-                        <kbd>⌘K</kbd>
-                      </div>
-                      <div class="fusion-quick-actions" style="gap: 4px;">
-                        <button class="quick-action-pill" style="font-size: 11px; padding: 5px 10px;" disabled>
+                  <div class="mockup-view active" id="mockup-view-0">
+                    <!-- Quick Actions -->
+                    <div class="fusion-top-bar" style="flex-shrink: 0; margin: 0 0 8px;">
+                      <div class="fusion-quick-actions">
+                        <button class="quick-action-pill" disabled>
                           <span class="material-symbols-outlined">receipt_long</span> Create Invoice
                         </button>
-                        <button class="quick-action-pill" style="font-size: 11px; padding: 5px 10px;" disabled>
+                        <button class="quick-action-pill" disabled>
                           <span class="material-symbols-outlined">payments</span> Record Expense
                         </button>
-                        <button class="quick-action-pill" style="font-size: 11px; padding: 5px 10px;" disabled>
+                        <button class="quick-action-pill" disabled>
                           <span class="material-symbols-outlined">person_add</span> Add Customer
                         </button>
-                        <button class="quick-action-pill" style="font-size: 11px; padding: 5px 10px;" disabled>
+                        <button class="quick-action-pill" disabled>
                           <span class="material-symbols-outlined">analytics</span> View Reports
                         </button>
                       </div>
                     </div>
 
                     <!-- 30/70 Split Layout -->
-                    <div class="fusion-grid" style="flex: 1; gap: 12px; min-height: 0;">
+                    <div class="fusion-grid" style="flex: 1; min-height: 0;">
 
                       <!-- LEFT COL (30%) -->
-                      <div class="fusion-wallet-col" style="gap: 12px;">
+                      <div class="fusion-wallet-col">
                         <!-- Wallet Card -->
-                        <div class="wallet-card" style="padding: 14px;">
+                        <div class="wallet-card">
                           <div class="wallet-glow"></div>
                           <div class="wallet-header">
                             <span class="wallet-label">NET INCOME</span>
                             <span class="wallet-trend up">+8.7%</span>
                           </div>
-                          <div class="wallet-balance" style="font-size: 24px;">₦12.8M <span style="font-size:8px; font-weight:500; color:var(--text-muted); background:rgba(0,0,0,0.04); padding:1px 4px; border-radius:3px; vertical-align:middle;">Sample</span></div>
+                          <div class="wallet-balance">₦12.8M <span class="mockup-sample-badge">Sample</span></div>
                           <div class="wallet-split">
                             <div class="wallet-split-item">
                               <span class="split-label">Revenue MTD</span>
-                              <span class="split-val" style="font-size: 14px;">₦45.2M</span>
+                              <span class="split-val">₦45.2M</span>
                             </div>
                             <div class="wallet-split-item">
                               <span class="split-label">Expenses MTD</span>
-                              <span class="split-val" style="font-size: 14px;">₦8.45M</span>
+                              <span class="split-val">₦8.45M</span>
                             </div>
                           </div>
                         </div>
 
                         <!-- Expense Doughnut -->
-                        <div class="chart-card fusion-card" style="flex: 1; min-height: 0;">
-                          <div class="table-card-header">
-                            <h3 style="font-size: 11px;">Expense Breakdown</h3>
-                            <span style="font-size: 9px; color: var(--text-muted);">MTD</span>
+                        <div class="chart-card fusion-card" style="flex: 1; display: flex; flex-direction: column;">
+                          <div class="table-card-header" style="flex-shrink: 0;">
+                            <h3>Expense Breakdown</h3>
+                            <span class="text-muted">MTD</span>
                           </div>
-                          <div class="chart-canvas-wrap" style="padding: 8px; min-height: 100px; flex: 1; display:flex; align-items:center; justify-content:center; position: relative;">
+                          <div class="chart-canvas-wrap" style="width: 250px; height: 250px; margin: auto; position: relative;">
                             <canvas id="mockupExpenseChart"></canvas>
                             <div style="position:absolute; display:flex; flex-direction:column; align-items:center; justify-content:center; pointer-events:none; top:50%; left:50%; transform:translate(-50%, -50%);">
-                              <div style="font-size:9px; font-weight:700; color:var(--slate-900);">₦8.45M</div>
+                              <div style="font-size:13px; font-weight:700; color:var(--slate-900);">₦8.45M</div>
                             </div>
                           </div>
                         </div>
 
                         <!-- Operations Mini -->
-                        <div class="operations-mini-card" style="flex-shrink: 0;">
+                        <div class="operations-mini-card">
                           <div class="op-mini-item">
                             <span class="material-symbols-outlined op-icon">inventory_2</span>
                             <div>
-                              <div class="op-val" style="font-size: 11px;">148 Products</div>
-                              <div class="op-sub error" style="font-size: 9px;">3 Low stock</div>
+                              <div class="op-val">148 Products</div>
+                              <div class="op-sub error">3 Low stock</div>
                             </div>
                           </div>
                           <div class="op-mini-item">
                             <span class="material-symbols-outlined op-icon">groups</span>
                             <div>
-                              <div class="op-val" style="font-size: 11px;">248 Customers</div>
-                              <div class="op-sub teal" style="font-size: 9px;">14 Open leads</div>
+                              <div class="op-val">248 Customers</div>
+                              <div class="op-sub teal">14 Open leads</div>
                             </div>
                           </div>
                         </div>
                       </div>
 
                       <!-- RIGHT COL (70%) -->
-                      <div class="fusion-ops-col" style="gap: 12px;">
+                      <div class="fusion-ops-col">
                         <!-- Cash Flow Chart -->
-                        <div class="chart-card fusion-card ops-chart-card" style="flex: 1; min-height: 0; display:flex; flex-direction:column;">
-                          <div class="table-card-header" style="flex-shrink: 0; padding: 10px 14px; justify-content: space-between;">
-                            <div style="display: flex; align-items: center; gap: 6px;">
-                              <h3 style="font-size: 11px;">Monthly Cash Flow</h3>
-                              <span style="font-size: 9px; color: var(--text-muted);">6 month trend</span>
+                        <div class="chart-card fusion-card ops-chart-card" style="display:flex; flex-direction:column;">
+                          <div class="table-card-header" style="flex-shrink: 0;">
+                            <div style="display: flex; align-items: center; gap: 8px;">
+                              <h3>Monthly Cash Flow</h3>
+                              <span class="text-muted">6 month trend</span>
                             </div>
-                            <div class="chart-type-toggle" style="gap: 2px;">
-                              <button class="active" id="mockupBtnChartLine" style="padding: 2px 8px; font-size: 10px;"><span class="material-symbols-outlined" style="font-size: 12px;">show_chart</span></button>
-                              <button id="mockupBtnChartBar" style="padding: 2px 8px; font-size: 10px;"><span class="material-symbols-outlined" style="font-size: 12px;">bar_chart</span></button>
+                            <div class="chart-type-toggle">
+                              <button class="active" id="mockupBtnChartLine"><span class="material-symbols-outlined">show_chart</span></button>
+                              <button id="mockupBtnChartBar"><span class="material-symbols-outlined">bar_chart</span></button>
                             </div>
                           </div>
-                          <div class="chart-canvas-wrap" style="padding: 12px; height: 120px; flex: 1;">
+                          <div class="chart-canvas-wrap" style="height: 200px; flex-shrink: 0;">
                             <canvas id="mockupRevenueChart"></canvas>
                           </div>
                         </div>
 
                         <!-- Recent Activity -->
-                        <div class="table-card fusion-card activity-card" style="flex-shrink: 0; max-height: 160px; display:flex; flex-direction:column;">
-                          <div class="table-card-header" style="flex-shrink: 0; padding: 10px 14px;">
-                            <h3 style="font-size: 11px;">Recent Activity</h3>
-                            <span style="font-size: 9px; color: var(--text-muted);">Latest transactions <span style="background:rgba(0,0,0,0.04); padding:1px 4px; border-radius:3px; margin-left:4px;">Sample</span></span>
+                        <div class="table-card fusion-card activity-card" style="display:flex; flex-direction:column; flex: 1;">
+                          <div class="table-card-header">
+                            <h3>Recent Activity</h3>
+                            <span class="text-muted" style="font-size: 11px;">Latest transactions <span class="mockup-sample-badge">Sample</span></span>
                           </div>
-                          <div class="activity-feed" style="flex: 1; overflow-y: auto; padding: 0 14px 8px;">
-                            <div class="mockup-tx" style="padding: 6px 0; font-size: 10px; display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-color);">
+                          <div class="activity-feed" style="flex: 1; overflow: hidden; padding: 0 12px 4px;">
+                            <div class="mockup-tx" style="padding: 5px 0; display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-color);">
                               <span class="mockup-tx-name">Invoice #1042 — Enterprise Sub</span>
                               <span class="mockup-tx-amount" style="font-weight: 600; color: var(--success);">+₦845,000</span>
                             </div>
-                            <div class="mockup-tx" style="padding: 6px 0; font-size: 10px; display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-color);">
+                            <div class="mockup-tx" style="padding: 5px 0; display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-color);">
                               <span class="mockup-tx-name">Cloud Hosting Services</span>
                               <span class="mockup-tx-amount expense" style="font-weight: 600; color: var(--error);">-₦120,000</span>
                             </div>
-                            <div class="mockup-tx" style="padding: 6px 0; font-size: 10px; display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-color);">
+                            <div class="mockup-tx" style="padding: 5px 0; display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-color);">
                               <span class="mockup-tx-name">POS Clearing Settlement</span>
                               <span class="mockup-tx-amount" style="font-weight: 600; color: var(--success);">+₦250,000</span>
                             </div>
-                            <div class="mockup-tx" style="padding: 6px 0; font-size: 10px; display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-color);">
-                              <span class="mockup-tx-name">Office Stationery Purchase</span>
-                              <span class="mockup-tx-amount expense" style="font-weight: 600; color: var(--error);">-₦45,000</span>
+                            <div class="mockup-tx" style="padding: 5px 0; display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-color);">
+                              <span class="mockup-tx-name">Wire Transfer — Supplier Payment</span>
+                              <span class="mockup-tx-amount expense" style="font-weight: 600; color: var(--error);">-₦2,100,000</span>
                             </div>
-                            <div class="mockup-tx" style="padding: 6px 0; font-size: 10px; display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-color);">
-                              <span class="mockup-tx-name">Invoice #1041 — Consulting Fee</span>
-                              <span class="mockup-tx-amount" style="font-weight: 600; color: var(--success);">+₦350,000</span>
+                            <div class="mockup-tx" style="padding: 5px 0; display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-color);">
+                              <span class="mockup-tx-name">Invoice #1045 — Retail Corp</span>
+                              <span class="mockup-tx-amount" style="font-weight: 600; color: var(--success);">+₦520,000</span>
+                            </div>
+                            <div class="mockup-tx" style="padding: 5px 0; display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-color);">
+                              <span class="mockup-tx-name">Subscription Revenue — SaaS</span>
+                              <span class="mockup-tx-amount" style="font-weight: 600; color: var(--success);">+₦1,200,000</span>
+                            </div>
+                            <div class="mockup-tx" style="padding: 5px 0; display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-color);">
+                              <span class="mockup-tx-name">Utility Bill Payment — IKEDC</span>
+                              <span class="mockup-tx-amount expense" style="font-weight: 600; color: var(--error);">-₦85,000</span>
+                            </div>
+                            <div class="mockup-tx" style="padding: 5px 0; display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-color);">
+                              <span class="mockup-tx-name">Invoice #1048 — TechStartup Ltd</span>
+                              <span class="mockup-tx-amount" style="font-weight: 600; color: var(--success);">+₦2,450,000</span>
+                            </div>
+                            <div class="mockup-tx" style="padding: 5px 0; display: flex; justify-content: space-between;">
+                              <span class="mockup-tx-name">Vendor Payment — PrintCo</span>
+                              <span class="mockup-tx-amount expense" style="font-weight: 600; color: var(--error);">-₦340,000</span>
                             </div>
                           </div>
                         </div>
@@ -2260,157 +2193,176 @@
                   </div>
 
                   <!-- View 1: Accounting -->
-                  <div class="mockup-view" id="mockup-view-1" style="overflow-y: auto; gap: 12px; padding: 0 4px;">
-                    <div class="module-header" style="flex-shrink: 0; padding: 10px 0; display: flex; align-items: center; justify-content: space-between;">
-                      <h2 style="font-size: 15px;">Double-Entry Ledger</h2>
-                      <div class="module-actions" style="display: flex; gap: 6px;">
-                        <button class="btn btn-secondary btn-sm" style="height: 28px; font-size: 10px; padding: 0 10px;" disabled>
-                          <span class="material-symbols-outlined" style="font-size: 14px;">edit_note</span>
+                  <div class="mockup-view" id="mockup-view-1">
+                    <div class="module-header">
+                      <h2>Double-Entry Ledger</h2>
+                      <div class="module-actions">
+                        <button class="btn btn-secondary btn-sm" disabled>
+                          <span class="material-symbols-outlined">edit_note</span>
                           Journal Entry
                         </button>
-                        <button class="btn btn-primary btn-sm" style="height: 28px; font-size: 10px; padding: 0 10px;" disabled>
-                          <span class="material-symbols-outlined" style="font-size: 14px;">receipt_long</span>
+                        <button class="btn btn-primary btn-sm" disabled>
+                          <span class="material-symbols-outlined">receipt_long</span>
                           Create Invoice
                         </button>
                       </div>
                     </div>
 
-                    <!-- Ledger Account Cards -->
-                    <div id="accountingLedgerGrid" style="display: flex; flex-wrap: nowrap; gap: 10px; align-items: stretch; margin-top: 0; overflow-x: auto; padding-bottom: 4px; width: 100%;">
-                      <div class="ledger-card" style="min-width: 140px; flex: 0 0 auto; min-height: 100px; display: flex; flex-direction: column; justify-content: space-between; gap: 8px; padding: 12px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);">
-                        <h4 style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 0; font-size: 11px; font-weight: 700; color: var(--slate-900);">
-                          <span class="ledger-title" style="display: flex; align-items: center; gap: 6px; min-width: 0;">
-                            <span class="material-symbols-outlined" style="flex: 0 0 auto; font-size: 16px; color: var(--slate-700);">account_balance_wallet</span>
-                            <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Petty Cash</span>
-                          </span>
+                    <div class="ledger-grid" id="accountingLedgerGrid">
+                      <div class="ledger-card">
+                        <h4>
+                          <span class="ledger-title"><span class="material-symbols-outlined">account_balance_wallet</span>Cash Account</span>
+                          <span class="badge badge-success">Active</span>
                         </h4>
-                        <div class="ledger-metric" style="font-size: 18px; font-weight: 800; color: var(--slate-900); letter-spacing: 0; line-height: 1.2; font-variant-numeric: tabular-nums;">₦150,000 <span style="font-size:8px; font-weight:500; color:var(--text-muted); background:rgba(0,0,0,0.04); padding:1px 4px; border-radius:3px; vertical-align:middle;">Sample</span></div>
-                        <div class="text-muted" style="font-size: 10px; color: var(--text-muted); font-weight: 500; line-height: 1.35;">Current Asset</div>
+                        <div class="ledger-metric">₦4,250,000</div>
+                        <div class="text-muted">Account 1000 · Petty Cash</div>
                       </div>
-                      <div class="ledger-card" style="min-width: 140px; flex: 0 0 auto; min-height: 100px; display: flex; flex-direction: column; justify-content: space-between; gap: 8px; padding: 12px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);">
-                        <h4 style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 0; font-size: 11px; font-weight: 700; color: var(--slate-900);">
-                          <span class="ledger-title" style="display: flex; align-items: center; gap: 6px; min-width: 0;">
-                            <span class="material-symbols-outlined" style="flex: 0 0 auto; font-size: 16px; color: var(--slate-700);">savings</span>
-                            <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Tax Reserve</span>
-                          </span>
+                      <div class="ledger-card">
+                        <h4>
+                          <span class="ledger-title"><span class="material-symbols-outlined">account_balance</span>Bank Account</span>
+                          <span class="badge badge-success">Active</span>
                         </h4>
-                        <div class="ledger-metric" style="font-size: 18px; font-weight: 800; color: var(--slate-900); letter-spacing: 0; line-height: 1.2; font-variant-numeric: tabular-nums;">₦1,340,000 <span style="font-size:8px; font-weight:500; color:var(--text-muted); background:rgba(0,0,0,0.04); padding:1px 4px; border-radius:3px; vertical-align:middle;">Sample</span></div>
-                        <div class="text-muted" style="font-size: 10px; color: var(--text-muted); font-weight: 500; line-height: 1.35;">Liability</div>
+                        <div class="ledger-metric">₦18,700,000</div>
+                        <div class="text-muted">Account 1100 · Main Operating Account</div>
                       </div>
-                      <div class="ledger-card" style="min-width: 140px; flex: 0 0 auto; min-height: 100px; display: flex; flex-direction: column; justify-content: space-between; gap: 8px; padding: 12px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);">
-                        <h4 style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 0; font-size: 11px; font-weight: 700; color: var(--slate-900);">
-                          <span class="ledger-title" style="display: flex; align-items: center; gap: 6px; min-width: 0;">
-                            <span class="material-symbols-outlined" style="flex: 0 0 auto; font-size: 16px; color: var(--slate-700);">trending_up</span>
-                            <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Retained Earnings</span>
-                          </span>
+                      <div class="ledger-card">
+                        <h4>
+                          <span class="ledger-title"><span class="material-symbols-outlined">receipt_long</span>Trade Receivables</span>
+                          <span class="badge badge-warning">Review</span>
                         </h4>
-                        <div class="ledger-metric" style="font-size: 18px; font-weight: 800; color: var(--slate-900); letter-spacing: 0; line-height: 1.2; font-variant-numeric: tabular-nums;">₦12,450,000 <span style="font-size:8px; font-weight:500; color:var(--text-muted); background:rgba(0,0,0,0.04); padding:1px 4px; border-radius:3px; vertical-align:middle;">Sample</span></div>
-                        <div class="text-muted" style="font-size: 10px; color: var(--text-muted); font-weight: 500; line-height: 1.35;">Equity</div>
-                      </div>
-                      <div class="ledger-card" style="min-width: 140px; flex: 0 0 auto; min-height: 100px; display: flex; flex-direction: column; justify-content: space-between; gap: 8px; padding: 12px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; box-shadow: 0 1px 2px rgba(15, 23, 42, 0.05);">
-                        <h4 style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 0; font-size: 11px; font-weight: 700; color: var(--slate-900);">
-                          <span class="ledger-title" style="display: flex; align-items: center; gap: 6px; min-width: 0;">
-                            <span class="material-symbols-outlined" style="flex: 0 0 auto; font-size: 16px; color: var(--slate-700);">business</span>
-                            <span style="white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">Share Capital</span>
-                          </span>
-                        </h4>
-                        <div class="ledger-metric" style="font-size: 18px; font-weight: 800; color: var(--slate-900); letter-spacing: 0; line-height: 1.2; font-variant-numeric: tabular-nums;">₦5,000,000 <span style="font-size:8px; font-weight:500; color:var(--text-muted); background:rgba(0,0,0,0.04); padding:1px 4px; border-radius:3px; vertical-align:middle;">Sample</span></div>
-                        <div class="text-muted" style="font-size: 10px; color: var(--text-muted); font-weight: 500; line-height: 1.35;">Equity</div>
+                        <div class="ledger-metric">₦3,420,000</div>
+                        <div class="text-muted">Account 1200 · Outstanding Invoices</div>
                       </div>
                     </div>
 
-                    <!-- Chart of Accounts -->
-                    <div class="table-card" style="flex-shrink: 0;">
-                      <div class="table-card-header" style="padding: 8px 12px;">
-                        <h3 style="font-size: 11px;">Chart of Accounts (GAAP)</h3>
-                        <span style="font-size:8px; font-weight:500; color:var(--text-muted); background:rgba(0,0,0,0.04); padding:1px 4px; border-radius:3px;">Sample</span>
+                    <div class="table-card">
+                      <div class="table-card-header">
+                        <h3>Chart of Accounts (GAAP)</h3>
                       </div>
                       <div class="table-wrap">
-                        <table class="mockup-table">
+                        <table class="transactions-table">
                           <thead>
                             <tr>
+                              <th class="checkbox-col"><input type="checkbox" disabled></th>
                               <th>Code</th>
                               <th>Account Name</th>
                               <th>Classification</th>
                               <th style="text-align: right;">Balance</th>
                               <th>Status</th>
+                              <th class="actions-col">Actions</th>
                             </tr>
                           </thead>
                           <tbody>
                             <tr>
-                              <td>1010</td>
+                              <td class="checkbox-col"><input type="checkbox" disabled></td>
+                              <td><code>1000</code></td>
                               <td>Petty Cash</td>
                               <td>Current Asset</td>
-                              <td style="text-align: right; font-weight: 600;">₦150,000</td>
-                              <td><span class="mockup-badge badge-success">Active</span></td>
+                              <td style="text-align: right; font-weight: 700;">₦4,250,000</td>
+                              <td><span class="badge badge-success">Active</span></td>
+                              <td class="actions-col">
+                                <button class="btn-icon" disabled><span class="material-symbols-outlined">edit</span></button>
+                                <button class="btn-icon btn-icon-danger" disabled><span class="material-symbols-outlined">delete</span></button>
+                              </td>
                             </tr>
                             <tr>
-                              <td>2020</td>
-                              <td>Tax Compliance Reserve</td>
-                              <td>Liability</td>
-                              <td style="text-align: right; font-weight: 600;">₦1,340,000</td>
-                              <td><span class="mockup-badge badge-success">Active</span></td>
+                              <td class="checkbox-col"><input type="checkbox" disabled></td>
+                              <td><code>1100</code></td>
+                              <td>Main Operating Account</td>
+                              <td>Current Asset</td>
+                              <td style="text-align: right; font-weight: 700;">₦18,700,000</td>
+                              <td><span class="badge badge-success">Active</span></td>
+                              <td class="actions-col">
+                                <button class="btn-icon" disabled><span class="material-symbols-outlined">edit</span></button>
+                                <button class="btn-icon btn-icon-danger" disabled><span class="material-symbols-outlined">delete</span></button>
+                              </td>
                             </tr>
                             <tr>
-                              <td>3010</td>
+                              <td class="checkbox-col"><input type="checkbox" disabled></td>
+                              <td><code>1200</code></td>
+                              <td>Outstanding Invoices</td>
+                              <td>Receivable</td>
+                              <td style="text-align: right; font-weight: 700;">₦3,420,000</td>
+                              <td><span class="badge badge-warning">Review</span></td>
+                              <td class="actions-col">
+                                <button class="btn-icon" disabled><span class="material-symbols-outlined">edit</span></button>
+                                <button class="btn-icon btn-icon-danger" disabled><span class="material-symbols-outlined">delete</span></button>
+                              </td>
+                            </tr>
+                            <tr>
+                              <td class="checkbox-col"><input type="checkbox" disabled></td>
+                              <td><code>3010</code></td>
                               <td>Retained Earnings</td>
                               <td>Equity</td>
-                              <td style="text-align: right; font-weight: 600;">₦12,450,000</td>
-                              <td><span class="mockup-badge badge-success">Active</span></td>
-                            </tr>
-                            <tr>
-                              <td>4010</td>
-                              <td>Revenue - Services</td>
-                              <td>Revenue</td>
-                              <td style="text-align: right; font-weight: 600;">₦45,200,000</td>
-                              <td><span class="mockup-badge badge-success">Active</span></td>
+                              <td style="text-align: right; font-weight: 700;">₦12,450,000</td>
+                              <td><span class="badge badge-success">Active</span></td>
+                              <td class="actions-col">
+                                <button class="btn-icon" disabled><span class="material-symbols-outlined">edit</span></button>
+                                <button class="btn-icon btn-icon-danger" disabled><span class="material-symbols-outlined">delete</span></button>
+                              </td>
                             </tr>
                           </tbody>
                         </table>
                       </div>
                     </div>
 
-                    <!-- Recent Journal Entries -->
-                    <div class="table-card" style="flex-shrink: 0;">
-                      <div class="table-card-header" style="padding: 8px 12px;">
-                        <h3 style="font-size: 11px;">Recent Journal Entries &amp; Ledger Activity</h3>
+                    <div class="table-card">
+                      <div class="table-card-header">
+                        <h3>Recent Journal Entries &amp; Ledger Activity</h3>
                       </div>
                       <div class="table-wrap">
-                        <table class="mockup-table">
+                        <table class="transactions-table">
                           <thead>
                             <tr>
+                              <th class="checkbox-col"><input type="checkbox" disabled></th>
                               <th>Date</th>
-                              <th>Journal Description</th>
+                              <th>Journal description</th>
                               <th>Reference</th>
                               <th style="text-align: right;">Amount</th>
                               <th>Classification</th>
                               <th>Status</th>
+                              <th class="actions-col">Actions</th>
                             </tr>
                           </thead>
                           <tbody>
                             <tr>
+                              <td class="checkbox-col"><input type="checkbox" disabled></td>
                               <td>18 Jun</td>
                               <td>Invoice #1043 — API Access</td>
                               <td>INV-1043</td>
                               <td style="text-align: right; font-weight: 600; color: var(--success);">+₦450,000</td>
                               <td>Trade Receivables</td>
-                              <td><span class="mockup-badge badge-success">Posted</span></td>
+                              <td><span class="badge badge-success">Posted</span></td>
+                              <td class="actions-col">
+                                <button class="btn-icon" disabled><span class="material-symbols-outlined">edit</span></button>
+                                <button class="btn-icon btn-icon-danger" disabled><span class="material-symbols-outlined">delete</span></button>
+                              </td>
                             </tr>
                             <tr>
+                              <td class="checkbox-col"><input type="checkbox" disabled></td>
                               <td>17 Jun</td>
                               <td>Web Hosting Service</td>
                               <td>SUP-022</td>
                               <td style="text-align: right; font-weight: 600; color: var(--error);">-₦120,000</td>
                               <td>Operating Expense</td>
-                              <td><span class="mockup-badge badge-success">Posted</span></td>
+                              <td><span class="badge badge-success">Posted</span></td>
+                              <td class="actions-col">
+                                <button class="btn-icon" disabled><span class="material-symbols-outlined">edit</span></button>
+                                <button class="btn-icon btn-icon-danger" disabled><span class="material-symbols-outlined">delete</span></button>
+                              </td>
                             </tr>
                             <tr>
+                              <td class="checkbox-col"><input type="checkbox" disabled></td>
                               <td>16 Jun</td>
                               <td>Invoice #1042 — Enterprise Sub</td>
                               <td>INV-1042</td>
                               <td style="text-align: right; font-weight: 600; color: var(--success);">+₦845,000</td>
                               <td>Trade Receivables</td>
-                              <td><span class="mockup-badge badge-success">Posted</span></td>
+                              <td><span class="badge badge-success">Posted</span></td>
+                              <td class="actions-col">
+                                <button class="btn-icon" disabled><span class="material-symbols-outlined">edit</span></button>
+                                <button class="btn-icon btn-icon-danger" disabled><span class="material-symbols-outlined">delete</span></button>
+                              </td>
                             </tr>
                           </tbody>
                         </table>
@@ -2419,26 +2371,26 @@
                   </div>
 
                   <!-- View 2: Inventory -->
-                  <div class="mockup-view" id="mockup-view-2" style="overflow-y: auto; gap: 12px; padding: 0 4px;">
-                    <div class="module-header" style="flex-shrink: 0; padding: 10px 0; display: flex; align-items: center; justify-content: space-between;">
-                      <h2 style="font-size: 15px;">Depot &amp; Product Valuations</h2>
-                      <div class="module-actions" style="display: flex; gap: 6px;">
-                        <button class="btn btn-secondary btn-sm" style="height: 28px; font-size: 10px; padding: 0 10px;" disabled>
-                          <span class="material-symbols-outlined" style="font-size: 14px;">add_shopping_cart</span>
+                  <div class="mockup-view" id="mockup-view-2" >
+                    <div class="module-header" style="flex-shrink: 0; display: flex; align-items: center; justify-content: space-between;">
+                      <h2>Depot &amp; Product Valuations</h2>
+                      <div class="module-actions">
+                        <button class="btn btn-secondary btn-sm" disabled>
+                          <span class="material-symbols-outlined">add_shopping_cart</span>
                           PO Order
                         </button>
-                        <button class="btn btn-primary btn-sm" style="height: 28px; font-size: 10px; padding: 0 10px;" disabled>
-                          <span class="material-symbols-outlined" style="font-size: 14px;">inventory_2</span>
+                        <button class="btn btn-primary btn-sm" disabled>
+                          <span class="material-symbols-outlined">inventory_2</span>
                           Add Product
                         </button>
                       </div>
                     </div>
 
                     <!-- Inventory Stock Levels Table -->
-                    <div class="table-card" style="flex-shrink: 0;">
-                      <div class="table-card-header" style="padding: 8px 12px;">
-                        <h3 style="font-size: 11px;">Active Inventory Stock Levels</h3>
-                        <span style="font-size:8px; font-weight:500; color:var(--text-muted); background:rgba(0,0,0,0.04); padding:1px 4px; border-radius:3px;">Sample</span>
+                    <div class="table-card">
+                      <div class="table-card-header">
+                        <h3>Active Inventory Stock Levels</h3>
+                        <span class="mockup-sample-badge">Sample</span>
                       </div>
                       <div class="table-wrap">
                         <table class="mockup-table">
@@ -2538,26 +2490,26 @@
                   </div>
 
                   <!-- View 3: Tax Center -->
-                  <div class="mockup-view" id="mockup-view-3" style="overflow-y: auto; gap: 12px; padding: 0 4px;">
-                    <div class="module-header" style="flex-shrink: 0; padding: 10px 0; display: flex; align-items: center; justify-content: space-between;">
-                      <h2 style="font-size: 15px;">Tax Remittance &amp; Filing Center</h2>
-                      <div class="module-actions" style="display: flex; gap: 6px;">
-                        <button class="btn btn-secondary btn-sm" style="height: 28px; font-size: 10px; padding: 0 10px;" disabled>
-                          <span class="material-symbols-outlined" style="font-size: 14px;">description</span>
+                  <div class="mockup-view" id="mockup-view-3" >
+                    <div class="module-header" style="flex-shrink: 0; display: flex; align-items: center; justify-content: space-between;">
+                      <h2>Tax Remittance &amp; Filing Center</h2>
+                      <div class="module-actions">
+                        <button class="btn btn-secondary btn-sm" disabled>
+                          <span class="material-symbols-outlined">description</span>
                           File returns
                         </button>
-                        <button class="btn btn-primary btn-sm" style="height: 28px; font-size: 10px; padding: 0 10px;" disabled>
-                          <span class="material-symbols-outlined" style="font-size: 14px;">calculate</span>
+                        <button class="btn btn-primary btn-sm" disabled>
+                          <span class="material-symbols-outlined">calculate</span>
                           Recalculate liabilities
                         </button>
                       </div>
                     </div>
 
                     <!-- Tax Reserve Liability Table -->
-                    <div class="table-card" style="flex-shrink: 0;">
-                      <div class="table-card-header" style="padding: 8px 12px;">
-                        <h3 style="font-size: 11px;">Calculated Tax Reserve Liability</h3>
-                        <span style="font-size:8px; font-weight:500; color:var(--text-muted); background:rgba(0,0,0,0.04); padding:1px 4px; border-radius:3px;">Sample</span>
+                    <div class="table-card">
+                      <div class="table-card-header">
+                        <h3>Calculated Tax Reserve Liability</h3>
+                        <span class="mockup-sample-badge">Sample</span>
                       </div>
                       <div class="table-wrap">
                         <table class="mockup-table">
@@ -2592,6 +2544,13 @@
                               <td style="text-align: right; font-weight: 600;">₦410,000</td>
                               <td><span class="mockup-badge badge-success">Filed &amp; Paid</span></td>
                             </tr>
+                            <tr><td>April 2026</td><td>VAT 7.5%</td><td style="text-align: right;">₦9,800,000</td><td style="text-align: right; font-weight: 600;">₦735,000</td><td><span class="mockup-badge badge-success">Filed &amp; Paid</span></td></tr>
+                            <tr><td>April 2026</td><td>CIT</td><td style="text-align: right;">₦7,200,000</td><td style="text-align: right; font-weight: 600;">₦2,160,000</td><td><span class="mockup-badge badge-success">Filed &amp; Paid</span></td></tr>
+                            <tr><td>March 2026</td><td>VAT 7.5%</td><td style="text-align: right;">₦11,100,000</td><td style="text-align: right; font-weight: 600;">₦832,500</td><td><span class="mockup-badge badge-success">Filed &amp; Paid</span></td></tr>
+                            <tr><td>March 2026</td><td>WHT</td><td style="text-align: right;">₦3,800,000</td><td style="text-align: right; font-weight: 600;">₦380,000</td><td><span class="mockup-badge badge-success">Filed &amp; Paid</span></td></tr>
+                            <tr><td>February 2026</td><td>CIT</td><td style="text-align: right;">₦6,500,000</td><td style="text-align: right; font-weight: 600;">₦1,950,000</td><td><span class="mockup-badge badge-pending">Pending Filing</span></td></tr>
+                            <tr><td>February 2026</td><td>VAT 7.5%</td><td style="text-align: right;">₦8,200,000</td><td style="text-align: right; font-weight: 600;">₦615,000</td><td><span class="mockup-badge badge-pending">Pending Filing</span></td></tr>
+                            <tr><td>January 2026</td><td>WHT</td><td style="text-align: right;">₦3,200,000</td><td style="text-align: right; font-weight: 600;">₦320,000</td><td><span class="mockup-badge badge-success">Filed &amp; Paid</span></td></tr>
                           </tbody>
                         </table>
                       </div>
@@ -2599,50 +2558,50 @@
                   </div>
 
                   <!-- View 4: Reconciliation -->
-                  <div class="mockup-view" id="mockup-view-4" style="overflow-y: auto; gap: 12px; padding: 0 4px;">
-                    <div class="module-header" style="flex-shrink: 0; padding: 10px 0; display: flex; align-items: center; justify-content: space-between;">
-                      <h2 style="font-size: 15px;">Bank Reconciliation</h2>
-                      <div class="module-actions" style="display: flex; gap: 6px;">
-                        <button class="btn btn-primary btn-sm" style="height: 28px; font-size: 10px; padding: 0 10px;" disabled>
-                          <span class="material-symbols-outlined" style="font-size: 14px;">sync</span>
+                  <div class="mockup-view" id="mockup-view-4" >
+                    <div class="module-header" style="flex-shrink: 0; display: flex; align-items: center; justify-content: space-between;">
+                      <h2>Bank Reconciliation</h2>
+                      <div class="module-actions">
+                        <button class="btn btn-primary btn-sm" disabled>
+                          <span class="material-symbols-outlined">sync</span>
                           Sync Bank Feed
                         </button>
                       </div>
                     </div>
 
                     <!-- 4 Stat Cards -->
-                    <div class="recon-stats-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px;">
-                      <div class="premium-kpi-card glass-panel hover-lift" style="padding: 10px;">
+                    <div class="recon-stats-grid">
+                      <div class="premium-kpi-card glass-panel hover-lift">
                         <div class="premium-kpi-header">
-                          <span class="premium-kpi-title" style="font-size: 9px;">Unreconciled</span>
-                          <span class="material-symbols-outlined" style="color: var(--text-muted); font-size: 14px;">pending</span>
+                          <span class="premium-kpi-title">Unreconciled</span>
+                          <span class="material-symbols-outlined" style="color: var(--text-muted);">pending</span>
                         </div>
-                        <div class="premium-kpi-val" style="font-size: 16px;">₦1.45M <span style="font-size:7px; font-weight:500; color:var(--text-muted); background:rgba(0,0,0,0.04); padding:1px 3px; border-radius:2px; vertical-align:middle;">Sample</span></div>
-                        <div style="font-size: 8px; color: var(--text-muted);">2 bank feeds pending</div>
+                        <div class="premium-kpi-val">₦1.45M <span class="mockup-sample-badge">Sample</span></div>
+                        <div class="premium-kpi-meta">2 bank feeds pending</div>
                       </div>
-                      <div class="premium-kpi-card glass-panel hover-lift" style="padding: 10px;">
+                      <div class="premium-kpi-card glass-panel hover-lift">
                         <div class="premium-kpi-header">
-                          <span class="premium-kpi-title" style="font-size: 9px;">Reconciled</span>
-                          <span class="material-symbols-outlined" style="color: var(--success); font-size: 14px;">check_circle</span>
+                          <span class="premium-kpi-title">Reconciled</span>
+                          <span class="material-symbols-outlined" style="color: var(--success);">check_circle</span>
                         </div>
-                        <div class="premium-kpi-val" style="font-size: 16px; color: var(--success);">1,048 tx</div>
-                        <div style="font-size: 8px; color: var(--text-muted);">Matched transactions</div>
+                        <div class="premium-kpi-val" style="color: var(--success);">1,048 tx</div>
+                        <div class="premium-kpi-meta">Matched transactions</div>
                       </div>
-                      <div class="premium-kpi-card glass-panel hover-lift" style="padding: 10px;">
+                      <div class="premium-kpi-card glass-panel hover-lift">
                         <div class="premium-kpi-header">
-                          <span class="premium-kpi-title" style="font-size: 9px;">Ledger Entries</span>
-                          <span class="material-symbols-outlined" style="color: var(--text-muted); font-size: 14px;">receipt_long</span>
+                          <span class="premium-kpi-title">Ledger Entries</span>
+                          <span class="material-symbols-outlined" style="color: var(--text-muted);">receipt_long</span>
                         </div>
-                        <div class="premium-kpi-val" style="font-size: 16px;">1,892</div>
-                        <div style="font-size: 8px; color: var(--text-muted);">Matched journal entries</div>
+                        <div class="premium-kpi-val">1,892</div>
+                        <div class="premium-kpi-meta">Matched journal entries</div>
                       </div>
-                      <div class="premium-kpi-card glass-panel hover-lift" style="padding: 10px;">
+                      <div class="premium-kpi-card glass-panel hover-lift">
                         <div class="premium-kpi-header">
-                          <span class="premium-kpi-title" style="font-size: 9px;">Match Rate</span>
-                          <span class="material-symbols-outlined" style="color: var(--text-muted); font-size: 14px;">percent</span>
+                          <span class="premium-kpi-title">Match Rate</span>
+                          <span class="material-symbols-outlined" style="color: var(--text-muted);">percent</span>
                         </div>
-                        <div class="premium-kpi-val" style="font-size: 16px; color: var(--teal-600);">98.2% <span style="font-size:7px; font-weight:500; color:var(--text-muted); background:rgba(0,0,0,0.04); padding:1px 3px; border-radius:2px; vertical-align:middle;">Sample</span></div>
-                        <div style="font-size: 8px; color: var(--text-muted);">Auto-match accuracy</div>
+                        <div class="premium-kpi-val" style="color: var(--teal-600);">98.2% <span class="mockup-sample-badge">Sample</span></div>
+                        <div class="premium-kpi-meta">Auto-match accuracy</div>
                       </div>
                     </div>
 
@@ -2669,31 +2628,46 @@
                           <div style="text-align: center;"><span class="material-symbols-outlined" style="font-size: 16px; color: var(--success);">check</span></div>
                           <div><span style="font-weight: 600; font-size: 10px;">Invoice #1042 — Enterprise Sub</span><br><span style="font-size: 8px; color: var(--success);">99% Match</span></div>
                         </div>
+                        <div style="display: grid; grid-template-columns: 1fr 40px 1fr; gap: 10px; align-items: center; background: #fff; border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 8px 10px;">
+                          <div><span style="font-weight: 600; font-size: 10px;">GTBank POS Settlement ₦250,000</span><br><span style="font-size: 8px; color: var(--text-muted);">15 Jun 2026</span></div>
+                          <div style="text-align: center;"><span class="material-symbols-outlined" style="font-size: 16px; color: var(--success);">check</span></div>
+                          <div><span style="font-weight: 600; font-size: 10px;">POS Clearing — Retail Sales</span><br><span style="font-size: 8px; color: var(--success);">98% Match</span></div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 40px 1fr; gap: 10px; align-items: center; background: #fff; border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 8px 10px;">
+                          <div><span style="font-weight: 600; font-size: 10px;">Wire Transfer — ₦2,100,000</span><br><span style="font-size: 8px; color: var(--text-muted);">14 Jun 2026</span></div>
+                          <div style="text-align: center;"><span class="material-symbols-outlined" style="font-size: 16px; color: var(--warning);">more_horiz</span></div>
+                          <div><span style="font-weight: 600; font-size: 10px;">Supplier Payment — TechDistributor</span><br><span style="font-size: 8px; color: var(--warning);">72% Match — Review</span></div>
+                        </div>
+                        <div style="display: grid; grid-template-columns: 1fr 40px 1fr; gap: 10px; align-items: center; background: #fff; border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 8px 10px;">
+                          <div><span style="font-weight: 600; font-size: 10px;">Union Bank Interest ₦12,500</span><br><span style="font-size: 8px; color: var(--text-muted);">13 Jun 2026</span></div>
+                          <div style="text-align: center;"><span class="material-symbols-outlined" style="font-size: 16px; color: var(--error);">close</span></div>
+                          <div><span style="font-weight: 600; font-size: 10px;">Unmatched in Ledger</span><br><span style="font-size: 8px; color: var(--error);">No match found</span></div>
+                        </div>
                       </div>
                     </div>
                   </div>
 
                   <!-- View 5: CRM -->
-                  <div class="mockup-view" id="mockup-view-5" style="overflow-y: auto; gap: 12px; padding: 0 4px;">
-                    <div class="module-header" style="flex-shrink: 0; padding: 10px 0; display: flex; align-items: center; justify-content: space-between;">
-                      <h2 style="font-size: 15px;">Customer Directory &amp; Leads</h2>
-                      <div class="module-actions" style="display: flex; gap: 6px;">
-                        <button class="btn btn-secondary btn-sm" style="height: 28px; font-size: 10px; padding: 0 10px;" disabled>
-                          <span class="material-symbols-outlined" style="font-size: 14px;">upload_file</span>
+                  <div class="mockup-view" id="mockup-view-5" >
+                    <div class="module-header" style="flex-shrink: 0; display: flex; align-items: center; justify-content: space-between;">
+                      <h2>Customer Directory &amp; Leads</h2>
+                      <div class="module-actions">
+                        <button class="btn btn-secondary btn-sm" disabled>
+                          <span class="material-symbols-outlined">upload_file</span>
                           Import CSV
                         </button>
-                        <button class="btn btn-primary btn-sm" style="height: 28px; font-size: 10px; padding: 0 10px;" disabled>
-                          <span class="material-symbols-outlined" style="font-size: 14px;">person_add</span>
+                        <button class="btn btn-primary btn-sm" disabled>
+                          <span class="material-symbols-outlined">person_add</span>
                           Add Customer
                         </button>
                       </div>
                     </div>
 
                     <!-- Registered Business Clients Table -->
-                    <div class="table-card" style="flex-shrink: 0;">
-                      <div class="table-card-header" style="padding: 8px 12px;">
-                        <h3 style="font-size: 11px;">Registered Business Clients</h3>
-                        <span style="font-size:8px; font-weight:500; color:var(--text-muted); background:rgba(0,0,0,0.04); padding:1px 4px; border-radius:3px;">Sample</span>
+                    <div class="table-card">
+                      <div class="table-card-header">
+                        <h3>Registered Business Clients</h3>
+                        <span class="mockup-sample-badge">Sample</span>
                       </div>
                       <div class="table-wrap">
                         <table class="mockup-table">
@@ -2735,6 +2709,13 @@
                               <td>+234 902 444 8812</td>
                               <td><span class="mockup-badge badge-pending">Pending</span></td>
                             </tr>
+                            <tr><td>CLI-005</td><td>Wayne Enterprises</td><td>accounts@wayne.com</td><td>+234 805 777 3311</td><td><span class="mockup-badge badge-success">Active</span></td></tr>
+                            <tr><td>CLI-006</td><td>Stark Industries</td><td>finance@stark.com</td><td>+234 809 222 4488</td><td><span class="mockup-badge badge-success">Active</span></td></tr>
+                            <tr><td>CLI-007</td><td>Oscorp Technologies</td><td>billing@oscorp.com</td><td>+234 816 333 7711</td><td><span class="mockup-badge badge-success">Active</span></td></tr>
+                            <tr><td>CLI-008</td><td>LexCorp Nigeria</td><td>payables@lexcorp.com</td><td>+234 803 111 2233</td><td><span class="mockup-badge badge-pending">Pending</span></td></tr>
+                            <tr><td>CLI-009</td><td>Cyberdyne Systems</td><td>invoices@cyberdyne.com</td><td>+234 818 999 6644</td><td><span class="mockup-badge badge-success">Active</span></td></tr>
+                            <tr><td>CLI-010</td><td>Hooli Ventures</td><td>accounts@hooli.com</td><td>+234 813 555 7788</td><td><span class="mockup-badge badge-pending">Pending</span></td></tr>
+                            <tr><td>CLI-011</td><td>Massive Dynamic</td><td>finance@massive.com</td><td>+234 815 444 9900</td><td><span class="mockup-badge badge-success">Active</span></td></tr>
                           </tbody>
                         </table>
                       </div>
@@ -2742,26 +2723,26 @@
                   </div>
 
                   <!-- View 6: HR -->
-                  <div class="mockup-view" id="mockup-view-6" style="overflow-y: auto; gap: 12px; padding: 0 4px;">
-                    <div class="module-header" style="flex-shrink: 0; padding: 10px 0; display: flex; align-items: center; justify-content: space-between;">
-                      <h2 style="font-size: 15px;">Corporate Payroll Sheet</h2>
-                      <div class="module-actions" style="display: flex; gap: 6px;">
-                        <button class="btn btn-secondary btn-sm" style="height: 28px; font-size: 10px; padding: 0 10px;" disabled>
-                          <span class="material-symbols-outlined" style="font-size: 14px;">payments</span>
+                  <div class="mockup-view" id="mockup-view-6" >
+                    <div class="module-header" style="flex-shrink: 0; display: flex; align-items: center; justify-content: space-between;">
+                      <h2>Corporate Payroll Sheet</h2>
+                      <div class="module-actions">
+                        <button class="btn btn-secondary btn-sm" disabled>
+                          <span class="material-symbols-outlined">payments</span>
                           Disburse Payroll
                         </button>
-                        <button class="btn btn-primary btn-sm" style="height: 28px; font-size: 10px; padding: 0 10px;" disabled>
-                          <span class="material-symbols-outlined" style="font-size: 14px;">person_add</span>
+                        <button class="btn btn-primary btn-sm" disabled>
+                          <span class="material-symbols-outlined">person_add</span>
                           Add Employee
                         </button>
                       </div>
                     </div>
 
                     <!-- Employee Monthly Deductions Ledger Table -->
-                    <div class="table-card" style="flex-shrink: 0;">
-                      <div class="table-card-header" style="padding: 8px 12px;">
-                        <h3 style="font-size: 11px;">Employee Monthly Deductions Ledger</h3>
-                        <span style="font-size:8px; font-weight:500; color:var(--text-muted); background:rgba(0,0,0,0.04); padding:1px 4px; border-radius:3px;">Sample</span>
+                    <div class="table-card">
+                      <div class="table-card-header">
+                        <h3>Employee Monthly Deductions Ledger</h3>
+                        <span class="mockup-sample-badge">Sample</span>
                       </div>
                       <div class="table-wrap">
                         <table class="mockup-table">
@@ -2808,6 +2789,13 @@
                               <td style="text-align: right; font-weight: 600;">₦1,500,000</td>
                               <td><span class="mockup-badge badge-success">Active</span></td>
                             </tr>
+                            <tr><td>EMP-005</td><td>Efe Martins</td><td>DevOps Lead</td><td>efe@codaerp.com</td><td style="text-align: right; font-weight: 600;">₦1,600,000</td><td><span class="mockup-badge badge-success">Active</span></td></tr>
+                            <tr><td>EMP-006</td><td>Zainab Abdullah</td><td>UI/UX Designer</td><td>zainab@codaerp.com</td><td style="text-align: right; font-weight: 600;">₦1,200,000</td><td><span class="mockup-badge badge-success">Active</span></td></tr>
+                            <tr><td>EMP-007</td><td>Kunle Adeyemi</td><td>Backend Engineer</td><td>kunle@codaerp.com</td><td style="text-align: right; font-weight: 600;">₦1,400,000</td><td><span class="mockup-badge badge-success">Active</span></td></tr>
+                            <tr><td>EMP-008</td><td>Ngozi Eze</td><td>HR Manager</td><td>ngozi@codaerp.com</td><td style="text-align: right; font-weight: 600;">₦1,100,000</td><td><span class="mockup-badge badge-success">Active</span></td></tr>
+                            <tr><td>EMP-009</td><td>Yusuf Bala</td><td>Sales Lead</td><td>yusuf@codaerp.com</td><td style="text-align: right; font-weight: 600;">₦950,000</td><td><span class="mockup-badge badge-pending">On Leave</span></td></tr>
+                            <tr><td>EMP-010</td><td>Chioma Okafor</td><td>Marketing Manager</td><td>chioma@codaerp.com</td><td style="text-align: right; font-weight: 600;">₦1,050,000</td><td><span class="mockup-badge badge-success">Active</span></td></tr>
+                            <tr><td>EMP-011</td><td>Ibrahim Tanko</td><td>Data Analyst</td><td>ibrahim@codaerp.com</td><td style="text-align: right; font-weight: 600;">₦850,000</td><td><span class="mockup-badge badge-success">Active</span></td></tr>
                           </tbody>
                         </table>
                       </div>
@@ -2815,26 +2803,26 @@
                   </div>
 
                   <!-- View 7: Reports -->
-                  <div class="mockup-view" id="mockup-view-7" style="overflow-y: auto; gap: 12px; padding: 0 4px;">
-                    <div class="module-header" style="flex-shrink: 0; padding: 10px 0; display: flex; align-items: center; justify-content: space-between;">
-                      <h2 style="font-size: 15px;">Audit &amp; Financial Reporting</h2>
-                      <div class="module-actions" style="display: flex; gap: 6px;">
-                        <button class="btn btn-secondary btn-sm" style="height: 28px; font-size: 10px; padding: 0 10px;" disabled>
-                          <span class="material-symbols-outlined" style="font-size: 14px;">tune</span>
+                  <div class="mockup-view" id="mockup-view-7" >
+                    <div class="module-header" style="flex-shrink: 0; display: flex; align-items: center; justify-content: space-between;">
+                      <h2>Audit &amp; Financial Reporting</h2>
+                      <div class="module-actions">
+                        <button class="btn btn-secondary btn-sm" disabled>
+                          <span class="material-symbols-outlined">tune</span>
                           Configure Filters
                         </button>
-                        <button class="btn btn-primary btn-sm" style="height: 28px; font-size: 10px; padding: 0 10px;" disabled>
-                          <span class="material-symbols-outlined" style="font-size: 14px;">download</span>
+                        <button class="btn btn-primary btn-sm" disabled>
+                          <span class="material-symbols-outlined">download</span>
                           Download statement
                         </button>
                       </div>
                     </div>
 
                     <!-- Ready Financial Audited Statements Table -->
-                    <div class="table-card" style="flex-shrink: 0;">
-                      <div class="table-card-header" style="padding: 8px 12px;">
-                        <h3 style="font-size: 11px;">Ready Financial Audited Statements</h3>
-                        <span style="font-size:8px; font-weight:500; color:var(--text-muted); background:rgba(0,0,0,0.04); padding:1px 4px; border-radius:3px;">Sample</span>
+                    <div class="table-card">
+                      <div class="table-card-header">
+                        <h3>Ready Financial Audited Statements</h3>
+                        <span class="mockup-sample-badge">Sample</span>
                       </div>
                       <div class="table-wrap">
                         <table class="mockup-table">
@@ -2945,61 +2933,34 @@
             </p>
           </div>
           <div class="fc-illus-container">
-            <svg class="recon-svg" viewBox="0 0 900 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <rect width="900" height="100" fill="var(--bronze-50)" opacity="0.18" rx="0"/>
-              <g class="recon-left-doc">
-                <rect x="32" y="14" width="340" height="72" rx="10" class="recon-doc-bg" stroke-width="1.2"/>
-                <rect x="32" y="14" width="340" height="24" rx="10" class="recon-doc-header"/>
-                <rect x="32" y="30" width="340" height="8" class="recon-doc-header"/>
-                <rect x="52" y="20" width="64" height="6" rx="3" class="recon-doc-label"/>
-                <rect x="52" y="44" width="150" height="5" rx="2.5" class="recon-row"/>
-                <rect x="300" y="44" width="54" height="5" rx="2.5" class="recon-row"/>
-                <circle cx="366" cy="46" r="3.5" class="recon-dot dot-green"/>
-                <rect x="52" y="54" width="120" height="5" rx="2.5" class="recon-row"/>
-                <rect x="306" y="54" width="44" height="5" rx="2.5" class="recon-row"/>
-                <circle cx="366" cy="56" r="3.5" class="recon-dot dot-yellow"/>
-                <rect x="52" y="64" width="160" height="5" rx="2.5" class="recon-row recon-row-hl"/>
-                <rect x="296" y="64" width="54" height="5" rx="2.5" class="recon-row recon-row-hl"/>
-                <circle cx="366" cy="66" r="3.5" class="recon-dot dot-green"/>
-                <rect x="52" y="74" width="120" height="5" rx="2.5" class="recon-row"/>
-                <rect x="300" y="74" width="44" height="5" rx="2.5" class="recon-row"/>
-                <circle cx="366" cy="76" r="3.5" class="recon-dot dot-green"/>
-                <rect x="52" y="84" width="170" height="4" rx="2" class="recon-row-total"/>
+            <svg class="recon-svg" viewBox="0 0 700 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <g class="recon-doc-left">
+                <rect x="32" y="10" width="170" height="70" rx="8" class="recon-doc-body"/>
+                <rect x="32" y="10" width="170" height="16" rx="8" class="recon-doc-head"/>
+                <rect x="46" y="14" width="42" height="4" rx="2" class="recon-doc-label"/>
+                <rect x="46" y="34" width="130" height="4" rx="2" class="recon-row-r"/>
+                <rect x="46" y="44" width="100" height="4" rx="2" class="recon-row-r"/>
+                <rect x="46" y="54" width="140" height="4" rx="2" class="recon-row-r hl"/>
+                <rect x="46" y="64" width="110" height="4" rx="2" class="recon-row-r"/>
               </g>
-              <g class="recon-flow">
-                <path d="M390 32 Q425 20 460 32 Q500 42 530 32" class="recon-flow-path"/>
-                <path d="M390 52 Q425 42 460 52 Q500 62 530 52" class="recon-flow-path"/>
-                <path d="M390 72 Q425 62 460 72 Q500 82 530 72" class="recon-flow-path"/>
-                <polyline points="518,26 530,32 518,38" class="recon-flow-arrow"/>
-                <polyline points="518,46 530,52 518,58" class="recon-flow-arrow"/>
-                <polyline points="518,66 530,72 518,78" class="recon-flow-arrow"/>
-                <circle cx="460" cy="52" r="16" class="recon-sync-ring"/>
-                <path d="M452 52 q0-7 8-7 q8 0 8 7" class="recon-sync-arrow" stroke="var(--teal-500)" stroke-width="2" stroke-linecap="round" fill="none"/>
-                <path d="M468 52 q0 7-8 7 q-8 0-8-7" class="recon-sync-arrow" stroke="var(--teal-500)" stroke-width="2" stroke-linecap="round" fill="none"/>
-                <line x1="458" y1="48" x2="462" y2="46" class="recon-sync-tip" stroke="var(--teal-500)" stroke-width="2" stroke-linecap="round"/>
-                <line x1="450" y1="56" x2="446" y2="58" class="recon-sync-tip" stroke="var(--teal-500)" stroke-width="2" stroke-linecap="round"/>
-                <circle cx="420" cy="32" r="2" class="recon-flow-dot"/>
-                <circle cx="500" cy="52" r="2" class="recon-flow-dot"/>
-                <circle cx="420" cy="72" r="2" class="recon-flow-dot"/>
+              <g class="recon-doc-right">
+                <rect x="498" y="10" width="170" height="70" rx="8" class="recon-doc-body"/>
+                <rect x="498" y="10" width="170" height="16" rx="8" class="recon-doc-head"/>
+                <rect x="512" y="14" width="42" height="4" rx="2" class="recon-doc-label"/>
+                <rect x="512" y="34" width="130" height="4" rx="2" class="recon-row-r"/>
+                <rect x="512" y="44" width="100" height="4" rx="2" class="recon-row-r"/>
+                <rect x="512" y="54" width="140" height="4" rx="2" class="recon-row-r hl"/>
+                <rect x="512" y="64" width="110" height="4" rx="2" class="recon-row-r"/>
               </g>
-              <g class="recon-right-doc">
-                <rect x="550" y="14" width="340" height="72" rx="10" class="recon-doc-bg" stroke-width="1.2"/>
-                <rect x="550" y="14" width="340" height="24" rx="10" class="recon-doc-header"/>
-                <rect x="550" y="30" width="340" height="8" class="recon-doc-header"/>
-                <rect x="570" y="20" width="80" height="6" rx="3" class="recon-doc-label"/>
-                <rect x="570" y="44" width="150" height="5" rx="2.5" class="recon-row"/>
-                <rect x="818" y="44" width="54" height="5" rx="2.5" class="recon-row"/>
-                <circle cx="558" cy="46" r="3.5" class="recon-dot dot-green"/>
-                <rect x="570" y="54" width="120" height="5" rx="2.5" class="recon-row"/>
-                <rect x="826" y="54" width="44" height="5" rx="2.5" class="recon-row"/>
-                <circle cx="558" cy="56" r="3.5" class="recon-dot dot-yellow"/>
-                <rect x="570" y="64" width="160" height="5" rx="2.5" class="recon-row recon-row-hl"/>
-                <rect x="816" y="64" width="54" height="5" rx="2.5" class="recon-row recon-row-hl"/>
-                <circle cx="558" cy="66" r="3.5" class="recon-dot dot-green"/>
-                <rect x="570" y="74" width="120" height="5" rx="2.5" class="recon-row"/>
-                <rect x="826" y="74" width="44" height="5" rx="2.5" class="recon-row"/>
-                <circle cx="558" cy="76" r="3.5" class="recon-dot dot-green"/>
-                <rect x="570" y="84" width="170" height="4" rx="2" class="recon-row-total"/>
+              <g class="recon-lines">
+                <line x1="202" y1="36" x2="496" y2="36" class="recon-conn"/>
+                <line x1="202" y1="46" x2="496" y2="46" class="recon-conn"/>
+                <line x1="202" y1="56" x2="496" y2="56" class="recon-conn hl"/>
+                <line x1="202" y1="66" x2="496" y2="66" class="recon-conn"/>
+              </g>
+              <g class="recon-check-wrap">
+                <circle cx="350" cy="45" r="14" class="recon-check-ring"/>
+                <path d="M342 45 L348 51 L358 39" class="recon-check-path"/>
               </g>
             </svg>
           </div>
@@ -3015,49 +2976,31 @@
           </p>
         </div>
         <div class="fc-illus-container" style="padding: 20px 28px;">
-          <svg class="entity-svg" viewBox="0 0 500 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <rect width="500" height="120" fill="var(--slate-50)" opacity="0.12" rx="10"/>
-          <g class="entity-connections">
-              <path d="M250 52 Q170 34 96 56" class="entity-conn-line"/>
-              <path d="M250 52 Q330 34 404 56" class="entity-conn-line"/>
-              <path d="M250 52 Q250 80 250 102" class="entity-conn-line"/>
+          <svg class="entity-svg" viewBox="0 0 400 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g class="entity-tree">
+              <path d="M200 86 L200 68" class="entity-trunk" stroke-width="1.5"/>
+              <path d="M110 38 L200 68 L290 38" class="entity-branch" stroke-width="1"/>
+              <path d="M110 38 L110 16" class="entity-branch-l" stroke-width="1"/>
+              <path d="M200 68 L200 46" class="entity-branch-c" stroke-width="1"/>
+              <path d="M290 38 L290 16" class="entity-branch-r" stroke-width="1"/>
             </g>
-            <g class="entity-hub-group">
-              <circle cx="250" cy="52" r="20" class="entity-hub-ring"/>
-              <circle cx="250" cy="52" r="9" class="entity-hub-core"/>
-              <g class="entity-hub-icon">
-                <rect x="244" y="46" width="12" height="12" rx="3" fill="none" stroke="var(--teal-600)" stroke-width="1.5"/>
-                <path d="M250 46v12M244 52h12" stroke="var(--teal-600)" stroke-width="1.5" stroke-linecap="round"/>
-              </g>
+            <g class="entity-nodes">
+              <circle cx="110" cy="16" r="14" class="entity-node n1"/>
+              <circle cx="200" cy="46" r="14" class="entity-node n2"/>
+              <circle cx="290" cy="16" r="14" class="entity-node n3"/>
+              <circle cx="200" cy="86" r="12" class="entity-node-root"/>
             </g>
-            <g class="entity-card c1">
-              <rect x="22" y="18" width="105" height="80" rx="10" class="entity-card-bg"/>
-              <rect x="22" y="18" width="105" height="18" rx="10" class="entity-card-header" fill="var(--bronze-100)"/>
-              <rect x="34" y="24" width="30" height="3" rx="1.5" class="entity-card-flag"/>
-              <rect x="34" y="42" width="70" height="3.5" rx="1.75" class="entity-card-bar"/>
-              <rect x="34" y="50" width="56" height="3.5" rx="1.75" class="entity-card-bar"/>
-              <rect x="34" y="58" width="42" height="3.5" rx="1.75" class="entity-card-bar"/>
-              <rect x="34" y="66" width="62" height="3.5" rx="1.75" class="entity-card-bar"/>
-              <rect x="34" y="74" width="20" height="3.5" rx="1.75" class="entity-card-bar"/>
-              <circle cx="102" cy="86" r="4" class="entity-card-dot"/>
+            <g class="entity-bars">
+              <rect x="104" y="12" width="12" height="2.5" rx="1.25" class="entity-bar"/>
+              <rect x="104" y="17" width="8" height="2.5" rx="1.25" class="entity-bar"/>
+              <rect x="194" y="42" width="12" height="2.5" rx="1.25" class="entity-bar"/>
+              <rect x="194" y="47" width="8" height="2.5" rx="1.25" class="entity-bar"/>
+              <rect x="284" y="12" width="12" height="2.5" rx="1.25" class="entity-bar"/>
+              <rect x="284" y="17" width="8" height="2.5" rx="1.25" class="entity-bar"/>
             </g>
-            <g class="entity-card c2">
-              <rect x="373" y="18" width="105" height="80" rx="10" class="entity-card-bg"/>
-              <rect x="373" y="18" width="105" height="18" rx="10" class="entity-card-header" fill="var(--bronze-100)"/>
-              <rect x="385" y="24" width="30" height="3" rx="1.5" class="entity-card-flag"/>
-              <rect x="385" y="42" width="70" height="3.5" rx="1.75" class="entity-card-bar"/>
-              <rect x="385" y="50" width="56" height="3.5" rx="1.75" class="entity-card-bar"/>
-              <rect x="385" y="58" width="42" height="3.5" rx="1.75" class="entity-card-bar"/>
-              <rect x="385" y="66" width="62" height="3.5" rx="1.75" class="entity-card-bar"/>
-              <rect x="385" y="74" width="20" height="3.5" rx="1.75" class="entity-card-bar"/>
-              <circle cx="453" cy="86" r="4" class="entity-card-dot"/>
-            </g>
-            <g class="entity-card c3">
-              <rect x="188" y="88" width="124" height="26" rx="8" class="entity-card-bg"/>
-              <rect x="200" y="96" width="24" height="3" rx="1.5" class="entity-card-flag"/>
-              <rect x="200" y="104" width="42" height="3.5" rx="1.75" class="entity-card-bar"/>
-              <rect x="246" y="104" width="36" height="3.5" rx="1.75" class="entity-card-bar"/>
-              <rect x="286" y="104" width="14" height="3.5" rx="1.75" class="entity-card-bar"/>
+            <g class="entity-connectors">
+              <path d="M124 16 Q152 10 186 46" class="entity-interconn" stroke-width="0.8"/>
+              <path d="M214 46 Q248 10 276 16" class="entity-interconn" stroke-width="0.8"/>
             </g>
           </svg>
         </div>
@@ -3073,51 +3016,34 @@
           </p>
         </div>
         <div class="fc-illus-container" style="padding: 20px 28px;">
-          <svg class="security-svg" viewBox="0 0 500 120" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <g class="sec-orbital">
-              <circle cx="250" cy="60" r="44" class="sec-ring sec-ring-outer"/>
-              <circle cx="250" cy="60" r="32" class="sec-ring sec-ring-mid"/>
-              <circle cx="250" cy="60" r="20" class="sec-ring sec-ring-inner"/>
-              <circle cx="250" cy="16" r="4" class="sec-orbital-dot d1"/>
-              <circle cx="288" cy="86" r="4" class="sec-orbital-dot d2"/>
-              <circle cx="212" cy="86" r="4" class="sec-orbital-dot d3"/>
-              <circle cx="302" cy="28" r="4" class="sec-orbital-dot d4"/>
+          <svg class="security-svg" viewBox="0 0 400 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <g class="sec-data-flow">
+              <circle cx="200" cy="50" r="8" class="sec-data-core"/>
+              <circle cx="200" cy="50" r="14" class="sec-data-ring" stroke-width="1.5" fill="none"/>
             </g>
-            <g class="sec-shield-main">
-              <path d="M250 22c-7 0-16 3.5-24 8v22c0 21 24 35 24 35s24-14 24-35V30c-8-4.5-17-8-24-8z" class="sec-shield-body"/>
-              <rect x="242" y="54" width="16" height="14" rx="3" class="sec-lock-body"/>
-              <path d="M246 54v-7a4 4 0 018 0v7" class="sec-lock-shackle"/>
-              <circle cx="250" cy="62" r="3" class="sec-lock-key"/>
-              <path d="M250 72v3" stroke="var(--teal-400)" stroke-width="1.8" stroke-linecap="round"/>
-              <line x1="250" y1="76" x2="250" y2="80" class="sec-lock-pin"/>
+            <g class="sec-shield-layer">
+              <path d="M200 26 L224 34 L224 54 C224 72 200 80 200 80 C200 80 176 72 176 54 L176 34 Z" class="sec-shield" stroke-width="1.5" fill="none"/>
+              <path d="M194 52 L198 56 L206 46" class="sec-shield-check" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
             </g>
-            <g class="sec-padlock-group left-group">
-              <rect x="58" y="54" width="26" height="20" rx="4" class="sec-padlock-body"/>
-              <path d="M66 54v-5a5 5 0 0110 0v5" class="sec-padlock-shackle"/>
-              <circle cx="71" cy="66" r="3.5" class="sec-padlock-key"/>
-              <line x1="71" y1="69" x2="71" y2="72" class="sec-padlock-pin" stroke-width="1.5"/>
-              <line x1="58" y1="74" x2="52" y2="74" class="sec-padlock-line" stroke-width="1.2"/>
-              <line x1="58" y1="78" x2="54" y2="78" class="sec-padlock-line" stroke-width="1.2"/>
-              <rect x="114" y="46" width="18" height="14" rx="3" class="sec-padlock-body"/>
-              <path d="M120 46v-3a3 3 0 016 0v3" class="sec-padlock-shackle"/>
-              <circle cx="123" cy="55" r="2.5" class="sec-padlock-key"/>
+            <g class="sec-key-layer">
+              <circle cx="200" cy="50" r="22" class="sec-key-ring" stroke-width="1" fill="none" stroke-dasharray="3 3"/>
+              <path d="M200 38 L200 44" class="sec-key-stem" stroke-width="2"/>
+              <path d="M195 44 L205 44" class="sec-key-bit" stroke-width="2"/>
+              <circle cx="200" cy="41" r="1.5" class="sec-key-pin"/>
             </g>
-            <g class="sec-padlock-group right-group">
-              <rect x="416" y="54" width="26" height="20" rx="4" class="sec-padlock-body"/>
-              <path d="M424 54v-5a5 5 0 0110 0v5" class="sec-padlock-shackle"/>
-              <circle cx="429" cy="66" r="3.5" class="sec-padlock-key"/>
-              <line x1="429" y1="69" x2="429" y2="72" class="sec-padlock-pin" stroke-width="1.5"/>
-              <line x1="442" y1="74" x2="448" y2="74" class="sec-padlock-line" stroke-width="1.2"/>
-              <line x1="442" y1="78" x2="446" y2="78" class="sec-padlock-line" stroke-width="1.2"/>
-              <rect x="368" y="46" width="18" height="14" rx="3" class="sec-padlock-body"/>
-              <path d="M374 46v-3a3 3 0 016 0v3" class="sec-padlock-shackle"/>
-              <circle cx="377" cy="55" r="2.5" class="sec-padlock-key"/>
+            <g class="sec-tunnel">
+              <path d="M120 50 Q140 20 170 50" class="sec-tunnel-line" stroke-width="1" stroke-dasharray="4 3" fill="none"/>
+              <path d="M280 50 Q260 20 230 50" class="sec-tunnel-line" stroke-width="1" stroke-dasharray="4 3" fill="none"/>
+              <circle cx="140" cy="42" r="2.5" class="sec-tunnel-dot d1"/>
+              <circle cx="260" cy="42" r="2.5" class="sec-tunnel-dot d2"/>
+              <circle cx="155" cy="48" r="2" class="sec-tunnel-dot d3"/>
+              <circle cx="245" cy="48" r="2" class="sec-tunnel-dot d4"/>
             </g>
-            <g class="sec-connectors">
-              <line x1="84" y1="60" x2="202" y2="60" class="sec-conn-line" stroke-width="1.2"/>
-              <line x1="416" y1="60" x2="298" y2="60" class="sec-conn-line" stroke-width="1.2"/>
-              <line x1="123" y1="50" x2="222" y2="48" class="sec-conn-line" stroke-width="1.2"/>
-              <line x1="377" y1="50" x2="278" y2="48" class="sec-conn-line" stroke-width="1.2"/>
+            <g class="sec-lock-indicators">
+              <rect x="134" y="62" width="16" height="12" rx="2" class="sec-padlock-body" stroke-width="1" fill="none"/>
+              <path d="M139 62 L139 58 C139 55 143 55 143 58 L143 62" class="sec-padlock-shackle" stroke-width="1" fill="none" stroke-linecap="round"/>
+              <rect x="250" y="62" width="16" height="12" rx="2" class="sec-padlock-body" stroke-width="1" fill="none"/>
+              <path d="M255 62 L255 58 C255 55 259 55 259 58 L259 62" class="sec-padlock-shackle" stroke-width="1" fill="none" stroke-linecap="round"/>
             </g>
           </svg>
         </div>
@@ -3133,66 +3059,48 @@
           </p>
         </div>
         <div class="fc-illus-container">
-          <svg class="analytics-svg" viewBox="0 0 900 120" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg class="analytics-svg" viewBox="0 0 700 90" fill="none" xmlns="http://www.w3.org/2000/svg">
             <defs>
-              <linearGradient id="chartGrad1" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="var(--teal-400)" stop-opacity="0.38"/>
-                <stop offset="100%" stop-color="var(--teal-400)" stop-opacity="0"/>
-              </linearGradient>
-              <linearGradient id="barGrad" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0%" stop-color="var(--teal-400)" stop-opacity="1"/>
-                <stop offset="100%" stop-color="var(--teal-600)" stop-opacity="0.85"/>
+              <linearGradient id="sparkGrad" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="var(--teal-400)" stop-opacity="0.6"/>
+                <stop offset="100%" stop-color="var(--teal-400)" stop-opacity="0.15"/>
               </linearGradient>
             </defs>
-            <g class="chart-line-group">
-              <line x1="16" y1="100" x2="340" y2="100" class="chart-axis" stroke-width="1"/>
-              <line x1="16" y1="16" x2="16" y2="100" class="chart-axis" stroke-width="1"/>
-              <line x1="16" y1="84" x2="340" y2="84" class="chart-grid" stroke-width=".8"/>
-              <line x1="16" y1="68" x2="340" y2="68" class="chart-grid" stroke-width=".8"/>
-              <line x1="16" y1="52" x2="340" y2="52" class="chart-grid" stroke-width=".8"/>
-              <line x1="16" y1="36" x2="340" y2="36" class="chart-grid" stroke-width=".8"/>
-              <path d="M36 86 Q56 80 76 74 Q96 68 116 62 Q136 56 156 50 Q176 44 196 48 Q216 40 236 32 Q256 26 276 30 Q296 22 316 18" class="chart-line"/>
-              <path d="M36 86 Q56 80 76 74 Q96 68 116 62 Q136 56 156 50 Q176 44 196 48 Q216 40 236 32 Q256 26 276 30 Q296 22 316 18 V100 H36 Z" class="chart-area" fill="url(#chartGrad1)"/>
-              <circle cx="76" cy="74" r="3.2" class="chart-dot d1"/>
-              <circle cx="116" cy="62" r="3.2" class="chart-dot d2"/>
-              <circle cx="156" cy="50" r="3.2" class="chart-dot d3"/>
-              <circle cx="196" cy="48" r="3.2" class="chart-dot d4"/>
-              <circle cx="236" cy="32" r="3.2" class="chart-dot d5"/>
-              <circle cx="276" cy="30" r="3.2" class="chart-dot d6"/>
-              <circle cx="316" cy="18" r="4.8" class="chart-dot chart-dot-latest"/>
+            <g class="chart-sparkline">
+              <rect x="16" y="10" width="152" height="70" rx="8" class="chart-card-bg"/>
+              <rect x="26" y="15" width="50" height="4" rx="2" class="chart-card-label"/>
+              <path d="M26 60 Q46 54 66 52 Q86 48 106 42 Q126 36 146 30" class="chart-spark-path" stroke-width="1.5" fill="none"/>
+              <path d="M26 60 Q46 54 66 52 Q86 48 106 42 Q126 36 146 30 L146 68 L26 68 Z" class="chart-spark-fill" fill="url(#sparkGrad)"/>
+              <circle cx="146" cy="30" r="2.5" class="chart-spark-dot"/>
             </g>
-            <g class="chart-bar-group">
-              <line x1="372" y1="100" x2="540" y2="100" class="chart-axis" stroke-width="1"/>
-              <rect x="382" y="44" width="14" height="56" rx="3" class="chart-bar b1"/>
-              <rect x="402" y="56" width="14" height="44" rx="3" class="chart-bar b2"/>
-              <rect x="422" y="36" width="14" height="64" rx="3" class="chart-bar b3"/>
-              <rect x="442" y="50" width="14" height="50" rx="3" class="chart-bar b4"/>
-              <rect x="462" y="30" width="14" height="70" rx="3" class="chart-bar b5"/>
-              <rect x="482" y="42" width="14" height="58" rx="3" class="chart-bar b6"/>
-              <rect x="502" y="24" width="14" height="76" rx="3" class="chart-bar b7"/>
-              <rect x="522" y="34" width="14" height="66" rx="3" class="chart-bar b8"/>
+            <g class="chart-bars">
+              <rect x="186" y="10" width="152" height="70" rx="8" class="chart-card-bg"/>
+              <rect x="196" y="15" width="40" height="4" rx="2" class="chart-card-label"/>
+              <rect x="204" y="48" width="10" height="24" rx="2" class="chart-mini-bar b1"/>
+              <rect x="218" y="38" width="10" height="34" rx="2" class="chart-mini-bar b2"/>
+              <rect x="232" y="30" width="10" height="42" rx="2" class="chart-mini-bar b3"/>
+              <rect x="246" y="42" width="10" height="30" rx="2" class="chart-mini-bar b4"/>
+              <rect x="260" y="34" width="10" height="38" rx="2" class="chart-mini-bar b5"/>
+              <rect x="274" y="26" width="10" height="46" rx="2" class="chart-mini-bar b6"/>
+              <rect x="288" y="44" width="10" height="28" rx="2" class="chart-mini-bar b7"/>
+              <rect x="302" y="36" width="10" height="36" rx="2" class="chart-mini-bar b8"/>
             </g>
-            <g class="chart-metric-group">
-              <rect x="580" y="12" width="280" height="96" rx="10" class="chart-metric-bg" fill="var(--player-onyx-950)" fill-opacity=".45"/>
-              <line x1="600" y1="44" x2="840" y2="44" class="chart-metric-divider"/>
-              <line x1="600" y1="72" x2="840" y2="72" class="chart-metric-divider"/>
-              <g class="chart-metric m1">
-                <rect x="600" y="16" width="84" height="5.5" rx="2.75" class="metric-label"/>
-                <rect x="600" y="26" width="58" height="7.5" rx="3.75" class="metric-value"/>
-                <rect x="668" y="26" width="34" height="7.5" rx="3.75" class="metric-change metric-up"/>
-                <polyline points="676,22 672,30 684,22" class="metric-arrow-up"/>
-              </g>
-              <g class="chart-metric m2">
-                <rect x="600" y="52" width="60" height="5.5" rx="2.75" class="metric-label"/>
-                <rect x="600" y="60" width="48" height="7.5" rx="3.75" class="metric-value"/>
-                <rect x="656" y="60" width="38" height="7.5" rx="3.75" class="metric-change metric-flat"/>
-              </g>
-              <g class="chart-metric m3">
-                <rect x="600" y="80" width="72" height="5.5" rx="2.75" class="metric-label"/>
-                <rect x="600" y="88" width="52" height="7.5" rx="3.75" class="metric-value"/>
-                <rect x="662" y="88" width="34" height="7.5" rx="3.75" class="metric-change metric-up"/>
-                <polyline points="670,84 666,92 678,84" class="metric-arrow-up"/>
-              </g>
+            <g class="chart-kpi">
+              <rect x="356" y="10" width="152" height="32" rx="8" class="chart-card-bg"/>
+              <rect x="366" y="16" width="60" height="3" rx="1.5" class="chart-card-label"/>
+              <rect x="366" y="22" width="40" height="6" rx="3" class="chart-kpi-val"/>
+              <rect x="414" y="22" width="30" height="6" rx="3" class="chart-kpi-up"/>
+              <rect x="356" y="48" width="152" height="32" rx="8" class="chart-card-bg"/>
+              <rect x="366" y="54" width="50" height="3" rx="1.5" class="chart-card-label"/>
+              <rect x="366" y="60" width="36" height="6" rx="3" class="chart-kpi-val"/>
+              <rect x="410" y="60" width="28" height="6" rx="3" class="chart-kpi-flat"/>
+            </g>
+            <g class="chart-arc">
+              <rect x="526" y="10" width="152" height="70" rx="8" class="chart-card-bg"/>
+              <rect x="536" y="15" width="50" height="4" rx="2" class="chart-card-label"/>
+              <path d="M602 52 A18 18 0 1 1 602 16" class="chart-arc-ring" stroke-width="4" fill="none" stroke-linecap="round"/>
+              <path d="M602 52 A18 18 0 0 0 620 30" class="chart-arc-progress" stroke-width="4" fill="none" stroke-linecap="round"/>
+              <text x="602" y="38" text-anchor="middle" fill="var(--teal-400)" font-size="7" font-weight="700" class="chart-arc-text">86%</text>
             </g>
           </svg>
         </div>

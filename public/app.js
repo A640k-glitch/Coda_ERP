@@ -359,41 +359,32 @@ document.addEventListener('DOMContentLoaded', () => {
   // 8. Session check
   // ----------------------------------------------------------
   async function checkUserSession() {
+    const navAuth = document.querySelector('.nav-auth');
+    let hasSession = false;
     try {
       const res = await fetch('/api/v1/auth/me', { credentials: 'include' });
       if (res.ok) {
         const data = await res.json();
         if (data && data.user) {
-          const navAuth = document.querySelector('.nav-auth');
+          hasSession = true;
           if (navAuth) {
-            const userName = data.user.name || data.user.email || 'User';
-            const displayName = data.business ? data.business.name : userName;
+            const displayName = data.business ? data.business.name : (data.user.name || data.user.email || 'User');
             navAuth.innerHTML = `
-              <a href="/dashboard" class="nav-user-profile">
-                <span class="material-symbols-outlined" style="font-size: 20px;">person</span>
-                <span>${displayName}</span>
-              </a>
+              <button class="btn-user-profile" onclick="location.href='/dashboard'">
+                <span class="material-symbols-outlined">person</span>
+                <span class="btn-user-name">${displayName}</span>
+              </button>
             `;
           }
-          
-          // Remove hero actions completely from the DOM if logged in to avoid unused elements
+          // Remove hero actions if logged in
           const heroActions = document.querySelector('.hero-actions');
-          if (heroActions) {
-            heroActions.remove();
-          }
-          
+          if (heroActions) heroActions.remove();
           window.codaHasSession = true;
         }
-      } else if (res.status === 401) {
-        if (window.location.pathname === '/dashboard' || window.location.pathname === '/admin') {
-          window.location.href = '/login';
-        } else if (window.codaHasSession) {
-          // User was logged in on this tab, but logged out elsewhere. Reload to restore default logged-out UI.
-          window.location.reload();
-        }
       }
-    } catch (e) {
-      // session check failed, silently continue — user not logged in
+    } catch (e) {}
+    if (!hasSession && navAuth) {
+      navAuth.innerHTML = '<a href="#" class="btn btn-sm trigger-auth-signin" style="background:#0d9488;color:#fff;border:1px solid #0d9488;font-weight:600;margin-right:8px">Sign in</a>';
     }
   }
   

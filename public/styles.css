@@ -559,15 +559,12 @@ body.no-scroll {
 }
 
 .mockup-sidebar {
-  width: 220px;
-  min-width: none;
+  width: 280px;
   background: var(--slate-950);
   display: flex;
   flex-direction: column;
   align-items: stretch;
-  padding: 18px 14px;
-  gap: 4px;
-  overflow: auto;
+  flex-shrink: 0;
 }
 
 .mockup-logo-mark {
@@ -600,26 +597,6 @@ body.no-scroll {
   text-decoration: none;
 }
 
-.mockup-nav-item {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 12px;
-  border-radius: 10px;
-  color: #e2e8f0;
-  text-align: left;
-  width: auto;
-  height: auto;
-  cursor: pointer;
-  font-weight: 500;
-  background: transparent;
-  border: none;
-}
-
-.mockup-nav-item.active {
-  background: var(--teal-600);
-  color: #ffffff;
-}
 
 .mockup-body {
   flex: 1;
@@ -1176,6 +1153,42 @@ input:checked+.slider:before {
   font-size: 18px;
 }
 
+/* ============================================
+   Universal signed-in user profile button
+   ============================================ */
+.btn-user-profile {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 4px 12px;
+  background: var(--teal-600, #0d9488);
+  color: #ffffff !important;
+  border: 1px solid var(--teal-600, #0d9488);
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 13px;
+  cursor: pointer;
+  white-space: nowrap;
+  text-decoration: none;
+  line-height: 1.2;
+  font-family: inherit;
+  transition: background 0.2s ease;
+}
+.btn-user-profile:hover {
+  background: var(--teal-700, #0f766e);
+}
+.btn-user-profile .material-symbols-outlined {
+  font-size: 18px;
+  color: #ffffff !important;
+  vertical-align: middle;
+}
+.btn-user-profile .btn-user-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 160px;
+}
 .app-sidebar .sidebar-promo-card {
   margin: 16px;
   padding: 16px;
@@ -3354,8 +3367,6 @@ input:checked+.slider:before {
     height: auto !important;
     flex-direction: column-reverse;
     align-items: flex-start;
-    overflow: hidden !important;
-    padding-bottom: 0 !important;
   }
 
   .giant-coda-text {
@@ -5033,7 +5044,7 @@ body.no-scroll .admin-main {
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .nav-mobile-toggle {
     width: 48px;
     height: 48px;
@@ -5053,7 +5064,7 @@ body.no-scroll .admin-main {
     width: 100%;
     max-width: 100%;
     margin: 0 auto;
-    font-size: 20px !important;
+    font-size: 26px !important;
     line-height: 1.2;
     min-height: 52px;
     padding: 14px 18px !important;
@@ -5072,7 +5083,7 @@ body.no-scroll .admin-main {
     min-height: 52px !important;
     height: 52px !important;
     padding: 0 18px !important;
-    font-size: 16px !important;
+    font-size: 19px !important;
   }
 
   .nav-links .nav-auth .btn {
@@ -5394,7 +5405,8 @@ body.no-scroll .admin-main {
   }
 }
 
-/* Live dashboard mobile drawer: darken only the drawer gutter so the page never shows behind the floating panel. */
+
+/* Live dashboard drawer: no surrounding gutter. The sidebar surface fills its wrapper. */
 @media (max-width: 1024px) {
   body:has(#sidebar.open)::before {
     content: none !important;
@@ -5403,10 +5415,10 @@ body.no-scroll .admin-main {
 
   #sidebar.sidebar-wrapper,
   #sidebar.sidebar-wrapper.open {
-    width: calc(min(92vw, 360px) + 24px) !important;
-    max-width: calc(min(92vw, 360px) + 24px) !important;
-    padding: 12px !important;
-    background: #263234 !important;
+    width: min(92vw, 360px) !important;
+    max-width: min(92vw, 360px) !important;
+    padding: 0 !important;
+    background: transparent !important;
     backdrop-filter: none !important;
     -webkit-backdrop-filter: none !important;
     box-shadow: none !important;
@@ -5417,6 +5429,22 @@ body.no-scroll .admin-main {
     width: 100% !important;
     max-width: 100% !important;
     margin: 0 !important;
-    height: calc(100dvh - 24px) !important;
+    height: 100dvh !important;
+    border-radius: 0 16px 16px 0 !important;
+  }
+}
+
+@media (min-width: 1025px) {
+  #sidebar.sidebar-wrapper {
+    background: transparent !important;
+    padding: 0 !important;
+  }
+
+  #sidebar.sidebar-wrapper .app-sidebar {
+    width: 100% !important;
+    max-width: 100% !important;
+    margin: 0 !important;
+    height: 100vh !important;
+    border-radius: 0 16px 16px 0 !important;
   }
 }

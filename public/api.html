@@ -258,9 +258,8 @@
         gap: 20px;
         margin-top: 72px;
       }
-      /* Hide sticky right code panel on mobile — keep docs readable */
       .api-code-panel {
-        display: none;
+        margin-top: 24px;
       }
       .api-docs-panel {
         width: 100%;
@@ -392,7 +391,7 @@
         <a href="/#features">Platform</a>
         <a href="/#pricing">Pricing</a>
         <a href="api.html" class="nav-api-link active">API Docs</a>
-        <div class="nav-auth" id="apiNavAuth"><a href="#" class="btn btn-sm trigger-auth-signin" id="btnExpandAuth" style="background: #0d9488; color: #ffffff; border: 1px solid #0d9488; font-weight: 600; margin-right: 8px;">Sign in</a></div>
+        <div class="nav-auth" id="apiNavAuth"></div>
       </div>
     </div>
   </nav>
@@ -806,26 +805,30 @@
 
     // Session check — update nav for logged-in users
     async function checkUserSession() {
+      const navAuth = document.getElementById('apiNavAuth');
+      let hasSession = false;
       try {
         const res = await fetch('/api/v1/auth/me', { credentials: 'include' });
         if (res.ok) {
           const data = await res.json();
           if (data && data.user) {
-            const navAuth = document.getElementById('apiNavAuth');
+            hasSession = true;
             if (navAuth) {
-              const userName = data.user.name || data.user.email || 'User';
-              const displayName = data.business ? data.business.name : userName;
+              const displayName = data.business ? data.business.name : (data.user.name || data.user.email || 'User');
               navAuth.innerHTML = `
-                <a href="/dashboard" class="nav-user-profile">
-                  <span class="material-symbols-outlined" style="font-size: 20px;">person</span>
-                  <span>${displayName}</span>
-                </a>
+                <button class="btn-user-profile" onclick="location.href='/dashboard'">
+                  <span class="material-symbols-outlined">person</span>
+                  <span class="btn-user-name">${displayName}</span>
+                </button>
               `;
             }
           }
         }
       } catch (e) {
         // session check failed, silently continue
+      }
+      if (!hasSession && navAuth) {
+        navAuth.innerHTML = '<a href="#" class="btn btn-sm trigger-auth-signin" style="background:#0d9488;color:#fff;border:1px solid #0d9488;font-weight:600;margin-right:8px">Sign in</a>';
       }
     }
     checkUserSession();
