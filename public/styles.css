@@ -5443,12 +5443,4 @@ body.no-scroll .admin-main {
     background: transparent !important;
     padding: 0 !important;
   }
-
-  #sidebar.sidebar-wrapper .app-sidebar {
-    width: 100% !important;
-    max-width: 100% !important;
-    margin: 0 !important;
-    height: 100vh !important;
-    border-radius: 0 16px 16px 0 !important;
-  }
 }
