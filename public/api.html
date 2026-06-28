@@ -395,11 +395,7 @@
           <script>
             (function() {
               if (document.cookie.includes('coda_logged_in=true')) {
-                const userStr = localStorage.getItem('coda_user');
-                let name = 'User';
-                if (userStr) {
-                  try { name = JSON.parse(userStr).name || 'User'; } catch(e) {}
-                }
+                const displayName = localStorage.getItem('coda_display_name') || 'User';
                 const esc = s => String(s).replace(/[&<>"']/g, m => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'}[m]));
                 document.write(`
                   <button class="btn-user-profile" onclick="location.href='/dashboard'">

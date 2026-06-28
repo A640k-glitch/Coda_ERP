@@ -1874,11 +1874,7 @@
           <script>
             (function() {
               if (document.cookie.includes('coda_logged_in=true')) {
-                const userStr = localStorage.getItem('coda_user');
-                let name = 'User';
-                if (userStr) {
-                  try { name = JSON.parse(userStr).name || 'User'; } catch(e) {}
-                }
+                const displayName = localStorage.getItem('coda_display_name') || 'User';
                 const esc = s => String(s).replace(/[&<>"']/g, m => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'}[m]));
                 document.write(`
                   <button class="btn-user-profile" onclick="location.href='/dashboard'">
@@ -4106,9 +4102,10 @@
           loginResultEl.className = 'auth-result show success';
           loginForm.reset();
           
-          if (data.token) {
-            localStorage.setItem('coda_token', data.token);
+          if (data.success && data.user) {
             localStorage.setItem('coda_user', JSON.stringify(data.user));
+            const displayName = data.business ? data.business.name : (data.user.name || data.user.email || 'User');
+            localStorage.setItem('coda_display_name', displayName);
           }
           
           setTimeout(() => window.top.location.href = '/dashboard', 900);
@@ -4181,9 +4178,10 @@
           signupResult.className = 'auth-result show success';
           signupForm.reset();
           
-          if (data.token) {
-            localStorage.setItem('coda_token', data.token);
+          if (data.success && data.user) {
             localStorage.setItem('coda_user', JSON.stringify(data.user));
+            const displayName = data.business ? data.business.name : (data.user.name || data.user.email || 'User');
+            localStorage.setItem('coda_display_name', displayName);
           }
           
           setTimeout(() => window.top.location.href = '/dashboard', 900);

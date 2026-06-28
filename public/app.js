@@ -367,14 +367,24 @@ document.addEventListener('DOMContentLoaded', () => {
         const data = await res.json();
         if (data && data.user) {
           hasSession = true;
+          localStorage.setItem('coda_user', JSON.stringify(data.user));
           if (navAuth) {
             const displayName = data.business ? data.business.name : (data.user.name || data.user.email || 'User');
-            navAuth.innerHTML = `
-              <button class="btn-user-profile" onclick="location.href='/dashboard'">
-                <span class="material-symbols-outlined">person</span>
-                <span class="btn-user-name">${displayName}</span>
-              </button>
-            `;
+            localStorage.setItem('coda_display_name', displayName);
+            const existingBtn = navAuth.querySelector('.btn-user-profile');
+            if (existingBtn) {
+              const nameSpan = existingBtn.querySelector('.btn-user-name');
+              if (nameSpan && nameSpan.textContent !== displayName) {
+                nameSpan.textContent = displayName;
+              }
+            } else {
+              navAuth.innerHTML = `
+                <button class="btn-user-profile" onclick="location.href='/dashboard'">
+                  <span class="material-symbols-outlined">person</span>
+                  <span class="btn-user-name">${displayName}</span>
+                </button>
+              `;
+            }
           }
           // Remove hero actions if logged in
           const heroActions = document.querySelector('.hero-actions');
@@ -384,7 +394,10 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     } catch (e) {}
     if (!hasSession && navAuth) {
-      navAuth.innerHTML = '<a href="#" class="btn btn-sm trigger-auth-signin" style="background:#0d9488;color:#fff;border:1px solid #0d9488;font-weight:600;margin-right:8px">Sign in</a>';
+      const existingSignIn = navAuth.querySelector('.trigger-auth-signin');
+      if (!existingSignIn) {
+        navAuth.innerHTML = '<a href="#" class="btn btn-sm trigger-auth-signin" style="background:#0d9488;color:#fff;border:1px solid #0d9488;font-weight:600;margin-right:8px">Sign in</a>';
+      }
     }
   }
   
@@ -394,16 +407,12 @@ document.addEventListener('DOMContentLoaded', () => {
     if (document.cookie.includes('coda_logged_in=true')) {
       const navAuth = document.querySelector('.nav-auth');
       if (navAuth && !navAuth.querySelector('.btn-user-profile')) {
-        const userStr = localStorage.getItem('coda_user');
-        let name = 'User';
-        if (userStr) {
-          try { name = JSON.parse(userStr).name || 'User'; } catch(e) {}
-        }
+        const displayName = localStorage.getItem('coda_display_name') || 'User';
         const esc = s => String(s).replace(/[&<>"']/g, m => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'}[m]));
         navAuth.innerHTML = `
           <button class="btn-user-profile" onclick="location.href='/dashboard'">
             <span class="material-symbols-outlined">person</span>
-            <span class="btn-user-name">${esc(name)}</span>
+            <span class="btn-user-name">${esc(displayName)}</span>
           </button>
         `;
       }
