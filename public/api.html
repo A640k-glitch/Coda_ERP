@@ -391,7 +391,9 @@
         <a href="/#features">Platform</a>
         <a href="/#pricing">Pricing</a>
         <a href="api.html" class="nav-api-link active">API Docs</a>
-        <div class="nav-auth" id="apiNavAuth"></div>
+        <div class="nav-auth" id="apiNavAuth">
+          <a href="#" class="btn btn-sm trigger-auth-signin" style="background:#0d9488;color:#fff;border:1px solid #0d9488;font-weight:600;margin-right:8px">Sign in</a>
+        </div>
       </div>
     </div>
   </nav>
@@ -1253,51 +1255,50 @@
       });
     }
     
-    document.querySelectorAll('.trigger-auth, .trigger-auth-signin, #btnExpandAuth').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        e.preventDefault();
-        
-        // Switch to the correct view
-        const isSignin = btn.classList.contains('trigger-auth-signin');
-        if (isSignin && window._showSigninView) {
-          window._showSigninView();
-        } else if (window._showSignupView) {
-          window._showSignupView();
-        }
-        
-        // Simple center popup
-        overlay.style.display = 'block';
-        container.style.display = 'block';
-        
-        // Position center directly
-        const targetWidth = Math.min(window.innerWidth - 48, 1400);
-        const targetHeight = Math.min(window.innerHeight - 48, 900);
-        
-        container.style.top = '50%';
-        container.style.left = '50%';
-        container.style.transform = 'translate(-50%, -50%) scale(0.95)';
-        container.style.width = targetWidth + 'px';
-        container.style.height = targetHeight + 'px';
-        container.style.borderRadius = '24px';
-        container.style.opacity = '0';
-        
-        
-        closeBtn.style.opacity = '0';
-        
-        document.body.style.overflow = 'hidden';
-        
-        // Fade in
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('.trigger-auth, .trigger-auth-signin, #btnExpandAuth');
+      if (!btn) return;
+      
+      e.preventDefault();
+      
+      // Switch to the correct view
+      const isSignin = btn.classList.contains('trigger-auth-signin');
+      if (isSignin && window._showSigninView) {
+        window._showSigninView();
+      } else if (window._showSignupView) {
+        window._showSignupView();
+      }
+      
+      // Simple center popup
+      overlay.style.display = 'block';
+      container.style.display = 'block';
+      
+      // Position center directly
+      const targetWidth = Math.min(window.innerWidth - 48, 1400);
+      const targetHeight = Math.min(window.innerHeight - 48, 900);
+      
+      container.style.top = '50%';
+      container.style.left = '50%';
+      container.style.transform = 'translate(-50%, -50%) scale(0.95)';
+      container.style.width = targetWidth + 'px';
+      container.style.height = targetHeight + 'px';
+      container.style.borderRadius = '24px';
+      container.style.opacity = '0';
+      
+      closeBtn.style.opacity = '0';
+      
+      document.body.style.overflow = 'hidden';
+      
+      // Fade in
+      requestAnimationFrame(() => {
         requestAnimationFrame(() => {
-          requestAnimationFrame(() => {
-            overlay.style.opacity = '1';
-            container.style.opacity = '1';
-            container.style.transform = 'translate(-50%, -50%) scale(1)';
-            
-            setTimeout(() => {
-              
-              closeBtn.style.opacity = '1';
-            }, 100);
-          });
+          overlay.style.opacity = '1';
+          container.style.opacity = '1';
+          container.style.transform = 'translate(-50%, -50%) scale(1)';
+          
+          setTimeout(() => {
+            closeBtn.style.opacity = '1';
+          }, 100);
         });
       });
     });

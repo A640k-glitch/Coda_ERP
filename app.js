@@ -71,7 +71,13 @@ app.use((req, res, next) => {
   });
 });
 
-
+// Prevent API responses from being cached by the browser
+app.use('/api', (req, res, next) => {
+  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+  res.setHeader('Pragma', 'no-cache');
+  res.setHeader('Expires', '0');
+  next();
+});
 
 // API routes
 app.use('/api/v1/auth',         require('./src/routes/auth'));
