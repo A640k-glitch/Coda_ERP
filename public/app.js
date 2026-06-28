@@ -390,11 +390,39 @@ document.addEventListener('DOMContentLoaded', () => {
   
   checkUserSession();
   
+  function applyCookieAuthSync() {
+    if (document.cookie.includes('coda_logged_in=true')) {
+      const navAuth = document.querySelector('.nav-auth');
+      if (navAuth && !navAuth.querySelector('.btn-user-profile')) {
+        const userStr = localStorage.getItem('coda_user');
+        let name = 'User';
+        if (userStr) {
+          try { name = JSON.parse(userStr).name || 'User'; } catch(e) {}
+        }
+        const esc = s => String(s).replace(/[&<>"']/g, m => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'}[m]));
+        navAuth.innerHTML = `
+          <button class="btn-user-profile" onclick="location.href='/dashboard'">
+            <span class="material-symbols-outlined">person</span>
+            <span class="btn-user-name">${esc(name)}</span>
+          </button>
+        `;
+      }
+      const heroActions = document.querySelector('.hero-actions');
+      if (heroActions) heroActions.style.display = 'none';
+    }
+  }
+
   // Re-check session when switching back to this tab
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'visible') {
+      applyCookieAuthSync();
       checkUserSession();
     }
+  });
+
+  // Handle bfcache restorations (clicking Back button)
+  window.addEventListener('pageshow', (e) => {
+    if (e.persisted) applyCookieAuthSync();
   });
 
 });
