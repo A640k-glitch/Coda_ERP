@@ -63,22 +63,26 @@ function userFromApiKey(key) {
 function setSessionCookie(res, id, expiresIso) {
   const maxAge = Math.max(0, Math.floor((new Date(expiresIso) - Date.now()) / 1000));
   const secure = process.env.NODE_ENV === 'production' ? '; Secure' : '';
-  res.setHeader(
-    'Set-Cookie',
-    `coda_sid=${id}; HttpOnly; Path=/; SameSite=Lax; Max-Age=${maxAge}${secure}`
-  );
+  res.setHeader('Set-Cookie', [
+    `coda_sid=${id}; HttpOnly; Path=/; SameSite=Lax; Max-Age=${maxAge}${secure}`,
+    `coda_logged_in=true; Path=/; SameSite=Lax; Max-Age=${maxAge}${secure}`
+  ]);
 }
 
 function clearSessionCookie(res) {
   const secure = process.env.NODE_ENV === 'production' ? '; Secure' : '';
-  res.setHeader('Set-Cookie', `coda_sid=; HttpOnly; Path=/; SameSite=Lax; Max-Age=0${secure}`);
+  res.setHeader('Set-Cookie', [
+    `coda_sid=; HttpOnly; Path=/; SameSite=Lax; Max-Age=0${secure}`,
+    `coda_logged_in=; Path=/; SameSite=Lax; Max-Age=0${secure}`
+  ]);
 }
 
 function clearAuthCookies(res) {
   const secure = process.env.NODE_ENV === 'production' ? '; Secure' : '';
   res.setHeader('Set-Cookie', [
     `coda_sid=; HttpOnly; Path=/; SameSite=Lax; Max-Age=0${secure}`,
-    `coda_csrf=; HttpOnly; Path=/; SameSite=Lax; Max-Age=0${secure}`
+    `coda_csrf=; HttpOnly; Path=/; SameSite=Lax; Max-Age=0${secure}`,
+    `coda_logged_in=; Path=/; SameSite=Lax; Max-Age=0${secure}`
   ]);
 }
 

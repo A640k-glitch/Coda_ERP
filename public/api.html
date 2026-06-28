@@ -392,7 +392,26 @@
         <a href="/#pricing">Pricing</a>
         <a href="api.html" class="nav-api-link active">API Docs</a>
         <div class="nav-auth" id="apiNavAuth">
-          <a href="#" class="btn btn-sm trigger-auth-signin" style="background:#0d9488;color:#fff;border:1px solid #0d9488;font-weight:600;margin-right:8px">Sign in</a>
+          <script>
+            (function() {
+              if (document.cookie.includes('coda_logged_in=true')) {
+                const userStr = localStorage.getItem('coda_user');
+                let name = 'User';
+                if (userStr) {
+                  try { name = JSON.parse(userStr).name || 'User'; } catch(e) {}
+                }
+                const esc = s => String(s).replace(/[&<>"']/g, m => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'}[m]));
+                document.write(`
+                  <button class="btn-user-profile" onclick="location.href='/dashboard'">
+                    <span class="material-symbols-outlined">person</span>
+                    <span class="btn-user-name">${esc(name)}</span>
+                  </button>
+                `);
+              } else {
+                document.write('<a href="#" class="btn btn-sm trigger-auth-signin" style="background:#0d9488;color:#fff;border:1px solid #0d9488;font-weight:600;margin-right:8px">Sign in</a>');
+              }
+            })();
+          </script>
         </div>
       </div>
     </div>
