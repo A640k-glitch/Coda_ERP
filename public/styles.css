@@ -320,33 +320,42 @@ body.no-scroll {
   left: 0;
   right: 0;
   z-index: 100;
-  background: rgba(255, 255, 255, 0.95);
-  border-bottom: 1px solid var(--border-color);
+  background: transparent !important;
+  border-bottom: none !important;
+  padding: 8px 0 !important;
+  pointer-events: none;
+  transition: all 0.3s ease;
 }
 
 .nav-inner {
   max-width: var(--max-width);
   margin: 0 auto;
   padding: 0 24px;
-  height: 64px;
+  height: 48px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  pointer-events: auto;
 }
 
 .nav-brand {
+  background: #ffffff !important;
+  color: var(--slate-900) !important;
+  padding: 8px 20px !important;
+  border-radius: 30px !important;
+  border: 1px solid rgba(15, 23, 42, 0.08) !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
   display: flex;
   align-items: center;
   gap: 8px;
   font-weight: 800;
-  font-size: 20px;
-  color: var(--slate-900);
-  letter-spacing: -0.03em;
+  font-size: 18px;
+  text-decoration: none;
 }
 
 .brand-icon-box {
-  width: 32px;
-  height: 32px;
+  width: 24px;
+  height: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -362,14 +371,15 @@ body.no-scroll {
 }
 
 .nav-links a:not(.btn) {
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--text-secondary);
-  transition: color var(--transition);
+  font-size: 13px;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.8) !important;
+  transition: color 0.2s ease;
+  text-decoration: none;
 }
 
 .nav-links a:not(.btn):hover {
-  color: var(--slate-900);
+  color: #ffffff !important;
 }
 
 .nav-auth {
@@ -2831,10 +2841,14 @@ input:checked+.slider:before {
     height: auto !important;
     width: auto !important;
     max-width: none !important;
-    background: transparent !important;
-    padding: 0 !important;
-    box-shadow: none !important;
-    gap: 32px;
+    background: rgba(15, 23, 42, 0.65) !important;
+    backdrop-filter: blur(16px) saturate(180%) !important;
+    -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border-radius: 50px !important;
+    padding: 4px 4px 4px 20px !important;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15), 0 0 15px rgba(20, 184, 166, 0.15) !important;
+    gap: 24px !important;
     align-items: center;
     opacity: 1 !important;
     pointer-events: auto !important;
@@ -2842,19 +2856,20 @@ input:checked+.slider:before {
   }
 
   .nav-links a:not(.btn) {
-    font-size: 14px !important;
+    font-size: 13px !important;
     padding: 0 !important;
     width: auto !important;
     border-bottom: none !important;
     opacity: 1 !important;
     transform: none !important;
-    color: var(--text-secondary) !important;
-    font-weight: 500 !important;
+    color: rgba(255, 255, 255, 0.8) !important;
+    font-weight: 600 !important;
     letter-spacing: normal !important;
+    transition: color 0.2s ease !important;
   }
 
   .nav-links a:not(.btn):hover {
-    color: var(--text-primary) !important;
+    color: #ffffff !important;
   }
 
   .nav-auth {
@@ -2862,24 +2877,35 @@ input:checked+.slider:before {
     width: auto !important;
     margin-top: 0 !important;
     padding-top: 0 !important;
-    gap: 16px;
+    gap: 12px !important;
     opacity: 1 !important;
     transform: none !important;
   }
 
-  .nav-auth .btn {
+  .nav-auth .btn,
+  .nav-links .trigger-auth-signin,
+  .nav-links .btn-user-profile {
     width: auto !important;
-  }
-
-  .nav-links .nav-auth .btn-primary {
-    background-color: var(--slate-900) !important;
+    margin: 0 !important;
+    padding: 6px 16px !important;
+    border-radius: 30px !important;
+    font-size: 13px !important;
+    font-weight: 700 !important;
+    height: 32px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background-color: var(--teal-600, #0d9488) !important;
     color: #ffffff !important;
-    border-color: var(--slate-900) !important;
+    border: 1px solid var(--teal-600, #0d9488) !important;
+    transition: background 0.2s ease, border-color 0.2s ease !important;
   }
 
-  .nav-links .nav-auth .btn-primary:hover {
-    background-color: var(--slate-800) !important;
-    border-color: var(--slate-800) !important;
+  .nav-auth .btn:hover,
+  .nav-links .trigger-auth-signin:hover,
+  .nav-links .btn-user-profile:hover {
+    background-color: var(--teal-700, #0f766e) !important;
+    border-color: var(--teal-700, #0f766e) !important;
   }
 
   .nav-user-profile {
