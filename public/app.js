@@ -50,7 +50,7 @@ document.addEventListener('DOMContentLoaded', () => {
   document.querySelectorAll('[data-count]').forEach(el => counterObserver.observe(el));
 
   // ----------------------------------------------------------
-  
+
 
   // ----------------------------------------------------------
   // 4. Charts (scroll-triggered via IntersectionObserver)
@@ -392,7 +392,7 @@ document.addEventListener('DOMContentLoaded', () => {
           window.codaHasSession = true;
         }
       }
-    } catch (e) {}
+    } catch (e) { }
     if (!hasSession && navAuth) {
       const existingSignIn = navAuth.querySelector('.trigger-auth-signin');
       if (!existingSignIn) {
@@ -400,15 +400,15 @@ document.addEventListener('DOMContentLoaded', () => {
       }
     }
   }
-  
+
   checkUserSession();
-  
+
   function applyCookieAuthSync() {
     if (document.cookie.includes('coda_logged_in=true')) {
       const navAuth = document.querySelector('.nav-auth');
       if (navAuth && !navAuth.querySelector('.btn-user-profile')) {
         const displayName = localStorage.getItem('coda_display_name') || 'User';
-        const esc = s => String(s).replace(/[&<>"']/g, m => ({'&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;'}[m]));
+        const esc = s => String(s).replace(/[&<>"']/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' }[m]));
         navAuth.innerHTML = `
           <button class="btn-user-profile" onclick="location.href='/dashboard'">
             <span class="material-symbols-outlined">person</span>
