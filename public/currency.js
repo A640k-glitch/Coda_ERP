@@ -156,3 +156,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     select.value = getActiveCurrency();
   }
 });
+
+// Explicitly expose utilities to window for external scripts
+window.formatCurrency = formatCurrency;
+window.getActiveCurrency = getActiveCurrency;
+window.getActiveCurrencyDetails = getActiveCurrencyDetails;
+window.getActiveCurrencySymbol = getActiveCurrencySymbol;
+window.updateCurrencyDOM = updateCurrencyDOM;
+window.exchangeRates = exchangeRates;
+

@@ -204,6 +204,7 @@ function escapeHTML(str) {
         currentUser = data.user;
         if (currentUser && data.business) {
           currentUser.tier = data.business.tier;
+          currentUser.business_name = data.business.name;
         }
         window.__isAdmin = data.isAdmin === true;
         return true;
@@ -569,6 +570,32 @@ function escapeHTML(str) {
         localStorage.setItem('app_currency', currencySelect.value);
       }
 
+      const businessNameInput = document.getElementById('optBusinessName');
+      if (businessNameInput) {
+        const newName = businessNameInput.value.trim();
+        if (newName) {
+          try {
+            const res = await fetch('/api/v1/business/me', {
+              method: 'PATCH',
+              headers: {
+                'Content-Type': 'application/json'
+              },
+              body: JSON.stringify({ name: newName })
+            });
+            if (!res.ok) {
+              const errData = await res.json();
+              throw new Error(errData.error || 'Failed to update company name');
+            }
+          } catch (err) {
+            console.error('Error updating company name:', err);
+            showToast('Error', err.message || 'Failed to update company name.', 'error');
+            btn.disabled = false;
+            btn.innerHTML = original;
+            return;
+          }
+        }
+      }
+
       await new Promise(r => setTimeout(r, 800));
       btn.disabled = false;
       btn.innerHTML = original;
@@ -886,7 +913,12 @@ function escapeHTML(str) {
               ticks: { color: '#9CA3AF' },
               offset: isBar
             },
-            y: { grid: { color: chartColors.border }, ticks: { color: '#9CA3AF', callback: v => (typeof getActiveCurrencySymbol === 'function' ? getActiveCurrencySymbol() : '₦') + (v/1).toFixed(1) + 'M' }, beginAtZero: true }
+            y: { grid: { color: chartColors.border }, ticks: { color: '#9CA3AF', callback: v => {
+              const symbol = typeof getActiveCurrencySymbol === 'function' ? getActiveCurrencySymbol() : '₦';
+              const code = typeof getActiveCurrency === 'function' ? getActiveCurrency() : 'NGN';
+              const suffix = code === 'NGN' ? 'M' : 'K';
+              return symbol + (v/1).toFixed(1) + suffix;
+            } }, beginAtZero: true }
           },
           elements: { line: { borderWidth: 3 } }
         }
@@ -1104,7 +1136,10 @@ function escapeHTML(str) {
         const revData = data.dashboard?.revenue6m;
         if (revenueChart && revData) {
           revenueChart.data.labels = revData.labels;
-          revenueChart.data.datasets[0].data = revData.values.map(v => v / 1_000_000);
+          const code = typeof getActiveCurrency === 'function' ? getActiveCurrency() : 'NGN';
+          const rate = (code !== 'NGN' && typeof exchangeRates !== 'undefined' && exchangeRates[code]) ? exchangeRates[code] : 1;
+          const divisor = code === 'NGN' ? 1_000_000 : 1_000;
+          revenueChart.data.datasets[0].data = revData.values.map(v => (v * rate) / divisor);
           revenueChart.update();
         }
       }
