@@ -2859,9 +2859,9 @@ input:checked+.slider:before {
     -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
     border: 1px solid rgba(255, 255, 255, 0.15) !important;
     border-radius: 50px !important;
-    padding: 4px 4px 4px 20px !important;
+    padding: 4px !important;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15), 0 0 15px rgba(20, 184, 166, 0.15) !important;
-    gap: 24px !important;
+    gap: 8px !important;
     align-items: center;
     opacity: 1 !important;
     pointer-events: auto !important;
@@ -2870,7 +2870,7 @@ input:checked+.slider:before {
 
   .nav-links a:not(.btn) {
     font-size: 13px !important;
-    padding: 0 !important;
+    padding: 6px 16px !important;
     width: auto !important;
     border-bottom: none !important;
     opacity: 1 !important;
@@ -2878,11 +2878,32 @@ input:checked+.slider:before {
     color: rgba(255, 255, 255, 0.8) !important;
     font-weight: 600 !important;
     letter-spacing: normal !important;
-    transition: color 0.2s ease !important;
+    transition: background 0.25s ease, border-color 0.25s ease, color 0.25s ease !important;
+    border-radius: 30px !important;
+    border: 1px solid transparent !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    height: 32px !important;
   }
 
   .nav-links a:not(.btn):hover {
     color: #ffffff !important;
+    background-color: rgba(255, 255, 255, 0.05) !important;
+  }
+
+  /* Active Indicator as Green Pill Button */
+  .nav-links a.active {
+    background-color: var(--teal-600, #0d9488) !important;
+    color: #ffffff !important;
+    border: 1px solid var(--teal-600, #0d9488) !important;
+    font-weight: 700 !important;
+    box-shadow: 0 2px 10px rgba(13, 148, 136, 0.3) !important;
+  }
+
+  .nav-links a.active:hover {
+    background-color: var(--teal-700, #0f766e) !important;
+    border-color: var(--teal-700, #0f766e) !important;
   }
 
   .nav-auth {
@@ -2895,6 +2916,7 @@ input:checked+.slider:before {
     transform: none !important;
   }
 
+  /* Default user buttons: Solid Green */
   .nav-auth .btn,
   .nav-links .trigger-auth-signin,
   .nav-links .btn-user-profile {
@@ -2911,7 +2933,7 @@ input:checked+.slider:before {
     background-color: var(--teal-600, #0d9488) !important;
     color: #ffffff !important;
     border: 1px solid var(--teal-600, #0d9488) !important;
-    transition: background 0.2s ease, border-color 0.2s ease !important;
+    transition: background 0.25s ease, border-color 0.25s ease, color 0.25s ease !important;
   }
 
   .nav-auth .btn:hover,
@@ -2924,11 +2946,34 @@ input:checked+.slider:before {
   .nav-user-profile {
     margin-bottom: 0 !important;
     width: auto !important;
-    color: var(--teal-600, #0d9488) !important;
+    color: #ffffff !important;
   }
 
   .nav-user-profile:hover {
-    color: var(--slate-900, #1e293b) !important;
+    color: #ffffff !important;
+  }
+
+  /* When there is an active link (Platform, Pricing, or API Docs), the user buttons automatically become transparent/glass */
+  .nav-links:has(a.active) .nav-auth .btn,
+  .nav-links:has(a.active) .trigger-auth-signin,
+  .nav-links:has(a.active) .btn-user-profile,
+  body.api-page .nav-auth .btn,
+  body.api-page .trigger-auth-signin,
+  body.api-page .btn-user-profile {
+    background-color: transparent !important;
+    color: rgba(255, 255, 255, 0.8) !important;
+    border: 1px solid rgba(255, 255, 255, 0.18) !important;
+  }
+
+  .nav-links:has(a.active) .nav-auth .btn:hover,
+  .nav-links:has(a.active) .trigger-auth-signin:hover,
+  .nav-links:has(a.active) .btn-user-profile:hover,
+  body.api-page .nav-auth .btn:hover,
+  body.api-page .trigger-auth-signin:hover,
+  body.api-page .btn-user-profile:hover {
+    background-color: rgba(255, 255, 255, 0.1) !important;
+    border-color: rgba(255, 255, 255, 0.3) !important;
+    color: #ffffff !important;
   }
 }
 

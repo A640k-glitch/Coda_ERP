@@ -396,7 +396,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (!hasSession && navAuth) {
       const existingSignIn = navAuth.querySelector('.trigger-auth-signin');
       if (!existingSignIn) {
-        navAuth.innerHTML = '<a href="#" class="btn btn-sm trigger-auth-signin" style="background:#0d9488;color:#fff;border:1px solid #0d9488;font-weight:600;margin-right:8px">Sign in</a>';
+        navAuth.innerHTML = '<a href="#" class="btn btn-sm trigger-auth-signin">Sign in</a>';
       }
     }
   }
@@ -433,5 +433,88 @@ document.addEventListener('DOMContentLoaded', () => {
   window.addEventListener('pageshow', (e) => {
     if (e.persisted) applyCookieAuthSync();
   });
+
+  // ----------------------------------------------------------
+  // 9. Active Section Navigation Indicator (Smooth & Jitter-Free)
+  // ----------------------------------------------------------
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links a:not(.btn-user-profile):not(.trigger-auth-signin)');
+  let currentActiveId = null;
+  let isAnchorScrolling = false;
+  let anchorScrollTimeout = null;
+
+  function setActiveLinkExplicit(targetId) {
+    currentActiveId = targetId;
+    navLinks.forEach(a => {
+      const href = a.getAttribute('href');
+      if (targetId && (href === '#' + targetId || href === '/#' + targetId)) {
+        a.classList.add('active');
+      } else if (!a.classList.contains('nav-api-link')) {
+        a.classList.remove('active');
+      }
+    });
+  }
+
+  function updateActiveLink() {
+    if (isAnchorScrolling) return; // Suppress updates during smooth anchor sweeps
+
+    let activeSecId = null;
+    sections.forEach(sec => {
+      if (sec.id !== 'features' && sec.id !== 'pricing') return;
+      const top = sec.offsetTop;
+      const height = sec.offsetHeight;
+      if (window.scrollY >= top - 200 && window.scrollY < top + height - 200) {
+        activeSecId = sec.id;
+      }
+    });
+
+    if (activeSecId !== currentActiveId) {
+      currentActiveId = activeSecId;
+      navLinks.forEach(a => {
+        const href = a.getAttribute('href');
+        if (activeSecId && (href === '#' + activeSecId || href === '/#' + activeSecId)) {
+          a.classList.add('active');
+        } else if (!a.classList.contains('nav-api-link')) {
+          a.classList.remove('active');
+        }
+      });
+    }
+  }
+
+  // Handle click events on navbar anchor links to lock the indicator instantly
+  navLinks.forEach(a => {
+    const href = a.getAttribute('href');
+    if (href && (href.startsWith('#') || href.includes('/#'))) {
+      a.addEventListener('click', (e) => {
+        const parts = href.split('#');
+        const targetId = parts[parts.length - 1];
+        if (targetId) {
+          isAnchorScrolling = true;
+          setActiveLinkExplicit(targetId);
+          clearTimeout(anchorScrollTimeout);
+          anchorScrollTimeout = setTimeout(() => {
+            isAnchorScrolling = false;
+          }, 1000); // 1s matches the smooth scroll duration limit
+        }
+      });
+    }
+  });
+
+  // Check if loaded with a hash on page load
+  if (window.location.hash) {
+    const targetId = window.location.hash.substring(1);
+    if (targetId === 'features' || targetId === 'pricing') {
+      isAnchorScrolling = true;
+      setActiveLinkExplicit(targetId);
+      anchorScrollTimeout = setTimeout(() => {
+        isAnchorScrolling = false;
+      }, 1000);
+    }
+  }
+
+  if (sections.length && navLinks.length) {
+    window.addEventListener('scroll', updateActiveLink, { passive: true });
+    updateActiveLink();
+  }
 
 });
