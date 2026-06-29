@@ -1,0 +1,30 @@
+# fly.toml app configuration file generated for coda-erp
+
+app = "coda-erp"
+primary_region = "iad"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  PORT = "8080"
+  CODA_DB_PATH = "/data/coda.db"
+  NODE_ENV = "production"
+
+[[mounts]]
+  source = "data"
+  destination = "/data"
+  initial_size = "1GB"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = "suspend"
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ["app"]
+
+[[vm]]
+  size = "shared-1x-cpu"
+  memory = "256MB"
+  cpus = 1
