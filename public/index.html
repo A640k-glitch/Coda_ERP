@@ -1356,14 +1356,14 @@
     }
 
     .features-section-dark .feature-card-soft {
-      background: linear-gradient(145deg, #0d3835 0%, #062624 100%) !important;
-      border: 1px solid rgba(13, 148, 136, 0.25) !important;
+      background: #115e59 !important;
+      border: 1px solid rgba(255, 255, 255, 0.08) !important;
       color: #ffffff !important;
       border-radius: 16px !important;
       position: relative !important;
       box-shadow:
-        0 4px 24px -4px rgba(0, 0, 0, 0.35),
-        0 1px 6px -1px rgba(0, 0, 0, 0.2) !important;
+        0 1px 2px rgba(0, 0, 0, 0.01),
+        0 8px 16px -8px rgba(17, 94, 89, 0.15) !important;
       transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.4s ease, box-shadow 0.4s cubic-bezier(0.16, 1, 0.3, 1);
       overflow: hidden;
       display: flex;
@@ -1371,162 +1371,283 @@
     }
 
     .features-section-dark .feature-card-soft:hover {
-      transform: translateY(-6px) !important;
-      border-color: rgba(13, 148, 136, 0.5) !important;
+      transform: translateY(-4px) !important;
+      border-color: rgba(20, 184, 166, 0.4) !important;
       box-shadow:
-        0 24px 48px -12px rgba(0, 0, 0, 0.5),
-        0 0 0 1px rgba(13, 148, 136, 0.2),
-        0 0 32px -8px rgba(13, 148, 136, 0.25) !important;
+        0 12px 24px -10px rgba(15, 23, 42, 0.15),
+        0 0 0 1px rgba(20, 184, 166, 0.2),
+        0 0 16px -4px rgba(20, 184, 166, 0.25) !important;
     }
 
     .features-section-dark .feature-card-soft .fc-title {
       color: #ffffff !important;
-      font-size: 20px;
+      font-size: 20px !important;
       font-weight: 700;
-      margin-bottom: 10px;
+      margin-bottom: 8px;
     }
 
     .features-section-dark .feature-card-soft .fc-desc {
-      color: #a7f3d0 !important;
-      font-size: 14px;
-      line-height: 1.6;
+      color: rgba(248, 250, 252, 0.92) !important;
+      font-size: 14px !important;
+      line-height: 1.5;
     }
 
     .features-section-dark .feature-card-soft .fc-content {
-      padding: 28px 28px 0;
+      padding: 24px 24px 0 !important;
     }
 
     .features-section-dark .fc-illus-container {
-      background: rgba(0, 0, 0, 0.25) !important;
-      border-top: 1px solid rgba(13, 148, 136, 0.2) !important;
-      border-radius: 0 0 var(--radius-lg) var(--radius-lg) !important;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 120px;
-      overflow: hidden;
+      background: #f8fafc !important;
+      border-top: 1px solid rgba(15, 23, 42, 0.04) !important;
+      border-radius: 0 0 16px 16px !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      height: 160px !important;
+      padding: 10px !important;
+      overflow: hidden !important;
       transition: background 0.35s ease;
+      position: relative;
     }
 
     .features-section-dark .feature-card-soft:hover .fc-illus-container {
-      background: rgba(0, 0, 0, 0.15) !important;
-      border-top-color: rgba(13, 148, 136, 0.4) !important;
+      background: #f1f5f9 !important;
     }
 
     /* ==========================================
-       Premium SVG Feature Card Illustrations
+       Premium Solid Bento Card Animations
        ========================================== */
 
     .features-section-dark .fc-illus-container svg {
-      display: block;
-      width: 100%;
-      height: auto;
+      display: block !important;
+      height: 140px !important;
+      width: auto !important;
+      max-width: 100% !important;
+      margin: 0 auto !important;
     }
 
-    /* ========== Card 1: Reconciliation — "Document Match" ========== */
-    .features-section-dark .recon-svg { max-width: 640px; }
-    .features-section-dark .recon-doc-body { fill: rgba(255,255,255,0.04); stroke: rgba(255,255,255,0.08); stroke-width: 1; transition: all 0.4s ease; }
-    .features-section-dark .recon-doc-head { fill: rgba(255,255,255,0.06); transition: all 0.4s ease; }
-    .features-section-dark .recon-doc-label { fill: var(--teal-400); opacity: 0.35; }
-    .features-section-dark .recon-row-r { fill: var(--teal-300); opacity: 0.25; transition: all 0.3s ease; }
-    .features-section-dark .recon-row-r.hl { fill: var(--teal-400); opacity: 0.35; }
-    .features-section-dark .recon-conn { stroke: var(--teal-500); stroke-width: 0.8; stroke-dasharray: 3 3; opacity: 0.25; transition: all 0.4s ease; }
-    .features-section-dark .recon-conn.hl { stroke: var(--teal-400); stroke-width: 1; stroke-dasharray: 4 2; opacity: 0.4; }
-    .features-section-dark .recon-check-ring { fill: none; stroke: var(--teal-500); stroke-width: 2; opacity: 0; transform: scale(0.3); transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1); }
-    .features-section-dark .recon-check-path { stroke: #ffffff; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; fill: none; opacity: 0; stroke-dasharray: 30; stroke-dashoffset: 30; transition: all 0.5s ease; }
+    /* Card 1: Reconciliation */
+    @keyframes reconDashOffset {
+      to {
+        stroke-dashoffset: -20;
+      }
+    }
+    .features-section-dark .recon-match-line {
+      stroke-dashoffset: 0;
+      transition: stroke-dasharray 0.4s ease;
+    }
+    .features-section-dark .feature-card-soft:hover .recon-match-line {
+      animation: reconDashOffset 0.8s linear infinite;
+    }
 
-    .features-section-dark .feature-card-soft:hover .recon-doc-body { fill: rgba(255,255,255,0.08); stroke: rgba(255,255,255,0.15); }
-    .features-section-dark .feature-card-soft:hover .recon-doc-head { fill: rgba(255,255,255,0.1); }
-    .features-section-dark .feature-card-soft:hover .recon-row-r { opacity: 0.5; fill: var(--teal-200); }
-    .features-section-dark .feature-card-soft:hover .recon-row-r.hl { opacity: 0.7; fill: var(--teal-300); }
-    .features-section-dark .feature-card-soft:hover .recon-conn { opacity: 0.5; stroke: var(--teal-400); }
-    .features-section-dark .feature-card-soft:hover .recon-conn.hl { opacity: 0.8; stroke: var(--teal-300); }
-    .features-section-dark .feature-card-soft:hover .recon-check-ring { opacity: 0.9; transform: scale(1); stroke: var(--teal-300); }
-    .features-section-dark .feature-card-soft:hover .recon-check-path { opacity: 1; stroke-dashoffset: 0; }
+    @keyframes pulseRing {
+      0% { transform: scale(0.95); opacity: 0.5; }
+      50% { transform: scale(1.18); opacity: 0.15; }
+      100% { transform: scale(0.95); opacity: 0.5; }
+    }
+    .features-section-dark .match-pulse-ring {
+      transform-origin: 350px 80px;
+      animation: pulseRing 3s infinite ease-in-out;
+    }
 
-    /* ========== Card 2: Multi-Entity — "Entity Tree" ========== */
-    .features-section-dark .entity-svg { max-width: 400px; }
-    .features-section-dark .entity-trunk { stroke: var(--teal-500); opacity: 0.3; }
-    .features-section-dark .entity-branch { stroke: var(--teal-500); opacity: 0.25; }
-    .features-section-dark .entity-branch-l { stroke: var(--teal-500); opacity: 0.2; }
-    .features-section-dark .entity-branch-c { stroke: var(--teal-500); opacity: 0.2; }
-    .features-section-dark .entity-branch-r { stroke: var(--teal-500); opacity: 0.2; }
-    .features-section-dark .entity-node { fill: none; stroke: var(--teal-500); stroke-width: 1.2; opacity: 0.5; transition: all 0.4s ease; }
-    .features-section-dark .entity-node.n1 { transform-origin: 110px 16px; }
-    .features-section-dark .entity-node.n2 { transform-origin: 200px 46px; }
-    .features-section-dark .entity-node.n3 { transform-origin: 290px 16px; }
-    .features-section-dark .entity-node-root { fill: none; stroke: var(--teal-400); stroke-width: 1.5; opacity: 0.6; transition: all 0.4s ease; transform-origin: 200px 86px; }
-    .features-section-dark .entity-bar { fill: var(--teal-400); opacity: 0.5; transition: all 0.3s ease; }
-    .features-section-dark .entity-interconn { fill: none; stroke: var(--teal-500); stroke-width: 0.8; stroke-dasharray: 2 2; opacity: 0.2; transition: opacity 0.4s ease; }
+    .features-section-dark .inv-status-bg {
+      transition: fill 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .features-section-dark .inv-status-text {
+      transition: fill 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .features-section-dark .inv-paid-text {
+      opacity: 0;
+      transition: opacity 0.35s ease;
+    }
+    .features-section-dark .inv-pending-text {
+      opacity: 1;
+      transition: opacity 0.35s ease;
+    }
+    .features-section-dark .feature-card-soft:hover .inv-status-bg {
+      fill: #d1fae5;
+    }
+    .features-section-dark .feature-card-soft:hover .inv-status-text {
+      fill: #065f46;
+    }
+    .features-section-dark .feature-card-soft:hover .inv-paid-text {
+      opacity: 1;
+    }
+    .features-section-dark .feature-card-soft:hover .inv-pending-text {
+      opacity: 0;
+    }
 
-    .features-section-dark .feature-card-soft:hover .entity-node { stroke: var(--teal-300); opacity: 0.9; transform: scale(1.08); }
-    .features-section-dark .feature-card-soft:hover .entity-node.n1 { transition-delay: 0s; }
-    .features-section-dark .feature-card-soft:hover .entity-node.n2 { transition-delay: 0.08s; }
-    .features-section-dark .feature-card-soft:hover .entity-node.n3 { transition-delay: 0.15s; }
-    .features-section-dark .feature-card-soft:hover .entity-node-root { stroke: var(--teal-300); opacity: 1; }
-    .features-section-dark .feature-card-soft:hover .entity-bar { opacity: 0.9; fill: var(--teal-200); }
-    .features-section-dark .feature-card-soft:hover .entity-interconn { opacity: 0.5; }
+    /* Card 2: Multi-Entity switcher */
+    .features-section-dark .entity-chevron {
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      transform-origin: 278px 17px;
+    }
+    .features-section-dark .feature-card-soft:hover .entity-chevron {
+      transform: rotate(180deg);
+    }
 
-    /* ========== Card 3: Security — "Layered Vault" ========== */
-    .features-section-dark .security-svg { max-width: 360px; }
-    .features-section-dark .sec-data-core { fill: var(--teal-400); opacity: 0.8; transition: all 0.4s ease; }
-    .features-section-dark .sec-data-ring { stroke: var(--teal-400); opacity: 0.5; transition: all 0.4s ease; }
-    .features-section-dark .sec-shield { stroke: var(--teal-500); opacity: 0.35; transform-origin: 200px 53px; transition: all 0.5s ease; }
-    .features-section-dark .sec-shield-check { stroke: var(--teal-400); opacity: 0.4; transition: all 0.5s ease; }
-    .features-section-dark .sec-key-ring { stroke: var(--teal-500); opacity: 0.25; transition: all 0.5s ease; transform-origin: 200px 50px; }
-    .features-section-dark .sec-key-stem { stroke: var(--teal-400); opacity: 0.5; transition: all 0.4s ease; }
-    .features-section-dark .sec-key-bit { stroke: var(--teal-400); opacity: 0.4; transition: all 0.4s ease; }
-    .features-section-dark .sec-key-pin { fill: var(--teal-400); opacity: 0.5; transition: all 0.4s ease; }
-    .features-section-dark .sec-tunnel-line { stroke: var(--teal-500); opacity: 0.2; transition: all 0.4s ease; }
-    .features-section-dark .sec-tunnel-dot { fill: var(--teal-400); opacity: 0.3; transition: all 0.4s ease; }
-    .features-section-dark .sec-padlock-body { stroke: var(--teal-500); opacity: 0.25; transition: all 0.4s ease; }
-    .features-section-dark .sec-padlock-shackle { stroke: var(--teal-500); opacity: 0.25; transition: all 0.4s ease; }
+    .features-section-dark .entity-option {
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
+      opacity: 0.85;
+    }
+    .features-section-dark .feature-card-soft:hover .entity-option {
+      opacity: 1;
+    }
+    .features-section-dark .feature-card-soft:hover .entity-option.opt-1 {
+      transform: translateY(-1px);
+    }
+    .features-section-dark .feature-card-soft:hover .entity-option.opt-2 {
+      transform: translateY(-1px);
+      transition-delay: 0.05s;
+    }
+    .features-section-dark .feature-card-soft:hover .entity-option.opt-3 {
+      transform: translateY(-1px);
+      transition-delay: 0.1s;
+    }
+    .features-section-dark .feature-card-soft:hover .entity-option.opt-4 {
+      transform: translateY(-1px);
+      transition-delay: 0.15s;
+    }
+    .features-section-dark .feature-card-soft:hover .entity-option.opt-5 {
+      transform: translateY(-1px);
+      transition-delay: 0.2s;
+    }
 
-    .features-section-dark .feature-card-soft:hover .sec-data-core { fill: var(--teal-200); opacity: 1; }
-    .features-section-dark .feature-card-soft:hover .sec-data-ring { stroke: var(--teal-300); opacity: 0.8; transform: scale(1.15); }
-    .features-section-dark .feature-card-soft:hover .sec-shield { stroke: var(--teal-300); opacity: 0.7; transform: scale(1.08); }
-    .features-section-dark .feature-card-soft:hover .sec-shield-check { stroke: var(--teal-200); opacity: 1; }
-    .features-section-dark .feature-card-soft:hover .sec-key-ring { stroke: var(--teal-400); opacity: 0.5; transform: rotate(180deg); }
-    .features-section-dark .feature-card-soft:hover .sec-key-stem { stroke: var(--teal-300); opacity: 0.8; }
-    .features-section-dark .feature-card-soft:hover .sec-key-bit { stroke: var(--teal-300); opacity: 0.7; }
-    .features-section-dark .feature-card-soft:hover .sec-key-pin { fill: var(--teal-300); opacity: 0.8; }
-    .features-section-dark .feature-card-soft:hover .sec-tunnel-line { stroke: var(--teal-400); opacity: 0.5; }
-    .features-section-dark .feature-card-soft:hover .sec-tunnel-dot { fill: var(--teal-200); opacity: 0.7; }
-    .features-section-dark .feature-card-soft:hover .sec-tunnel-dot.d2 { transition-delay: 0.08s; }
-    .features-section-dark .feature-card-soft:hover .sec-tunnel-dot.d3 { transition-delay: 0.15s; }
-    .features-section-dark .feature-card-soft:hover .sec-tunnel-dot.d4 { transition-delay: 0.22s; }
-    .features-section-dark .feature-card-soft:hover .sec-padlock-body { stroke: var(--teal-400); opacity: 0.5; }
-    .features-section-dark .feature-card-soft:hover .sec-padlock-shackle { stroke: var(--teal-400); opacity: 0.5; }
+    /* Card 3: Security Shields */
+    @keyframes rotateCW {
+      to { transform: rotate(360deg); }
+    }
+    @keyframes rotateCCW {
+      to { transform: rotate(-360deg); }
+    }
+    .features-section-dark .sec-ring-outer {
+      transform-origin: 80px 95px;
+    }
+    .features-section-dark .sec-ring-middle {
+      transform-origin: 80px 95px;
+    }
+    .features-section-dark .feature-card-soft:hover .sec-ring-outer {
+      animation: rotateCW 15s linear infinite;
+    }
+    .features-section-dark .feature-card-soft:hover .sec-ring-middle {
+      animation: rotateCCW 10s linear infinite;
+    }
 
-    /* ========== Card 4: Analytics — "Dashboard Grid" ========== */
-    .features-section-dark .analytics-svg { max-width: 700px; }
-    .features-section-dark .chart-card-bg { fill: rgba(255,255,255,0.04); stroke: rgba(255,255,255,0.06); stroke-width: 1; rx: 8; transition: all 0.4s ease; }
-    .features-section-dark .chart-card-label { fill: var(--teal-300); opacity: 0.3; }
-    .features-section-dark .chart-spark-path { stroke: var(--teal-400); opacity: 0.6; transition: all 0.4s ease; }
-    .features-section-dark .chart-spark-fill { opacity: 0.8; transition: opacity 0.5s ease; }
-    .features-section-dark .chart-spark-dot { fill: var(--teal-400); opacity: 0.7; transition: all 0.4s ease; }
-    .features-section-dark .chart-mini-bar { fill: var(--teal-500); opacity: 0.5; transition: all 0.4s ease; }
-    .features-section-dark .chart-kpi-val { fill: #ffffff; opacity: 0.5; }
-    .features-section-dark .chart-kpi-up { fill: var(--teal-500); opacity: 0.5; rx: 3; }
-    .features-section-dark .chart-kpi-flat { fill: var(--slate-500); opacity: 0.3; rx: 3; }
-    .features-section-dark .chart-arc-ring { stroke: rgba(255,255,255,0.08); }
-    .features-section-dark .chart-arc-progress { stroke: var(--teal-400); opacity: 0.6; transition: all 0.4s ease; stroke-dasharray: 40 100; }
-    .features-section-dark .chart-arc-text { fill: var(--teal-300); opacity: 0.7; }
+    .features-section-dark .sec-shield-container {
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      transform-origin: 80px 95px;
+    }
+    .features-section-dark .feature-card-soft:hover .sec-shield-container {
+      transform: scale(1.06);
+    }
 
-    .features-section-dark .feature-card-soft:hover .chart-card-bg { fill: rgba(255,255,255,0.08); stroke: rgba(255,255,255,0.12); }
-    .features-section-dark .feature-card-soft:hover .chart-spark-path { stroke: var(--teal-300); opacity: 1; }
-    .features-section-dark .feature-card-soft:hover .chart-spark-dot { fill: var(--teal-200); opacity: 1; transform: scale(1.4); }
-    .features-section-dark .feature-card-soft:hover .chart-mini-bar { opacity: 0.8; fill: var(--teal-400); }
-    .features-section-dark .feature-card-soft:hover .chart-mini-bar.b1 { transition-delay: 0s; }
-    .features-section-dark .feature-card-soft:hover .chart-mini-bar.b2 { transition-delay: 0.03s; }
-    .features-section-dark .feature-card-soft:hover .chart-mini-bar.b3 { transition-delay: 0.06s; }
-    .features-section-dark .feature-card-soft:hover .chart-mini-bar.b4 { transition-delay: 0.09s; }
-    .features-section-dark .feature-card-soft:hover .chart-mini-bar.b5 { transition-delay: 0.12s; }
-    .features-section-dark .feature-card-soft:hover .chart-mini-bar.b6 { transition-delay: 0.15s; }
-    .features-section-dark .feature-card-soft:hover .chart-mini-bar.b7 { transition-delay: 0.18s; }
-    .features-section-dark .feature-card-soft:hover .chart-mini-bar.b8 { transition-delay: 0.21s; }
-    .features-section-dark .feature-card-soft:hover .chart-arc-progress { stroke: var(--teal-300); opacity: 0.9; stroke-dasharray: 55 100; }
-    .features-section-dark .feature-card-soft:hover .chart-arc-text { fill: var(--teal-200); opacity: 1; }
+    .features-section-dark .sec-shackle {
+      transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+      transform-origin: 88px 79px !important;
+      transform: rotate(24deg);
+    }
+    .features-section-dark .feature-card-soft:hover .sec-shackle {
+      transform: rotate(0);
+    }
+
+    .features-section-dark .sec-checkmark {
+      stroke-dasharray: 30;
+      stroke-dashoffset: 30;
+      transition: stroke-dashoffset 0.4s cubic-bezier(0.16, 1, 0.3, 1) 0.2s;
+    }
+    .features-section-dark .feature-card-soft:hover .sec-checkmark {
+      stroke-dashoffset: 0;
+    }
+
+    /* Card 4: Real-time Analytics */
+    .features-section-dark .ana-spline-path {
+      stroke-dasharray: 200;
+      stroke-dashoffset: 200;
+      transition: stroke-dashoffset 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .features-section-dark .feature-card-soft:hover .ana-spline-path {
+      stroke-dashoffset: 0;
+    }
+    .features-section-dark .ana-spline-fill {
+      opacity: 0;
+      transition: opacity 0.5s ease 0.3s;
+    }
+    .features-section-dark .feature-card-soft:hover .ana-spline-fill {
+      opacity: 1;
+    }
+    .features-section-dark .ana-spline-dot {
+      transform-origin: 214px 45px;
+      transform: scale(0);
+      transition: transform 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) 0.6s;
+    }
+    .features-section-dark .feature-card-soft:hover .ana-spline-dot {
+      transform: scale(1);
+    }
+
+    .features-section-dark .ana-bar {
+      transform-origin: 0px 70px;
+      transform: scaleY(0.2);
+      opacity: 0.6;
+      transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.6s ease;
+    }
+    .features-section-dark .feature-card-soft:hover .ana-bar {
+      transform: scaleY(1);
+      opacity: 1;
+    }
+    .features-section-dark .feature-card-soft:hover .ana-bar.b1 { transition-delay: 0s; }
+    .features-section-dark .feature-card-soft:hover .ana-bar.b2 { transition-delay: 0.03s; }
+    .features-section-dark .feature-card-soft:hover .ana-bar.b3 { transition-delay: 0.06s; }
+    .features-section-dark .feature-card-soft:hover .ana-bar.b4 { transition-delay: 0.09s; }
+    .features-section-dark .feature-card-soft:hover .ana-bar.b5 { transition-delay: 0.12s; }
+    .features-section-dark .feature-card-soft:hover .ana-bar.b6 { transition-delay: 0.15s; }
+    .features-section-dark .feature-card-soft:hover .ana-bar.b7 { transition-delay: 0.18s; }
+    .features-section-dark .feature-card-soft:hover .ana-bar.b8 { transition-delay: 0.21s; }
+
+    .features-section-dark .ana-radial-path {
+      stroke-dasharray: 200;
+      stroke-dashoffset: 200;
+      transition: stroke-dashoffset 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.2s;
+    }
+    .features-section-dark .feature-card-soft:hover .ana-radial-path {
+      stroke-dashoffset: 45;
+    }
+
+    @media (max-width: 768px) {
+      .features-section-dark .premium-kpi-grid {
+        grid-template-columns: 1fr !important;
+        gap: 16px !important;
+      }
+      .features-section-dark .bento-wide,
+      .features-section-dark .bento-narrow {
+        grid-column: span 1 !important;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .features-section-dark .feature-card-soft {
+        border-radius: 12px !important;
+      }
+      .features-section-dark .feature-card-soft .fc-content {
+        padding: 18px 18px 0 !important;
+      }
+      .features-section-dark .fc-illus-container {
+        height: auto !important;
+        min-height: 100px !important;
+        padding: 10px !important;
+        border-radius: 0 0 12px 12px !important;
+      }
+      .features-section-dark .fc-illus-container svg {
+        height: auto !important;
+        max-height: 120px !important;
+        width: 100% !important;
+      }
+      .features-section-dark .feature-card-soft .fc-title {
+        font-size: 18px !important;
+      }
+      .features-section-dark .feature-card-soft .fc-desc {
+        font-size: 13px !important;
+      }
+    }
 
     .hero-mobile-metrics {
       display: none;
@@ -2955,34 +3076,68 @@
             </p>
           </div>
           <div class="fc-illus-container">
-            <svg class="recon-svg" viewBox="0 0 700 90" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <g class="recon-doc-left">
-                <rect x="32" y="10" width="170" height="70" rx="8" class="recon-doc-body"/>
-                <rect x="32" y="10" width="170" height="16" rx="8" class="recon-doc-head"/>
-                <rect x="46" y="14" width="42" height="4" rx="2" class="recon-doc-label"/>
-                <rect x="46" y="34" width="130" height="4" rx="2" class="recon-row-r"/>
-                <rect x="46" y="44" width="100" height="4" rx="2" class="recon-row-r"/>
-                <rect x="46" y="54" width="140" height="4" rx="2" class="recon-row-r hl"/>
-                <rect x="46" y="64" width="110" height="4" rx="2" class="recon-row-r"/>
+            <svg class="recon-svg" viewBox="0 0 700 160" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <pattern id="illusGrid" width="20" height="20" patternUnits="userSpaceOnUse">
+                  <path d="M 20 0 L 0 0 0 20" fill="none" stroke="rgba(15, 23, 42, 0.02)" stroke-width="1"/>
+                </pattern>
+              </defs>
+              <rect width="100%" height="100%" fill="url(#illusGrid)" />
+              
+              <!-- Left Panel: Bank Statement Card -->
+              <g class="ui-panel bank-panel" transform="translate(40, 20)">
+                <rect x="0" y="3" width="240" height="120" rx="10" fill="rgba(15, 23, 42, 0.02)" />
+                <rect x="0" y="0" width="240" height="120" rx="10" fill="#ffffff" stroke="rgba(15, 23, 42, 0.06)" stroke-width="1" />
+                
+                <rect x="12" y="12" width="20" height="20" rx="10" fill="#eff6ff" />
+                <path d="M19 21.5 H23 M20 21.5 V18.5 H22 V21.5 Z M21 14.5 L18 16.5 H24 Z" stroke="#2563eb" stroke-width="1.2" stroke-linejoin="round" fill="none" />
+                <text x="40" y="21" fill="#0f172a" font-family="var(--font)" font-size="10.5" font-weight="600">Access Bank Feed</text>
+                <text x="40" y="30" fill="#94a3b8" font-family="var(--font)" font-size="8">Synced 1m ago</text>
+                
+                <line x1="12" y1="42" x2="228" y2="42" stroke="rgba(15, 23, 42, 0.05)" stroke-width="1" />
+                
+                <text x="12" y="60" fill="#334155" font-family="var(--font)" font-size="10" font-weight="600">Chevron Nigeria Ltd</text>
+                <text x="12" y="70" fill="#94a3b8" font-family="var(--font)" font-size="8">Direct Deposit • CR</text>
+                
+                <text x="12" y="96" fill="#0d9488" font-family="var(--font)" font-size="11" font-weight="700">+₦1,250,000.00</text>
+                
+                <!-- Status Pill on the Right -->
+                <rect x="160" y="52" width="68" height="16" rx="8" fill="#ccfbf1" class="inv-status-bg" />
+                <text x="485" y="0" class="inv-status-text" />
+                <text x="194" y="63.5" text-anchor="middle" fill="#0f766e" font-family="var(--font)" font-size="8" font-weight="700" class="inv-pending-text">Unresolved</text>
+                <text x="194" y="63.5" text-anchor="middle" fill="#065f46" font-family="var(--font)" font-size="8" font-weight="700" class="inv-paid-text">Matched</text>
               </g>
-              <g class="recon-doc-right">
-                <rect x="498" y="10" width="170" height="70" rx="8" class="recon-doc-body"/>
-                <rect x="498" y="10" width="170" height="16" rx="8" class="recon-doc-head"/>
-                <rect x="512" y="14" width="42" height="4" rx="2" class="recon-doc-label"/>
-                <rect x="512" y="34" width="130" height="4" rx="2" class="recon-row-r"/>
-                <rect x="512" y="44" width="100" height="4" rx="2" class="recon-row-r"/>
-                <rect x="512" y="54" width="140" height="4" rx="2" class="recon-row-r hl"/>
-                <rect x="512" y="64" width="110" height="4" rx="2" class="recon-row-r"/>
+              
+              <!-- Right Panel: Coda Invoice Card -->
+              <g class="ui-panel invoice-panel" transform="translate(420, 20)">
+                <rect x="0" y="3" width="240" height="120" rx="10" fill="rgba(15, 23, 42, 0.02)" />
+                <rect x="0" y="0" width="240" height="120" rx="10" fill="#ffffff" stroke="rgba(15, 23, 42, 0.06)" stroke-width="1" />
+                
+                <circle cx="22" cy="22" r="10" fill="#eff6ff" />
+                <rect x="18" y="18" width="8" height="8" rx="1.5" stroke="#0d9488" stroke-width="1.2" fill="none" />
+                <text x="40" y="21" fill="#0f172a" font-family="var(--font)" font-size="10.5" font-weight="600">Coda Invoice</text>
+                <text x="40" y="30" fill="#94a3b8" font-family="var(--font)" font-size="8">INV-2026-042</text>
+                
+                <line x1="12" y1="42" x2="228" y2="42" stroke="rgba(15, 23, 42, 0.05)" stroke-width="1" />
+                
+                <text x="12" y="60" fill="#334155" font-family="var(--font)" font-size="10" font-weight="600">Chevron Nigeria Limited</text>
+                <text x="12" y="70" fill="#94a3b8" font-family="var(--font)" font-size="8">Due Date: 30 Jun 2026</text>
+                
+                <text x="12" y="96" fill="#0f172a" font-family="var(--font)" font-size="11" font-weight="700">₦1,250,000.00</text>
+                
+                <!-- Status Pill on the Right -->
+                <rect x="172" y="52" width="56" height="16" rx="8" fill="#fef3c7" class="inv-status-bg" />
+                <text x="200" y="63.5" text-anchor="middle" fill="#d97706" font-family="var(--font)" font-size="8" font-weight="700" class="inv-pending-text">Pending</text>
+                <text x="200" y="63.5" text-anchor="middle" fill="#065f46" font-family="var(--font)" font-size="8" font-weight="700" class="inv-paid-text">Paid</text>
               </g>
-              <g class="recon-lines">
-                <line x1="202" y1="36" x2="496" y2="36" class="recon-conn"/>
-                <line x1="202" y1="46" x2="496" y2="46" class="recon-conn"/>
-                <line x1="202" y1="56" x2="496" y2="56" class="recon-conn hl"/>
-                <line x1="202" y1="66" x2="496" y2="66" class="recon-conn"/>
-              </g>
-              <g class="recon-check-wrap">
-                <circle cx="350" cy="45" r="14" class="recon-check-ring"/>
-                <path d="M342 45 L348 51 L358 39" class="recon-check-path"/>
+              
+              <!-- Match connection elements -->
+              <path d="M 280 80 L 420 80" stroke="#0d9488" stroke-width="1.5" stroke-dasharray="5 3" class="recon-match-line" />
+              
+              <g class="match-badge-wrap" transform="translate(350, 80)">
+                <circle cx="0" cy="0" r="24" fill="rgba(13, 148, 136, 0.08)" class="match-pulse-ring" />
+                <rect x="-38" y="-12" width="76" height="24" rx="12" fill="#0d9488" stroke="#ffffff" stroke-width="1.5" class="match-badge-body" />
+                <text x="0" y="3.5" text-anchor="middle" fill="#ffffff" font-family="var(--font)" font-size="8" font-weight="800" letter-spacing="0.01em">99.9% MATCH</text>
               </g>
             </svg>
           </div>
@@ -2997,32 +3152,62 @@
             transfers handled seamlessly.
           </p>
         </div>
-        <div class="fc-illus-container" style="padding: 20px 28px;">
-          <svg class="entity-svg" viewBox="0 0 400 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <g class="entity-tree">
-              <path d="M200 86 L200 68" class="entity-trunk" stroke-width="1.5"/>
-              <path d="M110 38 L200 68 L290 38" class="entity-branch" stroke-width="1"/>
-              <path d="M110 38 L110 16" class="entity-branch-l" stroke-width="1"/>
-              <path d="M200 68 L200 46" class="entity-branch-c" stroke-width="1"/>
-              <path d="M290 38 L290 16" class="entity-branch-r" stroke-width="1"/>
-            </g>
-            <g class="entity-nodes">
-              <circle cx="110" cy="16" r="14" class="entity-node n1"/>
-              <circle cx="200" cy="46" r="14" class="entity-node n2"/>
-              <circle cx="290" cy="16" r="14" class="entity-node n3"/>
-              <circle cx="200" cy="86" r="12" class="entity-node-root"/>
-            </g>
-            <g class="entity-bars">
-              <rect x="104" y="12" width="12" height="2.5" rx="1.25" class="entity-bar"/>
-              <rect x="104" y="17" width="8" height="2.5" rx="1.25" class="entity-bar"/>
-              <rect x="194" y="42" width="12" height="2.5" rx="1.25" class="entity-bar"/>
-              <rect x="194" y="47" width="8" height="2.5" rx="1.25" class="entity-bar"/>
-              <rect x="284" y="12" width="12" height="2.5" rx="1.25" class="entity-bar"/>
-              <rect x="284" y="17" width="8" height="2.5" rx="1.25" class="entity-bar"/>
-            </g>
-            <g class="entity-connectors">
-              <path d="M124 16 Q152 10 186 46" class="entity-interconn" stroke-width="0.8"/>
-              <path d="M214 46 Q248 10 276 16" class="entity-interconn" stroke-width="0.8"/>
+        <div class="fc-illus-container">
+          <svg class="entity-svg" viewBox="0 0 340 170" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="100%" height="100%" fill="url(#illusGrid)" />
+            
+            <g transform="translate(20, 15)">
+              <rect width="300" height="30" rx="6" fill="#f8fafc" stroke="rgba(15, 23, 42, 0.08)" stroke-width="1"/>
+              <circle cx="16" cy="15" r="5" fill="#10b981" />
+              <text x="28" y="18.5" fill="#1e293b" font-family="var(--font)" font-size="10" font-weight="600">Coda Nigeria Ltd.</text>
+              <rect x="138" y="7" width="42" height="16" rx="8" fill="#eff6ff" />
+              <text x="159" y="18" text-anchor="middle" fill="#2563eb" font-family="var(--font)" font-size="7.5" font-weight="700">Primary</text>
+              
+              <path d="M 274 15 L 278 19 L 282 15" stroke="#64748b" stroke-width="1.5" stroke-linecap="round" fill="none" class="entity-chevron" />
+              
+              <g transform="translate(0, 34)" class="entity-menu-list">
+                <rect width="300" height="118" rx="6" fill="#ffffff" stroke="rgba(15, 23, 42, 0.05)" stroke-width="1" style="filter: drop-shadow(0 3px 6px rgba(15, 23, 42, 0.02));" />
+                
+                <!-- Option 1: Ghana -->
+                <g transform="translate(6, 6)" class="entity-option opt-1">
+                  <rect width="288" height="18" rx="4" fill="#f8fafc" />
+                  <circle cx="14" cy="9" r="3.5" fill="#10b981" />
+                  <text x="26" y="12.5" fill="#334155" font-family="var(--font)" font-size="9" font-weight="600">Coda Ghana Retail</text>
+                  <text x="276" y="12.5" text-anchor="end" fill="#94a3b8" font-family="var(--font)" font-size="7.5" font-weight="500">GHS • Active</text>
+                </g>
+                
+                <!-- Option 2: UK -->
+                <g transform="translate(6, 28)" class="entity-option opt-2">
+                  <rect width="288" height="18" rx="4" fill="#ffffff" />
+                  <circle cx="14" cy="9" r="3.5" fill="#3b82f6" />
+                  <text x="26" y="12.5" fill="#334155" font-family="var(--font)" font-size="9" font-weight="600">Coda UK Holding</text>
+                  <text x="276" y="12.5" text-anchor="end" fill="#94a3b8" font-family="var(--font)" font-size="7.5" font-weight="500">GBP • Synced</text>
+                </g>
+                
+                <!-- Option 3: US -->
+                <g transform="translate(6, 50)" class="entity-option opt-3">
+                  <rect width="288" height="18" rx="4" fill="#ffffff" />
+                  <circle cx="14" cy="9" r="3.5" fill="#f59e0b" />
+                  <text x="26" y="12.5" fill="#334155" font-family="var(--font)" font-size="9" font-weight="600">Coda US Logistics</text>
+                  <text x="276" y="12.5" text-anchor="end" fill="#94a3b8" font-family="var(--font)" font-size="7.5" font-weight="500">USD • Synced</text>
+                </g>
+                
+                <!-- Option 4: Kenya -->
+                <g transform="translate(6, 72)" class="entity-option opt-4">
+                  <rect width="288" height="18" rx="4" fill="#ffffff" />
+                  <circle cx="14" cy="9" r="3.5" fill="#10b981" />
+                  <text x="26" y="12.5" fill="#334155" font-family="var(--font)" font-size="9" font-weight="600">Coda Kenya Trading</text>
+                  <text x="276" y="12.5" text-anchor="end" fill="#94a3b8" font-family="var(--font)" font-size="7.5" font-weight="500">KES • Active</text>
+                </g>
+                
+                <!-- Option 5: Canada -->
+                <g transform="translate(6, 94)" class="entity-option opt-5">
+                  <rect width="288" height="18" rx="4" fill="#ffffff" />
+                  <circle cx="14" cy="9" r="3.5" fill="#3b82f6" />
+                  <text x="26" y="12.5" fill="#334155" font-family="var(--font)" font-size="9" font-weight="600">Coda Canada Corp</text>
+                  <text x="276" y="12.5" text-anchor="end" fill="#94a3b8" font-family="var(--font)" font-size="7.5" font-weight="500">CAD • Synced</text>
+                </g>
+              </g>
             </g>
           </svg>
         </div>
@@ -3037,35 +3222,40 @@
             what they need to see.
           </p>
         </div>
-        <div class="fc-illus-container" style="padding: 20px 28px;">
-          <svg class="security-svg" viewBox="0 0 400 100" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <g class="sec-data-flow">
-              <circle cx="200" cy="50" r="8" class="sec-data-core"/>
-              <circle cx="200" cy="50" r="14" class="sec-data-ring" stroke-width="1.5" fill="none"/>
-            </g>
-            <g class="sec-shield-layer">
-              <path d="M200 26 L224 34 L224 54 C224 72 200 80 200 80 C200 80 176 72 176 54 L176 34 Z" class="sec-shield" stroke-width="1.5" fill="none"/>
-              <path d="M194 52 L198 56 L206 46" class="sec-shield-check" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-            </g>
-            <g class="sec-key-layer">
-              <circle cx="200" cy="50" r="22" class="sec-key-ring" stroke-width="1" fill="none" stroke-dasharray="3 3"/>
-              <path d="M200 38 L200 44" class="sec-key-stem" stroke-width="2"/>
-              <path d="M195 44 L205 44" class="sec-key-bit" stroke-width="2"/>
-              <circle cx="200" cy="41" r="1.5" class="sec-key-pin"/>
-            </g>
-            <g class="sec-tunnel">
-              <path d="M120 50 Q140 20 170 50" class="sec-tunnel-line" stroke-width="1" stroke-dasharray="4 3" fill="none"/>
-              <path d="M280 50 Q260 20 230 50" class="sec-tunnel-line" stroke-width="1" stroke-dasharray="4 3" fill="none"/>
-              <circle cx="140" cy="42" r="2.5" class="sec-tunnel-dot d1"/>
-              <circle cx="260" cy="42" r="2.5" class="sec-tunnel-dot d2"/>
-              <circle cx="155" cy="48" r="2" class="sec-tunnel-dot d3"/>
-              <circle cx="245" cy="48" r="2" class="sec-tunnel-dot d4"/>
-            </g>
-            <g class="sec-lock-indicators">
-              <rect x="134" y="62" width="16" height="12" rx="2" class="sec-padlock-body" stroke-width="1" fill="none"/>
-              <path d="M139 62 L139 58 C139 55 143 55 143 58 L143 62" class="sec-padlock-shackle" stroke-width="1" fill="none" stroke-linecap="round"/>
-              <rect x="250" y="62" width="16" height="12" rx="2" class="sec-padlock-body" stroke-width="1" fill="none"/>
-              <path d="M255 62 L255 58 C255 55 259 55 259 58 L259 62" class="sec-padlock-shackle" stroke-width="1" fill="none" stroke-linecap="round"/>
+        <div class="fc-illus-container">
+          <svg class="security-svg" viewBox="0 0 340 170" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect width="100%" height="100%" fill="url(#illusGrid)" />
+            
+            <g transform="translate(20, 15)">
+              <rect width="300" height="140" rx="8" fill="#ffffff" stroke="rgba(15, 23, 42, 0.05)" stroke-width="1" />
+              
+              <!-- Panel Header -->
+              <text x="16" y="20" fill="#475569" font-family="var(--font)" font-size="9" font-weight="600">Security Core v2.1</text>
+              <rect x="238" y="9" width="46" height="14" rx="7" fill="#d1fae5" />
+              <text x="261" y="19" text-anchor="middle" fill="#065f46" font-family="var(--font)" font-size="7" font-weight="800">ACTIVE</text>
+              <line x1="12" y1="28" x2="288" y2="28" stroke="rgba(15, 23, 42, 0.04)" stroke-width="1" />
+              
+              <!-- Left Graphic Lock -->
+              <circle cx="60" cy="80" r="30" fill="#f8fafc" stroke="rgba(15, 23, 42, 0.03)" stroke-width="1" />
+              <circle cx="60" cy="80" r="36" stroke="rgba(13, 148, 136, 0.08)" stroke-width="1.2" stroke-dasharray="4 6" class="sec-ring-outer" />
+              <circle cx="60" cy="80" r="28" stroke="rgba(13, 148, 136, 0.15)" stroke-width="0.8" stroke-dasharray="3 3" class="sec-ring-middle" />
+              <circle cx="60" cy="80" r="20" stroke="rgba(13, 148, 136, 0.25)" stroke-width="0.8" class="sec-ring-inner" />
+              
+              <g class="sec-shield-container">
+                <path d="M 52 74 L 52 64 C 52 59, 68 59, 68 64 L 68 74" stroke="#0d9488" stroke-width="1.8" stroke-linecap="round" fill="none" class="sec-shackle" />
+                <rect x="46" y="72" width="28" height="20" rx="3" fill="#0d9488" />
+                <path d="M 54 81.5 L 58 84.5 L 66 76.5" stroke="#ffffff" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none" class="sec-checkmark" />
+              </g>
+              
+              <!-- Right Details Logs -->
+              <text x="112" y="52" fill="#94a3b8" font-family="var(--font)" font-size="7.5" font-weight="600" letter-spacing="0.04em">ENCRYPTION STANDARD</text>
+              <text x="112" y="64" fill="#1e293b" font-family="var(--font)" font-size="9" font-weight="700">AES-256 GCM Enabled</text>
+              
+              <text x="112" y="84" fill="#94a3b8" font-family="var(--font)" font-size="7.5" font-weight="600" letter-spacing="0.04em">ACCESS CONTROL</text>
+              <text x="112" y="96" fill="#1e293b" font-family="var(--font)" font-size="9" font-weight="700">Granular Role-Based</text>
+              
+              <text x="112" y="116" fill="#94a3b8" font-family="var(--font)" font-size="7.5" font-weight="600" letter-spacing="0.04em">IP ACCESS PROTECTION</text>
+              <text x="112" y="127" fill="#0d9488" font-family="var(--font)" font-size="8.5" font-weight="700">Active Tokens: 12</text>
             </g>
           </svg>
         </div>
@@ -3081,48 +3271,69 @@
           </p>
         </div>
         <div class="fc-illus-container">
-          <svg class="analytics-svg" viewBox="0 0 700 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <svg class="analytics-svg" viewBox="0 0 700 160" fill="none" xmlns="http://www.w3.org/2000/svg">
             <defs>
-              <linearGradient id="sparkGrad" x1="0" y1="0" x2="1" y2="0">
-                <stop offset="0%" stop-color="var(--teal-400)" stop-opacity="0.6"/>
-                <stop offset="100%" stop-color="var(--teal-400)" stop-opacity="0.15"/>
+              <linearGradient id="chartAreaGrad" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="0%" stop-color="#0d9488" stop-opacity="0.18"/>
+                <stop offset="100%" stop-color="#0d9488" stop-opacity="0.0"/>
               </linearGradient>
             </defs>
-            <g class="chart-sparkline">
-              <rect x="16" y="10" width="152" height="70" rx="8" class="chart-card-bg"/>
-              <rect x="26" y="15" width="50" height="4" rx="2" class="chart-card-label"/>
-              <path d="M26 60 Q46 54 66 52 Q86 48 106 42 Q126 36 146 30" class="chart-spark-path" stroke-width="1.5" fill="none"/>
-              <path d="M26 60 Q46 54 66 52 Q86 48 106 42 Q126 36 146 30 L146 68 L26 68 Z" class="chart-spark-fill" fill="url(#sparkGrad)"/>
-              <circle cx="146" cy="30" r="2.5" class="chart-spark-dot"/>
+            <rect width="100%" height="100%" fill="url(#illusGrid)" />
+            
+            <!-- Panel 1: Revenue Line Chart -->
+            <g transform="translate(30, 15)">
+              <rect x="0" y="3" width="200" height="130" rx="10" fill="rgba(15, 23, 42, 0.02)" />
+              <rect x="0" y="0" width="200" height="130" rx="10" fill="#ffffff" stroke="rgba(15, 23, 42, 0.06)" stroke-width="1" />
+              
+              <text x="16" y="22" fill="#64748b" font-family="var(--font)" font-size="9.5" font-weight="600">Gross Revenue</text>
+              <text x="16" y="40" fill="#0f172a" font-family="var(--font)" font-size="14" font-weight="800">₦14,240,000</text>
+              
+              <rect x="136" y="10" width="48" height="16" rx="8" fill="#d1fae5" />
+              <text x="160" y="21" text-anchor="middle" fill="#065f46" font-family="var(--font)" font-size="7.5" font-weight="800">+18.4%</text>
+              
+              <path d="M 16 105 C 40 85, 60 95, 80 72 C 100 50, 120 62, 140 50 C 160 36, 170 42, 184 30" stroke="#0d9488" stroke-width="2.5" stroke-linecap="round" fill="none" class="ana-spline-path" />
+              <path d="M 16 105 C 40 85, 60 95, 80 72 C 100 50, 120 62, 140 50 C 160 36, 170 42, 184 30 L 184 118 L 16 118 Z" fill="url(#chartAreaGrad)" class="ana-spline-fill" />
+              
+              <circle cx="80" cy="72" r="2.5" fill="#ffffff" stroke="#0d9488" stroke-width="1.5" />
+              <circle cx="140" cy="50" r="2.5" fill="#ffffff" stroke="#0d9488" stroke-width="1.5" />
+              <circle cx="184" cy="30" r="4" fill="#0d9488" stroke="#ffffff" stroke-width="1.8" class="ana-spline-dot" />
             </g>
-            <g class="chart-bars">
-              <rect x="186" y="10" width="152" height="70" rx="8" class="chart-card-bg"/>
-              <rect x="196" y="15" width="40" height="4" rx="2" class="chart-card-label"/>
-              <rect x="204" y="48" width="10" height="24" rx="2" class="chart-mini-bar b1"/>
-              <rect x="218" y="38" width="10" height="34" rx="2" class="chart-mini-bar b2"/>
-              <rect x="232" y="30" width="10" height="42" rx="2" class="chart-mini-bar b3"/>
-              <rect x="246" y="42" width="10" height="30" rx="2" class="chart-mini-bar b4"/>
-              <rect x="260" y="34" width="10" height="38" rx="2" class="chart-mini-bar b5"/>
-              <rect x="274" y="26" width="10" height="46" rx="2" class="chart-mini-bar b6"/>
-              <rect x="288" y="44" width="10" height="28" rx="2" class="chart-mini-bar b7"/>
-              <rect x="302" y="36" width="10" height="36" rx="2" class="chart-mini-bar b8"/>
+            
+            <!-- Panel 2: Monthly Profit Bars -->
+            <g transform="translate(250, 15)">
+              <rect x="0" y="3" width="200" height="130" rx="10" fill="rgba(15, 23, 42, 0.02)" />
+              <rect x="0" y="0" width="200" height="130" rx="10" fill="#ffffff" stroke="rgba(15, 23, 42, 0.06)" stroke-width="1" />
+              
+              <text x="16" y="22" fill="#64748b" font-family="var(--font)" font-size="9.5" font-weight="600">Monthly Profit</text>
+              <text x="16" y="40" fill="#0f172a" font-family="var(--font)" font-size="14" font-weight="800">₦4,820,000</text>
+              
+              <g transform="translate(16, 50)">
+                <rect x="0" y="35" width="12" height="35" rx="3" fill="#e2e8f0" class="ana-bar b1" />
+                <rect x="20" y="25" width="12" height="45" rx="3" fill="#e2e8f0" class="ana-bar b2" />
+                <rect x="40" y="40" width="12" height="30" rx="3" fill="#e2e8f0" class="ana-bar b3" />
+                <rect x="60" y="15" width="12" height="55" rx="3" fill="#e2e8f0" class="ana-bar b4" />
+                <rect x="80" y="30" width="12" height="40" rx="3" fill="#e2e8f0" class="ana-bar b5" />
+                <rect x="100" y="10" width="12" height="60" rx="3" fill="#0d9488" class="ana-bar b6" />
+                <rect x="120" y="20" width="12" height="50" rx="3" fill="#0d9488" class="ana-bar b7" />
+                <rect x="140" y="5" width="12" height="65" rx="3" fill="#10b981" class="ana-bar b8" />
+              </g>
             </g>
-            <g class="chart-kpi">
-              <rect x="356" y="10" width="152" height="32" rx="8" class="chart-card-bg"/>
-              <rect x="366" y="16" width="60" height="3" rx="1.5" class="chart-card-label"/>
-              <rect x="366" y="22" width="40" height="6" rx="3" class="chart-kpi-val"/>
-              <rect x="414" y="22" width="30" height="6" rx="3" class="chart-kpi-up"/>
-              <rect x="356" y="48" width="152" height="32" rx="8" class="chart-card-bg"/>
-              <rect x="366" y="54" width="50" height="3" rx="1.5" class="chart-card-label"/>
-              <rect x="366" y="60" width="36" height="6" rx="3" class="chart-kpi-val"/>
-              <rect x="410" y="60" width="28" height="6" rx="3" class="chart-kpi-flat"/>
-            </g>
-            <g class="chart-arc">
-              <rect x="526" y="10" width="152" height="70" rx="8" class="chart-card-bg"/>
-              <rect x="536" y="15" width="50" height="4" rx="2" class="chart-card-label"/>
-              <path d="M602 52 A18 18 0 1 1 602 16" class="chart-arc-ring" stroke-width="4" fill="none" stroke-linecap="round"/>
-              <path d="M602 52 A18 18 0 0 0 620 30" class="chart-arc-progress" stroke-width="4" fill="none" stroke-linecap="round"/>
-              <text x="602" y="38" text-anchor="middle" fill="var(--teal-400)" font-size="7" font-weight="700" class="chart-arc-text">86%</text>
+            
+            <!-- Panel 3: Operational Margin radial gauge -->
+            <g transform="translate(470, 15)">
+              <rect x="0" y="3" width="200" height="130" rx="10" fill="rgba(15, 23, 42, 0.02)" />
+              <rect x="0" y="0" width="200" height="130" rx="10" fill="#ffffff" stroke="rgba(15, 23, 42, 0.06)" stroke-width="1" />
+              
+              <text x="16" y="22" fill="#64748b" font-family="var(--font)" font-size="9.5" font-weight="600">Net Margin</text>
+              
+              <g transform="translate(100, 60)">
+                <circle cx="0" cy="0" r="26" stroke="#f1f5f9" stroke-width="6" fill="none" />
+                <path d="M 0 -26 A 26 26 0 1 1 -19 17" stroke="#0d9488" stroke-width="6" stroke-linecap="round" fill="none" class="ana-radial-path" />
+                <text x="0" y="5.5" text-anchor="middle" fill="#0f172a" font-family="var(--font)" font-size="13" font-weight="800">86%</text>
+              </g>
+              
+              <rect x="55" y="102" width="90" height="16" rx="8" fill="#eff6ff" />
+              <text x="100" y="113.5" text-anchor="middle" fill="#2563eb" font-family="var(--font)" font-size="7.5" font-weight="700">Target Achieved</text>
             </g>
           </svg>
         </div>
