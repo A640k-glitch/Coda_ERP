@@ -339,26 +339,39 @@ body.no-scroll {
 }
 
 .nav-brand {
-  background: #ffffff !important;
-  color: var(--slate-900) !important;
-  padding: 8px 20px !important;
-  border-radius: 30px !important;
-  border: 1px solid rgba(15, 23, 42, 0.08) !important;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05) !important;
   display: flex;
   align-items: center;
   gap: 8px;
   font-weight: 800;
-  font-size: 18px;
+  font-size: 20px;
+  color: var(--slate-900);
+  letter-spacing: -0.03em;
   text-decoration: none;
 }
 
+.nav-inner .nav-brand {
+  background: #ffffff !important;
+  color: var(--slate-900) !important;
+  padding: 8px 20px !important;
+  border-radius: 30px !important;
+  border: 1.5px solid #1e293b !important;
+  box-shadow: 
+    0 0 15px rgba(30, 41, 59, 0.4),
+    0 4px 25px rgba(30, 41, 59, 0.3) !important;
+  font-size: 18px !important;
+}
+
 .brand-icon-box {
-  width: 24px;
-  height: 24px;
+  width: 32px;
+  height: 32px;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.nav-inner .brand-icon-box {
+  width: 24px;
+  height: 24px;
 }
 
 .brand-icon-box svg {
@@ -2841,10 +2854,10 @@ input:checked+.slider:before {
     height: auto !important;
     width: auto !important;
     max-width: none !important;
-    background: rgba(15, 23, 42, 0.65) !important;
+    background: rgba(15, 23, 42, 0.9) !important;
     backdrop-filter: blur(16px) saturate(180%) !important;
     -webkit-backdrop-filter: blur(16px) saturate(180%) !important;
-    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    border: 1px solid rgba(255, 255, 255, 0.15) !important;
     border-radius: 50px !important;
     padding: 4px 4px 4px 20px !important;
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15), 0 0 15px rgba(20, 184, 166, 0.15) !important;
