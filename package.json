@@ -1,6 +1,7 @@
 {
   "scripts": {
-    "start": "node app.js"
+    "start": "node app.js",
+    "tail-logs": "render logs srv-d8puj1o3t8c739ckdu0"
   },
   "dependencies": {
     "@paper-design/shaders-react": "^0.0.76",
