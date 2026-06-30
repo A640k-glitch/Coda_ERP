@@ -2219,7 +2219,7 @@
 
                       <!-- LEFT COL (30%) -->
                       <div class="fusion-wallet-col">
-                        <!-- Wallet Card -->
+                        <!-- Unique Coda Premium Wallet Card -->
                         <div class="wallet-card">
                           <div class="wallet-glow"></div>
                           <div class="wallet-header">
@@ -2227,6 +2227,7 @@
                             <span class="wallet-trend up">+8.7%</span>
                           </div>
                           <div class="wallet-balance">₦12.8M <span class="mockup-sample-badge">Sample</span></div>
+
                           <div class="wallet-split">
                             <div class="wallet-split-item">
                               <span class="split-label">Revenue MTD</span>
@@ -2239,13 +2240,13 @@
                           </div>
                         </div>
 
-                        <!-- Expense Doughnut -->
-                        <div class="chart-card fusion-card" style="flex: 1; display: flex; flex-direction: column;">
-                          <div class="table-card-header" style="flex-shrink: 0;">
+                        <!-- Expense Doughnut under the wallet -->
+                        <div class="chart-card fusion-card">
+                          <div class="table-card-header">
                             <h3>Expense Breakdown</h3>
-                            <span class="text-muted">MTD</span>
+                            <span style="font-size: 11px; color: var(--text-muted);">MTD</span>
                           </div>
-                          <div class="chart-canvas-wrap" style="width: 250px; height: 250px; margin: auto; position: relative;">
+                          <div class="chart-canvas-wrap" style="padding: 16px; min-height: 240px; position: relative;">
                             <canvas id="mockupExpenseChart"></canvas>
                             <div style="position:absolute; display:flex; flex-direction:column; align-items:center; justify-content:center; pointer-events:none; top:50%; left:50%; transform:translate(-50%, -50%);">
                               <div style="font-size:13px; font-weight:700; color:var(--slate-900);">₦8.45M</div>
@@ -2253,7 +2254,7 @@
                           </div>
                         </div>
 
-                        <!-- Operations Mini -->
+                        <!-- Operations Summary -->
                         <div class="operations-mini-card">
                           <div class="op-mini-item">
                             <span class="material-symbols-outlined op-icon">inventory_2</span>
@@ -2272,67 +2273,68 @@
                         </div>
                       </div>
 
-                      <!-- RIGHT COL (70%) -->
+                                  <!-- RIGHT COL (70%) -->
                       <div class="fusion-ops-col">
-                        <!-- Cash Flow Chart -->
-                        <div class="chart-card fusion-card ops-chart-card" style="display:flex; flex-direction:column;">
-                          <div class="table-card-header" style="flex-shrink: 0;">
+                        <!-- Revenue Chart -->
+                        <div class="chart-card fusion-card ops-chart-card">
+                          <div class="table-card-header" style="justify-content: space-between;">
                             <div style="display: flex; align-items: center; gap: 8px;">
                               <h3>Monthly Cash Flow</h3>
-                              <span class="text-muted">6 month trend</span>
+                              <span style="font-size: 11px; color: var(--text-muted);">6 month trend</span>
                             </div>
                             <div class="chart-type-toggle">
-                              <button class="active" id="mockupBtnChartLine"><span class="material-symbols-outlined">show_chart</span></button>
-                              <button id="mockupBtnChartBar"><span class="material-symbols-outlined">bar_chart</span></button>
+                              <button class="active" aria-label="Line Chart"><span
+                                  class="material-symbols-outlined">show_chart</span></button>
+                              <button aria-label="Bar Chart"><span
+                                  class="material-symbols-outlined">bar_chart</span></button>
                             </div>
                           </div>
-                          <div class="chart-canvas-wrap" style="height: 200px; flex-shrink: 0;">
+                          <div class="chart-canvas-wrap" style="padding: 16px; height: 300px;">
                             <canvas id="mockupRevenueChart"></canvas>
                           </div>
                         </div>
-
                         <!-- Recent Activity -->
-                        <div class="table-card fusion-card activity-card" style="display:flex; flex-direction:column; flex: 1;">
+                        <div class="table-card fusion-card activity-card">
                           <div class="table-card-header">
                             <h3>Recent Activity</h3>
-                            <span class="text-muted" style="font-size: 11px;">Latest transactions <span class="mockup-sample-badge">Sample</span></span>
+                            <span style="font-size: 11px; color: var(--text-muted);">Latest transactions</span>
                           </div>
-                          <div class="activity-feed" style="flex: 1; overflow: hidden; padding: 0 12px 4px;">
-                            <div class="mockup-tx" style="padding: 5px 0; display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-color);">
+                          <div class="activity-feed">
+                            <div class="mockup-tx" style="padding: 12px 16px; display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-color);">
                               <span class="mockup-tx-name">Invoice #1042 — Enterprise Sub</span>
-                              <span class="mockup-tx-amount" style="font-weight: 600; color: var(--success);">+₦845,000</span>
+                              <span class="mockup-tx-amount" style="font-weight: 600; color: var(--slate-700);">+₦845,000</span>
                             </div>
-                            <div class="mockup-tx" style="padding: 5px 0; display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-color);">
+                            <div class="mockup-tx" style="padding: 12px 16px; display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-color);">
                               <span class="mockup-tx-name">Cloud Hosting Services</span>
-                              <span class="mockup-tx-amount expense" style="font-weight: 600; color: var(--error);">-₦120,000</span>
+                              <span class="mockup-tx-amount expense" style="font-weight: 600; color: var(--slate-900);">-₦120,000</span>
                             </div>
-                            <div class="mockup-tx" style="padding: 5px 0; display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-color);">
+                            <div class="mockup-tx" style="padding: 12px 16px; display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-color);">
                               <span class="mockup-tx-name">POS Clearing Settlement</span>
-                              <span class="mockup-tx-amount" style="font-weight: 600; color: var(--success);">+₦250,000</span>
+                              <span class="mockup-tx-amount" style="font-weight: 600; color: var(--slate-700);">+₦250,000</span>
                             </div>
-                            <div class="mockup-tx" style="padding: 5px 0; display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-color);">
+                            <div class="mockup-tx" style="padding: 12px 16px; display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-color);">
                               <span class="mockup-tx-name">Wire Transfer — Supplier Payment</span>
-                              <span class="mockup-tx-amount expense" style="font-weight: 600; color: var(--error);">-₦2,100,000</span>
+                              <span class="mockup-tx-amount expense" style="font-weight: 600; color: var(--slate-900);">-₦2,100,000</span>
                             </div>
-                            <div class="mockup-tx" style="padding: 5px 0; display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-color);">
+                            <div class="mockup-tx" style="padding: 12px 16px; display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-color);">
                               <span class="mockup-tx-name">Invoice #1045 — Retail Corp</span>
-                              <span class="mockup-tx-amount" style="font-weight: 600; color: var(--success);">+₦520,000</span>
+                              <span class="mockup-tx-amount" style="font-weight: 600; color: var(--slate-700);">+₦520,000</span>
                             </div>
-                            <div class="mockup-tx" style="padding: 5px 0; display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-color);">
+                            <div class="mockup-tx" style="padding: 12px 16px; display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-color);">
                               <span class="mockup-tx-name">Subscription Revenue — SaaS</span>
-                              <span class="mockup-tx-amount" style="font-weight: 600; color: var(--success);">+₦1,200,000</span>
+                              <span class="mockup-tx-amount" style="font-weight: 600; color: var(--slate-700);">+₦1,200,000</span>
                             </div>
-                            <div class="mockup-tx" style="padding: 5px 0; display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-color);">
+                            <div class="mockup-tx" style="padding: 12px 16px; display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-color);">
                               <span class="mockup-tx-name">Utility Bill Payment — IKEDC</span>
-                              <span class="mockup-tx-amount expense" style="font-weight: 600; color: var(--error);">-₦85,000</span>
+                              <span class="mockup-tx-amount expense" style="font-weight: 600; color: var(--slate-900);">-₦85,000</span>
                             </div>
-                            <div class="mockup-tx" style="padding: 5px 0; display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-color);">
+                            <div class="mockup-tx" style="padding: 12px 16px; display: flex; justify-content: space-between; border-bottom: 1px solid var(--border-color);">
                               <span class="mockup-tx-name">Invoice #1048 — TechStartup Ltd</span>
-                              <span class="mockup-tx-amount" style="font-weight: 600; color: var(--success);">+₦2,450,000</span>
+                              <span class="mockup-tx-amount" style="font-weight: 600; color: var(--slate-700);">+₦2,450,000</span>
                             </div>
-                            <div class="mockup-tx" style="padding: 5px 0; display: flex; justify-content: space-between;">
+                            <div class="mockup-tx" style="padding: 12px 16px; display: flex; justify-content: space-between;">
                               <span class="mockup-tx-name">Vendor Payment — PrintCo</span>
-                              <span class="mockup-tx-amount expense" style="font-weight: 600; color: var(--error);">-₦340,000</span>
+                              <span class="mockup-tx-amount expense" style="font-weight: 600; color: var(--slate-900);">-₦340,000</span>
                             </div>
                           </div>
                         </div>
@@ -3695,7 +3697,7 @@
             labels: ['Staff Payroll', 'Office Infrastructure', 'Miscellaneous'],
             datasets: [{
               data: [7330, 920, 200],
-              backgroundColor: ['#2A8566', '#B8652E', '#94A3B8'],
+              backgroundColor: ['#334155', '#94a3b8', '#0f172a'],
               borderWidth: 0,
               cutout: '70%'
             }]
@@ -3726,13 +3728,13 @@
           datasets: [{
             label: 'Cash Flow',
             data: [0, 0, 0, 0, 0, 8],
-            borderColor: '#14b8a6',
-            backgroundColor: 'rgba(20, 184, 166, 0.1)',
+            borderColor: '#475569',
+            backgroundColor: 'transparent',
             borderWidth: 2,
-            tension: 0.4,
-            fill: true,
+            tension: 0,
+            fill: false,
             pointRadius: 3,
-            pointBackgroundColor: '#14b8a6'
+            pointBackgroundColor: '#475569'
           }]
         };
 

@@ -98,7 +98,7 @@ html {
 }
 
 body {
-  overflow-x: hidden;
+  background: var(--bg-body);
 }
 
 /* Custom Scrollbars (Slim, brand green) */
@@ -3479,15 +3479,12 @@ body.no-scroll .admin-main {
 /* Fusion Main Grid */
 .fusion-grid {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(0, 320px) minmax(0, 1fr);
   gap: 24px;
+  align-items: start; /* Allows sticky children to work */
 }
 
-@media (min-width: 1024px) {
-  .fusion-grid {
-    grid-template-columns: 320px 1fr;
-  }
-}
+/* No media query needed since we want it side-by-side always */
 
 .fusion-wallet-col, .fusion-ops-col {
   display: flex;
@@ -3497,16 +3494,22 @@ body.no-scroll .admin-main {
   min-height: 0;
 }
 
-/* Wallet Card (Coda ERP Tailored) */
+.fusion-wallet-col {
+  position: sticky;
+  top: calc(var(--topbar-h) + 24px);
+  height: max-content;
+}
+
+/* Wallet Card (AWS Tailored - Flat & Dense) */
 .wallet-card {
   position: relative;
-  background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-  border-radius: var(--radius-xl);
-  padding: 24px;
+  background: var(--slate-900);
+  border-radius: var(--radius-sm);
+  padding: 16px 20px;
   color: white;
   overflow: hidden;
-  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.3), 0 8px 10px -6px rgba(15, 23, 42, 0.1);
-  border: 1px solid #334155;
+  box-shadow: none;
+  border: 1px solid var(--slate-800);
 }
 
 .wallet-glow {
@@ -5015,15 +5018,6 @@ body.no-scroll .admin-main {
 
   .premium-kpi-card {
     padding: 14px !important;
-  }
-
-  .chart-card,
-  .table-card,
-  .premium-kpi-card,
-  .wallet-card,
-  .fusion-card,
-  .ledger-card {
-    border-radius: 12px !important;
   }
 
   .chart-card .table-card-header,

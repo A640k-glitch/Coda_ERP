@@ -885,12 +885,12 @@ function escapeHTML(str) {
   let revenueChart, expenseChart;
 
   const expenseChartColors = {
-    '5000': '#0369a1', // Steel Blue
-    '6000': '#0f766e', // Dark Teal
-    '6100': '#b45309', // Muted Rust
-    '6200': '#4338ca', // Deep Indigo
-    '6300': '#475569', // Slate Grey
-    '6400': '#be123c'  // Muted Berry
+    '5000': '#0f172a', // Slate 900
+    '6000': '#334155', // Slate 700
+    '6100': '#475569', // Slate 600
+    '6200': '#64748b', // Slate 500
+    '6300': '#94a3b8', // Slate 400
+    '6400': '#cbd5e1'  // Slate 300
   };
 
   function initCharts() {
@@ -913,16 +913,17 @@ function escapeHTML(str) {
         data: {
           labels: [],
           datasets: [{
-            label: 'Revenue',
+            label: 'Cash Flow',
             data: [],
-            borderColor: chartColors.primary,
-            backgroundColor: isBar ? chartColors.primary : 'transparent',
-            fill: false,
+            borderColor: '#475569',
+            backgroundColor: isBar ? '#475569' : 'transparent',
+            borderWidth: 2,
             tension: 0,
+            fill: false,
             pointRadius: 2,
             pointHoverRadius: 4,
             pointBackgroundColor: '#fff',
-            pointBorderColor: chartColors.primary,
+            pointBorderColor: '#475569',
             pointBorderWidth: 1.5,
             pointHoverBorderWidth: 2,
             borderRadius: isBar ? 2 : 0,
