@@ -23,6 +23,9 @@ const onboardLimiter = rateLimit({
 
 const app = express();
 
+// Trust Render proxy headers for rate-limiting
+app.set('trust proxy', 1);
+
 // Security headers with CSP for external CDNs (Fonts, Chartjs)
 app.use(helmet({
   contentSecurityPolicy: {
