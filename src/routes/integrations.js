@@ -13,7 +13,8 @@ const requireApiKey = (req, res, next) => {
     return res.status(401).json({ success: false, error: 'Unauthorized: Missing x-api-key header' });
   }
   const { db } = require('../db');
-  const user = db.prepare('SELECT id, business_id FROM users WHERE api_key = ?').get(apiKey);
+const TenantDB = require('../tenant-db');
+  const user = (new TenantDB(req.user.business_id || req.businessId)).prepare('SELECT id, business_id FROM users WHERE api_key = ?').get(apiKey);
   if (!user) {
     return res.status(401).json({ success: false, error: 'Unauthorized: Invalid API key' });
   }

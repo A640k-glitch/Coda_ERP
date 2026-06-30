@@ -1,5 +1,6 @@
 // Reporting module — dashboard aggregates, PDF/CSV export
 const { db } = require('../db');
+const TenantDB = require('../tenant-db');
 const accounting = require('./accounting');
 const inventory = require('./inventory');
 const hr = require('./hr');
@@ -42,6 +43,7 @@ function revenueLast6Months(businessId) {
 }
 
 function dashboard(businessId) {
+  const tdb = new TenantDB(businessId);
   const fin = financialSummary(businessId);
   const tier = getBusinessTier(businessId);
   const hasInventory = tierAllows(tier, 'inventory');
@@ -49,10 +51,10 @@ function dashboard(businessId) {
   const hasHr = tierAllows(tier, 'hr');
   const lowStock = hasInventory ? inventory.lowStockAlerts(businessId) : [];
   const recentSales = hasInventory ? inventory.listSales(businessId, { limit: 5 }) : [];
-  const customerCount = hasCrm ? db.prepare('SELECT COUNT(*) AS c FROM customers WHERE business_id = ?').get(businessId).c : 0;
-  const employeeCount = hasHr ? db.prepare("SELECT COUNT(*) AS c FROM employees WHERE business_id = ? AND status = 'active'").get(businessId).c : 0;
-  const productCount = hasInventory ? db.prepare('SELECT COUNT(*) AS c FROM products WHERE business_id = ?').get(businessId).c : 0;
-  const openLeads = hasCrm ? db.prepare("SELECT COUNT(*) AS c FROM leads WHERE business_id = ? AND status NOT IN ('won','lost')").get(businessId).c : 0;
+  const customerCount = hasCrm ? tdb.prepare('SELECT COUNT(*) AS c FROM customers WHERE business_id = ?').get(businessId).c : 0;
+  const employeeCount = hasHr ? tdb.prepare("SELECT COUNT(*) AS c FROM employees WHERE business_id = ? AND status = 'active'").get(businessId).c : 0;
+  const productCount = hasInventory ? tdb.prepare('SELECT COUNT(*) AS c FROM products WHERE business_id = ?').get(businessId).c : 0;
+  const openLeads = hasCrm ? tdb.prepare("SELECT COUNT(*) AS c FROM leads WHERE business_id = ? AND status NOT IN ('won','lost')").get(businessId).c : 0;
   return {
     kpi: {
       revenue: fin.revenue,

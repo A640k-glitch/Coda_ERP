@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 const crm = require('../modules/crm');
 const { db } = require('../db');
+const TenantDB = require('../tenant-db');
 const { requireAuth, requireBusiness, logAudit } = require('../auth');
 const { requireTierModule } = require('../entitlements');
 
@@ -13,7 +14,8 @@ router.post('/customers/batch-delete', (req, res) => {
   const { ids } = req.body;
   if (!Array.isArray(ids) || !ids.length) return res.status(400).json({ error: 'ids array required' });
   const placeholders = ids.map(() => '?').join(',');
-  const result = db.prepare(`DELETE FROM customers WHERE id IN (${placeholders}) AND business_id = ?`).run(...ids, req.businessId);
+  const tdb = new TenantDB(req.businessId);
+  const result = tdb.prepare(`DELETE FROM customers WHERE id IN (${placeholders}) AND business_id = ?`).run(...ids, req.businessId);
   logAudit(req.businessId, req.user.id, 'customer.batch_delete', { count: result.changes });
   res.json({ deleted: result.changes });
 });

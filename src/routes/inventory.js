@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 const inventory = require('../modules/inventory');
 const { db } = require('../db');
+const TenantDB = require('../tenant-db');
 const { requireAuth, requireBusiness, logAudit } = require('../auth');
 const { requireTierModule } = require('../entitlements');
 
@@ -13,7 +14,8 @@ router.post('/products/batch-delete', (req, res) => {
   const { ids } = req.body;
   if (!Array.isArray(ids) || !ids.length) return res.status(400).json({ error: 'ids array required' });
   const placeholders = ids.map(() => '?').join(',');
-  const result = db.prepare(`DELETE FROM products WHERE id IN (${placeholders}) AND business_id = ?`).run(...ids, req.businessId);
+  const tdb = new TenantDB(req.businessId);
+  const result = tdb.prepare(`DELETE FROM products WHERE id IN (${placeholders}) AND business_id = ?`).run(...ids, req.businessId);
   logAudit(req.businessId, req.user.id, 'product.batch_delete', { count: result.changes });
   res.json({ deleted: result.changes });
 });
@@ -74,7 +76,8 @@ router.get('/sales', (req, res) => {
 
 router.get('/purchase-orders', (req, res) => {
   try {
-    const pos = db.prepare(`
+    const tdb = new TenantDB(req.businessId);
+    const pos = tdb.prepare(`
       SELECT je.id, je.date, je.description, jl.credit AS amount
       FROM journal_entries je
       JOIN journal_lines jl ON je.id = jl.entry_id

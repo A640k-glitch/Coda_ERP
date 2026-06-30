@@ -1,12 +1,14 @@
 // Inventory module — products, sales, COGS, reorder alerts
 const { db } = require('../db');
+const TenantDB = require('../tenant-db');
 const { generateId } = require('../utils');
 const accounting = require('./accounting');
 
 function addProduct(businessId, data) {
+  const tdb = new TenantDB(businessId);
   if (!data.name) throw new Error('Product name is required');
   const id = generateId('prod');
-  db.prepare(
+  tdb.prepare(
     `INSERT INTO products (id, business_id, sku, name, cost_price, sell_price, stock_level, reorder_point, category)
      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
   ).run(
@@ -24,9 +26,10 @@ function addProduct(businessId, data) {
 }
 
 function updateProduct(businessId, id, data) {
+  const tdb = new TenantDB(businessId);
   const existing = getProduct(businessId, id);
   if (!existing) return null;
-  db.prepare(
+  tdb.prepare(
     `UPDATE products
      SET sku = ?, name = ?, cost_price = ?, sell_price = ?, reorder_point = ?, category = ?, updated_at = datetime('now')
      WHERE id = ? AND business_id = ?`
@@ -44,10 +47,12 @@ function updateProduct(businessId, id, data) {
 }
 
 function getProduct(businessId, id) {
-  return db.prepare('SELECT * FROM products WHERE id = ? AND business_id = ?').get(id, businessId);
+  const tdb = new TenantDB(businessId);
+  return tdb.prepare('SELECT * FROM products WHERE id = ? AND business_id = ?').get(id, businessId);
 }
 
 function listProducts(businessId, { q, lowStockOnly, limit = 100, offset = 0 } = {}) {
+  const tdb = new TenantDB(businessId);
   const where = ['business_id = ?'];
   const params = [businessId];
   if (q) {
@@ -55,8 +60,7 @@ function listProducts(businessId, { q, lowStockOnly, limit = 100, offset = 0 } =
     params.push(`%${q}%`, `%${q}%`);
   }
   if (lowStockOnly) where.push('stock_level <= reorder_point');
-  return db
-    .prepare(
+  return tdb.prepare(
       `SELECT * FROM products WHERE ${where.join(' AND ')}
        ORDER BY name LIMIT ? OFFSET ?`
     )
@@ -64,11 +68,13 @@ function listProducts(businessId, { q, lowStockOnly, limit = 100, offset = 0 } =
 }
 
 function deleteProduct(businessId, id) {
-  const r = db.prepare('DELETE FROM products WHERE id = ? AND business_id = ?').run(id, businessId);
+  const tdb = new TenantDB(businessId);
+  const r = tdb.prepare('DELETE FROM products WHERE id = ? AND business_id = ?').run(id, businessId);
   return r.changes > 0;
 }
 
 function recordSale(businessId, userId, { product_id, qty, unit_price, customer_id }) {
+  const tdb = new TenantDB(businessId);
   const product = getProduct(businessId, product_id);
   if (!product) throw new Error('Product not found');
   const q = Number(qty);
@@ -81,23 +87,23 @@ function recordSale(businessId, userId, { product_id, qty, unit_price, customer_
   const cogs = +(product.cost_price * q).toFixed(2);
 
   const id = generateId('sale');
-  const tx = db.transaction(() => {
-    db.prepare(
+  const tx = tdb.transaction(() => {
+    tdb.prepare(
       `INSERT INTO sales (id, business_id, product_id, customer_id, qty, unit_price, total, cogs)
        VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
     ).run(id, businessId, product_id, customer_id || null, q, price, total, cogs);
-    db.prepare('UPDATE products SET stock_level = stock_level - ?, updated_at = datetime(\'now\') WHERE id = ?').run(q, product_id);
+    tdb.prepare('UPDATE products SET stock_level = stock_level - ?, updated_at = datetime(\'now\') WHERE id = ?').run(q, product_id);
     
     // Create a low stock notification if level is below reorder point
-    const updatedProd = db.prepare('SELECT * FROM products WHERE id = ?').get(product_id);
+    const updatedProd = tdb.prepare('SELECT * FROM products WHERE id = ?').get(product_id);
     if (updatedProd && updatedProd.stock_level <= updatedProd.reorder_point) {
       const notifId = generateId('notif');
-      const activeNotif = db.prepare(`
+      const activeNotif = tdb.prepare(`
         SELECT id FROM notifications 
         WHERE business_id = ? AND title = 'Low Stock Alert' AND target_item_id = ? AND is_read = 0
       `).get(businessId, product_id);
       if (!activeNotif) {
-        db.prepare(`
+        tdb.prepare(`
           INSERT INTO notifications (id, business_id, title, message, type, target_view, target_item_id)
           VALUES (?, ?, 'Low Stock Alert', ?, 'warning', 'inventory', ?)
         `).run(notifId, businessId, `${updatedProd.name} is running low on stock (${updatedProd.stock_level} units left).`, product_id);
@@ -118,16 +124,16 @@ function recordSale(businessId, userId, { product_id, qty, unit_price, customer_
     });
   });
   tx();
-  return db.prepare('SELECT * FROM sales WHERE id = ?').get(id);
+  return tdb.prepare('SELECT * FROM sales WHERE id = ?').get(id);
 }
 
 function listSales(businessId, { limit = 50, offset = 0, from, to } = {}) {
+  const tdb = new TenantDB(businessId);
   const where = ['s.business_id = ?'];
   const params = [businessId];
   if (from) { where.push('s.created_at >= ?'); params.push(from); }
   if (to)   { where.push('s.created_at <= ?'); params.push(to); }
-  return db
-    .prepare(
+  return tdb.prepare(
       `SELECT s.*, p.name AS product_name, p.sku, c.name AS customer_name
        FROM sales s
        LEFT JOIN products p ON p.id = s.product_id
@@ -140,8 +146,8 @@ function listSales(businessId, { limit = 50, offset = 0, from, to } = {}) {
 }
 
 function lowStockAlerts(businessId) {
-  return db
-    .prepare('SELECT * FROM products WHERE business_id = ? AND stock_level <= reorder_point ORDER BY stock_level ASC')
+  const tdb = new TenantDB(businessId);
+  return tdb.prepare('SELECT * FROM products WHERE business_id = ? AND stock_level <= reorder_point ORDER BY stock_level ASC')
     .all(businessId);
 }
 

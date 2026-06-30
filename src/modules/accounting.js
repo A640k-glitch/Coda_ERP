@@ -1,16 +1,20 @@
 // Accounting module — real double-entry ledger, financial reports
 const { db } = require('../db');
+const TenantDB = require('../tenant-db');
 const { generateId } = require('../utils');
 
 function accountByCode(businessId, code) {
-  return db.prepare('SELECT * FROM accounts WHERE business_id = ? AND code = ?').get(businessId, code);
+  const tdb = new TenantDB(businessId);
+  return tdb.prepare('SELECT * FROM accounts WHERE business_id = ? AND code = ?').get(businessId, code);
 }
 
 function listAccounts(businessId) {
-  return db.prepare('SELECT * FROM accounts WHERE business_id = ? ORDER BY code').all(businessId);
+  const tdb = new TenantDB(businessId);
+  return tdb.prepare('SELECT * FROM accounts WHERE business_id = ? ORDER BY code').all(businessId);
 }
 
 function getAccountBalance(businessId, accountId, asOf = null, from = null) {
+  const tdb = new TenantDB(businessId);
   const params = [accountId];
   let dateClause = '';
   if (from) {
@@ -21,8 +25,7 @@ function getAccountBalance(businessId, accountId, asOf = null, from = null) {
     dateClause += 'AND je.date <= ?';
     params.push(asOf);
   }
-  const row = db
-    .prepare(
+  const row = tdb.prepare(
       `SELECT
          COALESCE(SUM(jl.debit), 0)  AS dr,
          COALESCE(SUM(jl.credit), 0) AS cr
@@ -36,8 +39,8 @@ function getAccountBalance(businessId, accountId, asOf = null, from = null) {
 
 // Generic account-type balances
 function balancesByType(businessId, type, asOf = null, from = null) {
-  const accounts = db
-    .prepare('SELECT * FROM accounts WHERE business_id = ? AND type = ? ORDER BY code')
+  const tdb = new TenantDB(businessId);
+  const accounts = tdb.prepare('SELECT * FROM accounts WHERE business_id = ? AND type = ? ORDER BY code')
     .all(businessId, type);
   return accounts.map(a => {
     const { debit, credit } = getAccountBalance(businessId, a.id, asOf, from);
@@ -46,6 +49,7 @@ function balancesByType(businessId, type, asOf = null, from = null) {
 }
 
 function recordTransaction(businessId, userId, { date, description, reference, lines }) {
+  const tdb = new TenantDB(businessId);
   if (!lines || !Array.isArray(lines) || lines.length < 2) {
     throw new Error('A transaction needs at least two journal lines');
   }
@@ -68,12 +72,12 @@ function recordTransaction(businessId, userId, { date, description, reference, l
   }
 
   const entryId = generateId('je');
-  const tx = db.transaction(() => {
-    db.prepare(
+  const tx = tdb.transaction(() => {
+    tdb.prepare(
       `INSERT INTO journal_entries (id, business_id, date, description, reference, created_by)
        VALUES (?, ?, ?, ?, ?, ?)`
     ).run(entryId, businessId, date || new Date().toISOString(), description || null, reference || null, userId || null);
-    const lineStmt = db.prepare(
+    const lineStmt = tdb.prepare(
       'INSERT INTO journal_lines (entry_id, account_id, debit, credit) VALUES (?, ?, ?, ?)'
     );
     for (const l of resolved) {
@@ -94,12 +98,12 @@ function recordTransaction(businessId, userId, { date, description, reference, l
 }
 
 function listTransactions(businessId, { limit = 50, offset = 0, from, to } = {}) {
+  const tdb = new TenantDB(businessId);
   const where = ['je.business_id = ?'];
   const params = [businessId];
   if (from) { where.push('je.date >= ?'); params.push(from); }
   if (to)   { where.push('je.date <= ?'); params.push(to); }
-  const rows = db
-    .prepare(
+  const rows = tdb.prepare(
       `SELECT je.* FROM journal_entries je
        WHERE ${where.join(' AND ')}
        ORDER BY je.date DESC, je.created_at DESC
@@ -109,8 +113,7 @@ function listTransactions(businessId, { limit = 50, offset = 0, from, to } = {})
   if (!rows.length) return [];
   const ids = rows.map(r => r.id);
   const placeholders = ids.map(() => '?').join(',');
-  const lineStmt = db
-    .prepare(
+  const lineStmt = tdb.prepare(
       `SELECT jl.*, a.code AS account_code, a.name AS account_name
        FROM journal_lines jl
        JOIN accounts a ON a.id = jl.account_id
@@ -127,12 +130,11 @@ function listTransactions(businessId, { limit = 50, offset = 0, from, to } = {})
 }
 
 function getTransaction(businessId, id) {
-  const entry = db
-    .prepare('SELECT * FROM journal_entries WHERE id = ? AND business_id = ?')
+  const tdb = new TenantDB(businessId);
+  const entry = tdb.prepare('SELECT * FROM journal_entries WHERE id = ? AND business_id = ?')
     .get(id, businessId);
   if (!entry) return null;
-  const lines = db
-    .prepare(
+  const lines = tdb.prepare(
       `SELECT jl.*, a.code AS account_code, a.name AS account_name
        FROM journal_lines jl
        JOIN accounts a ON a.id = jl.account_id
@@ -143,6 +145,7 @@ function getTransaction(businessId, id) {
 }
 
 function balanceSheet(businessId, asOf = null) {
+  const tdb = new TenantDB(businessId);
   const asOfIso = asOf || new Date().toISOString();
   const assets = balancesByType(businessId, 'asset', asOfIso);
   const liabilities = balancesByType(businessId, 'liability', asOfIso);
@@ -174,6 +177,7 @@ function balanceSheet(businessId, asOf = null) {
 }
 
 function incomeStatement(businessId, { from, to } = {}) {
+  const tdb = new TenantDB(businessId);
   const fromIso = from || new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString();
   const toIso = to || new Date().toISOString();
   const revenue = balancesByType(businessId, 'revenue', toIso, fromIso);
@@ -202,19 +206,18 @@ function incomeStatement(businessId, { from, to } = {}) {
 }
 
 function cashFlow(businessId, { from, to } = {}) {
+  const tdb = new TenantDB(businessId);
   const fromIso = from || new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString();
   const toIso = to || new Date().toISOString();
   // Simplified: cash flow = sum of all lines touching cash + bank accounts
-  const cashAccounts = db
-    .prepare("SELECT id FROM accounts WHERE business_id = ? AND code IN ('1000','1100')")
+  const cashAccounts = tdb.prepare("SELECT id FROM accounts WHERE business_id = ? AND code IN ('1000','1100')")
     .all(businessId)
     .map(a => a.id);
   if (!cashAccounts.length) {
     return { period: { from: fromIso, to: toIso }, operating: 0, investing: 0, financing: 0, netCashFlow: 0 };
   }
   const placeholders = cashAccounts.map(() => '?').join(',');
-  const op = db
-    .prepare(
+  const op = tdb.prepare(
       `SELECT COALESCE(SUM(jl.debit - jl.credit), 0) AS total
        FROM journal_lines jl
        JOIN journal_entries je ON je.id = jl.entry_id
@@ -237,9 +240,10 @@ function cashFlow(businessId, { from, to } = {}) {
 }
 
 function updateTransaction(businessId, id, { date, description, reference }) {
-  const existing = db.prepare('SELECT * FROM journal_entries WHERE id = ? AND business_id = ?').get(id, businessId);
+  const tdb = new TenantDB(businessId);
+  const existing = tdb.prepare('SELECT * FROM journal_entries WHERE id = ? AND business_id = ?').get(id, businessId);
   if (!existing) throw new Error('Transaction not found');
-  db.prepare(
+  tdb.prepare(
     'UPDATE journal_entries SET date = ?, description = ?, reference = ? WHERE id = ? AND business_id = ?'
   ).run(
     date || existing.date,
@@ -251,33 +255,36 @@ function updateTransaction(businessId, id, { date, description, reference }) {
 }
 
 function deleteTransaction(businessId, id) {
-  const existing = db.prepare('SELECT * FROM journal_entries WHERE id = ? AND business_id = ?').get(id, businessId);
+  const tdb = new TenantDB(businessId);
+  const existing = tdb.prepare('SELECT * FROM journal_entries WHERE id = ? AND business_id = ?').get(id, businessId);
   if (!existing) throw new Error('Transaction not found');
-  db.prepare('DELETE FROM journal_entries WHERE id = ? AND business_id = ?').run(id, businessId);
+  tdb.prepare('DELETE FROM journal_entries WHERE id = ? AND business_id = ?').run(id, businessId);
   // journal_lines are cascade-deleted
   return { success: true };
 }
 
 function createAccount(businessId, { code, name, type }) {
+  const tdb = new TenantDB(businessId);
   if (!code || !name || !type) throw new Error('code, name, and type are required');
-  const existing = db.prepare('SELECT id FROM accounts WHERE business_id = ? AND code = ?').get(businessId, code);
+  const existing = tdb.prepare('SELECT id FROM accounts WHERE business_id = ? AND code = ?').get(businessId, code);
   if (existing) throw new Error('Account code already exists');
   const allowedTypes = ['asset', 'liability', 'equity', 'revenue', 'expense'];
   if (!allowedTypes.includes(type)) throw new Error('Invalid account type');
-  const info = db.prepare(
+  const info = tdb.prepare(
     'INSERT INTO accounts (business_id, code, name, type) VALUES (?, ?, ?, ?)'
   ).run(businessId, code, name, type);
   return { id: info.lastInsertRowid, code, name, type };
 }
 
 function updateAccount(businessId, id, { code, name, type }) {
-  const existing = db.prepare('SELECT * FROM accounts WHERE id = ? AND business_id = ?').get(id, businessId);
+  const tdb = new TenantDB(businessId);
+  const existing = tdb.prepare('SELECT * FROM accounts WHERE id = ? AND business_id = ?').get(id, businessId);
   if (!existing) throw new Error('Account not found');
   if (type) {
     const allowedTypes = ['asset', 'liability', 'equity', 'revenue', 'expense'];
     if (!allowedTypes.includes(type)) throw new Error('Invalid account type');
   }
-  db.prepare(
+  tdb.prepare(
     'UPDATE accounts SET code = ?, name = ?, type = ? WHERE id = ? AND business_id = ?'
   ).run(
     code || existing.code,
@@ -289,13 +296,14 @@ function updateAccount(businessId, id, { code, name, type }) {
 }
 
 function deleteAccount(businessId, id) {
-  const existing = db.prepare('SELECT * FROM accounts WHERE id = ? AND business_id = ?').get(id, businessId);
+  const tdb = new TenantDB(businessId);
+  const existing = tdb.prepare('SELECT * FROM accounts WHERE id = ? AND business_id = ?').get(id, businessId);
   if (!existing) throw new Error('Account not found');
-  const lineCount = db.prepare(
+  const lineCount = tdb.prepare(
     'SELECT COUNT(*) AS cnt FROM journal_lines WHERE account_id = ?'
   ).get(id);
   if (lineCount.cnt > 0) throw new Error('Cannot delete account with journal lines. Remove or re-assign transactions first.');
-  db.prepare('DELETE FROM accounts WHERE id = ? AND business_id = ?').run(id, businessId);
+  tdb.prepare('DELETE FROM accounts WHERE id = ? AND business_id = ?').run(id, businessId);
   return { success: true };
 }
 

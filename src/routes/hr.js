@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 const hr = require('../modules/hr');
 const { db } = require('../db');
+const TenantDB = require('../tenant-db');
 const { requireAuth, requireBusiness, logAudit } = require('../auth');
 const { requireTierModule } = require('../entitlements');
 
@@ -14,7 +15,8 @@ router.post('/employees/batch-delete', (req, res) => {
   const { ids } = req.body;
   if (!Array.isArray(ids) || !ids.length) return res.status(400).json({ error: 'ids array required' });
   const placeholders = ids.map(() => '?').join(',');
-  const result = db.prepare(`DELETE FROM employees WHERE id IN (${placeholders}) AND business_id = ?`).run(...ids, req.businessId);
+  const tdb = new TenantDB(req.businessId);
+  const result = tdb.prepare(`DELETE FROM employees WHERE id IN (${placeholders}) AND business_id = ?`).run(...ids, req.businessId);
   logAudit(req.businessId, req.user.id, 'employee.batch_delete', { count: result.changes });
   res.json({ deleted: result.changes });
 });
@@ -24,7 +26,8 @@ router.patch('/employees/batch-status', (req, res) => {
   if (!Array.isArray(ids) || !ids.length) return res.status(400).json({ error: 'ids array required' });
   if (!['active', 'inactive'].includes(status)) return res.status(400).json({ error: 'status must be active or inactive' });
   const placeholders = ids.map(() => '?').join(',');
-  const result = db.prepare(`UPDATE employees SET status = ? WHERE id IN (${placeholders}) AND business_id = ?`).run(status, ...ids, req.businessId);
+  const tdb = new TenantDB(req.businessId);
+  const result = tdb.prepare(`UPDATE employees SET status = ? WHERE id IN (${placeholders}) AND business_id = ?`).run(status, ...ids, req.businessId);
   logAudit(req.businessId, req.user.id, 'employee.batch_status', { status, count: result.changes });
   res.json({ updated: result.changes });
 });
@@ -82,8 +85,9 @@ router.post('/payroll/disburse', (req, res) => {
     
     // Create a notification for payroll disbursement
     const notifId = generateId('notif');
+    const tdb = new TenantDB(req.businessId);
     const grossFormatted = new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN', minimumFractionDigits: 0 }).format(summary.totalMonthlyGross);
-    db.prepare(`
+    tdb.prepare(`
       INSERT INTO notifications (id, business_id, title, message, type, target_view, target_item_id)
       VALUES (?, ?, 'Payroll Disbursed', ?, 'success', 'accounting', ?)
     `).run(

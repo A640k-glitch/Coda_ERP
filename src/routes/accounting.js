@@ -3,6 +3,7 @@ const express = require('express');
 const router = express.Router();
 const accounting = require('../modules/accounting');
 const { db } = require('../db');
+const TenantDB = require('../tenant-db');
 const { requireAuth, requireBusiness, logAudit } = require('../auth');
 
 router.use(requireAuth, requireBusiness);
@@ -105,7 +106,8 @@ router.post('/transactions/batch-delete', (req, res) => {
   const { ids } = req.body;
   if (!Array.isArray(ids) || !ids.length) return res.status(400).json({ error: 'ids array required' });
   const placeholders = ids.map(() => '?').join(',');
-  const result = db.prepare(`DELETE FROM journal_entries WHERE id IN (${placeholders}) AND business_id = ?`).run(...ids, req.businessId);
+  const tdb = new TenantDB(req.businessId);
+  const result = tdb.prepare(`DELETE FROM journal_entries WHERE id IN (${placeholders}) AND business_id = ?`).run(...ids, req.businessId);
   logAudit(req.businessId, req.user.id, 'transaction.batch_delete', { count: result.changes });
   res.json({ deleted: result.changes });
 });
@@ -115,9 +117,10 @@ router.post('/accounts/batch-delete', (req, res) => {
   if (!Array.isArray(ids) || !ids.length) return res.status(400).json({ error: 'ids array required' });
   // Check none of the accounts have journal lines
   const idPlaceholders = ids.map(() => '?').join(',');
-  const blocked = db.prepare(`SELECT COUNT(*) AS cnt FROM journal_lines WHERE account_id IN (${idPlaceholders})`).get(...ids);
+  const tdb = new TenantDB(req.businessId);
+  const blocked = tdb.prepare(`SELECT COUNT(*) AS cnt FROM journal_lines WHERE account_id IN (${idPlaceholders})`).get(...ids);
   if (blocked.cnt > 0) return res.status(400).json({ error: 'One or more accounts have journal lines. Remove transactions first.' });
-  const result = db.prepare(`DELETE FROM accounts WHERE id IN (${idPlaceholders}) AND business_id = ?`).run(...ids, req.businessId);
+  const result = tdb.prepare(`DELETE FROM accounts WHERE id IN (${idPlaceholders}) AND business_id = ?`).run(...ids, req.businessId);
   logAudit(req.businessId, req.user.id, 'account.batch_delete', { count: result.changes });
   res.json({ deleted: result.changes });
 });

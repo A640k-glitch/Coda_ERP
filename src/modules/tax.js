@@ -1,6 +1,7 @@
 // Tax module — VAT, WHT, PAYE, CIT, compliance
 const config = require('../config');
 const { db } = require('../db');
+const TenantDB = require('../tenant-db');
 
 function calculateVAT(amount) {
   return +(Number(amount) * config.taxRates.vat).toFixed(2);
@@ -45,20 +46,19 @@ function getPaymentInstructions() {
 }
 
 function generateTaxReport(businessId, period) {
+  const tdb = new TenantDB(businessId);
   // MVP: synthesize from journal activity in the period
   const from = period?.from || new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString();
   const to = period?.to || new Date().toISOString();
 
   // VAT payable: 7.5% of revenue lines in period
-  const revenueAccounts = db
-    .prepare("SELECT id FROM accounts WHERE business_id = ? AND type = 'revenue'")
+  const revenueAccounts = tdb.prepare("SELECT id FROM accounts WHERE business_id = ? AND type = 'revenue'")
     .all(businessId)
     .map(a => a.id);
   let revenue = 0;
   if (revenueAccounts.length) {
     const ph = revenueAccounts.map(() => '?').join(',');
-    const r = db
-      .prepare(
+    const r = tdb.prepare(
         `SELECT COALESCE(SUM(jl.credit - jl.debit), 0) AS total
          FROM journal_lines jl
          JOIN journal_entries je ON je.id = jl.entry_id
@@ -68,10 +68,10 @@ function generateTaxReport(businessId, period) {
       .get(...revenueAccounts, businessId, from, to);
     revenue = r.total;
   }
-  const vatAccount = db.prepare("SELECT id FROM accounts WHERE business_id = ? AND code = '2100'").get(businessId);
+  const vatAccount = tdb.prepare("SELECT id FROM accounts WHERE business_id = ? AND code = '2100'").get(businessId);
   let vatPaid = 0;
   if (vatAccount) {
-    const r = db.prepare(`
+    const r = tdb.prepare(`
       SELECT COALESCE(SUM(jl.debit), 0) AS total
       FROM journal_lines jl
       JOIN journal_entries je ON je.id = jl.entry_id
@@ -83,15 +83,13 @@ function generateTaxReport(businessId, period) {
   const vatPayable = Math.max(0, +(revenue * config.taxRates.vat - vatPaid).toFixed(2));
 
   // CIT: 30% of net profit
-  const expenseAccounts = db
-    .prepare("SELECT id FROM accounts WHERE business_id = ? AND type = 'expense'")
+  const expenseAccounts = tdb.prepare("SELECT id FROM accounts WHERE business_id = ? AND type = 'expense'")
     .all(businessId)
     .map(a => a.id);
   let expenses = 0;
   if (expenseAccounts.length) {
     const ph = expenseAccounts.map(() => '?').join(',');
-    const r = db
-      .prepare(
+    const r = tdb.prepare(
         `SELECT COALESCE(SUM(jl.debit - jl.credit), 0) AS total
          FROM journal_lines jl
          JOIN journal_entries je ON je.id = jl.entry_id
@@ -105,10 +103,10 @@ function generateTaxReport(businessId, period) {
   const cit = +Math.max(0, netProfit * config.taxRates.cit).toFixed(2);
 
   // PAYE payable: credit balance of account 2300 (credits from payroll disburse - debits from tax pay)
-  const payeAccount = db.prepare("SELECT id FROM accounts WHERE business_id = ? AND code = '2300'").get(businessId);
+  const payeAccount = tdb.prepare("SELECT id FROM accounts WHERE business_id = ? AND code = '2300'").get(businessId);
   let payePayable = 0;
   if (payeAccount) {
-    const payeBal = db.prepare(`
+    const payeBal = tdb.prepare(`
       SELECT COALESCE(SUM(jl.credit - jl.debit), 0) AS total
       FROM journal_lines jl
       JOIN journal_entries je ON je.id = jl.entry_id

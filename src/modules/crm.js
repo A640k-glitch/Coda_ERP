@@ -1,11 +1,13 @@
 // CRM module — customers + leads
 const { db } = require('../db');
+const TenantDB = require('../tenant-db');
 const { generateId } = require('../utils');
 
 function addCustomer(businessId, data) {
+  const tdb = new TenantDB(businessId);
   if (!data.name) throw new Error('Customer name is required');
   const id = generateId('cust');
-  db.prepare(
+  tdb.prepare(
     `INSERT INTO customers (business_id, id, name, email, phone, tin, address)
      VALUES (?, ?, ?, ?, ?, ?, ?)`
   ).run(businessId, id, data.name, data.email || null, data.phone || null, data.tin || null, data.address || null);
@@ -13,9 +15,10 @@ function addCustomer(businessId, data) {
 }
 
 function updateCustomer(businessId, id, data) {
+  const tdb = new TenantDB(businessId);
   const existing = getCustomer(businessId, id);
   if (!existing) return null;
-  db.prepare(
+  tdb.prepare(
     `UPDATE customers
      SET name = ?, email = ?, phone = ?, tin = ?, address = ?
      WHERE id = ? AND business_id = ?`
@@ -32,30 +35,33 @@ function updateCustomer(businessId, id, data) {
 }
 
 function getCustomer(businessId, id) {
-  return db.prepare('SELECT * FROM customers WHERE id = ? AND business_id = ?').get(id, businessId);
+  const tdb = new TenantDB(businessId);
+  return tdb.prepare('SELECT * FROM customers WHERE id = ? AND business_id = ?').get(id, businessId);
 }
 
 function listCustomers(businessId, { q, limit = 100, offset = 0 } = {}) {
+  const tdb = new TenantDB(businessId);
   const where = ['business_id = ?'];
   const params = [businessId];
   if (q) {
     where.push('(name LIKE ? OR email LIKE ? OR phone LIKE ?)');
     params.push(`%${q}%`, `%${q}%`, `%${q}%`);
   }
-  return db
-    .prepare(`SELECT * FROM customers WHERE ${where.join(' AND ')} ORDER BY created_at DESC LIMIT ? OFFSET ?`)
+  return tdb.prepare(`SELECT * FROM customers WHERE ${where.join(' AND ')} ORDER BY created_at DESC LIMIT ? OFFSET ?`)
     .all(...params, limit, offset);
 }
 
 function deleteCustomer(businessId, id) {
-  const r = db.prepare('DELETE FROM customers WHERE id = ? AND business_id = ?').run(id, businessId);
+  const tdb = new TenantDB(businessId);
+  const r = tdb.prepare('DELETE FROM customers WHERE id = ? AND business_id = ?').run(id, businessId);
   return r.changes > 0;
 }
 
 function addLead(businessId, data) {
+  const tdb = new TenantDB(businessId);
   if (!data.name) throw new Error('Lead name is required');
   const id = generateId('lead');
-  db.prepare(
+  tdb.prepare(
     `INSERT INTO leads (business_id, id, name, email, phone, source, status, notes)
      VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
   ).run(
@@ -72,9 +78,10 @@ function addLead(businessId, data) {
 }
 
 function updateLead(businessId, id, data) {
+  const tdb = new TenantDB(businessId);
   const existing = getLead(businessId, id);
   if (!existing) return null;
-  db.prepare(
+  tdb.prepare(
     `UPDATE leads SET name = ?, email = ?, phone = ?, source = ?, status = ?, notes = ?, updated_at = datetime('now')
      WHERE id = ? AND business_id = ?`
   ).run(
@@ -91,31 +98,34 @@ function updateLead(businessId, id, data) {
 }
 
 function getLead(businessId, id) {
-  return db.prepare('SELECT * FROM leads WHERE id = ? AND business_id = ?').get(id, businessId);
+  const tdb = new TenantDB(businessId);
+  return tdb.prepare('SELECT * FROM leads WHERE id = ? AND business_id = ?').get(id, businessId);
 }
 
 function listLeads(businessId, { status, limit = 100, offset = 0 } = {}) {
+  const tdb = new TenantDB(businessId);
   const where = ['business_id = ?'];
   const params = [businessId];
   if (status) { where.push('status = ?'); params.push(status); }
-  return db
-    .prepare(`SELECT * FROM leads WHERE ${where.join(' AND ')} ORDER BY created_at DESC LIMIT ? OFFSET ?`)
+  return tdb.prepare(`SELECT * FROM leads WHERE ${where.join(' AND ')} ORDER BY created_at DESC LIMIT ? OFFSET ?`)
     .all(...params, limit, offset);
 }
 
 function deleteLead(businessId, id) {
-  const r = db.prepare('DELETE FROM leads WHERE id = ? AND business_id = ?').run(id, businessId);
+  const tdb = new TenantDB(businessId);
+  const r = tdb.prepare('DELETE FROM leads WHERE id = ? AND business_id = ?').run(id, businessId);
   return r.changes > 0;
 }
 
 function importCustomers(businessId, customersList) {
-  const stmt = db.prepare(
+  const tdb = new TenantDB(businessId);
+  const stmt = tdb.prepare(
     `INSERT INTO customers (business_id, id, name, email, phone, tin, address)
      VALUES (?, ?, ?, ?, ?, ?, ?)`
   );
   
   const inserted = [];
-  const transaction = db.transaction((list) => {
+  const transaction = tdb.transaction((list) => {
     for (const c of list) {
       if (!c.name) continue;
       const id = generateId('cust');

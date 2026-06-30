@@ -8,8 +8,9 @@ const DATA_DIR = path.join(__dirname, '..', 'data');
 if (!fs.existsSync(DATA_DIR)) fs.mkdirSync(DATA_DIR, { recursive: true });
 const DB_PATH = process.env.CODA_DB_PATH || path.join(DATA_DIR, 'coda.db');
 
-const db = new Database(DB_PATH);
+const db = new Database(DB_PATH, { timeout: 5000 });
 db.pragma('journal_mode = WAL');
+db.pragma('synchronous = NORMAL');
 db.pragma('foreign_keys = ON');
 
 function migrate() {

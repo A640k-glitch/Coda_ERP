@@ -4,6 +4,7 @@ const router = express.Router();
 const crypto = require('crypto');
 const rateLimit = require('express-rate-limit');
 const { db, seedAccounts } = require('../db');
+const TenantDB = require('../tenant-db');
 const { generateId, generateApiKey, escapeHtml } = require('../utils');
 const {
   hashPassword, verifyPassword, createSession, destroySession,
@@ -185,7 +186,8 @@ router.post('/logout', requireAuth, (req, res) => {
 
 // GET /api/v1/auth/me
 router.get('/me', requireAuth, (req, res) => {
-  const business = db.prepare('SELECT * FROM businesses WHERE id = ?').get(req.user.business_id);
+  const tdb = new TenantDB(req.user.business_id);
+  const business = tdb.prepare('SELECT * FROM businesses WHERE id = ?').get(req.user.business_id);
   const sub = subscription.getSubscription(req.user.business_id);
   const isAdmin = req.user.email === config.adminEmail;
   res.json({
@@ -238,11 +240,12 @@ router.post('/forgot-password', forgotPasswordLimiter, async (req, res) => {
 // POST /api/v1/auth/delete-account — self-service account deletion
 router.post('/delete-account', requireAuth, async (req, res) => {
   try {
+    const tdb = new TenantDB(req.user.business_id);
     const { password, confirmation } = req.body;
     if (!password) return res.status(400).json({ error: 'Password is required' });
     if (confirmation !== 'DELETE') return res.status(400).json({ error: 'Type DELETE to confirm' });
 
-    const user = db.prepare('SELECT * FROM users WHERE id = ?').get(req.user.id);
+    const user = tdb.prepare('SELECT * FROM users WHERE id = ?').get(req.user.id);
     if (!user) return res.status(404).json({ error: 'User not found' });
 
     // Block suspended/blocked users from self-service deletion
@@ -254,17 +257,17 @@ router.post('/delete-account', requireAuth, async (req, res) => {
     if (!isMatch) return res.status(403).json({ error: 'Incorrect password' });
 
     // Count remaining owners for this business
-    const ownerCount = db.prepare("SELECT COUNT(*) AS c FROM users WHERE business_id = ? AND role = 'owner'").get(user.business_id).c;
+    const ownerCount = tdb.prepare("SELECT COUNT(*) AS c FROM users WHERE business_id = ? AND role = 'owner'").get(user.business_id).c;
     const isLastOwner = ownerCount <= 1 && user.role === 'owner';
 
     if (isLastOwner) {
       // Delete everything — cascade from business
-      db.prepare('DELETE FROM sessions WHERE user_id = ?').run(user.id);
-      db.prepare('DELETE FROM businesses WHERE id = ?').run(user.business_id);
+      tdb.prepare('DELETE FROM sessions WHERE user_id = ?').run(user.id);
+      tdb.prepare('DELETE FROM businesses WHERE id = ?').run(user.business_id);
     } else {
       // Just delete the user (sessions cascade)
-      db.prepare('DELETE FROM sessions WHERE user_id = ?').run(user.id);
-      db.prepare('DELETE FROM users WHERE id = ?').run(user.id);
+      tdb.prepare('DELETE FROM sessions WHERE user_id = ?').run(user.id);
+      tdb.prepare('DELETE FROM users WHERE id = ?').run(user.id);
     }
 
     // Destroy current session and clear cookies
