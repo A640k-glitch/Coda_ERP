@@ -18,7 +18,7 @@ const {
   size: 64,
   ignoredMethods: ['GET', 'HEAD', 'OPTIONS'],
   getTokenFromRequest: (req) => req.headers['x-csrf-token'] || req.body._csrf,
-  getSessionIdentifier: (req) => req.cookies?.coda_sid || req.ip || 'anon',
+  getSessionIdentifier: (req) => req.cookies?.coda_sid || 'anon',
 });
 
 module.exports = {
