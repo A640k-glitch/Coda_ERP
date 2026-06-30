@@ -1517,6 +1517,8 @@ input:checked+.slider:before {
   box-shadow: var(--shadow-sm);
   display: flex;
   flex-direction: column;
+  min-width: 0;
+  min-height: 0;
 }
 
 .chart-canvas-wrap {
@@ -1524,6 +1526,8 @@ input:checked+.slider:before {
   height: 260px;
   width: 100%;
   box-sizing: border-box;
+  min-width: 0;
+  min-height: 0;
 }
 
 .chart-type-toggle {
@@ -3487,6 +3491,8 @@ body.no-scroll .admin-main {
   display: flex;
   flex-direction: column;
   gap: 24px;
+  min-width: 0;
+  min-height: 0;
 }
 
 /* Wallet Card (Coda ERP Tailored) */
