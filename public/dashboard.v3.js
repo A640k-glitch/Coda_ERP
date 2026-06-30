@@ -865,12 +865,12 @@ function escapeHTML(str) {
   let revenueChart, expenseChart;
 
   const expenseChartColors = {
-    '5000': '#475569',
-    '6000': '#1e6b54',
-    '6100': '#64748b',
-    '6200': '#2d8b6e',
-    '6300': '#94a3b8',
-    '6400': '#3d9e80'
+    '5000': '#0369a1', // Steel Blue
+    '6000': '#0f766e', // Dark Teal
+    '6100': '#b45309', // Muted Rust
+    '6200': '#4338ca', // Deep Indigo
+    '6300': '#475569', // Slate Grey
+    '6400': '#be123c'  // Muted Berry
   };
 
   function initCharts() {
@@ -988,10 +988,10 @@ function escapeHTML(str) {
           datasets: [{
             data: [],
             backgroundColor: Object.values(expenseChartColors),
-            borderWidth: 1,
+            borderWidth: 1.5,
             borderColor: '#ffffff',
             cutout: '72%',
-            hoverOffset: 4
+            hoverOffset: 8
           }]
         },
         options: {

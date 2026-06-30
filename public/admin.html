@@ -1612,7 +1612,7 @@
             type: 'doughnut',
             data: {
               labels: tiers.map(t => t.tier || 'unknown'),
-              datasets: [{ data: tiers.map(t => t.count), backgroundColor: [colors.primary, colors.secondary, colors.tertiary], borderWidth: 1, borderColor: '#ffffff', cutout: '68%', hoverOffset: 4 }]
+              datasets: [{ data: tiers.map(t => t.count), backgroundColor: ['#0369a1', '#0f766e', '#b45309', '#4338ca'], borderWidth: 1.5, borderColor: '#ffffff', cutout: '68%', hoverOffset: 8 }]
             },
             options: {
               responsive: true, maintainAspectRatio: false,
@@ -1632,7 +1632,7 @@
             type: 'bar',
             data: {
               labels: tiers.map(t => t.tier || 'unknown'),
-              datasets: [{ label: 'Revenue', data: tiers.map(t => t.total), backgroundColor: [colors.primary, colors.secondary, colors.tertiary], borderRadius: 2, barThickness: 24 }]
+              datasets: [{ label: 'Revenue', data: tiers.map(t => t.total), backgroundColor: ['#0369a1', '#0f766e', '#b45309', '#4338ca'], borderRadius: 2, barThickness: 24 }]
             },
             options: {
               responsive: true, maintainAspectRatio: false,
