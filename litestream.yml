@@ -1,0 +1,11 @@
+# Litestream configuration for Coda ERP SQLite database replication
+# Env variables will be injected by the hosting provider (e.g. Render) at runtime.
+dbs:
+  - path: /app/data/coda.db
+    replicas:
+      - type: s3
+        name: r2
+        bucket: ${LITESTREAM_BUCKET}
+        endpoint: ${LITESTREAM_ENDPOINT}
+        access-key-id: ${LITESTREAM_ACCESS_KEY_ID}
+        secret-access-key: ${LITESTREAM_SECRET_ACCESS_KEY}

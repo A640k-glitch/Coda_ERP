@@ -501,19 +501,7 @@
       border-left: 3px solid var(--teal-500);
     }
 
-    /* Integrations Form Grid layout & mobile responsiveness */
-    #integrationsForm {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 24px;
-    }
-
-    @media (max-width: 600px) {
-      #integrationsForm {
-        grid-template-columns: 1fr;
-        gap: 16px;
-      }
-    }
+    
 
     /* Admin Tabs Scroll Wrapper with fading cue shadow */
     .admin-tabs-scroll-wrap {
@@ -607,10 +595,6 @@
             <button class="nav-item" data-tab="requests">
               <span class="material-symbols-outlined">notifications</span>
               <span>Requests</span>
-            </button>
-            <button class="nav-item" data-tab="integrations">
-              <span class="material-symbols-outlined">extension</span>
-              <span>Integrations</span>
             </button>
           </div>
           <div class="nav-section">
@@ -718,7 +702,6 @@
             <button class="admin-tab" data-tab="requests">Requests</button>
             <button class="admin-tab" data-tab="analytics">Analytics</button>
             <button class="admin-tab" data-tab="audit">Audit Log</button>
-            <button class="admin-tab" data-tab="integrations">Integrations</button>
           </div>
         </div>
 
@@ -890,55 +873,7 @@
           </div>
         </div>
 
-        <!-- Integrations Panel -->
-        <div class="admin-panel" id="panel-integrations">
-          <div class="chart-row">
-            <div class="chart-card" style="grid-column: 1 / -1;">
-              <h3 style="margin-bottom: 8px;">Platform API Keys</h3>
-              <p style="color: var(--text-secondary); font-size: 13px; margin-bottom: 24px;">Configure the live
-                environment variables for external integrations. Changes are saved securely to the backend
-                <code>.env</code> file. Do not expose these to clients.</p>
 
-              <div id="integrationsFormWrapper">
-                <form id="integrationsForm">
-                  <div class="form-group">
-                    <label class="form-label" for="env-mono">Mono API Key (Bank Sync)</label>
-                    <input class="form-control" type="password" id="env-mono" name="MONO_SECRET_KEY"
-                      placeholder="sk_live_...">
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label" for="env-paystack">Paystack Secret Key (Payments)</label>
-                    <input class="form-control" type="password" id="env-paystack" name="PAYSTACK_SECRET_KEY"
-                      placeholder="sk_live_...">
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label" for="env-qoreid">QoreID API Key (CAC Verify)</label>
-                    <input class="form-control" type="password" id="env-qoreid" name="QOREID_SECRET_KEY"
-                      placeholder="...">
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label" for="env-firs">FIRS TaxPromax API Key</label>
-                    <input class="form-control" type="password" id="env-firs" name="FIRS_API_KEY" placeholder="...">
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label" for="env-termii">Termii API Key (SMS)</label>
-                    <input class="form-control" type="password" id="env-termii" name="TERMII_API_KEY" placeholder="...">
-                  </div>
-                  <div class="form-group">
-                    <label class="form-label" for="env-sendgrid">SendGrid API Key (Email)</label>
-                    <input class="form-control" type="password" id="env-sendgrid" name="SENDGRID_API_KEY"
-                      placeholder="SG....">
-                  </div>
-                  <div class="form-group" style="grid-column: 1 / -1;">
-                    <button type="submit" class="btn btn-primary btn-interactive" id="btnSaveEnv">
-                      <span class="material-symbols-outlined" style="font-size: 16px;">save</span> Save Configuration
-                    </button>
-                  </div>
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
 
       </div>
     </div>
@@ -1862,54 +1797,7 @@
           });
         }
       });
-      async function loadIntegrations() {
-        const res = await fetchWithAuth('/api/v1/admin/config/env');
-        if (res && res.success && res.data) {
-          for (const [key, val] of Object.entries(res.data)) {
-            const el = document.querySelector(`input[name="${key}"]`);
-            if (el) el.value = val; // val will be masked, e.g. "sk_live_****abcd"
-          }
-        }
-      }
 
-      document.getElementById('integrationsForm')?.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const btn = document.getElementById('btnSaveEnv');
-        btn.disabled = true;
-        btn.innerHTML = 'Saving...';
-
-        const formData = new FormData(e.target);
-        const payload = Object.fromEntries(formData.entries());
-
-        try {
-          const res = await fetch('/api/v1/admin/config/env', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(payload)
-          });
-          const data = await res.json();
-          if (res.ok && data.success) {
-            showToast('Integrations Saved', 'Environment variables updated securely.', 'success');
-          } else {
-            showToast('Error', data.error || 'Failed to save configuration.', 'error');
-          }
-        } catch (err) {
-          showToast('Error', err.message, 'error');
-        } finally {
-          btn.disabled = false;
-          btn.innerHTML = '<span class="material-symbols-outlined" style="font-size: 16px;">save</span> Save Configuration';
-        }
-      });
-
-      // Also intercept the switchTab for integrations
-      document.querySelectorAll('.admin-tab').forEach(tab => {
-        tab.addEventListener('click', () => {
-          const t = tab.dataset.tab;
-          if (t === 'integrations') loadIntegrations();
-        });
-      });
 
     })();
   </script>
