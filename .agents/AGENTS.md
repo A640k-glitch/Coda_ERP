@@ -1,0 +1,2 @@
+# Server Control Rule
+Never start local servers automatically or attempt to control ports. The user prefers to manually start and stop development servers themselves to avoid "port already in use" errors. If a task requires starting a server for verification, explicitly ask the user for permission first. If granted permission, ensure the server process is forcefully killed upon completion so it does not interfere with their manual control.
