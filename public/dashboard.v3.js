@@ -979,6 +979,21 @@ function escapeHTML(str) {
         }
       });
     }
+
+    // Dynamic resize observer to prevent chart cutoff on browser zoom or screen resize
+    if (typeof ResizeObserver !== 'undefined') {
+      const resizeObserver = new ResizeObserver(() => {
+        if (typeof revenueChart !== 'undefined' && revenueChart) {
+          revenueChart.resize();
+        }
+        if (typeof expenseChart !== 'undefined' && expenseChart) {
+          expenseChart.resize();
+        }
+      });
+      document.querySelectorAll('.chart-canvas-wrap').forEach(container => {
+        resizeObserver.observe(container);
+      });
+    }
   }
 
   async function renderTransactions() {
