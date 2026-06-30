@@ -1556,7 +1556,8 @@
         const signupData = signupDataRes;
         const revenueData = revenueDataRes;
 
-        const colors = { green: '#0d9488', copper: '#d97706', bgLight: '#f1f5f9', border: '#e2e8f0' };
+        const colors = { primary: '#334155', secondary: '#0f766e', tertiary: '#64748b', grid: '#f1f5f9', gridDash: [4, 4], tick: '#94a3b8' };
+        const tooltipStyle = { backgroundColor: '#1e293b', titleColor: '#f8fafc', bodyColor: '#cbd5e1', borderColor: '#334155', borderWidth: 1, cornerRadius: 6, padding: 10, titleFont: { size: 12, weight: '600' }, bodyFont: { size: 11 } };
 
         if (signupsChart) signupsChart.destroy();
         const sCtx = document.getElementById('signupsChart')?.getContext('2d');
@@ -1565,14 +1566,14 @@
             type: 'bar',
             data: {
               labels: signupData.signups.labels,
-              datasets: [{ label: 'Signups', data: signupData.signups.values, backgroundColor: colors.green, borderRadius: 4 }]
+              datasets: [{ label: 'Signups', data: signupData.signups.values, backgroundColor: colors.primary, borderRadius: 2, barThickness: 16 }]
             },
             options: {
               responsive: true, maintainAspectRatio: false,
-              plugins: { legend: { display: false } },
+              plugins: { legend: { display: false }, tooltip: tooltipStyle },
               scales: {
-                x: { grid: { display: false } },
-                y: { grid: { color: colors.border }, beginAtZero: true }
+                x: { grid: { display: false }, ticks: { color: colors.tick, font: { size: 11 } } },
+                y: { grid: { color: colors.grid, borderDash: colors.gridDash }, ticks: { color: colors.tick, font: { size: 11 } }, beginAtZero: true }
               }
             }
           });
@@ -1587,16 +1588,17 @@
               labels: revenueData.revenueTrend.labels,
               datasets: [{
                 label: 'Revenue', data: revenueData.revenueTrend.values,
-                borderColor: colors.copper, backgroundColor: 'rgba(217,119,6,0.08)',
-                fill: true, tension: 0.4, pointRadius: 0, pointHoverRadius: 6
+                borderColor: colors.primary, backgroundColor: 'transparent',
+                fill: false, tension: 0, pointRadius: 2, pointHoverRadius: 4, borderWidth: 1.5,
+                pointBackgroundColor: '#fff', pointBorderColor: colors.primary
               }]
             },
             options: {
               responsive: true, maintainAspectRatio: false,
-              plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => formatCurrency(ctx.raw) } } },
+              plugins: { legend: { display: false }, tooltip: { ...tooltipStyle, callbacks: { label: ctx => formatCurrency(ctx.raw) } } },
               scales: {
-                x: { grid: { display: false } },
-                y: { grid: { color: colors.border }, ticks: { callback: v => (typeof getActiveCurrencySymbol === 'function' ? getActiveCurrencySymbol() : '₦') + (v / 1000).toFixed(0) + 'k' }, beginAtZero: true }
+                x: { grid: { display: false }, ticks: { color: colors.tick, font: { size: 11 } } },
+                y: { grid: { color: colors.grid, borderDash: colors.gridDash }, ticks: { color: colors.tick, font: { size: 11 }, callback: v => (typeof getActiveCurrencySymbol === 'function' ? getActiveCurrencySymbol() : '₦') + (v / 1000).toFixed(0) + 'k' }, beginAtZero: true }
               }
             }
           });
@@ -1610,11 +1612,14 @@
             type: 'doughnut',
             data: {
               labels: tiers.map(t => t.tier || 'unknown'),
-              datasets: [{ data: tiers.map(t => t.count), backgroundColor: ['#0d9488', '#d97706', '#0f172a'], borderWidth: 0, cutout: '65%' }]
+              datasets: [{ data: tiers.map(t => t.count), backgroundColor: [colors.primary, colors.secondary, colors.tertiary], borderWidth: 1, borderColor: '#ffffff', cutout: '68%', hoverOffset: 4 }]
             },
             options: {
               responsive: true, maintainAspectRatio: false,
-              plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, pointStyle: 'circle', padding: 16 } } }
+              plugins: {
+                legend: { position: 'bottom', labels: { usePointStyle: true, pointStyle: 'circle', padding: 16, font: { size: 11, weight: '500' }, color: '#64748b' } },
+                tooltip: tooltipStyle
+              }
             }
           });
         }
@@ -1627,14 +1632,14 @@
             type: 'bar',
             data: {
               labels: tiers.map(t => t.tier || 'unknown'),
-              datasets: [{ label: 'Revenue', data: tiers.map(t => t.total), backgroundColor: ['#0d9488', '#d97706', '#0f172a'], borderRadius: 4 }]
+              datasets: [{ label: 'Revenue', data: tiers.map(t => t.total), backgroundColor: [colors.primary, colors.secondary, colors.tertiary], borderRadius: 2, barThickness: 24 }]
             },
             options: {
               responsive: true, maintainAspectRatio: false,
-              plugins: { legend: { display: false }, tooltip: { callbacks: { label: ctx => formatCurrency(ctx.raw) } } },
+              plugins: { legend: { display: false }, tooltip: { ...tooltipStyle, callbacks: { label: ctx => formatCurrency(ctx.raw) } } },
               scales: {
-                x: { grid: { display: false } },
-                y: { grid: { color: colors.border }, ticks: { callback: v => (typeof getActiveCurrencySymbol === 'function' ? getActiveCurrencySymbol() : '₦') + (v / 1000).toFixed(0) + 'k' }, beginAtZero: true }
+                x: { grid: { display: false }, ticks: { color: colors.tick, font: { size: 11 } } },
+                y: { grid: { color: colors.grid, borderDash: colors.gridDash }, ticks: { color: colors.tick, font: { size: 11 }, callback: v => (typeof getActiveCurrencySymbol === 'function' ? getActiveCurrencySymbol() : '₦') + (v / 1000).toFixed(0) + 'k' }, beginAtZero: true }
               }
             }
           });

@@ -865,21 +865,21 @@ function escapeHTML(str) {
   let revenueChart, expenseChart;
 
   const expenseChartColors = {
-    '5000': '#7C3AED',
-    '6000': '#2A8566',
-    '6100': '#B8652E',
-    '6200': '#34A87A',
-    '6300': '#D4A85D',
-    '6400': '#60C89A'
+    '5000': '#475569',
+    '6000': '#1e6b54',
+    '6100': '#64748b',
+    '6200': '#2d8b6e',
+    '6300': '#94a3b8',
+    '6400': '#3d9e80'
   };
 
   function initCharts() {
     const chartColors = {
-      primary: '#2A8566',
-      copper: '#B8652E',
-      green50: '#E8F5F0',
-      copper50: '#FDF2E8',
-      border: '#E8ECEA'
+      primary: '#334155',
+      secondary: '#0f766e',
+      grid: '#f1f5f9',
+      gridDash: [4, 4],
+      tick: '#94a3b8'
     };
 
     // Revenue Chart (Line or Bar) — initialise empty, real data loaded via updateChartsData
@@ -896,37 +896,49 @@ function escapeHTML(str) {
             label: 'Revenue',
             data: [],
             borderColor: chartColors.primary,
-            backgroundColor: isBar ? chartColors.primary : 'rgba(42,133,102,0.12)',
-            fill: true,
-            tension: 0.4,
-            pointRadius: 0,
-            pointHoverRadius: 6,
-            pointBackgroundColor: chartColors.primary,
-            pointBorderColor: '#fff',
-            pointBorderWidth: 2,
-            pointHoverBorderWidth: 3,
-            borderRadius: isBar ? 6 : 0,
-            barThickness: isBar ? 28 : undefined
+            backgroundColor: isBar ? chartColors.primary : 'transparent',
+            fill: false,
+            tension: 0,
+            pointRadius: 2,
+            pointHoverRadius: 4,
+            pointBackgroundColor: '#fff',
+            pointBorderColor: chartColors.primary,
+            pointBorderWidth: 1.5,
+            pointHoverBorderWidth: 2,
+            borderRadius: isBar ? 2 : 0,
+            barThickness: isBar ? 16 : undefined
           }]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          plugins: { legend: { display: false }, tooltip: { mode: 'index', intersect: false } },
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              mode: 'index', intersect: false,
+              backgroundColor: '#1e293b', titleColor: '#f8fafc', bodyColor: '#cbd5e1',
+              borderColor: '#334155', borderWidth: 1, cornerRadius: 6,
+              padding: 10, titleFont: { size: 12, weight: '600' }, bodyFont: { size: 11 }
+            }
+          },
           scales: {
-            x: { 
-              grid: { display: false }, 
-              ticks: { color: '#9CA3AF' },
+            x: {
+              grid: { display: false },
+              ticks: { color: chartColors.tick, font: { size: 11 } },
               offset: isBar
             },
-            y: { grid: { color: chartColors.border }, ticks: { color: '#9CA3AF', callback: v => {
-              const symbol = typeof getActiveCurrencySymbol === 'function' ? getActiveCurrencySymbol() : '₦';
-              const code = typeof getActiveCurrency === 'function' ? getActiveCurrency() : 'NGN';
-              const suffix = code === 'NGN' ? 'M' : 'K';
-              return symbol + (v/1).toFixed(1) + suffix;
-            } }, beginAtZero: true }
+            y: {
+              grid: { color: chartColors.grid, borderDash: chartColors.gridDash },
+              ticks: { color: chartColors.tick, font: { size: 11 }, callback: v => {
+                const symbol = typeof getActiveCurrencySymbol === 'function' ? getActiveCurrencySymbol() : '₦';
+                const code = typeof getActiveCurrency === 'function' ? getActiveCurrency() : 'NGN';
+                const suffix = code === 'NGN' ? 'M' : 'K';
+                return symbol + (v/1).toFixed(1) + suffix;
+              } },
+              beginAtZero: true
+            }
           },
-          elements: { line: { borderWidth: 3 } }
+          elements: { line: { borderWidth: 1.5 } }
         }
       });
     }
@@ -945,7 +957,8 @@ function escapeHTML(str) {
         btnChartBar.classList.remove('active');
         localStorage.setItem('revenueChartPref', 'line');
         revenueChart.config.type = 'line';
-        revenueChart.data.datasets[0].backgroundColor = 'rgba(42,133,102,0.12)';
+        revenueChart.data.datasets[0].backgroundColor = 'transparent';
+        revenueChart.data.datasets[0].fill = false;
         delete revenueChart.data.datasets[0].barThickness;
         if (revenueChart.options.scales.x) revenueChart.options.scales.x.offset = false;
         revenueChart.update();
@@ -955,9 +968,10 @@ function escapeHTML(str) {
         btnChartLine.classList.remove('active');
         localStorage.setItem('revenueChartPref', 'bar');
         revenueChart.config.type = 'bar';
-        revenueChart.data.datasets[0].backgroundColor = chartColors.primary;
-        revenueChart.data.datasets[0].borderRadius = 6;
-        revenueChart.data.datasets[0].barThickness = 28; // Slimmer, uniform bars
+        revenueChart.data.datasets[0].backgroundColor = '#334155';
+        revenueChart.data.datasets[0].fill = true;
+        revenueChart.data.datasets[0].borderRadius = 2;
+        revenueChart.data.datasets[0].barThickness = 16;
         if (revenueChart.options.scales.x) revenueChart.options.scales.x.offset = true;
         revenueChart.update();
       });
@@ -974,14 +988,29 @@ function escapeHTML(str) {
           datasets: [{
             data: [],
             backgroundColor: Object.values(expenseChartColors),
-            borderWidth: 0,
-            cutout: '70%'
+            borderWidth: 1,
+            borderColor: '#ffffff',
+            cutout: '72%',
+            hoverOffset: 4
           }]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          plugins: { legend: { position: 'bottom', labels: { usePointStyle: true, pointStyle: 'circle', padding: 20, font: { size: 12, family: 'Inter' }, color: '#4B5563' } }, tooltip: { callbacks: { label: ctx => ctx.label + ': ' + formatCurrency(ctx.raw) } } }
+          plugins: {
+            legend: {
+              position: 'bottom',
+              labels: {
+                usePointStyle: true, pointStyle: 'circle', padding: 16,
+                font: { size: 11, family: 'Inter', weight: '500' }, color: '#64748b'
+              }
+            },
+            tooltip: {
+              backgroundColor: '#1e293b', titleColor: '#f8fafc', bodyColor: '#cbd5e1',
+              borderColor: '#334155', borderWidth: 1, cornerRadius: 6,
+              padding: 10, callbacks: { label: ctx => ctx.label + ': ' + formatCurrency(ctx.raw) }
+            }
+          }
         }
       });
     }
