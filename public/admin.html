@@ -803,7 +803,7 @@
                 <tr>
                   <th>Request Title</th>
                   <th>Message</th>
-                  <th>Date</th>
+                  <th>Submitted</th>
                   <th style="width:160px;">Actions</th>
                 </tr>
               </thead>
@@ -938,6 +938,12 @@
 
       function formatDate(d) {
         return new Date(d).toLocaleDateString('en-NG', { day: '2-digit', month: 'short', year: 'numeric' });
+      }
+
+      function formatDateTime(d) {
+        const dt = new Date(d);
+        return dt.toLocaleDateString('en-NG', { day: '2-digit', month: 'short', year: 'numeric' })
+          + ', ' + dt.toLocaleTimeString('en-NG', { hour: '2-digit', minute: '2-digit', hour12: true });
       }
 
       let csrfToken = '';
@@ -1313,7 +1319,7 @@
           return `<tr data-id="${n.id}" style="${readStyle}">
             <td>${escapeHTML(n.title)}</td>
             <td>${escapeHTML(n.message)}</td>
-            <td style="white-space:nowrap;">${formatDate(n.created_at)}</td>
+            <td style="white-space:nowrap;">${formatDateTime(n.created_at)}</td>
             <td><div style="display:flex; gap:4px; flex-wrap:nowrap; align-items:center;">${actionBtn}</div></td>
           </tr>`;
         }).join('');
@@ -1328,7 +1334,7 @@
         }
         panelList.innerHTML = currentNotifications.map(n => {
           const isRead = n.is_read === 1;
-          const timeStr = formatDate(n.created_at);
+          const timeStr = formatDateTime(n.created_at);
           const type = n.type || 'info';
           const iconColor = type === 'error' ? 'var(--error)' : type === 'warning' ? 'var(--warning)' : type === 'success' ? 'var(--success)' : 'var(--teal-500)';
           const iconName = type === 'success' ? 'check_circle' : type === 'error' ? 'error' : type === 'warning' ? 'warning' : 'info';
@@ -1506,7 +1512,7 @@
             <option value="professional" ${bTier === 'professional' ? 'selected' : ''}>Professional</option>
             <option value="enterprise" ${bTier === 'enterprise' ? 'selected' : ''}>Enterprise</option>
           </select>`;
-          return '<tr><td>' + (u.name || '-') + '</td><td class="email-cell" title="' + u.email + '">' + u.email + '</td><td>' + (u.business_name || '-') + '</td><td>' + u.role + '</td><td>' + upgradeSelect + '</td><td><span class="badge ' + statusClass + '">' + status.toUpperCase() + '</span></td><td>' + formatDate(u.created_at) + '</td><td style="white-space:nowrap;">' + actBtn + '<button class="btn btn-xs btn-danger" onclick="adminDeleteUser(\'' + u.id + '\')" style="margin-left:4px;">Delete</button></td></tr>';
+          return '<tr><td>' + (u.name || '-') + '</td><td class="email-cell" title="' + u.email + '">' + u.email + '</td><td>' + (u.business_name || '-') + '</td><td>' + u.role + '</td><td>' + upgradeSelect + '</td><td><span class="badge ' + statusClass + '">' + status.toUpperCase() + '</span></td><td style="white-space:nowrap;">' + formatDateTime(u.created_at) + '</td><td style="white-space:nowrap;">' + actBtn + '<button class="btn btn-xs btn-danger" onclick="adminDeleteUser(\'' + u.id + '\')" style="margin-left:4px;">Delete</button></td></tr>';
         }).join('');
         const p = data.pagination;
         document.getElementById('usersPagination').style.display = 'flex';
@@ -1528,7 +1534,7 @@
         }
         tbody.innerHTML = data.businesses.map(b => {
           const statusClass = b.subscription_status === 'active' || b.subscription_status === 'paid' ? 'badge-active' : b.subscription_status === 'trial' ? 'badge-trial' : 'badge-inactive';
-          return '<tr><td><strong>' + b.name + '</strong></td><td>' + (b.tier || '-') + '</td><td><span class="badge ' + statusClass + '">' + b.subscription_status + '</span></td><td>' + b.user_count + '</td><td>' + b.payment_count + '</td><td>' + formatDate(b.created_at) + '</td></tr>';
+          return '<tr><td><strong>' + b.name + '</strong></td><td>' + (b.tier || '-') + '</td><td><span class="badge ' + statusClass + '">' + b.subscription_status + '</span></td><td>' + b.user_count + '</td><td>' + b.payment_count + '</td><td style="white-space:nowrap;">' + formatDateTime(b.created_at) + '</td></tr>';
         }).join('');
         const p = data.pagination;
         document.getElementById('businessesPagination').style.display = 'flex';
@@ -1647,7 +1653,7 @@
         tbody.innerHTML = data.entries.map(e => {
           let details = '';
           try { const d = JSON.parse(e.details); details = Object.values(d).join(', '); } catch (_) { details = e.details || ''; }
-          return '<tr><td><code style="background:var(--slate-100);padding:2px 8px;border-radius:4px;font-size:11px;">' + e.action + '</code></td><td class="email-cell" title="' + (e.user_email || '') + '">' + (e.user_name || e.user_email || '-') + '</td><td>' + (e.business_name || '-') + '</td><td style="max-width:250px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="' + details + '">' + details + '</td><td>' + formatDate(e.created_at) + '</td></tr>';
+          return '<tr><td><code style="background:var(--slate-100);padding:2px 8px;border-radius:4px;font-size:11px;">' + e.action + '</code></td><td class="email-cell" title="' + (e.user_email || '') + '">' + (e.user_name || e.user_email || '-') + '</td><td>' + (e.business_name || '-') + '</td><td style="max-width:250px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;" title="' + details + '">' + details + '</td><td style="white-space:nowrap;">' + formatDateTime(e.created_at) + '</td></tr>';
         }).join('');
         const p = data.pagination;
         document.getElementById('auditPagination').style.display = 'flex';

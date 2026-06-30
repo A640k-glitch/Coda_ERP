@@ -87,6 +87,12 @@ function escapeHTML(str) {
     return d.toLocaleDateString('en-NG', { day: '2-digit', month: 'short', year: 'numeric' });
   }
 
+  function formatDateTime(dateStr) {
+    const d = new Date(dateStr);
+    return d.toLocaleDateString('en-NG', { day: '2-digit', month: 'short', year: 'numeric' })
+      + ', ' + d.toLocaleTimeString('en-NG', { hour: '2-digit', minute: '2-digit', hour12: true });
+  }
+
   function transactionTotal(tx) {
     return (tx.lines || []).reduce((sum, line) => sum + Number(line.debit || 0), 0);
   }
@@ -1022,7 +1028,7 @@ function escapeHTML(str) {
         return `
           <tr data-id="${t.id}" data-idx="${i}">
             <td class="checkbox-col"><input type="checkbox" class="row-select" value="${t.id}" onclick="updateBatchActionBar()"></td>
-            <td>${formatDate(t.date)}</td>
+            <td>${formatDateTime(t.date)}</td>
             <td>${escapeHTML(t.description || 'Journal Entry')}</td>
             <td>${escapeHTML(t.type || 'Journal')}</td>
             <td class="amount positive" style="text-align: right;">${formatCurrency(total)}</td>
@@ -1055,7 +1061,7 @@ function escapeHTML(str) {
               <div class="act-icon ${iconCls}"><span class="material-symbols-outlined">${iconName}</span></div>
               <div class="act-details">
                 <span class="act-title">${escapeHTML(t.description || 'Journal Entry')}</span>
-                <span class="act-date">${formatDate(t.date)}</span>
+                <span class="act-date">${formatDateTime(t.date)}</span>
               </div>
             </div>
             <div class="act-right">
@@ -1346,7 +1352,7 @@ function escapeHTML(str) {
     }
     
     container.innerHTML = notificationsData.map(n => {
-      const timeStr = typeof formatDate === 'function' ? formatDate(n.created_at) : new Date(n.created_at).toLocaleString();
+      const timeStr = typeof formatDateTime === 'function' ? formatDateTime(n.created_at) : new Date(n.created_at).toLocaleString();
       const toggleIcon = n.is_read ? 'undo' : 'check_circle';
       const toggleTitle = n.is_read ? 'Keep Unread' : 'Done / Mark as Read';
       const toggleColor = n.is_read ? 'rgba(255,255,255,0.4)' : 'var(--success)';
@@ -1659,6 +1665,12 @@ function escapeHTML(str) {
     const fieldsEl = document.getElementById('actionModalFields');
     const form = document.getElementById('actionModalForm');
     
+    // Reset submit button styles (prevents red button leak from delete account flow)
+    const submitBtn = document.getElementById('actionModalSubmit');
+    submitBtn.textContent = 'Save';
+    submitBtn.style.background = '';
+    submitBtn.style.borderColor = '';
+    
     titleEl.textContent = title;
     fieldsEl.innerHTML = fields.map(f => {
       if (f.type === 'select') {
@@ -1733,6 +1745,11 @@ function escapeHTML(str) {
       if (confirmModal && confirmModal.style.display !== 'none') {
         confirmModal.style.display = 'none';
         document.body.classList.remove('no-scroll');
+        // Clean up stale onclick handlers from confirmDelete / batchDeleteSelected
+        const okBtn = document.getElementById('confirmDeleteOk');
+        const cancelBtn = document.getElementById('confirmDeleteCancel');
+        if (okBtn) { okBtn.onclick = null; okBtn.disabled = false; okBtn.textContent = 'Delete'; }
+        if (cancelBtn) cancelBtn.onclick = null;
       }
       if (typeof closeAllPanels === 'function') {
         closeAllPanels();
@@ -2008,7 +2025,7 @@ function escapeHTML(str) {
               <tr>
                 <td><code>${escapeHTML(po.id)}</code></td>
                 <td style="font-weight: 500; color: var(--text-primary);">${supplierName}</td>
-                <td>${formatDate(po.date)}</td>
+                <td>${formatDateTime(po.date)}</td>
                 <td style="text-align: right; font-weight: 700; color: var(--text-primary);">${formatCurrency(po.amount)}</td>
                 <td><span class="status-badge status-active">Ordered</span></td>
               </tr>
@@ -2063,7 +2080,7 @@ function escapeHTML(str) {
           <td>${escapeHTML(c.email || 'N/A')}</td>
           <td>${escapeHTML(c.phone || 'N/A')}</td>
           <td>${escapeHTML(c.tin || 'N/A')}</td>
-          <td>${formatDate(c.created_at)}</td>
+          <td>${formatDateTime(c.created_at)}</td>
           <td class="actions-col">
             <button class="btn-icon btn-edit" title="Edit">
               <span class="material-symbols-outlined">edit</span>

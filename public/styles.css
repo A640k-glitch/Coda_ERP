@@ -3754,80 +3754,66 @@ body.no-scroll .admin-main {
 
 /* Premium KPI Summary Cards */
 .premium-kpi-card {
-  background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
-  border: 1px solid rgba(226, 232, 240, 0.8);
-  border-radius: var(--radius-lg, 12px);
-  padding: 20px;
-  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 12px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  position: relative;
-  overflow: hidden;
+  background: rgba(255, 255, 255, 0.8) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(226, 232, 240, 0.8) !important;
+  border-radius: var(--radius-lg, 12px) !important;
+  padding: 20px !important;
+  box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.03), 0 2px 4px -1px rgba(15, 23, 42, 0.02) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  position: relative !important;
+  overflow: hidden !important;
 }
 
 .premium-kpi-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
-  border-color: rgba(20, 184, 166, 0.3); /* Subtle teal glow on hover */
+  transform: translateY(-2px) !important;
+  box-shadow: 0 12px 20px -8px rgba(15, 23, 42, 0.08), 0 4px 6px -2px rgba(15, 23, 42, 0.03) !important;
+  border-color: rgba(15, 23, 42, 0.15) !important;
 }
 
-/* Subtle top gradient accent line for premium look */
-.premium-kpi-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 3px;
-  background: linear-gradient(90deg, var(--teal-500, #14b8a6) 0%, var(--emerald-500, #10b981) 100%);
-  opacity: 0.8;
-}
-
-/* Specific colors per card */
-.premium-kpi-card:nth-child(1)::before {
-  background: linear-gradient(90deg, #b8652e 0%, #d4a85d 100%); /* Copper for Unreconciled */
-}
-.premium-kpi-card:nth-child(2)::before {
-  background: linear-gradient(90deg, #10b981 0%, #34a87a 100%); /* Green for Reconciled */
-}
-.premium-kpi-card:nth-child(3)::before {
-  background: linear-gradient(90deg, #6366f1 0%, #8b5cf6 100%); /* Purple for Ledger */
-}
+/* Subtle top gradient accent line disabled for clean glassmorphic option */
+.premium-kpi-card::before,
+.premium-kpi-card:nth-child(1)::before,
+.premium-kpi-card:nth-child(2)::before,
+.premium-kpi-card:nth-child(3)::before,
 .premium-kpi-card:nth-child(4)::before {
-  background: linear-gradient(90deg, #06b6d4 0%, #0d9488 100%); /* Teal/Cyan for Match Rate */
+  display: none !important;
 }
 
 .premium-kpi-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  width: 100%;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  width: 100% !important;
 }
 
 .premium-kpi-title {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--slate-500, #64748b);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  color: var(--slate-500, #64748b) !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
 }
 
 .premium-kpi-val {
-  font-size: 28px;
-  font-weight: 800;
+  font-size: 26px !important;
+  font-weight: 800 !important;
   color: var(--slate-900, #0f172a);
-  line-height: 1.1;
-  letter-spacing: -0.02em;
-  margin-top: 4px;
+  line-height: 1.2 !important;
+  letter-spacing: -0.02em !important;
+  margin-top: 4px !important;
+  font-variant-numeric: tabular-nums !important;
 }
 
 .premium-kpi-meta {
-  font-size: 12px;
-  color: var(--slate-400, #94a3b8);
-  font-weight: 500;
+  font-size: 13px !important;
+  color: var(--slate-400, #94a3b8) !important;
+  font-weight: 500 !important;
 }
 
 /* Password visibility toggle styling */
@@ -4613,87 +4599,90 @@ body.no-scroll .admin-main {
 }
 
 .ledger-card {
-  min-width: 200px;
-  flex: 1;
-  min-height: 136px;
-  background: var(--bg-card);
-  border: 1px solid var(--border-color);
-  border-radius: var(--radius);
-  padding: 18px;
-  box-shadow: var(--shadow-sm);
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  gap: 10px;
-  transition: transform 160ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 160ms cubic-bezier(0.16, 1, 0.3, 1), border-color 160ms cubic-bezier(0.16, 1, 0.3, 1);
+  background: rgba(255, 255, 255, 0.8) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+  border: 1px solid rgba(226, 232, 240, 0.8) !important;
+  border-radius: var(--radius-lg, 12px) !important;
+  padding: 20px !important;
+  box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.03), 0 2px 4px -1px rgba(15, 23, 42, 0.02) !important;
+  display: flex !important;
+  flex-direction: column !important;
+  justify-content: space-between !important;
+  gap: 12px !important;
+  transition: transform 0.2s cubic-bezier(0.16, 1, 0.3, 1), box-shadow 0.2s cubic-bezier(0.16, 1, 0.3, 1), border-color 0.2s cubic-bezier(0.16, 1, 0.3, 1) !important;
+  position: relative !important;
+  overflow: hidden !important;
 }
 
 .ledger-card:hover {
-  transform: translateY(-2px);
-  border-color: var(--slate-300);
-  box-shadow: var(--shadow-md);
+  transform: translateY(-2px) !important;
+  box-shadow: 0 12px 20px -8px rgba(15, 23, 42, 0.08), 0 4px 6px -2px rgba(15, 23, 42, 0.03) !important;
+  border-color: rgba(15, 23, 42, 0.15) !important;
 }
 
 .ledger-card h4 {
-  font-size: 14px;
-  font-weight: 700;
-  color: var(--slate-900);
-  margin-bottom: 0;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  gap: 10px;
-  line-height: 1.25;
+  font-size: 11px !important;
+  font-weight: 700 !important;
+  color: var(--slate-500) !important;
+  margin-bottom: 0 !important;
+  display: flex !important;
+  justify-content: space-between !important;
+  align-items: center !important;
+  gap: 10px !important;
+  line-height: 1.25 !important;
 }
 
 .ledger-card h4 .ledger-title {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  min-width: 0;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
+  display: flex !important;
+  align-items: center !important;
+  gap: 8px !important;
+  min-width: 0 !important;
+  overflow: hidden !important;
+  text-overflow: ellipsis !important;
+  white-space: nowrap !important;
+  text-transform: uppercase !important;
+  letter-spacing: 0.05em !important;
 }
 
 .ledger-card h4 .badge {
-  flex: 0 0 auto;
-  border-radius: 9999px;
-  padding: 3px 10px;
-  font-size: 11px;
-  font-weight: 600;
+  flex: 0 0 auto !important;
+  border-radius: 9999px !important;
+  padding: 3px 10px !important;
+  font-size: 11px !important;
+  font-weight: 600 !important;
 }
 
 .ledger-card h4 .badge-success {
-  background: #dcfce7;
-  color: #166534;
+  background: #dcfce7 !important;
+  color: #166534 !important;
 }
 
 .ledger-card h4 .badge-warning {
-  background: #ffedd5;
-  color: #9a3412;
+  background: #ffedd5 !important;
+  color: #9a3412 !important;
 }
 
 .ledger-card h4 .material-symbols-outlined {
-  flex: 0 0 auto;
-  font-size: 20px;
-  color: var(--slate-700);
+  flex: 0 0 auto !important;
+  font-size: 18px !important;
+  color: var(--slate-400, #94a3b8) !important;
 }
 
 .ledger-metric {
-  font-size: 26px;
-  font-weight: 800;
-  color: var(--slate-900);
-  letter-spacing: 0;
-  line-height: 1.2;
-  font-variant-numeric: tabular-nums;
+  font-size: 26px !important;
+  font-weight: 800 !important;
+  color: var(--slate-900) !important;
+  letter-spacing: -0.02em !important;
+  line-height: 1.2 !important;
+  font-variant-numeric: tabular-nums !important;
 }
 
 .ledger-card .text-muted {
-  font-size: 13px;
-  color: var(--text-muted);
-  font-weight: 500;
-  line-height: 1.35;
+  font-size: 13px !important;
+  color: var(--text-muted) !important;
+  font-weight: 500 !important;
+  line-height: 1.35 !important;
 }
 
 @media (max-width: 600px) {
