@@ -574,7 +574,7 @@
                 <rect x="22" y="32" width="18" height="38" rx="3.5" fill="currentColor" />
                 <rect x="34" y="62" width="38" height="14" rx="3" fill="currentColor" />
               </svg></span>
-            <span>Coda ERP</span>
+            <span id="brandNameText">Coda ERP</span>
             <span class="badge-subscription">Admin</span>
           </a>
           <button class="sidebar-close" id="sidebarClose" aria-label="Close navigation"><span
@@ -1674,7 +1674,7 @@
         const me = await fetchWithAuth('/api/v1/auth/me');
         if (!me) return;
         currentUser = me.user;
-
+        
         // Cross-tab session invalidation: re-check auth when tab becomes visible
         document.addEventListener('visibilitychange', function onVis() {
           if (document.visibilityState === 'visible' && currentUser) {
@@ -1686,7 +1686,8 @@
 
         const ui = document.getElementById('adminUserInfo');
         if (ui && currentUser) {
-          ui.innerHTML = '<div class="user-avatar">' + (escapeHTML(currentUser.name)?.charAt(0)?.toUpperCase() || 'A') + '</div><div class="user-details"><div class="user-name">' + (escapeHTML(currentUser.name) || '') + '</div><div class="user-role">Platform Admin</div></div>';
+          const displayName = me.business && me.business.name ? me.business.name : currentUser.name;
+          ui.innerHTML = '<div class="user-avatar">' + (escapeHTML(displayName)?.charAt(0)?.toUpperCase() || 'B') + '</div><div class="user-details"><div class="user-name">' + (escapeHTML(displayName) || '') + '</div><div class="user-role">Platform Admin</div></div>';
         }
 
         // Wire up the global search box for the active admin tab

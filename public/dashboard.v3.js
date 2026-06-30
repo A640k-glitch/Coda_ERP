@@ -324,18 +324,18 @@ function escapeHTML(str) {
       }
     });
 
-    // Render user info
+    // Render user info (User wants Company Name here, not Admin Name)
     if (userInfo && currentUser) {
       userInfo.innerHTML = `
-        <div class="user-avatar">${currentUser.name?.charAt(0)?.toUpperCase() || 'A'}</div>
+        <div class="user-avatar">${currentUser.business_name?.charAt(0)?.toUpperCase() || 'B'}</div>
         <div class="user-details">
-          <div class="user-name">${escapeHTML(currentUser.name)}</div>
+          <div class="user-name">${escapeHTML(currentUser.business_name || currentUser.name)}</div>
           <div class="user-role">${currentUser.tier || 'professional'}</div>
         </div>
       `;
     }
 
-    // Update subscription badge in sidebar brand
+    // Update subscription badge and brand name in sidebar
     const subBadge = document.querySelector('.sidebar-brand .badge-subscription');
     if (subBadge && currentUser && currentUser.tier) {
       const tierText = currentUser.tier.toLowerCase() === 'professional' ? 'Pro' : currentUser.tier.charAt(0).toUpperCase() + currentUser.tier.slice(1);
@@ -592,6 +592,11 @@ function escapeHTML(str) {
               const errData = await res.json();
               throw new Error(errData.error || 'Failed to update company name');
             }
+            // Update the company name in the sidebar profile block immediately
+            const profileNameEl = document.querySelector('#userInfo .user-name');
+            if (profileNameEl && newName) profileNameEl.textContent = newName;
+            const profileAvatarEl = document.querySelector('#userInfo .user-avatar');
+            if (profileAvatarEl && newName) profileAvatarEl.textContent = newName.charAt(0).toUpperCase();
           } catch (err) {
             console.error('Error updating company name:', err);
             showToast('Error', err.message || 'Failed to update company name.', 'error');
@@ -602,7 +607,6 @@ function escapeHTML(str) {
         }
       }
 
-      await new Promise(r => setTimeout(r, 800));
       btn.disabled = false;
       btn.innerHTML = original;
       showToast('Saved', 'General settings updated successfully.', 'success');
@@ -610,9 +614,6 @@ function escapeHTML(str) {
       if (typeof updateCurrencyDOM === 'function') {
         updateCurrencyDOM();
       }
-      setTimeout(() => {
-        window.location.reload();
-      }, 800);
     });
 
     const btnUpdateProfile = document.getElementById('btnUpdateProfile');
@@ -621,10 +622,29 @@ function escapeHTML(str) {
       const original = btn.innerHTML;
       btn.disabled = true;
       btn.innerHTML = '<span class="material-symbols-outlined" style="animation:spin 1s linear infinite">refresh</span> Updating...';
-      await new Promise(r => setTimeout(r, 800));
-      btn.disabled = false;
-      btn.innerHTML = original;
-      showToast('Updated', 'Profile updated successfully.', 'success');
+      
+      const name = document.getElementById('optFullName')?.value;
+      const email = document.getElementById('optEmail')?.value;
+
+      try {
+        const res = await fetch('/api/v1/auth/profile', {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ name, email })
+        });
+        const data = await res.json();
+        
+        if (res.ok) {
+          showToast('Updated', 'Profile updated successfully.', 'success');
+        } else {
+          showToast('Error', data.error || 'Failed to update profile', 'error');
+        }
+      } catch (err) {
+        showToast('Error', 'An unexpected error occurred.', 'error');
+      } finally {
+        btn.disabled = false;
+        btn.innerHTML = original;
+      }
     });
 
     // Delete Account — multi-step safety flow

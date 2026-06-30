@@ -357,5 +357,29 @@ router.post('/appeal', async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
+// PUT /api/v1/auth/profile - update user profile
+router.put('/profile', requireAuth, async (req, res) => {
+  try {
+    const { name, email } = req.body;
+    if (!name || !email) {
+      return res.status(400).json({ error: 'Name and email are required.' });
+    }
+
+    // Check if email is taken by someone else
+    const existing = db.prepare('SELECT id FROM users WHERE email = ? AND id != ?').get(email, req.user.id);
+    if (existing) {
+      return res.status(400).json({ error: 'Email is already in use by another account.' });
+    }
+
+    db.prepare('UPDATE users SET name = ?, email = ? WHERE id = ?').run(name, email, req.user.id);
+    
+    // Log the audit
+    logAudit(req.user.business_id, req.user.id, 'user.profile_update', { name, email });
+    
+    res.json({ success: true, message: 'Profile updated successfully.' });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
 
 module.exports = router;
