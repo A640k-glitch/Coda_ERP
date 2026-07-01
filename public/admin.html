@@ -598,9 +598,10 @@
               <span>Requests</span>
               <span class="admin-nav-badge" id="adminRequestsBadge" style="display: none; position: absolute; right: 16px; top: 50%; transform: translateY(-50%); background: var(--error, #ef4444); color: #fff; font-size: 10px; font-weight: 700; min-width: 18px; height: 18px; border-radius: 10px; align-items: center; justify-content: center; padding: 0 4px; box-sizing: border-box;"></span>
             </button>
-            <button class="nav-item" data-tab="addons">
+            <button class="nav-item" data-tab="addons" style="position: relative;">
               <span class="material-symbols-outlined">extension</span>
               <span>Add-ons</span>
+              <span class="admin-nav-badge" id="adminAddonsBadge" style="display: none; position: absolute; right: 16px; top: 50%; transform: translateY(-50%); background: var(--error, #ef4444); color: #fff; font-size: 10px; font-weight: 700; min-width: 18px; height: 18px; border-radius: 10px; align-items: center; justify-content: center; padding: 0 4px; box-sizing: border-box;"></span>
             </button>
           </div>
           <div class="nav-section">
@@ -705,8 +706,8 @@
           <div class="admin-tabs">
             <button class="admin-tab" data-tab="users">Users</button>
             <button class="admin-tab" data-tab="businesses">Businesses</button>
-            <button class="admin-tab" data-tab="requests">Requests</button>
-            <button class="admin-tab" data-tab="addons">Add-ons</button>
+            <button class="admin-tab" data-tab="requests" style="position:relative; display:inline-flex; align-items:center; gap:6px;">Requests <span class="tab-badge" id="adminRequestsTabBadge" style="display:none; background:var(--error); color:#fff; font-size:10px; font-weight:700; min-width:16px; height:16px; border-radius:50%; align-items:center; justify-content:center; padding:0 3px; line-height:16px;"></span></button>
+            <button class="admin-tab" data-tab="addons" style="position:relative; display:inline-flex; align-items:center; gap:6px;">Add-ons <span class="tab-badge" id="adminAddonsTabBadge" style="display:none; background:var(--error); color:#fff; font-size:10px; font-weight:700; min-width:16px; height:16px; border-radius:50%; align-items:center; justify-content:center; padding:0 3px; line-height:16px;"></span></button>
             <button class="admin-tab" data-tab="analytics">Analytics</button>
             <button class="admin-tab" data-tab="audit">Audit Log</button>
           </div>
@@ -867,6 +868,28 @@
               <tbody id="adminAddonsBody">
                 <tr>
                   <td colspan="5" style="text-align:center;padding:40px;color:var(--text-muted);"><span class="loading-spinner"></span>Loading...</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          
+          <!-- Add-on Activity History -->
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-top:32px;margin-bottom:16px;">
+            <h3 style="margin:0;font-size:16px;font-weight:700;">Add-on Notifications & Activity</h3>
+          </div>
+          <div class="admin-table-wrap">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Request Title</th>
+                  <th>Message</th>
+                  <th>Submitted</th>
+                  <th style="width:140px;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="adminAddonNotificationsBody">
+                <tr>
+                  <td colspan="4" style="text-align:center;padding:40px;color:var(--text-muted);">No add-on notifications.</td>
                 </tr>
               </tbody>
             </table>
@@ -1332,31 +1355,79 @@
             panelCount.style.display = 'none';
           }
         }
+
+        // Split counts: Add-on vs General
+        const unreadAddons = currentNotifications.filter(n => !n.is_read && n.title && n.title.startsWith('Add-on')).length;
+        const unreadRequests = currentNotifications.filter(n => !n.is_read && (!n.title || !n.title.startsWith('Add-on'))).length;
+
+        // General Requests Badges
         const requestsBadge = document.getElementById('adminRequestsBadge');
-        if (requestsBadge) {
-          if (unread > 0) {
-            requestsBadge.textContent = unread > 9 ? '9+' : unread;
-            requestsBadge.style.display = 'flex';
-          } else {
-            requestsBadge.style.display = 'none';
+        const requestsTabBadge = document.getElementById('adminRequestsTabBadge');
+        [requestsBadge, requestsTabBadge].forEach(b => {
+          if (b) {
+            if (unreadRequests > 0) {
+              b.textContent = unreadRequests > 9 ? '9+' : unreadRequests;
+              b.style.display = 'flex';
+            } else {
+              b.style.display = 'none';
+            }
           }
-        }
+        });
+
+        // Add-ons Badges
+        const addonsBadge = document.getElementById('adminAddonsBadge');
+        const addonsTabBadge = document.getElementById('adminAddonsTabBadge');
+        [addonsBadge, addonsTabBadge].forEach(b => {
+          if (b) {
+            if (unreadAddons > 0) {
+              b.textContent = unreadAddons > 9 ? '9+' : unreadAddons;
+              b.style.display = 'flex';
+            } else {
+              b.style.display = 'none';
+            }
+          }
+        });
       }
 
       function renderNotificationsTable() {
         const tbody = document.getElementById('notificationsBody');
         if (!tbody) return;
-        if (!currentNotifications.length) {
+        const filtered = currentNotifications.filter(n => !n.title || !n.title.startsWith('Add-on'));
+        if (!filtered.length) {
           tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:40px;color:var(--text-muted);">No pending requests.</td></tr>';
           return;
         }
-        tbody.innerHTML = currentNotifications.map(n => {
+        tbody.innerHTML = filtered.map(n => {
           const isRead = n.is_read === 1;
           const readStyle = isRead ? 'opacity: 0.6;' : 'font-weight: 600;';
           let actionBtn = '';
           if (n.title === 'Upgrade Request' && !isRead) {
             actionBtn = `<button class="btn btn-xs btn-outline" onclick="approveUpgradeFromNotification('${n.id}', '${n.business_id}')">Approve</button>`;
           }
+          const toggleLabel = isRead ? 'Mark Unread' : 'Dismiss';
+          const toggleIcon = isRead ? 'mark_email_unread' : 'check_circle';
+          actionBtn += `<button class="btn btn-xs btn-outline" style="margin-left:4px;" onclick="adminToggleNotification('${n.id}', ${isRead ? 0 : 1})"><span class="material-symbols-outlined" style="font-size:14px; vertical-align:middle;">${toggleIcon}</span> ${toggleLabel}</button>`;
+          return `<tr data-id="${n.id}" style="${readStyle}">
+            <td>${escapeHTML(n.title)}</td>
+            <td>${escapeHTML(n.message)}</td>
+            <td style="white-space:nowrap;">${formatDateTime(n.created_at)}</td>
+            <td><div style="display:flex; gap:4px; flex-wrap:nowrap; align-items:center;">${actionBtn}</div></td>
+          </tr>`;
+        }).join('');
+      }
+
+      function renderAddonNotificationsTable() {
+        const tbody = document.getElementById('adminAddonNotificationsBody');
+        if (!tbody) return;
+        const filtered = currentNotifications.filter(n => n.title && n.title.startsWith('Add-on'));
+        if (!filtered.length) {
+          tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:40px;color:var(--text-muted);">No add-on notifications.</td></tr>';
+          return;
+        }
+        tbody.innerHTML = filtered.map(n => {
+          const isRead = n.is_read === 1;
+          const readStyle = isRead ? 'opacity: 0.6;' : 'font-weight: 600;';
+          let actionBtn = '';
           const toggleLabel = isRead ? 'Mark Unread' : 'Dismiss';
           const toggleIcon = isRead ? 'mark_email_unread' : 'check_circle';
           actionBtn += `<button class="btn btn-xs btn-outline" style="margin-left:4px;" onclick="adminToggleNotification('${n.id}', ${isRead ? 0 : 1})"><span class="material-symbols-outlined" style="font-size:14px; vertical-align:middle;">${toggleIcon}</span> ${toggleLabel}</button>`;
@@ -1495,6 +1566,7 @@
         if (!data) return;
         currentNotifications = data.notifications || [];
         renderNotificationsTable();
+        renderAddonNotificationsTable();
         renderNotificationsPanel();
         updateAdminNotificationBadge();
       }
@@ -1506,7 +1578,7 @@
         updateAdminNotificationBadge();
         
         // Update table row DOM directly
-        const row = document.querySelector(`#notificationsBody tr[data-id="${id}"]`);
+        const row = document.querySelector(`#notificationsBody tr[data-id="${id}"]`) || document.querySelector(`#adminAddonNotificationsBody tr[data-id="${id}"]`);
         if (row) {
           const readStyle = newReadState ? 'opacity: 0.6; font-weight: normal;' : 'font-weight: 600; opacity: 1;';
           row.style.cssText = readStyle;

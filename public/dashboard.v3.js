@@ -421,7 +421,7 @@ function escapeHTML(str) {
           starter_multi_depot: 'inventory',
           pro_multi_entity: 'accounting',
           pro_api_access: null,
-          pro_success_manager: null,
+          pro_success_manager: 'success-manager',
           enterprise_on_prem: null,
           enterprise_bespoke_modules: null,
         };
@@ -657,6 +657,74 @@ function escapeHTML(str) {
       
       if (typeof updateCurrencyDOM === 'function') {
         updateCurrencyDOM();
+      }
+    });
+
+    // Success Manager Chat Form
+    const chatForm = document.getElementById('managerChatForm');
+    chatForm?.addEventListener('submit', async e => {
+      e.preventDefault();
+      const input = document.getElementById('managerChatMessageInput');
+      const message = input.value.trim();
+      if (!message) return;
+      
+      const submitBtn = chatForm.querySelector('button[type="submit"]');
+      const originalText = submitBtn.textContent;
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Sending...';
+
+      try {
+        const res = await fetch('/api/v1/success-manager/messages', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message })
+        });
+        if (res.ok) {
+          input.value = '';
+          await loadSuccessManagerMessages();
+        } else {
+          showToast('Error', 'Failed to send message.', 'error');
+        }
+      } catch (err) {
+        showToast('Error', 'Error connecting to service.', 'error');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
+      }
+    });
+
+    // Success Manager Booking Form
+    const bookingForm = document.getElementById('managerBookingForm');
+    bookingForm?.addEventListener('submit', async e => {
+      e.preventDefault();
+      const topic = document.getElementById('bookingTopic').value;
+      const meeting_date = document.getElementById('bookingDate').value;
+      const meeting_time = document.getElementById('bookingTime').value;
+
+      const submitBtn = bookingForm.querySelector('button[type="submit"]');
+      const originalText = submitBtn.textContent;
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'Booking...';
+
+      try {
+        const res = await fetch('/api/v1/success-manager/bookings', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ topic, meeting_date, meeting_time })
+        });
+        if (res.ok) {
+          showToast('Success', 'Google Meet call scheduled successfully!', 'success');
+          document.getElementById('bookingDate').value = '';
+          document.getElementById('bookingTime').value = '';
+          await loadSuccessManagerBookings();
+        } else {
+          showToast('Error', 'Failed to book meeting.', 'error');
+        }
+      } catch (err) {
+        showToast('Error', 'Error connecting to service.', 'error');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = originalText;
       }
     });
 
@@ -902,6 +970,7 @@ function escapeHTML(str) {
       crm: 'CRM & Customers',
       hr: 'HR & Payroll',
       tax: 'Tax Center',
+      'success-manager': 'Success Manager',
       addons: 'Add-ons',
       reports: 'Reports'
     };
@@ -922,6 +991,7 @@ function escapeHTML(str) {
     else if (viewName === 'hr') currentLoadPromise = loadHR();
     else if (viewName === 'addons') currentLoadPromise = loadAddons();
     else if (viewName === 'tax') currentLoadPromise = loadTax();
+    else if (viewName === 'success-manager') currentLoadPromise = loadSuccessManager();
     else if (viewName === 'accounting' || viewName === 'overview') currentLoadPromise = loadAccounting();
     
     document.getElementById('btnNewTransaction').style.display = viewName === 'overview' ? 'flex' : 'none';
@@ -1433,6 +1503,24 @@ function escapeHTML(str) {
           loadNotifications();
         }
       }
+
+      // Fetch admin notifications separate from user dashboard notifications
+      if (window.__isAdmin) {
+        const adminRes = await fetch('/api/v1/admin/notifications', { credentials: 'include' });
+        const adminData = await adminRes.json();
+        if (adminData && adminData.notifications) {
+          const unreadAdminCount = adminData.notifications.filter(n => !n.is_read).length;
+          const adminNavBadge = document.getElementById('adminNavBadge');
+          if (adminNavBadge) {
+            if (unreadAdminCount > 0) {
+              adminNavBadge.textContent = unreadAdminCount > 9 ? '9+' : unreadAdminCount;
+              adminNavBadge.style.display = 'flex';
+            } else {
+              adminNavBadge.style.display = 'none';
+            }
+          }
+        }
+      }
     } catch (err) {
       console.error('Failed to fetch notifications', err);
     }
@@ -1564,16 +1652,6 @@ function escapeHTML(str) {
         panelCount.style.display = 'inline';
       } else {
         panelCount.style.display = 'none';
-      }
-    }
-    const adminNavBadge = document.getElementById('adminNavBadge');
-    if (adminNavBadge && window.__isAdmin) {
-      const unreadCount = notificationsData.filter(n => !n.is_read).length;
-      if (unreadCount > 0) {
-        adminNavBadge.textContent = unreadCount > 9 ? '9+' : unreadCount;
-        adminNavBadge.style.display = 'flex';
-      } else {
-        adminNavBadge.style.display = 'none';
       }
     }
   }
@@ -2754,6 +2832,71 @@ function escapeHTML(str) {
     btn.disabled = false;
     btn.textContent = 'Recalculate liabilities';
   });
+
+  async function loadSuccessManager() {
+    await Promise.all([
+      loadSuccessManagerMessages(),
+      loadSuccessManagerBookings()
+    ]);
+  }
+
+  async function loadSuccessManagerMessages() {
+    const chatBox = document.getElementById('managerChatBox');
+    if (!chatBox) return;
+    try {
+      const res = await fetch('/api/v1/success-manager/messages');
+      const data = await res.json();
+      const messages = data.messages || [];
+      if (messages.length === 0) {
+        chatBox.innerHTML = '<div style="color:var(--text-muted); text-align:center; padding: 40px 0; font-size: 13px;">No messages yet. Ask Femi Adebayo a question!</div>';
+        return;
+      }
+      chatBox.innerHTML = messages.map(m => {
+        const isUser = m.sender !== 'Femi Adebayo';
+        const bg = isUser ? 'var(--teal-600)' : 'var(--slate-800)';
+        const textCol = '#ffffff';
+        const align = isUser ? 'align-self: flex-end;' : 'align-self: flex-start;';
+        return `
+          <div style="${align} max-width: 75%; background: ${bg}; color: ${textCol}; padding: 10px 14px; border-radius: 12px; font-size: 13px; line-height: 1.5; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+            <div style="font-weight: 700; font-size: 11px; margin-bottom: 2px; opacity: 0.85;">${escapeHTML(m.sender)}</div>
+            <div>${escapeHTML(m.message)}</div>
+            <div style="font-size: 9px; margin-top: 4px; text-align: right; opacity: 0.6;">${formatDateTime(m.created_at)}</div>
+          </div>
+        `;
+      }).join('');
+      chatBox.scrollTop = chatBox.scrollHeight;
+    } catch (e) {
+      chatBox.innerHTML = '<div style="color:var(--error); text-align:center; padding: 20px 0;">Failed to load messages.</div>';
+    }
+  }
+
+  async function loadSuccessManagerBookings() {
+    const list = document.getElementById('managerBookingsList');
+    if (!list) return;
+    try {
+      const res = await fetch('/api/v1/success-manager/bookings');
+      const data = await res.json();
+      const bookings = data.bookings || [];
+      if (bookings.length === 0) {
+        list.innerHTML = '<div style="font-size:12px; color:var(--text-muted); text-align:center; padding:10px 0;">No meetings booked yet.</div>';
+        return;
+      }
+      list.innerHTML = bookings.map(b => {
+        return `
+          <div style="background:var(--bg-app); border:1px solid var(--border-color); border-radius:6px; padding:10px; display:flex; flex-direction:column; gap:4px; font-size:12px;">
+            <div style="font-weight:700; color:var(--slate-900);">${escapeHTML(b.topic)}</div>
+            <div style="color:var(--text-secondary); display:flex; align-items:center; gap:6px;">
+              <span class="material-symbols-outlined" style="font-size:14px;">calendar_today</span>
+              <span>${b.meeting_date} @ ${b.meeting_time}</span>
+            </div>
+            <div style="margin-top:4px;"><span class="badge status-active" style="font-size:10px; padding:2px 6px;">${b.status.toUpperCase()}</span></div>
+          </div>
+        `;
+      }).join('');
+    } catch (e) {
+      list.innerHTML = '<div style="color:var(--error); text-align:center; font-size:12px;">Failed to load bookings.</div>';
+    }
+  }
 
   // ===== Remaining Unwired Buttons =====
   

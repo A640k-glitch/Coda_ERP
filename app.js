@@ -151,6 +151,7 @@ app.use('/api/v1/notifications', require('./src/routes/notifications'));
 app.use('/api/v1/integrations', require('./src/routes/integrations'));
 app.use('/api/v1/macro', require('./src/routes/macro'));
 app.use('/api/v1/addons', require('./src/routes/addons'));
+app.use('/api/v1/success-manager', require('./src/routes/success-manager'));
 app.use('/api/v1/config/public', require('./src/routes/public-config'));
 
 

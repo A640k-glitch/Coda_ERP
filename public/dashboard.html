@@ -296,6 +296,10 @@
               <span class="material-symbols-outlined">receipt_long</span>
               <span>Tax Center</span>
             </button>
+            <button class="nav-item" data-view="success-manager" data-label="Success Manager" id="nav-success-manager" style="display:none">
+              <span class="material-symbols-outlined">support_agent</span>
+              <span>Success Manager</span>
+            </button>
             <button class="nav-item" data-view="addons" data-label="Add-ons">
               <span class="material-symbols-outlined">extension</span>
               <span>Add-ons</span>
@@ -970,6 +974,107 @@
         </div>
 
         <div id="apiCredentialsContainer"></div>
+      </section>
+
+      <!-- 7.5 Success Manager Screen -->
+      <section class="module-view" id="view-success-manager">
+        <div class="module-header" style="margin-bottom: 24px;">
+          <h2>Dedicated Success Manager</h2>
+          <div class="module-actions">
+            <span class="badge status-active" style="padding: 6px 12px; font-weight:600;">SLA Active: 20-Min Response</span>
+          </div>
+        </div>
+
+        <!-- Layout Grid -->
+        <div style="display:grid; grid-template-columns: 1fr 340px; gap:24px; align-items:start;">
+          
+          <!-- Left Column: Chat and Tickets -->
+          <div style="display:flex; flex-direction:column; gap:24px;">
+            
+            <!-- Chat Card -->
+            <div class="table-card" style="padding: 24px; display:flex; flex-direction:column; min-height: 480px;">
+              <div style="display:flex; align-items:center; gap:12px; border-bottom: 1.5px solid var(--border-color); padding-bottom: 16px; margin-bottom: 16px;">
+                <div style="width: 44px; height: 44px; border-radius: 50%; background: var(--teal-100); color: var(--teal-700); display:flex; align-items:center; justify-content:center; font-weight:800; font-size:18px;">FA</div>
+                <div>
+                  <h4 style="margin:0; font-size:15px; font-weight:700; color:var(--slate-900);">Femi Adebayo</h4>
+                  <span style="font-size:12px; color:var(--text-muted);">Your Dedicated Account Success Executive</span>
+                </div>
+              </div>
+
+              <!-- Message History Box -->
+              <div id="managerChatBox" style="flex:1; overflow-y:auto; max-height: 300px; display:flex; flex-direction:column; gap:12px; padding:12px; background:var(--bg-app); border-radius:8px; border:1px solid var(--border-color); margin-bottom: 16px;">
+                <div style="color:var(--text-muted); text-align:center; padding: 40px 0; font-size: 13px;">No messages. Send a message to start conversation.</div>
+              </div>
+
+              <!-- Input Form -->
+              <form id="managerChatForm" style="display:flex; gap:12px;">
+                <input class="form-control" type="text" id="managerChatMessageInput" placeholder="Ask your success manager a question..." style="flex:1; height: 40px; border-radius: 6px;" required autocomplete="off">
+                <button class="btn btn-primary" type="submit" style="height: 40px; padding:0 20px; font-weight:600;">Send</button>
+              </form>
+            </div>
+            
+          </div>
+
+          <!-- Right Column: Scheduler & Manager Details -->
+          <div style="display:flex; flex-direction:column; gap:24px;">
+            
+            <!-- Manager Profile Card -->
+            <div class="table-card" style="padding: 20px;">
+              <h3 style="font-size:14px; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-muted); margin-bottom:16px;">Executive Contact</h3>
+              <div style="display:flex; flex-direction:column; gap:12px;">
+                <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:var(--text-secondary);">
+                  <span class="material-symbols-outlined" style="font-size:18px; color:var(--teal-600);">mail</span>
+                  <span>femi@codaerp.com</span>
+                </div>
+                <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:var(--text-secondary);">
+                  <span class="material-symbols-outlined" style="font-size:18px; color:var(--teal-600);">phone</span>
+                  <span>+234 812 345 6789</span>
+                </div>
+                <div style="display:flex; align-items:center; gap:10px; font-size:13px; color:var(--text-secondary);">
+                  <span class="material-symbols-outlined" style="font-size:18px; color:var(--teal-600);">schedule</span>
+                  <span>Mon - Fri (8:00 AM - 5:00 PM)</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Booking Card -->
+            <div class="table-card" style="padding: 20px;">
+              <h3 style="font-size:14px; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; color:var(--text-muted); margin-bottom:16px;">Schedule Google Meet</h3>
+              <form id="managerBookingForm" style="display:flex; flex-direction:column; gap:12px;">
+                <div>
+                  <label class="form-label" style="font-size:12px; font-weight:600; margin-bottom:4px; display:block;">Meeting Topic</label>
+                  <select class="form-control" id="bookingTopic" style="width:100%; height:36px; padding:0 8px; border: 1px solid var(--border-color); border-radius: var(--radius);" required>
+                    <option value="Onboarding Training">Onboarding & Setup</option>
+                    <option value="API Integration Help">API Integration Help</option>
+                    <option value="Custom Reports Configuration">Custom Reports Setup</option>
+                    <option value="General Account Audit">General Account Review</option>
+                  </select>
+                </div>
+                <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                  <div>
+                    <label class="form-label" style="font-size:12px; font-weight:600; margin-bottom:4px; display:block;">Date</label>
+                    <input class="form-control" type="date" id="bookingDate" style="height:36px; padding:0 8px; border: 1px solid var(--border-color); border-radius: var(--radius);" required>
+                  </div>
+                  <div>
+                    <label class="form-label" style="font-size:12px; font-weight:600; margin-bottom:4px; display:block;">Time Slot</label>
+                    <input class="form-control" type="time" id="bookingTime" style="height:36px; padding:0 8px; border: 1px solid var(--border-color); border-radius: var(--radius);" required>
+                  </div>
+                </div>
+                <button class="btn btn-primary" type="submit" style="width:100%; height:38px; font-weight:600; margin-top:8px;">Book Meeting</button>
+              </form>
+
+              <!-- Booking History -->
+              <div id="bookingListContainer" style="margin-top:20px; border-top:1px solid var(--border-color); padding-top:16px;">
+                <h4 style="font-size:12px; font-weight:700; margin-bottom:10px; color:var(--text-secondary);">Scheduled Meetings</h4>
+                <div id="managerBookingsList" style="display:flex; flex-direction:column; gap:8px;">
+                  <div style="font-size:12px; color:var(--text-muted); text-align:center; padding:10px 0;">No meetings booked.</div>
+                </div>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
       </section>
 
       <!-- 8. Reports Screen -->

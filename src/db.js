@@ -307,6 +307,25 @@ function migrate() {
     );
     CREATE INDEX IF NOT EXISTS idx_comm_customer ON customer_communications(business_id, customer_id, created_at);
   `);
+
+  try { db.exec(`
+    CREATE TABLE IF NOT EXISTS success_manager_messages (
+      id TEXT PRIMARY KEY,
+      business_id TEXT NOT NULL,
+      sender TEXT NOT NULL,
+      message TEXT NOT NULL,
+      created_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+    CREATE TABLE IF NOT EXISTS success_manager_bookings (
+      id TEXT PRIMARY KEY,
+      business_id TEXT NOT NULL,
+      topic TEXT NOT NULL,
+      meeting_date TEXT NOT NULL,
+      meeting_time TEXT NOT NULL,
+      status TEXT NOT NULL DEFAULT 'scheduled',
+      created_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+  `); } catch(e) {}
 }
 
 migrate();
