@@ -1491,7 +1491,7 @@
       }
 
       async function loadNotifications() {
-        const data = await fetchWithAuth('/api/v1/notifications');
+        const data = await fetchWithAuth('/api/v1/admin/notifications');
         if (!data) return;
         currentNotifications = data.notifications || [];
         renderNotificationsTable();
@@ -1536,7 +1536,7 @@
         }
 
         const endpoint = newReadState ? 'read' : 'unread';
-        fetch('/api/v1/notifications/' + id + '/' + endpoint, { method: 'PATCH', credentials: 'include' });
+        fetch('/api/v1/admin/notifications/' + id + '/' + endpoint, { method: 'PATCH', credentials: 'include' });
       }
       async function approveUpgradeFromNotification(id, businessId) {
         const notif = currentNotifications.find(n => n.id === id);
@@ -1554,7 +1554,7 @@
 
         if (res.ok) {
           showToast('Approved', 'Business upgraded to ' + tier, 'success');
-          await fetch('/api/v1/notifications/' + id + '/read', { method: 'PATCH' });
+          await fetch('/api/v1/admin/notifications/' + id + '/read', { method: 'PATCH' });
           loadNotifications();
           loadOverview();
           loadAnalytics();
@@ -1865,7 +1865,7 @@
         loadNotifications();
 
         // Poll for notifications periodically
-        setInterval(loadNotifications, 10000);
+        setInterval(loadNotifications, 3000);
 
         // Switch to saved tab (removes early-override, applies .active classes)
         const savedTab = localStorage.getItem('coda_admin_active_view') || 'users';

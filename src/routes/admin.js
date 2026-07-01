@@ -18,7 +18,7 @@ router.delete('/users/:id', (req, res) => {
     
     // Add notification to admin's own business that a user was deleted
     const notifId = generateId('notif');
-    (new TenantDB(req.user.business_id || req.businessId)).prepare('INSERT INTO notifications (id, business_id, title, message) VALUES (?, ?, ?, ?)').run(notifId, req.user.business_id, 'User Deleted', `Admin deleted user ${user.email}.`);
+    (new TenantDB(req.user.business_id || req.businessId)).prepare('INSERT INTO notifications (id, business_id, title, message, is_admin) VALUES (?, ?, ?, ?, 1)').run(notifId, req.user.business_id, 'User Deleted', `Admin deleted user ${user.email}.`);
     
     res.json({ success: true });
   } catch (err) {
@@ -43,7 +43,7 @@ router.patch('/users/:id/status', (req, res) => {
 
     // Add notification to admin's own business that a user status changed
     const notifId = generateId('notif');
-    (new TenantDB(req.user.business_id || req.businessId)).prepare('INSERT INTO notifications (id, business_id, title, message) VALUES (?, ?, ?, ?)').run(notifId, req.user.business_id, 'User ' + status.charAt(0).toUpperCase() + status.slice(1), `Admin changed user ${user.email} status to ${status}.`);
+    (new TenantDB(req.user.business_id || req.businessId)).prepare('INSERT INTO notifications (id, business_id, title, message, is_admin) VALUES (?, ?, ?, ?, 1)').run(notifId, req.user.business_id, 'User ' + status.charAt(0).toUpperCase() + status.slice(1), `Admin changed user ${user.email} status to ${status}.`);
 
     res.json({ success: true, userId: user.id, status });
   } catch (err) {
@@ -223,6 +223,38 @@ router.get('/audit-log', (req, res) => {
     LIMIT ? OFFSET ?
   `).all(limit, offset);
   res.json({ entries, pagination: { page, limit, total, pages: Math.ceil(total / limit) } });
+});
+
+router.get('/notifications', (req, res) => {
+  try {
+    const notifications = db.prepare(`
+      SELECT * FROM notifications 
+      WHERE is_admin = 1
+      ORDER BY created_at DESC 
+      LIMIT 50
+    `).all();
+    res.json({ notifications });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.patch('/notifications/:id/read', (req, res) => {
+  try {
+    db.prepare('UPDATE notifications SET is_read = 1 WHERE id = ? AND is_admin = 1').run(req.params.id);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+router.patch('/notifications/:id/unread', (req, res) => {
+  try {
+    db.prepare('UPDATE notifications SET is_read = 0 WHERE id = ? AND is_admin = 1').run(req.params.id);
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 module.exports = router;

@@ -191,7 +191,7 @@ router.get('/me', requireAuth, (req, res) => {
   const sub = subscription.getSubscription(req.user.business_id);
   const isAdmin = req.user.email === config.adminEmail;
   res.json({
-    user: { id: req.user.id, email: req.user.email, name: req.user.name, role: req.user.role },
+    user: { id: req.user.id, email: req.user.email, name: req.user.name, role: req.user.role, api_key: req.user.api_key },
     isAdmin,
     business,
     subscription: sub,
@@ -341,7 +341,7 @@ router.post('/appeal', async (req, res) => {
     const adminUser = db.prepare('SELECT * FROM users WHERE email = ?').get(config.adminEmail);
     if (adminUser) {
       db.prepare(
-        'INSERT INTO notifications (id, business_id, title, message) VALUES (?, ?, ?, ?)'
+        'INSERT INTO notifications (id, business_id, title, message, is_admin) VALUES (?, ?, ?, ?, 1)'
       ).run(
         notifId,
         adminUser.business_id,

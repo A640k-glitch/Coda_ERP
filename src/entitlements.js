@@ -2,7 +2,7 @@ const { db } = require('./db');
 const TenantDB = require('./tenant-db');
 
 const TIER_MODULES = {
-  starter: ['overview', 'accounting', 'reconciliation', 'tax', 'reports'],
+  starter: ['overview', 'accounting', 'reconciliation', 'reports'],
   professional: ['overview', 'accounting', 'reconciliation', 'tax', 'reports', 'crm', 'hr'],
   enterprise: ['overview', 'accounting', 'reconciliation', 'inventory', 'crm', 'hr', 'tax', 'reports', 'integrations'],
 };
@@ -13,7 +13,7 @@ const ADDON_MODULES = {
   starter_vat_wht: ['tax'],
   starter_multi_depot: ['inventory'],
   pro_multi_entity: ['accounting', 'reports'],
-  pro_api_access: [],
+  pro_api_access: ['integrations'],
   pro_success_manager: [],
   enterprise_on_prem: [],
   enterprise_bespoke_modules: [],
@@ -34,7 +34,7 @@ function tierAllows(tier, moduleName) {
 function getBusinessAddonModules(businessId) {
   try {
     const tdb = new TenantDB(businessId);
-    const rows = tdb.prepare("SELECT addon_key FROM business_addons WHERE business_id = ? AND status = 'active'").all(businessId);
+    const rows = tdb.prepare("SELECT addon_key FROM business_addons WHERE business_id = ? AND status = 'approved'").all(businessId);
     const modules = new Set();
     for (const row of rows) {
       const unlocked = ADDON_MODULES[row.addon_key];

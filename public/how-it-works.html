@@ -934,6 +934,15 @@
     </div>
   </div>
 
+  <!-- Financial Ticker (Moved to bottom) -->
+  <div class="financial-ticker-wrap" style="margin-top: 0; margin-bottom: 0;">
+    <div class="financial-ticker">
+      <div class="ticker-track">
+        <!-- Populated dynamically by ticker.js -->
+      </div>
+    </div>
+  </div>
+
   <footer class="dark-footer">
     <div class="dark-footer-container">
       <div class="dark-footer-top">
@@ -976,7 +985,7 @@
         </div>
       </div>
       <div class="dark-footer-bottom">
-        <div class="giant-coda-text">Coda</div>
+        <div class="giant-coda-text" style="margin-bottom: -72px !important;">Coda</div>
         <div class="footer-copyright-info">
           &copy; 2026 Coda Technologies Ltd. All rights reserved.
         </div>
@@ -1937,6 +1946,7 @@
 
     })();
   </script>
+  <script src="ticker.js"></script>
 </body>
 
 </html>

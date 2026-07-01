@@ -234,6 +234,7 @@ function migrate() {
       message TEXT NOT NULL,
       type TEXT NOT NULL DEFAULT 'info',
       is_read INTEGER NOT NULL DEFAULT 0,
+      is_admin INTEGER NOT NULL DEFAULT 0,
       target_view TEXT,
       target_item_id TEXT,
       created_at TEXT NOT NULL DEFAULT (datetime('now')),
@@ -251,6 +252,8 @@ function migrate() {
   try { db.exec("ALTER TABLE users ADD COLUMN status TEXT NOT NULL DEFAULT 'active';"); } catch(e) {}
   try { db.exec("ALTER TABLE notifications ADD COLUMN target_view TEXT;"); } catch(e) {}
   try { db.exec("ALTER TABLE notifications ADD COLUMN target_item_id TEXT;"); } catch(e) {}
+  try { db.exec("ALTER TABLE notifications ADD COLUMN is_admin INTEGER DEFAULT 0;"); } catch(e) {}
+  try { db.exec("UPDATE notifications SET is_admin = 1 WHERE title LIKE 'Upgrade Request%' OR title LIKE 'User Deleted%' OR title LIKE 'User Active%' OR title LIKE 'User Suspended%' OR title LIKE 'User Blocked%' OR title LIKE 'Account Appeal%' OR title LIKE 'Add-on Request%' OR title LIKE 'Add-on Cancelled%';"); } catch(e) {}
   try { db.exec("ALTER TABLE journal_entries ADD COLUMN customer_id TEXT;"); } catch(e) {}
   try { db.exec("CREATE INDEX IF NOT EXISTS idx_journal_entries_customer ON journal_entries(business_id, customer_id);"); } catch(e) {}
   try { db.exec("ALTER TABLE customers ADD COLUMN notes TEXT;"); } catch(e) {}

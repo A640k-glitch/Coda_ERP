@@ -15,7 +15,7 @@ function escapeHTML(str) {
   let currentAllowedViews = ['overview'];
 
   const tierModules = {
-    starter: ['overview', 'accounting', 'reconciliation', 'tax', 'reports', 'addons'],
+    starter: ['overview', 'accounting', 'reconciliation', 'reports', 'addons'],
     professional: ['overview', 'accounting', 'reconciliation', 'tax', 'reports', 'crm', 'hr', 'addons'],
     enterprise: ['overview', 'accounting', 'reconciliation', 'inventory', 'crm', 'hr', 'tax', 'reports', 'addons']
   };
@@ -426,6 +426,7 @@ function escapeHTML(str) {
           enterprise_bespoke_modules: null,
         };
         for (const a of bizAddons) {
+          if (a.status !== 'approved') continue;
           const viewName = addonViewMap[a.addon_key];
           if (viewName && !allowed.includes(viewName)) {
             currentAllowedViews.push(viewName);
@@ -447,7 +448,7 @@ function escapeHTML(str) {
     initCharts();
     initTransactionPreviewTooltip();
     fetchNotifications();
-    setInterval(fetchNotifications, 10000);
+    setInterval(fetchNotifications, 3000);
     loadSettings();
     fetchBusinessData();
     updateNotificationBadge();
@@ -2671,6 +2672,34 @@ function escapeHTML(str) {
           }).join('');
         }
       }
+
+      // Render API credentials container if unlocked
+      const apiContainer = document.getElementById('apiCredentialsContainer');
+      if (apiContainer) {
+        const hasApiAccess = currentTier === 'enterprise' || statusMap['pro_api_access'] === 'approved';
+        if (hasApiAccess && currentUser && currentUser.api_key) {
+          apiContainer.innerHTML = `
+            <div class="table-card" style="margin-top: 24px;">
+              <div class="table-card-header" style="display:flex; justify-content:space-between; align-items:center;">
+                <h3 style="margin:0;">API Credentials</h3>
+                <span class="status-badge status-active" style="font-size:11px;">Developer Mode Active</span>
+              </div>
+              <div style="padding: 20px; display: flex; flex-direction: column; gap: 12px;">
+                <p style="font-size:13px; color:var(--text-secondary); margin:0;">
+                  Use this API key in the headers as <code>x-api-key</code> to integrate with Coda API endpoints.
+                </p>
+                <div style="display:flex; gap:8px; align-items:center;">
+                  <input type="text" readonly value="${escapeHTML(currentUser.api_key)}" id="userApiKeyInput" 
+                    style="flex:1; padding:8px 12px; border:1px solid var(--slate-800); border-radius:6px; background:var(--slate-950); color:var(--text-primary); font-family:monospace; font-size:13px;">
+                  <button class="btn btn-secondary btn-sm" onclick="copyApiKey()" style="height:35px; min-height:35px;">Copy Key</button>
+                </div>
+              </div>
+            </div>
+          `;
+        } else {
+          apiContainer.innerHTML = '';
+        }
+      }
     } catch (e) {
       console.error(e);
       if (tbody) tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--error);padding:24px;">Failed to load add-ons. Please refresh.</td></tr>';
@@ -3254,5 +3283,19 @@ function escapeHTML(str) {
       showToast('Cancelled', 'Add-on subscription cancelled.', 'info');
       loadAddons();
     } catch (e) { showToast('Error', e.message, 'error'); }
+  };
+
+  window.copyApiKey = function() {
+    const input = document.getElementById('userApiKeyInput');
+    if (!input) return;
+    input.select();
+    input.setSelectionRange(0, 99999);
+    try {
+      navigator.clipboard.writeText(input.value);
+      showToast('Copied', 'API key copied to clipboard.', 'success');
+    } catch (err) {
+      document.execCommand('copy');
+      showToast('Copied', 'API key copied to clipboard.', 'success');
+    }
   };
 })();

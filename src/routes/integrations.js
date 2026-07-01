@@ -20,6 +20,13 @@ const requireApiKey = (req, res, next) => {
   if (user.status === 'blocked' || user.status === 'suspended') {
     return res.status(403).json({ success: false, error: 'Forbidden: Account is suspended or blocked' });
   }
+  
+  // Verify if business is entitled to integrations (enterprise tier or pro_api_access approved addon)
+  const { businessAllows } = require('../entitlements');
+  if (!businessAllows(user.business_id, 'integrations')) {
+    return res.status(403).json({ success: false, error: 'Forbidden: API Integration is not enabled on your plan. Requires Enterprise tier or pro_api_access add-on.' });
+  }
+
   req.userId = user.id;
   req.businessId = user.business_id;
   next();

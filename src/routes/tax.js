@@ -3,9 +3,10 @@ const express = require('express');
 const router = express.Router();
 const tax = require('../modules/tax');
 const { requireAuth, requireBusiness } = require('../auth');
+const { requireTierModule } = require('../entitlements');
 const config = require('../config');
 
-router.use(requireAuth, requireBusiness);
+router.use(requireAuth, requireBusiness, requireTierModule('tax'));
 
 router.post('/calculate', (req, res) => {
   const { amount, taxType, payerType, annual } = req.body || {};

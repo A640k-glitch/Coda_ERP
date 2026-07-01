@@ -10,7 +10,7 @@ router.get('/', (req, res) => {
   try {
     const notifications = (new TenantDB(req.user.business_id || req.businessId)).prepare(`
       SELECT * FROM notifications 
-      WHERE user_id = ? OR business_id = ?
+      WHERE (user_id = ? OR business_id = ?) AND is_admin = 0
       ORDER BY created_at DESC 
       LIMIT 20
     `).all(req.user.id, req.user.business_id);

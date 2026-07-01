@@ -45,6 +45,24 @@ function upgradeSubscription(businessId, newTierName) {
   tdb.prepare("UPDATE subscriptions SET tier = ? WHERE id = ?").run(newTierName, current.id);
   tdb.prepare("UPDATE businesses SET tier = ? WHERE id = ?").run(newTierName, businessId);
   if (prorated > 0) recordPayment(businessId, { amount: prorated, method: 'card', status: 'pending', reference: `UPG-${current.id}` });
+
+  // Auto-approve add-ons that are included in the new tier
+  const addonsToApprove = [];
+  if (newTierName === 'professional') {
+    addonsToApprove.push('starter_vat_wht', 'starter_automated_payroll');
+  } else if (newTierName === 'enterprise') {
+    addonsToApprove.push('starter_vat_wht', 'starter_automated_payroll', 'starter_multi_depot', 'pro_multi_entity');
+  }
+  for (const addonKey of addonsToApprove) {
+    const existing = tdb.prepare("SELECT id FROM business_addons WHERE business_id = ? AND addon_key = ?").get(businessId, addonKey);
+    if (existing) {
+      tdb.prepare("UPDATE business_addons SET status = 'approved', updated_at = datetime('now'), cancelled_at = NULL WHERE id = ?").run(existing.id);
+    } else {
+      const addonId = 'addon_' + require('crypto').randomUUID();
+      tdb.prepare("INSERT INTO business_addons (id, business_id, addon_key, status) VALUES (?, ?, ?, 'approved')").run(addonId, businessId, addonKey);
+    }
+  }
+
   return tdb.prepare('SELECT * FROM subscriptions WHERE id = ?').get(current.id);
 }
 

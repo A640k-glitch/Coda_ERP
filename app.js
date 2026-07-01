@@ -117,7 +117,7 @@ app.use(attachUser);
 // CSRF middleware — only GET/HEAD/OPTIONS and the compliance validator bypass
 const csrfBypassRoutes = ['/api/v1/compliance/validate'];
 app.use((req, res, next) => {
-  if (csrfBypassRoutes.includes(req.path)) {
+  if (csrfBypassRoutes.includes(req.path) || req.path.startsWith('/api/v1/integrations')) {
     return next();
   }
   csrfProtection(req, res, (err) => {
