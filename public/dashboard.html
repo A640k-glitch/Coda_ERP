@@ -30,7 +30,7 @@
     rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
   <link rel="stylesheet" href="styles.css?v=mobile-responsive-20260626-5">
-  <style>
+  <style nonce="__NONCE__">
     /* Custom styles for right sidebar panels and scroll mechanics */
     .app-shell {
       position: relative;
@@ -210,7 +210,7 @@
     }
 
   </style>
-  <script>
+  <script nonce="__NONCE__">
     if (localStorage.getItem('coda_sidebar_collapsed') === 'true' && window.innerWidth > 1024) {
       document.documentElement.classList.add('sidebar-collapsed-pref');
     }
@@ -594,7 +594,7 @@
             <table class="transactions-table">
               <thead>
                 <tr>
-                  <th style="width: 36px;"><input type="checkbox" class="select-all" onclick="toggleSelectAll(this)">
+                  <th style="width: 36px;"><input type="checkbox" class="select-all" >
                   </th>
                   <th>Code</th>
                   <th>Account Name</th>
@@ -622,7 +622,7 @@
             <table class="transactions-table">
               <thead>
                 <tr>
-                  <th style="width: 36px;"><input type="checkbox" class="select-all" onclick="toggleSelectAll(this)">
+                  <th style="width: 36px;"><input type="checkbox" class="select-all" >
                   </th>
                   <th>Date</th>
                   <th>Journal description</th>
@@ -723,7 +723,7 @@
             <table class="data-table">
               <thead>
                 <tr>
-                  <th style="width: 36px;"><input type="checkbox" class="select-all" onclick="toggleSelectAll(this)">
+                  <th style="width: 36px;"><input type="checkbox" class="select-all" >
                   </th>
                   <th>Item ID</th>
                   <th>SKU Code</th>
@@ -790,7 +790,7 @@
             <table class="data-table">
               <thead>
                 <tr>
-                  <th style="width: 36px;"><input type="checkbox" class="select-all" onclick="toggleSelectAll(this)">
+                  <th style="width: 36px;"><input type="checkbox" class="select-all" >
                   </th>
                   <th>Client ID</th>
                   <th>Company / Name</th>
@@ -831,7 +831,7 @@
             <table class="data-table">
               <thead>
                 <tr>
-                  <th style="width: 36px;"><input type="checkbox" class="select-all" onclick="toggleSelectAll(this)">
+                  <th style="width: 36px;"><input type="checkbox" class="select-all" >
                   </th>
                   <th>Emp ID</th>
                   <th>Employee Name</th>
@@ -967,7 +967,7 @@
   <div class="modal-overlay" id="authModal" style="display: none;">
     <div class="modal">
       <!-- Added close button to go home -->
-      <button onclick="window.location.href='/'"
+      <button id="backToHomeBtn"
         style="position:absolute; top:12px; right:12px; background:none; border:none; color:var(--text-muted); cursor:pointer;">
         <span class="material-symbols-outlined">close</span>
       </button>
@@ -1017,11 +1017,11 @@
   <!-- Toast Alerts Container -->
   <div class="toast-container" id="toastContainer"></div>
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
-  <script src="currency.js"></script>
-  <script src="dashboard.v3.js?v=ledger-cards-20260626"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js" integrity="sha384-vsrfeLOOY6KuIYKDlmVH5UiBmgIdB1oEf7p01YgWHuqmOHfZr374+odEv96n9tNC" crossorigin="anonymous" nonce="__NONCE__"></script>
+  <script src="currency.js" nonce="__NONCE__"></script>
+  <script src="dashboard.v3.js?v=ledger-cards-20260626" nonce="__NONCE__"></script>
 
-  <script id="modal-fix-script">
+  <script id="modal-fix-script" nonce="__NONCE__">
     document.addEventListener('DOMContentLoaded', function () {
       function openModal(id) {
         var m = document.getElementById(id);
@@ -1084,7 +1084,7 @@
     });
   </script>
 
-  <script>
+  <script nonce="__NONCE__">
     document.addEventListener('DOMContentLoaded', function () {
       // FAQ Accordion Logic
       const faqToggles = document.querySelectorAll('.faq-toggle');

@@ -422,6 +422,19 @@ function escapeHTML(str) {
     fetchBusinessData();
     updateNotificationBadge();
 
+    // CSP-compliant event listeners (replaces inline onclick handlers)
+    document.querySelectorAll('input[type="checkbox"].select-all').forEach(function(cb) {
+      cb.addEventListener('change', function() {
+        toggleSelectAll(this);
+      });
+    });
+    var backBtn = document.getElementById('backToHomeBtn');
+    if (backBtn) {
+      backBtn.addEventListener('click', function() {
+        window.location.href = '/';
+      });
+    }
+
     // Set dynamic report dates in UI
     const currentMonthName = new Date().toLocaleDateString('en-NG', { month: 'long', year: 'numeric' });
     const currentDateFormatted = new Date().toLocaleDateString('en-NG', { day: 'numeric', month: 'long', year: 'numeric' });

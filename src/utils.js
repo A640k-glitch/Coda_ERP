@@ -67,6 +67,29 @@ function escapeHtml(unsafe) {
     .replace(/'/g, "&#039;");
 }
 
+// Generate a crypto-random nonce for CSP
+function generateNonce() {
+  return crypto.randomBytes(16).toString('base64');
+}
+
+// Cache for served HTML files
+const htmlCache = new Map();
+
+// Serve HTML with CSP nonce injection
+function serveHtml(res, filePath) {
+  const fs = require('fs');
+  if (!htmlCache.has(filePath)) {
+    htmlCache.set(filePath, fs.readFileSync(filePath, 'utf8'));
+  }
+  let html = htmlCache.get(filePath);
+  // Replace nonce placeholders with the actual nonce from res.locals
+  const nonce = res.locals.nonce || '';
+  if (nonce) {
+    html = html.replace(/__NONCE__/g, nonce);
+  }
+  res.send(html);
+}
+
 module.exports = {
   generateId,
   generateApiKey,
@@ -79,4 +102,6 @@ module.exports = {
   toCSV,
   asyncHandler,
   escapeHtml,
+  generateNonce,
+  serveHtml,
 };

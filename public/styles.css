@@ -4167,7 +4167,8 @@ body.no-scroll .admin-main {
       flex: 1;
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      justify-content: flex-start;
+      padding-top: 48px;
       width: 100%;
     }
     .auth-form-wrap h1 {
@@ -4346,7 +4347,8 @@ body.no-scroll .admin-main {
       flex: 1;
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      justify-content: flex-start;
+      padding-top: 48px;
       width: 100%;
     }
     .auth-form-wrap h1 {
@@ -5225,3 +5227,49 @@ body.no-scroll .admin-main {
     padding: 0 !important;
   }
 }
+
+/* ── Universal Legal Modals (Terms, Privacy) ──────────────── */
+.legal-modal {
+  background: #fff;
+  width: 100%;
+  max-width: 500px;
+  border-radius: var(--radius-lg);
+  padding: 32px;
+  position: relative;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: var(--shadow-lg);
+}
+
+.legal-modal-close {
+  position: absolute;
+  top: 24px;
+  right: 24px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-muted);
+}
+
+.legal-modal-logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 900;
+  font-size: 18px;
+  color: var(--slate-900);
+  margin-bottom: 24px;
+}
+
+.legal-modal h2 {
+  font-size: 20px;
+  margin-bottom: 16px;
+}
+
+.legal-modal p {
+  font-size: 14px;
+  color: var(--text-secondary);
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+

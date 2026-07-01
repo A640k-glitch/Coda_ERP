@@ -12,14 +12,8 @@ const config = require('./src/config');
 const { attachUser, requireAuth, requireBusiness, requireAdmin } = require('./src/auth');
 const { db } = require('./src/db');
 const { csrfProtection } = require('./src/csrf');
-const { escapeHtml, generateNonce, serveHtml } = require('./src/utils');
+const { escapeHtml } = require('./src/utils');
 const rateLimit = require('express-rate-limit');
-
-// Seed demo data only on localhost/development
-if (process.env.NODE_ENV === 'development') {
-  const { seedDemoData } = require('./src/seed');
-  seedDemoData();
-}
 
 const onboardLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
@@ -32,68 +26,20 @@ const app = express();
 // Trust Render proxy headers for rate-limiting
 app.set('trust proxy', 1);
 
-// Nonce middleware — generates a crypto random nonce per request
-app.use((req, res, next) => {
-  res.locals.nonce = generateNonce();
-  res.locals.useStrictCsp = false; // default: relaxed CSP
-  next();
-});
-
-// Helper to set strict nonce-based CSP for authenticated/protected pages
-function setStrictCsp(req, res, nonce) {
-  res.setHeader(
-    'Content-Security-Policy',
-    [
-      `default-src 'self'`,
-      `script-src 'self' 'nonce-${nonce}' 'strict-dynamic' https://cdn.jsdelivr.net`,
-      `script-src-attr 'unsafe-inline'`,
-      `style-src 'self' 'unsafe-inline' https://fonts.googleapis.com`,
-      `font-src 'self' https://fonts.gstatic.com`,
-      `img-src 'self' data: blob:`,
-      `connect-src 'self' https://api.coingecko.com https://open.er-api.com https://cdn.jsdelivr.net`,
-      `base-uri 'self'`,
-      `form-action 'self'`,
-      `frame-ancestors 'none'`,
-      `object-src 'none'`
-    ].join('; ')
-  );
-}
-
-// Helper to set relaxed CSP for public marketing pages (allows inline scripts)
-function setPublicCsp(req, res, nonce) {
-  res.setHeader(
-    'Content-Security-Policy',
-    [
-      `default-src 'self'`,
-      `script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://code.jquery.com`,
-      `style-src 'self' 'unsafe-inline' https://fonts.googleapis.com`,
-      `font-src 'self' https://fonts.gstatic.com`,
-      `img-src 'self' data: blob:`,
-      `connect-src 'self' https://api.coingecko.com https://open.er-api.com https://cdn.jsdelivr.net`,
-      `base-uri 'self'`,
-      `form-action 'self'`,
-      `frame-ancestors 'none'`,
-      `object-src 'none'`
-    ].join('; ')
-  );
-}
-
-// Other security headers (CSP handled per-route above)
+// Security headers with CSP for external CDNs (Fonts, Chartjs)
 app.use(helmet({
-  crossOriginEmbedderPolicy: false,
-  crossOriginResourcePolicy: { policy: "cross-origin" },
-  contentSecurityPolicy: false,
-  referrerPolicy: { policy: 'strict-origin-when-cross-origin' },
-  xContentTypeOptions: true,
-  xDnsPrefetchControl: { allow: false },
-  xDownloadOptions: true,
-  xFrameOptions: { action: 'deny' },
-  xPermittedCrossDomainPolicies: { permittedPolicies: 'none' },
-  xXssProtection: false
+  contentSecurityPolicy: {
+    directives: {
+      defaultSrc: ["'self'"],
+      scriptSrc: ["'self'", "'unsafe-inline'", "'unsafe-eval'", "https://cdn.jsdelivr.net"],
+      scriptSrcAttr: ["'unsafe-inline'"],
+      styleSrc: ["'self'", "'unsafe-inline'", "https://fonts.googleapis.com"],
+      fontSrc: ["'self'", "https://fonts.gstatic.com"],
+      imgSrc: ["'self'", "data:"],
+      connectSrc: ["'self'", "https://api.coingecko.com", "https://open.er-api.com", "https://cdn.jsdelivr.net"]
+    }
+  }
 }));
-
-// Disable X-Powered-By
-app.disable('x-powered-by');
 
 // CORS with origin whitelist/reflection
 app.use(cors({
@@ -114,8 +60,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(attachUser);
 
-// CSRF middleware — only GET/HEAD/OPTIONS and the compliance validator bypass
-const csrfBypassRoutes = ['/api/v1/compliance/validate'];
+// CSRF middleware
+const csrfBypassRoutes = ['/api/v1/compliance/validate', '/api/v1/auth/appeal'];
 app.use((req, res, next) => {
   if (csrfBypassRoutes.includes(req.path)) {
     return next();
@@ -200,31 +146,20 @@ const { validateBusiness } = (() => {
 })();
 app.post('/api/v1/compliance/validate', (req, res) => res.json(validateBusiness(req.body)));
 
-// Landing page — relaxed CSP (public marketing content)
-app.get('/', (req, res) => {
-  setPublicCsp(req, res, res.locals.nonce);
-  serveHtml(res, path.join(__dirname, 'public', 'index.html'));
-});
-
-// How it works page — public CSP (uses inline styles for auth popout, same as index)
-app.get('/how-it-works', (req, res) => {
-  setPublicCsp(req, res, res.locals.nonce);
-  serveHtml(res, path.join(__dirname, 'public', 'how-it-works.html'));
-});
-
-// Protected dashboard route — strict CSP
+// Protected dashboard route
 app.get('/dashboard', attachUser, (req, res) => {
   if (!req.user) {
     return res.redirect('/');
   }
-  setStrictCsp(req, res, res.locals.nonce);
-  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
-  res.setHeader('Pragma', 'no-cache');
-  res.setHeader('Expires', '0');
-  serveHtml(res, path.join(__dirname, 'public', 'dashboard.html'));
+  res.set({
+    'Cache-Control': 'no-store, no-cache, must-revalidate, private',
+    'Pragma': 'no-cache',
+    'Expires': '0'
+  });
+  res.sendFile(path.join(__dirname, 'public', 'dashboard.html'));
 });
 
-// Protected admin route — strict CSP
+// Protected admin route
 app.get('/admin', attachUser, (req, res) => {
   if (!req.user) {
     return res.redirect('/');
@@ -232,39 +167,34 @@ app.get('/admin', attachUser, (req, res) => {
   if (req.user.email !== config.adminEmail) {
     return res.redirect('/dashboard');
   }
-  setStrictCsp(req, res, res.locals.nonce);
-  res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
-  res.setHeader('Pragma', 'no-cache');
-  res.setHeader('Expires', '0');
-  serveHtml(res, path.join(__dirname, 'public', 'admin.html'));
-});
-
-// Redirect api.html to the unified how-it-works page
-app.get('/api.html', (req, res) => {
-  res.redirect('/how-it-works');
+  res.set({
+    'Cache-Control': 'no-store, no-cache, must-revalidate, private',
+    'Pragma': 'no-cache',
+    'Expires': '0'
+  });
+  res.sendFile(path.join(__dirname, 'public', 'admin.html'));
 });
 
 // Redirect old auth routes to the new homepage modal flow
 app.get('/login', (req, res) => res.redirect('/'));
 app.get('/signup', (req, res) => res.redirect('/'));
 app.get('/forgot-password', (req, res) => {
-  setPublicCsp(req, res, res.locals.nonce);
-  serveHtml(res, path.join(__dirname, 'public', 'forgot-password.html'));
+  res.sendFile(path.join(__dirname, 'public', 'forgot-password.html'));
 });
 app.get('/reset-password', (req, res) => {
-  setPublicCsp(req, res, res.locals.nonce);
-  serveHtml(res, path.join(__dirname, 'public', 'reset-password.html'));
+  res.sendFile(path.join(__dirname, 'public', 'reset-password.html'));
 });
 app.get('/blocked', (req, res) => {
-  setPublicCsp(req, res, res.locals.nonce);
-  serveHtml(res, path.join(__dirname, 'public', 'blocked.html'));
+  res.sendFile(path.join(__dirname, 'public', 'blocked.html'));
 });
 
-// Static frontend — serves CSS, JS, images (HTML is handled by routes above)
+// Static frontend
 app.use(express.static(path.join(__dirname, 'public'), {
-  setHeaders: (res, filePath) => {
-    if (filePath.endsWith('.js') || filePath.endsWith('.css')) {
-      res.setHeader('Cache-Control', 'public, max-age=86400');
+  setHeaders: (res, path) => {
+    if (path.endsWith('.html')) {
+      res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
     }
   }
 }));
@@ -281,11 +211,8 @@ app.get('/healthz', (req, res) => {
 // Error handler
 app.use((err, req, res, next) => {
   console.error('Unhandled error:', err);
-  const isDev = process.env.NODE_ENV === 'development';
-  res.status(err.status || 500).json({
-    error: 'Internal server error',
-    ...(isDev && { detail: err.message, stack: err.stack })
-  });
+  const message = process.env.NODE_ENV !== 'production' ? err.message : 'Internal server error';
+  res.status(500).json({ error: message });
 });
 
 // Boot
@@ -303,7 +230,6 @@ if (require.main === module) {
 
   Server running on http://localhost:${PORT}
   Landing:    http://localhost:${PORT}/
-  How It Works: http://localhost:${PORT}/how-it-works
   Dashboard:  http://localhost:${PORT}/dashboard
   API:        http://localhost:${PORT}/api/v1
   Health:     http://localhost:${PORT}/healthz
@@ -323,5 +249,3 @@ if (require.main === module) {
 }
 
 module.exports = app;
-
-

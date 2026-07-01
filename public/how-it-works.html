@@ -1,0 +1,2065 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>How It Works – Coda</title>
+  <meta name="theme-color" content="#0f172a">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Coda">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon-v4.png">
+  <link rel="manifest" href="site.webmanifest">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="How It Works – Coda">
+  <meta property="og:description"
+    content="Learn how Coda works for your business. Step-by-step guide covering accounting, inventory, CRM, HR, tax, and bank reconciliation for Nigerian SMEs.">
+  <meta property="og:image" content="og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:image" content="og-image.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <link rel="stylesheet" href="styles.css?v=1.0.4">
+  <style nonce="__NONCE__">
+    /* ── How It Works Layout ─────────────────────────── */
+    .hiw-layout {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      max-width: var(--max-width);
+      margin: 88px auto 0;
+      gap: 48px;
+      padding: 0 24px 80px;
+      min-height: calc(100vh - 88px);
+    }
+
+    /* ── Sticky TOC Sidebar ──────────────────────────── */
+    .hiw-toc {
+      position: sticky;
+      top: 88px;
+      align-self: start;
+      max-height: calc(100vh - 104px);
+      overflow-y: auto;
+      padding: 24px 0;
+    }
+
+    .hiw-toc-title {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--text-muted);
+      font-weight: 700;
+      margin-bottom: 16px;
+      padding-left: 16px;
+    }
+
+    .hiw-toc-list {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      border-left: none !important;
+    }
+
+    .hiw-toc-link {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 16px !important;
+      font-size: 13.5px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      text-decoration: none;
+      border-left: none !important;
+      margin-left: 0 !important;
+      border-radius: 8px !important;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      line-height: 1.4;
+      margin-bottom: 4px;
+    }
+
+    .hiw-toc-link:hover {
+      color: var(--teal-600);
+      background: rgba(13, 148, 136, 0.04);
+    }
+
+    .hiw-toc-link.active {
+      color: #ffffff !important;
+      background: #0f172a !important; /* solid dark slate */
+      font-weight: 600;
+    }
+
+    .hiw-toc-link .toc-icon {
+      font-size: 16px;
+      opacity: 0.5;
+      flex-shrink: 0;
+      transition: all 0.2s ease;
+    }
+
+    .hiw-toc-link.active .toc-icon {
+      color: #ffffff !important;
+      opacity: 1 !important;
+    }
+
+    .hiw-toc-link.coming-soon {
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    .hiw-toc-link.coming-soon .toc-icon {
+      opacity: 0.4;
+    }
+
+    /* ── Mobile Pill Bar ─────────────────────────────── */
+    .hiw-mobile-toc {
+      display: none;
+      position: sticky;
+      top: 64px;
+      z-index: 90;
+      background: var(--bg-primary);
+      border-bottom: 1px solid var(--border-color);
+      padding: 8px 16px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      gap: 6px;
+      white-space: nowrap;
+    }
+
+    .hiw-mobile-toc::-webkit-scrollbar {
+      display: none;
+    }
+
+    .hiw-mobile-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 6px 14px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      background: var(--surface, #f1f5f9);
+      border: 1px solid var(--border-color);
+      border-radius: 100px;
+      text-decoration: none;
+      transition: all 0.2s ease;
+      flex-shrink: 0;
+    }
+
+    .hiw-mobile-pill:hover {
+      background: rgba(13, 148, 136, 0.08);
+      border-color: var(--teal-300);
+    }
+
+    .hiw-mobile-pill.active {
+      background: #0f172a !important;
+      color: #ffffff !important;
+      border-color: #0f172a !important;
+    }
+
+    .hiw-mobile-pill.coming-soon {
+      color: var(--text-muted);
+      font-style: italic;
+    }
+
+    /* ── Content Panel ───────────────────────────────── */
+    .hiw-content {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+      padding: 24px 0;
+    }
+
+    .hiw-section {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 28px 28px;
+      box-shadow: var(--shadow-sm);
+      scroll-margin-top: 96px;
+    }
+
+    .hiw-section h3 {
+      font-size: 20px;
+      font-weight: 800;
+      color: var(--slate-900);
+      margin-bottom: 12px;
+      letter-spacing: -0.02em;
+    }
+
+    .hiw-section h3.section-hero-title {
+      font-size: 26px;
+    }
+
+    .hiw-section p {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.75;
+      margin-bottom: 8px;
+    }
+
+    .hiw-section p:last-child {
+      margin-bottom: 0;
+    }
+
+    .hiw-section ul,
+    .hiw-section ol {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.85;
+      padding-left: 20px;
+      margin: 8px 0 12px;
+    }
+
+    .hiw-section ul li,
+    .hiw-section ol li {
+      margin-bottom: 4px;
+    }
+
+    .hiw-section .hiw-tip {
+      font-size: 13px;
+      color: var(--text-muted);
+      font-style: italic;
+      margin-top: 12px;
+      padding: 10px 14px;
+      background: var(--surface, #f8fafc);
+      border-radius: var(--radius-sm);
+      border-left: 3px solid var(--teal-400);
+    }
+
+    /* ── Integrations Blur ───────────────────────────── */
+    #integrations {
+      position: relative;
+      overflow: hidden;
+    }
+
+    #integrations .hiw-blur-overlay {
+      position: absolute;
+      inset: 0;
+      background: rgba(15, 23, 42, 0.55); /* premium frosted glass effect */
+      backdrop-filter: blur(12px);
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      transition: opacity 0.3s ease, visibility 0.3s ease;
+      cursor: pointer;
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+      border-radius: var(--radius);
+    }
+
+    #integrations .hiw-blur-content {
+      transition: filter 0.3s ease, opacity 0.3s ease;
+      filter: blur(3px) grayscale(1);
+      opacity: 0.35;
+    }
+
+    /* Hover reveal: only apply if NOT clicked/revealed */
+    #integrations:not(.revealed):hover .hiw-blur-overlay {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    #integrations:not(.revealed):hover .hiw-blur-content {
+      filter: none;
+      opacity: 1;
+    }
+
+    /* Permanent reveal when clicked/revealed class is added */
+    #integrations.revealed .hiw-blur-overlay {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    #integrations.revealed .hiw-blur-content {
+      filter: none;
+      opacity: 1;
+    }
+
+    /* ── Auth popout hidden by default ──────────────── */
+    #authPopoutOverlay,
+    #authPopoutContainer {
+      display: none !important;
+    }
+
+    #authPopoutOverlay.popout-open,
+    #authPopoutContainer.popout-open {
+      display: block !important;
+    }
+
+
+
+    /* ── API Docs Modal Styles ──────────────────────── */
+    #apiDocsPopoutOverlay,
+    #apiDocsPopoutContainer {
+      display: none !important;
+    }
+
+    #apiDocsPopoutOverlay.popout-open,
+    #apiDocsPopoutContainer.popout-open {
+      display: block !important;
+    }
+
+    .api-modal-container {
+      display: grid;
+      grid-template-columns: 1.4fr 0.8fr;
+      gap: 32px;
+      padding: 0 12px;
+    }
+
+    .api-docs-panel {
+      display: flex;
+      flex-direction: column;
+      gap: 24px;
+    }
+
+    .api-code-panel {
+      position: sticky;
+      top: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      align-self: start;
+    }
+
+    #inlineApiDocsContent::-webkit-scrollbar {
+      display: none !important;
+    }
+    #inlineApiDocsContent {
+      scrollbar-width: none !important;
+      -ms-overflow-style: none !important;
+    }
+
+    .api-header h1 {
+      font-size: 26px;
+      font-weight: 900;
+      margin-bottom: 8px;
+      color: var(--slate-900);
+      letter-spacing: -0.03em;
+    }
+
+    .api-header p {
+      color: var(--text-secondary);
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    .api-card-wrapper {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .api-card-wrapper h3 {
+      font-size: 15px;
+      font-weight: 700;
+      margin-bottom: 8px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .method-badge {
+      font-size: 9px;
+      font-weight: 900;
+      padding: 2px 6px;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+
+    .method-post {
+      background: var(--teal-50);
+      color: var(--teal-700);
+    }
+
+    .method-get {
+      background: var(--info-bg);
+      color: var(--info);
+    }
+
+    .api-table {
+      display: block;
+      width: 100%;
+      overflow-x: auto;
+      border-collapse: collapse;
+      font-size: 12px;
+      margin-top: 12px;
+      text-align: left;
+    }
+
+    .api-table th {
+      padding: 6px 10px 6px 0;
+      border-bottom: 1px solid var(--border-color);
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-size: 9px;
+    }
+
+    .api-table td {
+      padding: 8px 10px 8px 0;
+      border-bottom: 1px solid var(--border-light);
+      color: var(--text-secondary);
+    }
+
+    .api-table td code {
+      font-family: var(--font-mono);
+      background: var(--slate-100);
+      color: var(--slate-900);
+      padding: 2px 4px;
+      border-radius: 4px;
+    }
+
+    .code-console {
+      background: var(--slate-950);
+      border-radius: var(--radius);
+      padding: 20px;
+      color: var(--slate-200);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      line-height: 1.6;
+      box-shadow: var(--shadow-md);
+      overflow-x: auto;
+    }
+
+    .try-console {
+      background: #ffffff;
+      border: 1px solid var(--border-color);
+      border-radius: var(--radius);
+      padding: 20px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .try-console h3 {
+      font-size: 14px;
+      font-weight: 700;
+      margin-bottom: 10px;
+    }
+
+    .result-display {
+      background: var(--slate-950);
+      color: #38bdf8;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 14px;
+      border-radius: var(--radius-sm);
+      min-height: 80px;
+      max-height: 250px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      margin-top: 12px;
+    }
+
+    .api-tabs-nav {
+      display: flex;
+      border-bottom: 1px solid var(--border-color);
+      margin-bottom: 12px;
+      gap: 12px;
+    }
+
+    .api-tab-btn {
+      background: none;
+      border: none;
+      padding: 6px 0;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      cursor: pointer;
+      border-bottom: 2px solid transparent;
+    }
+
+    .api-tab-btn.active {
+      color: var(--teal-600);
+      border-bottom-color: var(--teal-600);
+    }
+
+    .api-tab-content {
+      display: none;
+    }
+
+    .api-tab-content.active {
+      display: block;
+    }
+
+    @media (max-width: 900px) {
+      .api-modal-container {
+        grid-template-columns: 1fr;
+      }
+      .api-code-panel {
+        position: static;
+      }
+    }
+
+    /* ── Responsive ──────────────────────────────────── */
+    @media (max-width: 1024px) {
+      .hiw-layout {
+        grid-template-columns: 1fr;
+        gap: 0;
+        margin-top: 64px;
+        padding: 0 16px 60px;
+      }
+
+      .hiw-toc {
+        display: none;
+      }
+
+      .hiw-mobile-toc {
+        display: flex;
+      }
+
+      .hiw-content {
+        padding-top: 16px;
+      }
+
+      .hiw-section {
+        scroll-margin-top: 120px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .hiw-layout {
+        padding: 0 12px 48px;
+      }
+
+      .hiw-section {
+        padding: 20px 18px;
+      }
+
+      .hiw-section h3 {
+        font-size: 17px;
+      }
+
+      .hiw-section h3.section-hero-title {
+        font-size: 21px;
+      }
+
+      .hiw-section p,
+      .hiw-section ul,
+      .hiw-section ol {
+        font-size: 13px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .hiw-layout {
+        padding: 0 8px 40px;
+        margin-top: 60px;
+      }
+
+      .hiw-section {
+        padding: 16px 14px;
+      }
+
+      .hiw-section h3 {
+        font-size: 16px;
+      }
+
+      .hiw-section h3.section-hero-title {
+        font-size: 19px;
+      }
+
+      .hiw-mobile-pill {
+        font-size: 11px;
+        padding: 5px 10px;
+      }
+    }
+
+    @media (max-width: 320px) {
+      .hiw-section {
+        padding: 14px 12px;
+      }
+
+      .hiw-section h3 {
+        font-size: 15px;
+      }
+
+      .hiw-section p,
+      .hiw-section ul,
+      .hiw-section ol {
+        font-size: 12px;
+      }
+    }
+
+    /* ── Universal Legal Modals (Terms, Privacy) ──────────────── */
+    .legal-modal {
+      background: #fff;
+      width: 100%;
+      max-width: 500px;
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      position: relative;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .legal-modal-close {
+      position: absolute;
+      top: 24px;
+      right: 24px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-muted);
+    }
+
+    .legal-modal-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 900;
+      font-size: 18px;
+      color: var(--slate-900);
+      margin-bottom: 24px;
+    }
+
+    .legal-modal h2 {
+      font-size: 20px;
+      margin-bottom: 16px;
+    }
+
+    .legal-modal p {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 12px;
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Navigation -->
+  <nav class="nav" id="navbar">
+    <div class="nav-inner">
+      <a href="/" class="nav-brand">
+        <span class="brand-icon-box"><svg viewBox="20 20 54 58" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <rect x="38" y="22" width="34" height="14" rx="3" fill="#0d9488" />
+            <rect x="22" y="32" width="18" height="38" rx="3.5" fill="currentColor" />
+            <rect x="34" y="62" width="38" height="14" rx="3" fill="currentColor" />
+          </svg></span>
+        <span>Coda</span>
+      </a>
+      <button class="nav-mobile-toggle" id="mobileMenuToggle" aria-label="Toggle menu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+          stroke-linejoin="round">
+          <path d="M4 12L20 12" class="top-line" />
+          <path d="M4 12H20" class="mid-line" />
+          <path d="M4 12H20" class="bot-line" />
+        </svg>
+      </button>
+      <div class="nav-links" id="navLinks">
+        <a href="/#features">Platform</a>
+        <a href="/#pricing">Pricing</a>
+        <a href="/how-it-works" class="nav-api-link active">How It Works</a>
+        <div class="nav-auth" id="apiNavAuth">
+          <script nonce="__NONCE__">
+            (function () {
+              const navAuth = document.getElementById('apiNavAuth');
+              if (!navAuth) return;
+              if (document.cookie.includes('coda_logged_in=true')) {
+                const displayName = localStorage.getItem('coda_display_name') || 'User';
+                const btn = document.createElement('button');
+                btn.className = 'btn-user-profile';
+                btn.innerHTML = '<span class="material-symbols-outlined">person</span><span class="btn-user-name">' + displayName + '</span>';
+                btn.addEventListener('click', function () { location.href = '/dashboard'; });
+                navAuth.appendChild(btn);
+              } else {
+                const link = document.createElement('a');
+                link.href = '#';
+                link.className = 'btn btn-sm trigger-auth-signin';
+                link.textContent = 'Sign in';
+                navAuth.appendChild(link);
+              }
+            })();
+          </script>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile Pill Bar TOC -->
+  <div class="hiw-mobile-toc" id="mobileToC">
+    <a href="#overview" class="hiw-mobile-pill active" data-section="overview">Overview</a>
+    <a href="#getting-started" class="hiw-mobile-pill" data-section="getting-started">Getting Started</a>
+    <a href="#dashboard" class="hiw-mobile-pill" data-section="dashboard">Dashboard</a>
+    <a href="#accounting" class="hiw-mobile-pill" data-section="accounting">Accounting</a>
+    <a href="#inventory" class="hiw-mobile-pill" data-section="inventory">Inventory</a>
+    <a href="#crm" class="hiw-mobile-pill" data-section="crm">CRM</a>
+    <a href="#hr" class="hiw-mobile-pill" data-section="hr">HR &amp; Payroll</a>
+    <a href="#tax" class="hiw-mobile-pill" data-section="tax">Tax Center</a>
+    <a href="#reconciliation" class="hiw-mobile-pill" data-section="reconciliation">Reconciliation</a>
+    <a href="#reports" class="hiw-mobile-pill" data-section="reports">Reports</a>
+    <a href="#integrations" class="hiw-mobile-pill coming-soon" data-section="integrations">🔒 Integrations</a>
+  </div>
+
+  <div class="hiw-layout">
+    <!-- Left: Sticky TOC Sidebar -->
+    <aside class="hiw-toc" id="desktopToC">
+      <div class="hiw-toc-title">On this page</div>
+      <ul class="hiw-toc-list">
+        <li><a href="#overview" class="hiw-toc-link active" data-section="overview"><span class="material-symbols-outlined toc-icon">info</span> What Coda Is For</a></li>
+        <li><a href="#getting-started" class="hiw-toc-link" data-section="getting-started"><span class="material-symbols-outlined toc-icon">rocket_launch</span> Getting Started</a></li>
+        <li><a href="#dashboard" class="hiw-toc-link" data-section="dashboard"><span class="material-symbols-outlined toc-icon">dashboard</span> Dashboard Overview</a></li>
+        <li><a href="#accounting" class="hiw-toc-link" data-section="accounting"><span class="material-symbols-outlined toc-icon">account_balance</span> Accounting</a></li>
+        <li><a href="#inventory" class="hiw-toc-link" data-section="inventory"><span class="material-symbols-outlined toc-icon">inventory_2</span> Inventory</a></li>
+        <li><a href="#crm" class="hiw-toc-link" data-section="crm"><span class="material-symbols-outlined toc-icon">groups</span> CRM &amp; Customers</a></li>
+        <li><a href="#hr" class="hiw-toc-link" data-section="hr"><span class="material-symbols-outlined toc-icon">badge</span> HR &amp; Payroll</a></li>
+        <li><a href="#tax" class="hiw-toc-link" data-section="tax"><span class="material-symbols-outlined toc-icon">receipt_long</span> Tax Center</a></li>
+        <li><a href="#reconciliation" class="hiw-toc-link" data-section="reconciliation"><span class="material-symbols-outlined toc-icon">sync_alt</span> Bank Reconciliation</a></li>
+        <li><a href="#reports" class="hiw-toc-link" data-section="reports"><span class="material-symbols-outlined toc-icon">monitoring</span> Reports</a></li>
+        <li><a href="#integrations" class="hiw-toc-link coming-soon" data-section="integrations"><span class="material-symbols-outlined toc-icon">lock</span> Integrations</a></li>
+      </ul>
+    </aside>
+
+    <!-- Right: Content Sections -->
+    <div class="hiw-content">
+
+      <!-- Overview -->
+      <div class="hiw-section" id="overview">
+        <h3 class="section-hero-title">What Coda Is For</h3>
+        <p>
+          Coda is an all-in-one system that helps you run your business without jumping between different apps or paper ledgers. Think of it as the brain of your business — it handles your accounts, stock, customers, employees, taxes, and bank records all in one place.
+        </p>
+        <p>
+          If you run a business in Nigeria — whether it's a provision shop in Mushin, a logistics company in Aba, or a consulting firm in Victoria Island — Coda helps you know how much money you have, who owes you, what you owe, and whether you're making profit or loss. No need for expensive accountants for the small stuff, and no more guessing.
+        </p>
+      </div>
+
+      <!-- Getting Started -->
+      <div class="hiw-section" id="getting-started">
+        <h3>Getting Started</h3>
+        <p>
+          When you first sign up, you'll set up your business profile — your business name, CAC number (if you have one), and what kind of business you run. You'll also pick a plan: Starter, Business Suite, or Enterprise. Don't worry, you get a 14-day free trial to test things out.
+        </p>
+        <p>
+          Once you're in, Coda creates a set of default accounts for you (like Cash, Bank, Accounts Receivable, etc.) so you can start recording transactions right away. No need to set up a chart of accounts from scratch.
+        </p>
+      </div>
+
+      <!-- Dashboard -->
+      <div class="hiw-section" id="dashboard">
+        <h3>Dashboard Overview</h3>
+        <p>
+          The dashboard is the first screen you see after login. It gives you a quick summary of how your business is doing:
+        </p>
+        <ul>
+          <li><strong>Net Income</strong> — Your profit after all expenses. This updates as you record sales and expenses.</li>
+          <li><strong>Revenue MTD</strong> — How much money came in this month so far.</li>
+          <li><strong>Expenses MTD</strong> — What you've spent this month.</li>
+          <li><strong>Expense Breakdown</strong> — A chart showing where your money is going (like rent, salaries, supplies).</li>
+          <li><strong>Quick links</strong> — Buttons to jump straight to invoicing, adding customers, or recording payments.</li>
+        </ul>
+        <p>
+          <strong>Where to input data:</strong> The dashboard itself doesn't take data entry — it just shows what you've already entered in other sections. To make the numbers move, go to Accounting, CRM, or Inventory and start entering your records.
+        </p>
+        <div class="hiw-tip">Tip: If you see zeros or dashes, it just means there's no data yet. Once you add transactions, the numbers will fill in.</div>
+      </div>
+
+      <!-- Accounting -->
+      <div class="hiw-section" id="accounting">
+        <h3>Accounting</h3>
+        <p>
+          This is where the core of your financial records live. The Accounting section has:
+        </p>
+        <ul>
+          <li><strong>General Ledger</strong> — The master record of every financial transaction in your business. Think of it as the main book where everything is written down.</li>
+          <li><strong>Accounts</strong> — Your individual account balances (Cash, Bank, Accounts Receivable, Accounts Payable, etc.). Each account shows its current balance.</li>
+          <li><strong>Journal Entries</strong> — Every transaction you record creates a journal entry. This is how money moves from one account to another (e.g., when a customer pays you, money moves from "Accounts Receivable" to "Cash").</li>
+          <li><strong>Invoices</strong> — Create and send invoices to your customers. When you create an invoice, it automatically records the amount in Accounts Receivable.</li>
+          <li><strong>Payments</strong> — Record when customers pay you. This moves money from Accounts Receivable to Cash/Bank.</li>
+          <li><strong>Expenses</strong> — Record your business expenses. Categorize them so you can see where your money goes.</li>
+        </ul>
+        <p>
+          <strong>How data flows:</strong> You create an invoice → it adds to Accounts Receivable → customer pays → you record payment → money moves to your Cash/Bank account. All of this is automatically reflected in your Profit &amp; Loss and Balance Sheet reports.
+        </p>
+      </div>
+
+      <!-- Inventory -->
+      <div class="hiw-section" id="inventory">
+        <h3>Inventory</h3>
+        <p>
+          If you sell physical products, you need to track what you have in stock. The Inventory section lets you:
+        </p>
+        <ul>
+          <li><strong>Add products</strong> — Give each product a name, description, price, and quantity.</li>
+          <li><strong>Track stock levels</strong> — See how many units you have left at any time.</li>
+          <li><strong>Record stock movements</strong> — When goods come in (purchase) or go out (sale), update the quantities.</li>
+          <li><strong>Multiple depots</strong> — If you have more than one shop or warehouse, you can track stock in each location separately.</li>
+        </ul>
+        <p>
+          <strong>Where to input:</strong> Add your products under the Inventory tab. When you make a sale that includes products, the inventory automatically reduces. When you buy new stock, you add to the quantity.
+        </p>
+      </div>
+
+      <!-- CRM & Customers -->
+      <div class="hiw-section" id="crm">
+        <h3>CRM &amp; Customers</h3>
+        <p>
+          This section helps you keep track of everyone you do business with — your customers and suppliers.
+        </p>
+        <ul>
+          <li><strong>Customer Profiles</strong> — Store names, phone numbers, email addresses, and transaction history for each customer.</li>
+          <li><strong>Transaction History</strong> — See every invoice and payment related to a customer in one place.</li>
+          <li><strong>Contact Management</strong> — Keep notes on each customer, like their preferred payment method or important dates.</li>
+          <li><strong>Communication Log</strong> — Record calls, emails, or visits with customers so your team is always on the same page.</li>
+        </ul>
+        <p>
+          <strong>Where to input:</strong> When you first start, add your existing customers manually. After that, every time you create an invoice for someone new, you can add them on the spot.
+        </p>
+      </div>
+
+      <!-- HR & Payroll -->
+      <div class="hiw-section" id="hr">
+        <h3>HR &amp; Payroll</h3>
+        <p>
+          If you have employees, this section helps you manage them and pay them correctly.
+        </p>
+        <ul>
+          <li><strong>Employee Records</strong> — Store each employee's details, job title, salary, and bank account.</li>
+          <li><strong>Payroll Processing</strong> — Calculate salaries, deductions (PAYE tax, pension), and net pay for each employee.</li>
+          <li><strong>Payslips</strong> — Generate printable payslips for your employees.</li>
+          <li><strong>Leave Management</strong> — Track annual leave, sick days, and other time off.</li>
+        </ul>
+        <p>
+          <strong>How it works:</strong> Add each employee with their salary details. When it's time to pay, run the payroll process — Coda calculates PAYE tax based on Nigerian tax brackets, deducts pension contributions, and shows you the net amount each employee should receive. The payroll entries are automatically recorded in your accounting ledger.
+        </p>
+      </div>
+
+      <!-- Tax Center -->
+      <div class="hiw-section" id="tax">
+        <h3>Tax Center</h3>
+        <p>
+          Nigerian businesses have to deal with multiple taxes — VAT, WHT, CIT, PAYE. The Tax Center helps you keep track and stay compliant with FIRS.
+        </p>
+        <ul>
+          <li><strong>VAT (7.5%)</strong> — Automatically calculated on your sales and purchases. You can see how much VAT you've collected and how much you can claim back.</li>
+          <li><strong>WHT (Withholding Tax)</strong> — Track WHT deducted from your payments and WHT deducted from customers who pay you.</li>
+          <li><strong>PAYE</strong> — Employee income tax calculated based on Nigerian tax brackets.</li>
+          <li><strong>CIT (Company Income Tax)</strong> — Track your taxable income for annual filing.</li>
+          <li><strong>Tax Reports</strong> — Generate reports showing your tax liabilities for each period.</li>
+        </ul>
+        <p>
+          <strong>Where to input:</strong> The tax calculations are mostly automatic based on what you enter in Accounting and HR. Just make sure your transactions are correctly categorized and your employee salaries are set up properly.
+        </p>
+      </div>
+
+      <!-- Bank Reconciliation -->
+      <div class="hiw-section" id="reconciliation">
+        <h3>Bank Reconciliation</h3>
+        <p>
+          Bank reconciliation is how you make sure the money in your Coda records matches what's actually in your bank account. This is one of the most important things you can do to keep your accounts accurate.
+        </p>
+        <ul>
+          <li><strong>Upload Bank Statement</strong> — Upload your bank statement (CSV or PDF) and Coda will try to match each transaction with what you've recorded.</li>
+          <li><strong>Auto-Match</strong> — Coda compares your bank transactions against your recorded payments and invoices, and flags matches.</li>
+          <li><strong>Manual Review</strong> — For transactions that don't match automatically, you can manually match them or create new entries.</li>
+          <li><strong>Reconciliation Summary</strong> — Shows how many transactions are matched, unmatched, and your match rate percentage.</li>
+        </ul>
+        <p>
+          <strong>How it works:</strong> Download your bank statement from your internet banking, upload it to Coda, and review the matches. Once you're satisfied, confirm the reconciliation. This keeps your book balance and bank balance in sync.
+        </p>
+      </div>
+
+      <!-- Reports -->
+      <div class="hiw-section" id="reports">
+        <h3>Reports</h3>
+        <p>
+          Reports help you understand your business performance at a glance. You don't need to be an accountant to read them.
+        </p>
+        <ul>
+          <li><strong>Profit &amp; Loss (P&amp;L)</strong> — Shows your income minus expenses over a period. This tells you if you're making profit or loss.</li>
+          <li><strong>Balance Sheet</strong> — Shows what you own (assets), what you owe (liabilities), and what belongs to you (equity) at a specific date.</li>
+          <li><strong>Trial Balance</strong> — A list of all your accounts and their balances. Used to make sure your books are balanced.</li>
+          <li><strong>Tax Reports</strong> — Summary of your tax liabilities for filing.</li>
+          <li><strong>Export to CSV/PDF</strong> — Download any report for your accountant or for filing with FIRS/CAC.</li>
+        </ul>
+        <p>
+          <strong>Where to input:</strong> Reports are generated automatically from the data you enter in Accounting, HR, and Inventory. You don't input anything directly in Reports — it's your window into what's already in the system.
+        </p>
+      </div>
+
+      <!-- Integrations - Blurred Coming Soon -->
+      <div class="hiw-section" id="integrations" style="position: relative; overflow: hidden;">
+        <!-- Blur overlay (toggle on/off) -->
+        <div class="hiw-blur-overlay" id="integrationsOverlay">
+          <span class="material-symbols-outlined" style="font-size: 44px; color: #2dd4bf; margin-bottom: 10px;">construction</span>
+          <h4 style="font-size: 18px; font-weight: 700; color: #ffffff; margin-bottom: 8px;">API Integrations — Coming Soon</h4>
+          <p style="font-size: 13.5px; color: #cbd5e1; text-align: center; max-width: 380px; line-height: 1.5; margin: 0 16px;">
+            Connect Coda to your bank, SMS providers, tax platforms, and more.<br>
+            <span style="font-weight: 600; color: #4ade80; display: inline-block; margin-top: 12px; font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em;">Click to reveal details</span>
+          </p>
+        </div>
+
+        <!-- Content underneath -->
+        <div class="hiw-blur-content" id="integrationsContent">
+          <h3>Integrations &amp; API Access</h3>
+          <p>
+            Once API access is live for your account, you'll be able to connect Coda to your bank, payment gateways, and other tools you already use. This means less manual typing and fewer mistakes.
+          </p>
+
+          <h4 style="font-size: 15px; font-weight: 600; color: var(--slate-800); margin: 16px 0 8px;">What you'll be able to connect:</h4>
+          <ul>
+            <li><strong>Bank Accounts (via Mono)</strong> — Connect your business bank account to automatically import transactions. No more manual entry of bank statements.</li>
+            <li><strong>CAC Verification (via QoreID)</strong> — Instantly verify your customers' CAC registration numbers when onboarding them.</li>
+            <li><strong>SMS Notifications (via Termii)</strong> — Send payment reminders, invoice alerts, and OTPs directly to your customers' phones.</li>
+            <li><strong>Tax Filing (via FIRS/TaxPromax)</strong> — File VAT, WHT, and other tax returns directly from Coda without logging into multiple portals.</li>
+            <li><strong>Payment Gateways (Paystack, Flutterwave)</strong> — Accept card payments, bank transfers, and USSD payments from your customers.</li>
+          </ul>
+
+          <h4 style="font-size: 15px; font-weight: 600; color: var(--slate-800); margin: 16px 0 8px;">What you need to do to prepare:</h4>
+          <ol>
+            <li>Sign up for developer accounts with the providers listed above (Mono, QoreID, Termii, etc.). Most of them have free tiers or pay-as-you-go plans.</li>
+            <li>Get your API keys from each provider's dashboard.</li>
+            <li>Once Coda's integration settings page is ready, you'll paste those keys into your account settings and the connections will work automatically.</li>
+            <li><a href="#" id="triggerApiDocs" style="color: var(--teal-600); font-weight: 600;">Open the API documentation →</a> to see the full technical details, including endpoint URLs, request formats, and code examples, and test them with our live interactive API tester.</li>
+          </ol>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <footer class="dark-footer">
+    <div class="dark-footer-container">
+      <div class="dark-footer-top">
+        <div class="footer-brand-column">
+          <a href="/" class="nav-brand" style="color: #ffffff !important; margin-bottom: 16px;">
+            <span class="brand-icon-box"><svg viewBox="20 20 54 58" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="38" y="22" width="34" height="14" rx="3" fill="#0d9488" />
+                <rect x="22" y="32" width="18" height="38" rx="3.5" fill="currentColor" />
+                <rect x="34" y="62" width="38" height="14" rx="3" fill="currentColor" />
+              </svg></span>
+            <span>Coda</span>
+          </a>
+          <p class="brand-tagline">The definitive financial operating system for high-growth enterprise businesses.</p>
+        </div>
+
+        <div class="footer-links-column">
+          <h4>Product</h4>
+          <ul>
+            <li><a href="/#features">Features</a></li>
+            <li><a href="/#pricing">Pricing</a></li>
+            <li><a href="/how-it-works" class="link-accent">How It Works</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-links-column">
+          <h4>Legal</h4>
+          <ul>
+            <li><a href="#!" class="legal-trigger-terms">Terms of Service</a></li>
+            <li><a href="#!" class="legal-trigger-privacy">Privacy Policy</a></li>
+          </ul>
+        </div>
+
+        <div class="footer-vertical-divider"></div>
+
+        <div class="footer-description-column">
+          <p>
+            Coda is built to comply with Nigerian GAAP and IFRS accounting standards. WHT, VAT, and PAYE tax compliance
+            is automated in accordance with FIRS guidelines. Secured under NDPR regulations.
+          </p>
+        </div>
+      </div>
+      <div class="dark-footer-bottom">
+        <div class="giant-coda-text">Coda</div>
+        <div class="footer-copyright-info">
+          &copy; 2026 Coda Technologies Ltd. All rights reserved.
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Legal Modals -->
+  <div class="modal-overlay" id="termsModal">
+    <div class="legal-modal">
+      <button class="legal-modal-close"><span class="material-symbols-outlined">close</span></button>
+      <div class="legal-modal-logo">
+        <span class="brand-icon-box brand-icon-sm"><svg viewBox="20 20 54 58" fill="none"
+            xmlns="http://www.w3.org/2000/svg">
+            <rect x="38" y="22" width="34" height="14" rx="3" fill="#0d9488" />
+            <rect x="22" y="32" width="18" height="38" rx="3.5" fill="currentColor" />
+            <rect x="34" y="62" width="38" height="14" rx="3" fill="currentColor" />
+          </svg></span>
+        <span>Coda</span>
+      </div>
+      <h2>Terms of Service</h2>
+      <p>By accessing Coda's enterprise financial systems, you agree to these Terms of Service. As a financial operating
+        system, you entrust us with critical business data; in turn, you agree to use the platform lawfully and maintain
+        the confidentiality of your account credentials.</p>
+      <p>While Coda guarantees 99.9% uptime and rigorous data backups for our core ERP features, the platform is
+        provided without liability for indirect business losses. You remain responsible for the accuracy of the
+        financial and tax data you input into the system.</p>
+      <button class="btn btn-primary btn-interactive" style="width:100%; margin-top:16px;">Acknowledge</button>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="privacyModal">
+    <div class="legal-modal">
+      <button class="legal-modal-close"><span class="material-symbols-outlined">close</span></button>
+      <div class="legal-modal-logo">
+        <span class="brand-icon-box brand-icon-sm"><svg viewBox="20 20 54 58" fill="none"
+            xmlns="http://www.w3.org/2000/svg">
+            <rect x="38" y="22" width="34" height="14" rx="3" fill="#0d9488" />
+            <rect x="22" y="32" width="18" height="38" rx="3.5" fill="currentColor" />
+            <rect x="34" y="62" width="38" height="14" rx="3" fill="currentColor" />
+          </svg></span>
+        <span>Coda</span>
+      </div>
+      <h2>Privacy Policy</h2>
+      <p>Coda acts as a data processor for your business. We securely process your financial, payroll, employee, and
+        customer data exclusively to provide our ERP services. We employ industry-standard AES-256 encryption and strict
+        access controls to ensure your corporate data remains confidential, compliant with financial regulations, and is
+        never sold to third parties.</p>
+      <p>We only ask for personal information when we truly need it to provide a service to you. We collect it by fair
+        and lawful means, with your knowledge and consent. We also let you know why we're collecting it and how it will
+        be used. We don't share any personally identifying information publicly or with third-parties, except when
+        required to by law.</p>
+      <button class="btn btn-primary btn-interactive" style="width:100%; margin-top:16px;">Acknowledge</button>
+    </div>
+  </div>
+
+
+
+  <!-- Auth Popout Modal (same pattern as index.html) -->
+  <div id="authPopoutOverlay" style="position: fixed; inset: 0; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(8px); display: none; opacity: 0; transition: opacity 0.4s ease; z-index: 9999;"></div>
+  <div id="authPopoutContainer" style="position: fixed; z-index: 10000; background: var(--bg-card); overflow: hidden; display: none; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); will-change: transform, opacity; transition: transform 0.25s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.25s cubic-bezier(0.25, 1, 0.5, 1);">
+    <button id="authPopoutClose" style="position: absolute; top: 16px; right: 16px; background: rgba(255, 255, 255, 0.1); border: none; color: #0d9488; cursor: pointer; width: 40px; height: 40px; border-radius: 20px; display: flex; align-items: center; justify-content: center; z-index: 10001; opacity: 0; transition: opacity 0.3s ease; backdrop-filter: blur(4px);">
+      <span class="material-symbols-outlined" style="font-size: 24px; font-weight: 900;">close</span>
+    </button>
+
+    <div id="inlineAuthContent" style="width:100%; height:100%; overflow-y:auto; opacity: 1; transition: opacity 0.25s ease; background: var(--bg-card); border-radius: 24px;">
+      <div class="auth-container" style="min-height: 100%; height: 100%;">
+        <div class="auth-form-panel">
+          <div class="auth-form-wrap">
+
+            <div id="authTabSwitcher" style="display: flex; gap: 0; margin-bottom: 24px; border-radius: 12px; background: var(--surface, #f1f5f9); padding: 4px; border: 1px solid var(--border-color, #e2e8f0);">
+              <button type="button" id="tabSignup" class="auth-tab-btn active" style="flex: 1; padding: 10px 16px; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; background: #0d9488; color: #ffffff; box-shadow: 0 2px 8px rgba(13,148,136,0.35);">Create Account</button>
+              <button type="button" id="tabSignin" class="auth-tab-btn" style="flex: 1; padding: 10px 16px; border: none; border-radius: 8px; font-size: 13px; font-weight: 600; cursor: pointer; transition: all 0.2s ease; background: transparent; color: var(--text-muted, #64748b);">Sign In</button>
+            </div>
+
+            <div id="authViewSignup">
+              <h1>Start your free trial</h1>
+              <p class="sub" style="margin-bottom: 12px;">14 days trial account, no card details needed.</p>
+              <p style="font-size: 12px; color: var(--text-muted); margin-bottom: 20px; display: flex; align-items: center; gap: 4px;">
+                <span style="color: var(--error); font-weight: bold;">*</span> indicates a required field
+              </p>
+              <form id="signupForm" autocomplete="off">
+                <input type="hidden" id="signupTier" value="professional">
+                <div class="form-group">
+                  <label class="form-label" for="signupTierSelect">Plan Tier</label>
+                  <select class="form-control" id="signupTierSelect">
+                    <option value="starter">Starter — ₦15,000/mo</option>
+                    <option value="professional" selected>Business Suite — ₦45,000/mo (Popular)</option>
+                    <option value="enterprise">Enterprise — ₦150,000/mo</option>
+                  </select>
+                </div>
+                <div class="field-row">
+                  <div class="form-group">
+                    <label class="form-label" for="signupName">Full Name <span style="color: var(--error);">*</span></label>
+                    <input class="form-control" type="text" id="signupName" placeholder="Adebayo Ogundele" required autocomplete="name">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="signupEmail">Email Address <span style="color: var(--error);">*</span></label>
+                    <input class="form-control" type="email" id="signupEmail" placeholder="hello@firm.com" required autocomplete="email">
+                  </div>
+                </div>
+                <div class="field-row">
+                  <div class="form-group">
+                    <label class="form-label" for="signupPassword">Password <span style="color: var(--error);">*</span></label>
+                    <div class="password-wrapper">
+                      <input class="form-control" type="password" id="signupPassword" placeholder="Minimum 8 characters" required minlength="8" autocomplete="new-password">
+                      <button type="button" class="toggle-password-btn" onclick="togglePasswordVisibility('signupPassword', this)" aria-label="Toggle password visibility">
+                        <span class="material-symbols-outlined">visibility</span>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="signupConfirmPassword">Confirm Password <span style="color: var(--error);">*</span></label>
+                    <div class="password-wrapper">
+                      <input class="form-control" type="password" id="signupConfirmPassword" placeholder="Re-enter password" required minlength="8" autocomplete="new-password">
+                      <button type="button" class="toggle-password-btn" onclick="togglePasswordVisibility('signupConfirmPassword', this)" aria-label="Toggle password visibility">
+                        <span class="material-symbols-outlined">visibility</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div class="field-row">
+                  <div class="form-group">
+                    <label class="form-label" for="signupBusinessName">Business Name <span style="color: var(--error);">*</span></label>
+                    <input class="form-control" type="text" id="signupBusinessName" placeholder="Reni Mercantile Ltd" required autocomplete="organization">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="signupPhone">Phone Number</label>
+                    <input class="form-control" type="tel" id="signupPhone" placeholder="080 1234 5678" autocomplete="tel">
+                  </div>
+                </div>
+                <div class="field-row">
+                  <div class="form-group">
+                    <label class="form-label" for="signupCAC">CAC Reg Number</label>
+                    <input class="form-control" type="text" id="signupCAC" placeholder="RC1234567" autocomplete="organization">
+                  </div>
+                  <div class="form-group">
+                    <label class="form-label" for="signupType">Business Type</label>
+                    <select class="form-control" id="signupType">
+                      <option value="sole_proprietorship">Sole Proprietorship</option>
+                      <option value="partnership">Partnership</option>
+                      <option value="limited" selected>Limited Liability Company</option>
+                    </select>
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-primary" id="signupSubmit" style="width: 100%; margin-top: 8px;">
+                  <span class="material-symbols-outlined" style="font-size:18px">rocket_launch</span>
+                  Create Account
+                </button>
+              </form>
+              <div class="auth-result" id="signupResult"></div>
+            </div>
+
+            <div id="authViewSignin" style="display: none;">
+              <h1>Welcome back</h1>
+              <p class="sub">Access your corporate ledger & dashboard.</p>
+              <form id="popupLoginForm" autocomplete="on">
+                <div class="form-group">
+                  <label class="form-label" for="popupLoginEmail">Email Address</label>
+                  <input class="form-control" type="email" id="popupLoginEmail" placeholder="name@firm.com" required autocomplete="email">
+                </div>
+                <div class="form-group" style="margin-bottom: 24px;">
+                  <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <label class="form-label" for="popupLoginPassword" style="margin-bottom: 0;">Password</label>
+                    <a href="/forgot-password" style="font-size: 12.5px; color: var(--teal-600); font-weight: 500; text-decoration: none;">Forgot password?</a>
+                  </div>
+                  <div class="password-wrapper">
+                    <input class="form-control" type="password" id="popupLoginPassword" placeholder="••••••••" required autocomplete="current-password" minlength="8">
+                    <button type="button" class="toggle-password-btn" onclick="togglePasswordVisibility('popupLoginPassword', this)" aria-label="Toggle password visibility">
+                      <span class="material-symbols-outlined">visibility</span>
+                    </button>
+                  </div>
+                </div>
+                <button type="submit" class="btn btn-primary" id="popupLoginSubmit" style="width: 100%;">
+                  <span class="material-symbols-outlined" style="font-size:18px">login</span>
+                  Sign In
+                </button>
+              </form>
+              <div class="auth-result" id="popupLoginResult"></div>
+            </div>
+
+          </div>
+
+          <div style="margin-top: 32px; display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted);">
+            <span>&copy; 2026 Coda Technologies Ltd. All rights reserved.</span>
+            <div style="display: flex; gap: 12px;">
+              <a href="#!" class="legal-trigger-privacy">Privacy</a>
+              <a href="#!" class="legal-trigger-terms">Terms</a>
+            </div>
+          </div>
+
+        </div>
+
+        <div class="auth-brand-panel">
+          <div class="auth-brand-content">
+            <div class="auth-brand-logo">
+              <span class="auth-brand-icon"><svg viewBox="20 20 54 58" fill="none" xmlns="http://www.w3.org/2000/svg"><rect x="38" y="22" width="34" height="14" rx="3" fill="#0d9488"/><rect x="22" y="32" width="18" height="38" rx="3.5" fill="currentColor"/><rect x="34" y="62" width="38" height="14" rx="3" fill="currentColor"/></svg></span>
+              <span>Coda</span>
+            </div>
+            <p class="auth-brand-quote">"We cut our accounting workload by 70% and got FIRS-compliant in one week. Coda is built for how Nigeria does business."</p>
+            <p class="auth-brand-attribution">— Chidi Okonkwo, CFO at Best Foods Ltd</p>
+            <div class="auth-brand-features">
+              <div class="auth-brand-feat">
+                <span class="material-symbols-outlined">verified</span>
+                <span>NDPR Compliant</span>
+              </div>
+              <div class="auth-brand-feat">
+                <span class="material-symbols-outlined">payments</span>
+                <span>Naira Native</span>
+              </div>
+              <div class="auth-brand-feat">
+                <span class="material-symbols-outlined">receipt_long</span>
+                <span>FIRS Ready</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+      window._showSignupView = showSignupView;
+      window._showSigninView = showSigninView;
+
+      let csrfToken = '';
+      async function fetchCsrfToken() {
+        try {
+          const res = await fetch('/api/v1/auth/csrf-token');
+          if (res.ok) { const data = await res.json(); csrfToken = data.csrfToken; }
+        } catch (err) { console.error('Failed to load CSRF token:', err); }
+      }
+      fetchCsrfToken();
+
+      // Login form
+      const loginForm = document.getElementById('popupLoginForm');
+      const loginSubmitBtn = document.getElementById('popupLoginSubmit');
+      const loginResultEl = document.getElementById('popupLoginResult');
+
+      if (loginForm) {
+        loginForm.addEventListener('submit', async e => {
+          e.preventDefault();
+          const email = document.getElementById('popupLoginEmail').value.trim();
+          const password = document.getElementById('popupLoginPassword').value;
+          if (!email || !password) { loginResultEl.textContent = 'Please enter email and password'; loginResultEl.className = 'auth-result show error'; return; }
+          loginSubmitBtn.disabled = true;
+          loginSubmitBtn.innerHTML = 'Signing in...';
+          loginResultEl.classList.remove('show', 'success', 'error');
+          loginResultEl.textContent = '';
+          try {
+            const res = await fetch('/api/v1/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-csrf-token': csrfToken }, body: JSON.stringify({ email, password }) });
+            const data = await res.json();
+            if (!res.ok) { if (data.redirect) { window.location.href = data.redirect; return; } loginResultEl.textContent = data.error || 'Invalid email or password'; loginResultEl.className = 'auth-result show error'; return; }
+            loginResultEl.textContent = 'Welcome back! Redirecting...';
+            loginResultEl.className = 'auth-result show success';
+            loginForm.reset();
+            if (data.success && data.user) { localStorage.setItem('coda_user', JSON.stringify(data.user)); const displayName = data.business ? data.business.name : (data.user.name || data.user.email || 'User'); localStorage.setItem('coda_display_name', displayName); }
+            setTimeout(() => window.top.location.href = '/dashboard', 900);
+          } catch (err) { loginResultEl.textContent = 'Network error. Please try again.'; loginResultEl.className = 'auth-result show error'; }
+          finally { loginSubmitBtn.disabled = false; loginSubmitBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size:18px">login</span> Sign In'; }
+        });
+      }
+
+      const overlay = document.getElementById('authPopoutOverlay');
+      const container = document.getElementById('authPopoutContainer');
+      const closeBtn = document.getElementById('authPopoutClose');
+
+      // Signup form
+      const signupForm = document.getElementById('signupForm');
+      const signupSubmit = document.getElementById('signupSubmit');
+      const signupResult = document.getElementById('signupResult');
+
+      if (signupForm) {
+        signupForm.addEventListener('submit', async e => {
+          e.preventDefault();
+          const pwd = document.getElementById('signupPassword').value;
+          const confirm = document.getElementById('signupConfirmPassword').value;
+          if (pwd !== confirm) { signupResult.textContent = 'Passwords do not match'; signupResult.className = 'auth-result show error'; return; }
+          const payload = { tier: document.getElementById('signupTier').value, name: document.getElementById('signupName').value, email: document.getElementById('signupEmail').value, password: pwd, businessName: document.getElementById('signupBusinessName').value, phone: document.getElementById('signupPhone').value, cac: document.getElementById('signupCAC').value, type: document.getElementById('signupType').value };
+          signupSubmit.disabled = true; signupSubmit.innerHTML = 'Creating Account...'; signupResult.classList.remove('show', 'success', 'error');
+          try {
+            const res = await fetch('/api/v1/auth/signup', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-csrf-token': csrfToken }, body: JSON.stringify(payload) });
+            const data = await res.json();
+            if (!res.ok) { signupResult.textContent = data.error || 'Signup failed'; signupResult.className = 'auth-result show error'; return; }
+            signupResult.textContent = 'Account created successfully! Redirecting...'; signupResult.className = 'auth-result show success'; signupForm.reset();
+            if (data.success && data.user) { localStorage.setItem('coda_user', JSON.stringify(data.user)); const displayName = data.business ? data.business.name : (data.user.name || data.user.email || 'User'); localStorage.setItem('coda_display_name', displayName); }
+            setTimeout(() => window.top.location.href = '/dashboard', 900);
+          } catch (err) { signupResult.textContent = 'Network error. Please try again.'; signupResult.className = 'auth-result show error'; }
+          finally { signupSubmit.disabled = false; signupSubmit.innerHTML = '<span class="material-symbols-outlined" style="font-size:18px">rocket_launch</span> Create Account'; }
+        });
+      }
+
+      // Open auth popout
+      document.addEventListener('click', e => {
+        const btn = e.target.closest('.trigger-auth, .trigger-auth-signin, #btnExpandAuth');
+        if (!btn) return;
+        e.preventDefault();
+        const isSignin = btn.classList.contains('trigger-auth-signin');
+        if (isSignin && window._showSigninView) window._showSigninView();
+        else if (window._showSignupView) window._showSignupView();
+
+        overlay.classList.add('popout-open');
+        container.classList.add('popout-open');
+        const targetWidth = Math.min(window.innerWidth - 48, 1400);
+        const targetHeight = Math.min(window.innerHeight - 48, 900);
+        container.style.top = '50%';
+        container.style.left = '50%';
+        container.style.transform = 'translate(-50%, -50%) scale(0.95)';
+        container.style.width = targetWidth + 'px';
+        container.style.height = targetHeight + 'px';
+        container.style.borderRadius = '24px';
+        container.style.opacity = '0';
+        closeBtn.style.opacity = '0';
+        document.body.style.overflow = 'hidden';
+
+        requestAnimationFrame(() => {
+          requestAnimationFrame(() => {
+            overlay.style.opacity = '1';
+            container.style.opacity = '1';
+            container.style.transform = 'translate(-50%, -50%) scale(1)';
+            setTimeout(() => { closeBtn.style.opacity = '1'; }, 100);
+          });
+        });
+      });
+
+      // Close auth popout
+      closeBtn.addEventListener('click', () => {
+        document.body.style.overflow = '';
+        closeBtn.style.opacity = '0';
+        container.style.opacity = '0';
+        container.style.transform = 'translate(-50%, -50%) scale(0.95)';
+        overlay.style.opacity = '0';
+        setTimeout(() => { container.classList.remove('popout-open'); overlay.classList.remove('popout-open'); }, 300);
+      });
+
+      function togglePasswordVisibility(id, btn) {
+        const input = document.getElementById(id);
+        if (!input) return;
+        const icon = btn.querySelector('.material-symbols-outlined');
+        if (input.type === 'password') { input.type = 'text'; if (icon) icon.textContent = 'visibility_off'; }
+        else { input.type = 'password'; if (icon) icon.textContent = 'visibility'; }
+      }
+
+
+  <!-- API Docs Popout Modal -->
+  <div id="apiDocsPopoutOverlay" style="position: fixed; inset: 0; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(8px); display: none; opacity: 0; transition: opacity 0.4s ease; z-index: 9999;"></div>
+  <div id="apiDocsPopoutContainer" style="position: fixed; z-index: 10000; background: var(--bg-card); overflow: hidden; display: none; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); will-change: transform, opacity; transition: transform 0.25s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.25s cubic-bezier(0.25, 1, 0.5, 1);">
+    <button id="apiDocsPopoutClose" style="position: absolute; top: 16px; right: 16px; background: rgba(255, 255, 255, 0.1); border: none; color: #0d9488; cursor: pointer; width: 40px; height: 40px; border-radius: 20px; display: flex; align-items: center; justify-content: center; z-index: 10001; opacity: 0; transition: opacity 0.3s ease; backdrop-filter: blur(4px);">
+      <span class="material-symbols-outlined" style="font-size: 24px; font-weight: 900;">close</span>
+    </button>
+
+    <div id="inlineApiDocsContent" style="width:100%; height:100%; overflow-y:auto; padding: 40px 24px; background: var(--bg-card); border-radius: 24px;">
+      <div class="api-modal-container">
+        
+        <!-- Left Panel: Endpoint Documentation -->
+        <div class="api-docs-panel">
+          <div class="api-header">
+            <h1>Enterprise API Integrations</h1>
+            <p style="margin-bottom: 16px;">Integrate Coda's real-time banking, compliance, and messaging modules. To use these endpoints, supply the respective API keys in your backend environment.</p>
+          </div>
+
+          <!-- Endpoint 1: CAC Verify -->
+          <div class="api-card-wrapper">
+            <h3>
+              <span class="method-badge method-post">POST</span>
+              <span>Verify CAC Registration</span>
+            </h3>
+            <div style="font-family: var(--font-mono); font-size: 11px; margin-bottom: 8px; color: var(--teal-600); background: var(--teal-50); padding: 4px 8px; border-radius: 4px; display: inline-block;">
+              /api/v1/integrations/cac/verify
+            </div>
+            <p style="font-size: 13px; color: var(--text-secondary);">Query CAC registry to validate business numbers (RC/BN).</p>
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Field</th>
+                  <th>Type</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>rcNumber</code></td>
+                  <td>string</td>
+                  <td>CAC number (e.g. RC1234567)</td>
+                </tr>
+                <tr>
+                  <td><code>companyName</code></td>
+                  <td>string</td>
+                  <td>Optional. Registered name for cross-check</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Endpoint 2: Bank Sync -->
+          <div class="api-card-wrapper">
+            <h3>
+              <span class="method-badge method-post">POST</span>
+              <span>Sync Bank Statement (Mono)</span>
+            </h3>
+            <div style="font-family: var(--font-mono); font-size: 11px; margin-bottom: 8px; color: var(--teal-600); background: var(--teal-50); padding: 4px 8px; border-radius: 4px; display: inline-block;">
+              /api/v1/integrations/bank/sync
+            </div>
+            <p style="font-size: 13px; color: var(--text-secondary);">Fetch real-time transaction feeds from connected Nigerian bank accounts for auto-reconciliation.</p>
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Field</th>
+                  <th>Type</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>accountId</code></td>
+                  <td>string</td>
+                  <td>Mono connected account ID</td>
+                </tr>
+                <tr>
+                  <td><code>period</code></td>
+                  <td>string</td>
+                  <td>Date range e.g., <code>last30days</code></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Endpoint 3: Tax File -->
+          <div class="api-card-wrapper">
+            <h3>
+              <span class="method-badge method-post">POST</span>
+              <span>Automated Tax Filing (FIRS)</span>
+            </h3>
+            <div style="font-family: var(--font-mono); font-size: 11px; margin-bottom: 8px; color: var(--teal-600); background: var(--teal-50); padding: 4px 8px; border-radius: 4px; display: inline-block;">
+              /api/v1/integrations/tax/file
+            </div>
+            <p style="font-size: 13px; color: var(--text-secondary);">Remit VAT/WHT directly to TaxPromax.</p>
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Field</th>
+                  <th>Type</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>tin</code></td>
+                  <td>string</td>
+                  <td>FIRS Tax Identification Number</td>
+                </tr>
+                <tr>
+                  <td><code>period</code></td>
+                  <td>string</td>
+                  <td>Tax period e.g. <code>2026-06</code></td>
+                </tr>
+                <tr>
+                  <td><code>amount</code></td>
+                  <td>number</td>
+                  <td>Total tax amount (NGN)</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Endpoint 4: Send SMS -->
+          <div class="api-card-wrapper">
+            <h3>
+              <span class="method-badge method-post">POST</span>
+              <span>Send SMS via Termii</span>
+            </h3>
+            <div style="font-family: var(--font-mono); font-size: 11px; margin-bottom: 8px; color: var(--teal-600); background: var(--teal-50); padding: 4px 8px; border-radius: 4px; display: inline-block;">
+              /api/v1/integrations/notifications/sms
+            </div>
+            <p style="font-size: 13px; color: var(--text-secondary);">Send high-deliverability SMS for OTPs and payment reminders.</p>
+            <table class="api-table">
+              <thead>
+                <tr>
+                  <th>Field</th>
+                  <th>Type</th>
+                  <th>Description</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>to</code></td>
+                  <td>string</td>
+                  <td>Recipient Phone (e.g. 23480...)</td>
+                </tr>
+                <tr>
+                  <td><code>message</code></td>
+                  <td>string</td>
+                  <td>SMS Content</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+        </div>
+
+        <!-- Right Panel: Code Console & Live Try-it -->
+        <div class="api-code-panel">
+          <div class="try-console">
+            <h3>Interactive API Tester</h3>
+            <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 16px;">
+              Test the Enterprise Integration endpoints directly. (Uses simulated mock data if live API keys are absent in backend).
+            </p>
+
+            <div class="form-group" style="margin-bottom: 20px;">
+              <label class="form-label" for="global-api-key">Coda API Key (x-api-key)</label>
+              <input class="form-control" type="text" id="global-api-key" placeholder="Enter any string for dev mode..." value="dev_key_123">
+            </div>
+
+            <div class="api-tabs-nav">
+              <button class="api-tab-btn active" data-tab="tab-cac">CAC Verify</button>
+              <button class="api-tab-btn" data-tab="tab-bank">Bank Sync</button>
+              <button class="api-tab-btn" data-tab="tab-sms">SMS (Termii)</button>
+            </div>
+
+            <!-- Tab 1: CAC Verify -->
+            <div class="api-tab-content active" id="tab-cac">
+              <div class="form-group">
+                <label class="form-label" for="cac-rc">RC/BN Number</label>
+                <input class="form-control" type="text" id="cac-rc" value="RC1234567">
+              </div>
+              <button class="btn btn-primary" id="btnRunCac" style="width: 100%;">
+                <span class="material-symbols-outlined" style="font-size: 16px;">verified_user</span> Verify Company
+              </button>
+            </div>
+
+            <!-- Tab 2: Bank Sync -->
+            <div class="api-tab-content" id="tab-bank">
+              <div class="form-group">
+                <label class="form-label" for="bank-acc">Mono Account ID</label>
+                <input class="form-control" type="text" id="bank-acc" value="acc_9xjfkd8923">
+              </div>
+              <button class="btn btn-primary" id="btnRunBank" style="width: 100%;">
+                <span class="material-symbols-outlined" style="font-size: 16px;">sync</span> Sync Statements
+              </button>
+            </div>
+
+            <!-- Tab 3: SMS -->
+            <div class="api-tab-content" id="tab-sms">
+              <div class="form-group">
+                <label class="form-label" for="sms-phone">Phone Number</label>
+                <input class="form-control" type="text" id="sms-phone" value="2348012345678">
+              </div>
+              <div class="form-group">
+                <label class="form-label" for="sms-msg">Message</label>
+                <input class="form-control" type="text" id="sms-msg" value="Your invoice #1002 is due.">
+              </div>
+              <button class="btn btn-primary" id="btnRunSms" style="width: 100%;">
+                <span class="material-symbols-outlined" style="font-size: 16px;">send</span> Send SMS
+              </button>
+            </div>
+
+            <!-- Result Console -->
+            <div class="result-display" id="api-result">// Response will appear here
+{
+  "status": "waiting"
+}</div>
+          </div>
+
+          <!-- Integration Guide Code block -->
+          <div class="code-console" style="margin-top: 24px;">
+            <div class="code-console-title">Integration Node.js (Axios)</div>
+            <div style="color: #c084fc;">const</div>
+            <div style="color: #e2e8f0; display: inline;">axios =</div>
+            <div style="color: #60a5fa; display: inline;">require</div>
+            <div style="color: #e2e8f0; display: inline;">('axios');</div><br><br>
+            <div style="color: #c084fc;">const</div>
+            <div style="color: #e2e8f0; display: inline;">response =</div>
+            <div style="color: #c084fc; display: inline;">await</div>
+            <div style="color: #e2e8f0; display: inline;">axios.post('https://api.coda.ng/api/v1/integrations/cac/verify', {</div><br>
+            <div style="color: #e2e8f0;">  rcNumber: <span style="color: #34d399;">'RC1234567'</span></div>
+            <div style="color: #e2e8f0;">}, {</div>
+            <div style="color: #e2e8f0;">  headers: {</div>
+            <div style="color: #e2e8f0;">    <span style="color: #34d399;">'x-api-key'</span>: <span style="color: #34d399;">'YOUR_CODA_API_KEY'</span></div>
+            <div style="color: #e2e8f0;">  }</div>
+            <div style="color: #e2e8f0;">});</div><br>
+            <div style="color: #e2e8f0;">console.<span style="color: #60a5fa;">log</span>(response.data);</div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Consolidated Page & Popout Scripts -->
+  <script nonce="__NONCE__">
+    (function () {
+      'use strict';
+
+      // ── Mobile menu toggle ──
+      const mobileMenuToggle = document.getElementById('mobileMenuToggle');
+      const navLinks = document.getElementById('navLinks');
+      if (mobileMenuToggle && navLinks) {
+        mobileMenuToggle.addEventListener('click', () => {
+          mobileMenuToggle.classList.toggle('open');
+          navLinks.classList.toggle('open');
+        });
+      }
+
+      // ── Session check — update nav for logged-in users ──
+      async function checkUserSession() {
+        const navAuth = document.getElementById('apiNavAuth');
+        let hasSession = false;
+        try {
+          const res = await fetch('/api/v1/auth/me', { credentials: 'include' });
+          if (res.ok) {
+            const data = await res.json();
+            if (data && data.user) {
+              hasSession = true;
+              if (navAuth) {
+                const displayName = data.business ? data.business.name : (data.user.name || data.user.email || 'User');
+                navAuth.innerHTML = `
+                  <button class="btn-user-profile" onclick="location.href='/dashboard'">
+                    <span class="material-symbols-outlined">person</span>
+                    <span class="btn-user-name">${displayName}</span>
+                  </button>
+                `;
+              }
+            }
+          }
+        } catch (e) { /* silent */ }
+        if (!hasSession && navAuth) {
+          navAuth.innerHTML = '<a href="#" class="btn btn-sm trigger-auth-signin" style="background:#0d9488;color:#fff;border:1px solid #0d9488;font-weight:600;margin-right:8px">Sign in</a>';
+        }
+      }
+      checkUserSession();
+      document.addEventListener('visibilitychange', () => {
+        if (document.visibilityState === 'visible') checkUserSession();
+      });
+
+      // ── Legal Modals ──
+      function openModal(id) {
+        var m = document.getElementById(id);
+        if (m) {
+          document.body.classList.add('no-scroll');
+          m.style.setProperty('display', 'flex', 'important');
+          m.classList.add('active');
+          m.style.zIndex = '999999';
+          m.style.opacity = '1';
+          m.style.visibility = 'visible';
+        }
+      }
+      function closeModal(id) {
+        var m = document.getElementById(id);
+        if (m) {
+          document.body.classList.remove('no-scroll');
+          m.style.setProperty('display', 'none', 'important');
+          m.classList.remove('active');
+        }
+      }
+      document.querySelectorAll('.legal-trigger-privacy').forEach(el => {
+        el.addEventListener('click', e => { e.preventDefault(); openModal('privacyModal'); });
+      });
+      document.querySelectorAll('.legal-trigger-terms').forEach(el => {
+        el.addEventListener('click', e => { e.preventDefault(); openModal('termsModal'); });
+      });
+      ['privacyModal', 'termsModal'].forEach(id => {
+        var m = document.getElementById(id);
+        if (m) {
+          m.querySelectorAll('.modal-close-btn, .legal-modal-close, button.btn-primary').forEach(btn => {
+            btn.addEventListener('click', () => closeModal(id));
+          });
+        }
+      });
+
+      // ── Scroll-spy: highlight active TOC link ──
+      const sections = document.querySelectorAll('.hiw-section[id]');
+      const desktopLinks = document.querySelectorAll('#desktopToC .hiw-toc-link[data-section]');
+      const mobilePills = document.querySelectorAll('#mobileToC .hiw-mobile-pill[data-section]');
+
+      let currentActive = 'overview';
+
+      function setActive(sectionId) {
+        if (currentActive === sectionId) return;
+        currentActive = sectionId;
+
+        // Re-blur Integrations if we scroll away to another section
+        if (sectionId !== 'integrations') {
+          const integrationsSection = document.getElementById('integrations');
+          if (integrationsSection) {
+            integrationsSection.classList.remove('revealed');
+          }
+        }
+
+        desktopLinks.forEach(link => {
+          link.classList.toggle('active', link.getAttribute('data-section') === sectionId);
+        });
+        mobilePills.forEach(pill => {
+          pill.classList.toggle('active', pill.getAttribute('data-section') === sectionId);
+          if (pill.classList.contains('active')) {
+            pill.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+          }
+        });
+      }
+
+      // Jitter-free mathematical partition scroll-spy
+      function handleScroll() {
+        if (window.scrollY < 120) {
+          setActive('overview');
+          return;
+        }
+
+        let activeSecId = null;
+        const viewportMiddle = window.scrollY + window.innerHeight * 0.35;
+        
+        sections.forEach(sec => {
+          const top = sec.offsetTop;
+          const height = sec.offsetHeight;
+          if (viewportMiddle >= top && viewportMiddle < top + height) {
+            activeSecId = sec.id;
+          }
+        });
+
+        if (activeSecId) {
+          setActive(activeSecId);
+        }
+      }
+      window.addEventListener('scroll', handleScroll, { passive: true });
+      window.addEventListener('load', handleScroll);
+      // Run immediately
+      handleScroll();
+
+      // Smooth scroll for TOC links
+      document.querySelectorAll('.hiw-toc-link[data-section], .hiw-mobile-pill[data-section]').forEach(link => {
+        link.addEventListener('click', e => {
+          e.preventDefault();
+          const targetId = link.getAttribute('data-section');
+          const target = document.getElementById(targetId);
+          if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            history.replaceState(null, '', '#' + targetId);
+          }
+        });
+      });
+
+      // ── Auth Popout Modal ──
+      const authOverlay = document.getElementById('authPopoutOverlay');
+      const authContainer = document.getElementById('authPopoutContainer');
+      const authCloseBtn = document.getElementById('authPopoutClose');
+      const tabSignup = document.getElementById('tabSignup');
+      const tabSignin = document.getElementById('tabSignin');
+      const viewSignup = document.getElementById('authViewSignup');
+      const viewSignin = document.getElementById('authViewSignin');
+
+      function showSignupView() {
+        if (viewSignup) viewSignup.style.display = 'block';
+        if (viewSignin) viewSignin.style.display = 'none';
+        if (tabSignup) {
+          tabSignup.style.background = '#0d9488';
+          tabSignup.style.color = '#ffffff';
+          tabSignup.style.boxShadow = '0 2px 8px rgba(13,148,136,0.35)';
+        }
+        if (tabSignin) {
+          tabSignin.style.background = 'transparent';
+          tabSignin.style.color = '#64748b';
+          tabSignin.style.boxShadow = 'none';
+        }
+      }
+
+      function showSigninView() {
+        if (viewSignup) viewSignup.style.display = 'none';
+        if (viewSignin) viewSignin.style.display = 'block';
+        if (tabSignin) {
+          tabSignin.style.background = '#0d9488';
+          tabSignin.style.color = '#ffffff';
+          tabSignin.style.boxShadow = '0 2px 8px rgba(13,148,136,0.35)';
+        }
+        if (tabSignup) {
+          tabSignup.style.background = 'transparent';
+          tabSignup.style.color = '#64748b';
+          tabSignup.style.boxShadow = 'none';
+        }
+      }
+
+      if (tabSignup) tabSignup.addEventListener('click', showSignupView);
+      if (tabSignin) tabSignin.addEventListener('click', showSigninView);
+      window._showSignupView = showSignupView;
+      window._showSigninView = showSigninView;
+
+      let csrfToken = '';
+      async function fetchCsrfToken() {
+        try {
+          const res = await fetch('/api/v1/auth/csrf-token');
+          if (res.ok) {
+            const data = await res.json();
+            csrfToken = data.csrfToken;
+          }
+        } catch (err) {
+          console.error('Failed to load CSRF token:', err);
+        }
+      }
+      fetchCsrfToken();
+
+      // Login form handler
+      const loginForm = document.getElementById('popupLoginForm');
+      const loginSubmitBtn = document.getElementById('popupLoginSubmit');
+      const loginResultEl = document.getElementById('popupLoginResult');
+
+      if (loginForm) {
+        loginForm.addEventListener('submit', async e => {
+          e.preventDefault();
+          const email = document.getElementById('popupLoginEmail').value.trim();
+          const password = document.getElementById('popupLoginPassword').value;
+          if (!email || !password) {
+            loginResultEl.textContent = 'Please enter email and password';
+            loginResultEl.className = 'auth-result show error';
+            return;
+          }
+          loginSubmitBtn.disabled = true;
+          loginSubmitBtn.innerHTML = 'Signing in...';
+          loginResultEl.classList.remove('show', 'success', 'error');
+          loginResultEl.textContent = '';
+          try {
+            const res = await fetch('/api/v1/auth/login', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'x-csrf-token': csrfToken },
+              body: JSON.stringify({ email, password })
+            });
+            const data = await res.json();
+            if (!res.ok) {
+              if (data.redirect) { window.location.href = data.redirect; return; }
+              loginResultEl.textContent = data.error || 'Invalid email or password';
+              loginResultEl.className = 'auth-result show error';
+              return;
+            }
+            loginResultEl.textContent = 'Welcome back! Redirecting...';
+            loginResultEl.className = 'auth-result show success';
+            loginForm.reset();
+            if (data.success && data.user) {
+              localStorage.setItem('coda_user', JSON.stringify(data.user));
+              const displayName = data.business ? data.business.name : (data.user.name || data.user.email || 'User');
+              localStorage.setItem('coda_display_name', displayName);
+            }
+            setTimeout(() => window.top.location.href = '/dashboard', 900);
+          } catch (err) {
+            loginResultEl.textContent = 'Network error. Please try again.';
+            loginResultEl.className = 'auth-result show error';
+          } finally {
+            loginSubmitBtn.disabled = false;
+            loginSubmitBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size:18px">login</span> Sign In';
+          }
+        });
+      }
+
+      // Signup form handler
+      const signupForm = document.getElementById('signupForm');
+      const signupSubmit = document.getElementById('signupSubmit');
+      const signupResult = document.getElementById('signupResult');
+
+      if (signupForm) {
+        signupForm.addEventListener('submit', async e => {
+          e.preventDefault();
+          const pwd = document.getElementById('signupPassword').value;
+          const confirm = document.getElementById('signupConfirmPassword').value;
+          if (pwd !== confirm) {
+            signupResult.textContent = 'Passwords do not match';
+            signupResult.className = 'auth-result show error';
+            return;
+          }
+          const payload = {
+            tier: document.getElementById('signupTier').value,
+            name: document.getElementById('signupName').value,
+            email: document.getElementById('signupEmail').value,
+            password: pwd,
+            businessName: document.getElementById('signupBusinessName').value,
+            phone: document.getElementById('signupPhone').value,
+            cac: document.getElementById('signupCAC').value,
+            type: document.getElementById('signupType').value
+          };
+          signupSubmit.disabled = true;
+          signupSubmit.innerHTML = 'Creating Account...';
+          signupResult.classList.remove('show', 'success', 'error');
+          try {
+            const res = await fetch('/api/v1/auth/signup', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json', 'x-csrf-token': csrfToken },
+              body: JSON.stringify(payload)
+            });
+            const data = await res.json();
+            if (!res.ok) {
+              signupResult.textContent = data.error || 'Signup failed';
+              signupResult.className = 'auth-result show error';
+              return;
+            }
+            signupResult.textContent = 'Account created successfully! Redirecting...';
+            signupResult.className = 'auth-result show success';
+            signupForm.reset();
+            if (data.success && data.user) {
+              localStorage.setItem('coda_user', JSON.stringify(data.user));
+              const displayName = data.business ? data.business.name : (data.user.name || data.user.email || 'User');
+              localStorage.setItem('coda_display_name', displayName);
+            }
+            setTimeout(() => window.top.location.href = '/dashboard', 900);
+          } catch (err) {
+            signupResult.textContent = 'Network error. Please try again.';
+            signupResult.className = 'auth-result show error';
+          } finally {
+            signupSubmit.disabled = false;
+            signupSubmit.innerHTML = '<span class="material-symbols-outlined" style="font-size:18px">rocket_launch</span> Create Account';
+          }
+        });
+      }
+
+      // Open auth popout
+      document.addEventListener('click', e => {
+        const btn = e.target.closest('.trigger-auth, .trigger-auth-signin, #btnExpandAuth');
+        if (!btn) return;
+        e.preventDefault();
+        const isSignin = btn.classList.contains('trigger-auth-signin');
+        if (isSignin && window._showSigninView) window._showSigninView();
+        else if (window._showSignupView) window._showSignupView();
+
+        if (authOverlay && authContainer && authCloseBtn) {
+          authOverlay.classList.add('popout-open');
+          authContainer.classList.add('popout-open');
+          const targetWidth = Math.min(window.innerWidth - 48, 1400);
+          const targetHeight = Math.min(window.innerHeight - 48, 900);
+          authContainer.style.top = '50%';
+          authContainer.style.left = '50%';
+          authContainer.style.transform = 'translate(-50%, -50%) scale(0.95)';
+          authContainer.style.width = targetWidth + 'px';
+          authContainer.style.height = targetHeight + 'px';
+          authContainer.style.borderRadius = '24px';
+          authContainer.style.opacity = '0';
+          authCloseBtn.style.opacity = '0';
+          document.body.style.overflow = 'hidden';
+
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              authOverlay.style.opacity = '1';
+              authContainer.style.opacity = '1';
+              authContainer.style.transform = 'translate(-50%, -50%) scale(1)';
+              setTimeout(() => { authCloseBtn.style.opacity = '1'; }, 100);
+            });
+          });
+        }
+      });
+
+      // Close auth popout
+      if (authCloseBtn && authOverlay && authContainer) {
+        authCloseBtn.addEventListener('click', () => {
+          document.body.style.overflow = '';
+          authCloseBtn.style.opacity = '0';
+          authContainer.style.opacity = '0';
+          authContainer.style.transform = 'translate(-50%, -50%) scale(0.95)';
+          authOverlay.style.opacity = '0';
+          setTimeout(() => {
+            authContainer.classList.remove('popout-open');
+            authOverlay.classList.remove('popout-open');
+          }, 300);
+        });
+      }
+
+      // ── API Docs Popout Logic ──
+      const apiOverlay = document.getElementById('apiDocsPopoutOverlay');
+      const apiContainer = document.getElementById('apiDocsPopoutContainer');
+      const apiCloseBtn = document.getElementById('apiDocsPopoutClose');
+      const triggerApiDocs = document.getElementById('triggerApiDocs');
+
+      if (triggerApiDocs && apiOverlay && apiContainer && apiCloseBtn) {
+        triggerApiDocs.addEventListener('click', e => {
+          e.preventDefault();
+          apiOverlay.classList.add('popout-open');
+          apiContainer.classList.add('popout-open');
+          const targetWidth = Math.min(window.innerWidth - 48, 1400);
+          const targetHeight = Math.min(window.innerHeight - 48, 900);
+          apiContainer.style.top = '50%';
+          apiContainer.style.left = '50%';
+          apiContainer.style.transform = 'translate(-50%, -50%) scale(0.95)';
+          apiContainer.style.width = targetWidth + 'px';
+          apiContainer.style.height = targetHeight + 'px';
+          apiContainer.style.borderRadius = '24px';
+          apiContainer.style.opacity = '0';
+          apiCloseBtn.style.opacity = '0';
+          document.body.style.overflow = 'hidden';
+
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => {
+              apiOverlay.style.opacity = '1';
+              apiContainer.style.opacity = '1';
+              apiContainer.style.transform = 'translate(-50%, -50%) scale(1)';
+              setTimeout(() => { apiCloseBtn.style.opacity = '1'; }, 100);
+            });
+          });
+        });
+      }
+
+      if (apiCloseBtn && apiOverlay && apiContainer) {
+        apiCloseBtn.addEventListener('click', () => {
+          document.body.style.overflow = '';
+          apiCloseBtn.style.opacity = '0';
+          apiContainer.style.opacity = '0';
+          apiContainer.style.transform = 'translate(-50%, -50%) scale(0.95)';
+          apiOverlay.style.opacity = '0';
+          setTimeout(() => {
+            apiContainer.classList.remove('popout-open');
+            apiOverlay.classList.remove('popout-open');
+          }, 300);
+        });
+      }
+
+      // Tab switching for API Docs Modal
+      document.querySelectorAll('.api-tab-btn[data-tab]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          document.querySelectorAll('.api-tab-btn').forEach(b => b.classList.remove('active'));
+          document.querySelectorAll('.api-tab-content').forEach(c => c.classList.remove('active'));
+          btn.classList.add('active');
+          const contentId = btn.getAttribute('data-tab');
+          const content = document.getElementById(contentId);
+          if (content) content.classList.add('active');
+        });
+      });
+
+      // API Tester endpoint execution
+      async function testEndpoint(endpoint, payload) {
+        const apiKey = document.getElementById('global-api-key').value.trim();
+        const resultEl = document.getElementById('api-result');
+        if (!apiKey) {
+          resultEl.textContent = JSON.stringify({ error: "Please enter a Coda API Key" }, null, 2);
+          return;
+        }
+        resultEl.textContent = JSON.stringify({ status: "executing_request..." }, null, 2);
+        try {
+          const response = await fetch(endpoint, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'x-api-key': apiKey
+            },
+            body: JSON.stringify(payload)
+          });
+          const data = await response.json();
+          resultEl.textContent = JSON.stringify({
+            _status: response.status,
+            _ok: response.ok,
+            ...data
+          }, null, 2);
+        } catch (err) {
+          resultEl.textContent = JSON.stringify({ error: err.message }, null, 2);
+        }
+      }
+
+      const btnRunCac = document.getElementById('btnRunCac');
+      if (btnRunCac) {
+        btnRunCac.addEventListener('click', () => {
+          const rc = document.getElementById('cac-rc').value;
+          testEndpoint('/api/v1/integrations/cac/verify', { rcNumber: rc });
+        });
+      }
+
+      const btnRunBank = document.getElementById('btnRunBank');
+      if (btnRunBank) {
+        btnRunBank.addEventListener('click', () => {
+          const acc = document.getElementById('bank-acc').value;
+          testEndpoint('/api/v1/integrations/bank/sync', { accountId: acc });
+        });
+      }
+
+      const btnRunSms = document.getElementById('btnRunSms');
+      if (btnRunSms) {
+        btnRunSms.addEventListener('click', () => {
+          const phone = document.getElementById('sms-phone').value;
+          const msg = document.getElementById('sms-msg').value;
+          testEndpoint('/api/v1/integrations/notifications/sms', { to: phone, message: msg });
+        });
+      }
+
+      // ── Integrations blur hover/click toggle ──
+      const intOverlay = document.getElementById('integrationsOverlay');
+      const intSection = document.getElementById('integrations');
+      if (intOverlay && intSection) {
+        intOverlay.addEventListener('click', (e) => {
+          e.stopPropagation();
+          intSection.classList.add('revealed');
+        });
+      }
+
+    })();
+  </script>
+</body>
+
+</html>

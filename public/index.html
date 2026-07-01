@@ -30,7 +30,7 @@
     rel="stylesheet">
   <link rel="stylesheet"
     href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-  <link rel="stylesheet" href="styles.css?v=mobile-responsive-20260626-3">
+  <link rel="stylesheet" href="styles.css?v=1.0.4">
   <style>
     /* Modal styles */
     .modal-overlay {
@@ -48,49 +48,7 @@
       display: flex;
     }
 
-    .legal-modal {
-      background: #fff;
-      width: 100%;
-      max-width: 500px;
-      border-radius: var(--radius-lg);
-      padding: 32px;
-      position: relative;
-      max-height: 80vh;
-      overflow-y: auto;
-      box-shadow: var(--shadow-lg);
-    }
 
-    .legal-modal-close {
-      position: absolute;
-      top: 24px;
-      right: 24px;
-      background: none;
-      border: none;
-      cursor: pointer;
-      color: var(--text-muted);
-    }
-
-    .legal-modal-logo {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      font-weight: 900;
-      font-size: 18px;
-      color: var(--slate-900);
-      margin-bottom: 24px;
-    }
-
-    .legal-modal h2 {
-      font-size: 20px;
-      margin-bottom: 16px;
-    }
-
-    .legal-modal p {
-      font-size: 14px;
-      color: var(--text-secondary);
-      line-height: 1.6;
-      margin-bottom: 12px;
-    }
 
     /* 21stdev Inspired KPI Cards for landing page features */
     .premium-kpi-grid {
@@ -274,22 +232,11 @@
       top: 7px;
       left: 50%;
       transform: translateX(-50%);
-      font-weight: 900;
-      font-size: 18px;
-      color: var(--slate-900);
-      margin-bottom: 24px;
-    }
-
-    .legal-modal h2 {
-      font-size: 20px;
-      margin-bottom: 16px;
-    }
-
-    .legal-modal p {
-      font-size: 14px;
-      color: var(--text-secondary);
-      line-height: 1.6;
-      margin-bottom: 12px;
+      width: 8px;
+      height: 8px;
+      background: #1c1c1e;
+      border-radius: 50%;
+      z-index: 10;
     }
 
     /* 21stdev Inspired KPI Cards for landing page features */
@@ -1741,7 +1688,8 @@
       flex: 1;
       display: flex;
       flex-direction: column;
-      justify-content: center;
+      justify-content: flex-start;
+      padding-top: 48px;
       width: 100%;
     }
     .auth-form-wrap h1 {
@@ -1941,6 +1889,51 @@
         0 0 0 1px rgba(20, 184, 166, 0.3),
         0 0 20px -4px rgba(20, 184, 166, 0.3) !important;
     }
+
+    /* ── Universal Legal Modals (Terms, Privacy) ──────────────── */
+    .legal-modal {
+      background: #fff;
+      width: 100%;
+      max-width: 500px;
+      border-radius: var(--radius-lg);
+      padding: 32px;
+      position: relative;
+      max-height: 80vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+    }
+
+    .legal-modal-close {
+      position: absolute;
+      top: 24px;
+      right: 24px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--text-muted);
+    }
+
+    .legal-modal-logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 900;
+      font-size: 18px;
+      color: var(--slate-900);
+      margin-bottom: 24px;
+    }
+
+    .legal-modal h2 {
+      font-size: 20px;
+      margin-bottom: 16px;
+    }
+
+    .legal-modal p {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.6;
+      margin-bottom: 12px;
+    }
 </style>
 </head>
 
@@ -1995,7 +1988,7 @@
       <div class="nav-links" id="navLinks">
         <a href="#features">Platform</a>
         <a href="#pricing">Pricing</a>
-        <a href="api.html" class="nav-api-link">API Docs</a>
+        <a href="/how-it-works" class="nav-api-link">How It Works</a>
         <div class="nav-auth" id="navAuthArea">
           <script>
             (function() {
@@ -3622,7 +3615,7 @@
           <ul>
             <li><a href="#features">Features</a></li>
             <li><a href="#pricing">Pricing</a></li>
-            <li><a href="api.html" class="link-accent">API Documentation</a></li>
+            <li><a href="/how-it-works" class="link-accent">How It Works</a></li>
           </ul>
         </div>
 
@@ -3685,7 +3678,7 @@
       });
     }
   </script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js" integrity="sha384-vsrfeLOOY6KuIYKDlmVH5UiBmgIdB1oEf7p01YgWHuqmOHfZr374+odEv96n9tNC" crossorigin="anonymous"></script>
   <script src="ticker.js"></script>
 
       <!-- Interactive Live-Demo Mockup Script -->
@@ -4498,8 +4491,8 @@
     window.togglePasswordVisibility = togglePasswordVisibility;
   })();
 </script>
-  <script src="https://cdn.jsdelivr.net/npm/three@0.134.0/build/three.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/vanta@latest/dist/vanta.net.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/three@0.134.0/build/three.min.js" integrity="sha384-9EQoUIJYrv09/oYhSxnw1VpLcfPw3BM9dE7+D/3wGUPeLLa7F9Z6OAoD+i/M6FK9" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/vanta@0.5.24/dist/vanta.net.min.js" integrity="sha384-L0sjdcIWJ156WmvbxIBHx79j1WrCqANCyw456nl/aPWSYiHNywEU2VIAcbSJeIiX" crossorigin="anonymous"></script>
   <script>
     document.addEventListener('DOMContentLoaded', () => {
       if (window.VANTA) {

@@ -459,14 +459,16 @@ document.addEventListener('DOMContentLoaded', () => {
     if (isAnchorScrolling) return; // Suppress updates during smooth anchor sweeps
 
     let activeSecId = null;
-    sections.forEach(sec => {
-      if (sec.id !== 'features' && sec.id !== 'pricing') return;
-      const top = sec.offsetTop;
-      const height = sec.offsetHeight;
-      if (window.scrollY >= top - 200 && window.scrollY < top + height - 200) {
-        activeSecId = sec.id;
-      }
-    });
+    if (window.scrollY >= 120) {
+      sections.forEach(sec => {
+        if (sec.id !== 'features' && sec.id !== 'pricing') return;
+        const top = sec.offsetTop;
+        const height = sec.offsetHeight;
+        if (window.scrollY >= top - 200 && window.scrollY < top + height - 200) {
+          activeSecId = sec.id;
+        }
+      });
+    }
 
     if (activeSecId !== currentActiveId) {
       currentActiveId = activeSecId;
@@ -514,6 +516,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
   if (sections.length && navLinks.length) {
     window.addEventListener('scroll', updateActiveLink, { passive: true });
+    window.addEventListener('load', updateActiveLink);
     updateActiveLink();
   }
 

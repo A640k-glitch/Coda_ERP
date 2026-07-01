@@ -30,10 +30,10 @@
     rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
-  <script src="currency.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js" integrity="sha384-vsrfeLOOY6KuIYKDlmVH5UiBmgIdB1oEf7p01YgWHuqmOHfZr374+odEv96n9tNC" crossorigin="anonymous" nonce="__NONCE__"></script>
+  <script src="currency.js" nonce="__NONCE__"></script>
 
-  <style>
+  <style nonce="__NONCE__">
     :root {
       --admin-topbar-h: 64px;
     }
@@ -534,7 +534,7 @@
       }
     }
   </style>
-  <script>
+  <script nonce="__NONCE__">
     function escapeHTML(str) {
       if (str === null || str === undefined) return '';
       return String(str).replace(/[&<>"']/g, function (m) {
@@ -885,7 +885,7 @@
   <div class="modal-overlay" id="authModal" style="display: none;">
     <div class="modal" style="position: relative;">
       <!-- Added close button to go home -->
-      <button onclick="window.location.href='/'"
+      <button id="backToAdminHomeBtn"
         style="position:absolute; top:12px; right:12px; background:none; border:none; color:var(--text-muted); cursor:pointer;">
         <span class="material-symbols-outlined">close</span>
       </button>
@@ -903,7 +903,7 @@
     </div>
   </div>
 
-  <script>
+  <script nonce="__NONCE__">
     (function () {
       'use strict';
 
@@ -1750,7 +1750,7 @@
     })();
   </script>
 
-  <script id="modal-fix-script">
+  <script id="modal-fix-script" nonce="__NONCE__">
     document.addEventListener('DOMContentLoaded', function () {
       function openModal(id) {
         var m = document.getElementById(id);
@@ -1814,7 +1814,7 @@
     })();
   </script>
 
-  <script>
+  <script nonce="__NONCE__">
     document.addEventListener('DOMContentLoaded', function () {
       // FAQ Accordion Logic
       const faqToggles = document.querySelectorAll('.faq-toggle');
@@ -1866,7 +1866,7 @@
     </div>
   </aside>
 
-  <script>
+  <script nonce="__NONCE__">
     // Setup Admin Notifications Panel Toggle
     document.getElementById('btnAdminNotifications')?.addEventListener('click', () => {
       const panel = document.getElementById('panelAdminNotifications');
@@ -1882,6 +1882,10 @@
 
     document.getElementById('btnAdminNotifications')?.addEventListener('click', (e) => {
       e.stopPropagation();
+    });
+
+    document.getElementById('backToAdminHomeBtn')?.addEventListener('click', function () {
+      window.location.href = '/';
     });
   </script>
 </body>

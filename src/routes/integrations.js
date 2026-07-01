@@ -13,10 +13,12 @@ const requireApiKey = (req, res, next) => {
     return res.status(401).json({ success: false, error: 'Unauthorized: Missing x-api-key header' });
   }
   const { db } = require('../db');
-const TenantDB = require('../tenant-db');
-  const user = (new TenantDB(req.user.business_id || req.businessId)).prepare('SELECT id, business_id FROM users WHERE api_key = ?').get(apiKey);
+  const user = db.prepare('SELECT id, business_id, status FROM users WHERE api_key = ?').get(apiKey);
   if (!user) {
     return res.status(401).json({ success: false, error: 'Unauthorized: Invalid API key' });
+  }
+  if (user.status === 'blocked' || user.status === 'suspended') {
+    return res.status(403).json({ success: false, error: 'Forbidden: Account is suspended or blocked' });
   }
   req.userId = user.id;
   req.businessId = user.business_id;
