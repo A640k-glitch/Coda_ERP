@@ -312,9 +312,10 @@
 
           <div class="nav-section" id="adminNavSection" style="display:none">
             <div class="nav-section-title">Admin</div>
-            <a href="/admin" class="nav-item nav-link-admin" data-label="Admin Panel">
+            <a href="/admin" class="nav-item nav-link-admin" data-label="Admin Panel" style="position: relative;">
               <span class="material-symbols-outlined" style="color: var(--success, #10b981);">account_circle</span>
               <span>Admin Panel</span>
+              <span class="admin-nav-badge" id="adminNavBadge" style="display: none; position: absolute; right: 16px; top: 50%; transform: translateY(-50%); background: var(--error, #ef4444); color: #fff; font-size: 10px; font-weight: 700; min-width: 18px; height: 18px; border-radius: 10px; align-items: center; justify-content: center; padding: 0 4px; box-sizing: border-box;"></span>
             </a>
           </div>
         </nav>
@@ -1098,7 +1099,7 @@
 
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js" integrity="sha384-vsrfeLOOY6KuIYKDlmVH5UiBmgIdB1oEf7p01YgWHuqmOHfZr374+odEv96n9tNC" crossorigin="anonymous" nonce="__NONCE__"></script>
   <script src="currency.js" nonce="__NONCE__"></script>
-  <script src="dashboard.v3.js?v=modal-debug-20260701" nonce="__NONCE__"></script>
+  <script src="dashboard.v3.js?v=1.1.0" nonce="__NONCE__"></script>
 
   <script id="modal-fix-script" nonce="__NONCE__">
     document.addEventListener('DOMContentLoaded', function () {

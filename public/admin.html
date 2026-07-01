@@ -593,9 +593,10 @@
               <span class="material-symbols-outlined">business</span>
               <span>Businesses</span>
             </button>
-            <button class="nav-item" data-tab="requests">
+            <button class="nav-item" data-tab="requests" style="position: relative;">
               <span class="material-symbols-outlined">notifications</span>
               <span>Requests</span>
+              <span class="admin-nav-badge" id="adminRequestsBadge" style="display: none; position: absolute; right: 16px; top: 50%; transform: translateY(-50%); background: var(--error, #ef4444); color: #fff; font-size: 10px; font-weight: 700; min-width: 18px; height: 18px; border-radius: 10px; align-items: center; justify-content: center; padding: 0 4px; box-sizing: border-box;"></span>
             </button>
             <button class="nav-item" data-tab="addons">
               <span class="material-symbols-outlined">extension</span>
@@ -1331,6 +1332,15 @@
             panelCount.style.display = 'none';
           }
         }
+        const requestsBadge = document.getElementById('adminRequestsBadge');
+        if (requestsBadge) {
+          if (unread > 0) {
+            requestsBadge.textContent = unread > 9 ? '9+' : unread;
+            requestsBadge.style.display = 'flex';
+          } else {
+            requestsBadge.style.display = 'none';
+          }
+        }
       }
 
       function renderNotificationsTable() {
@@ -1398,7 +1408,7 @@
         panelList.querySelectorAll('.notification-item').forEach(card => {
           const toggleBtn = card.querySelector('.btn-notif-toggle');
           if (toggleBtn) {
-            toggleBtn.addEventListener('click', async (e) => {
+            toggleBtn.addEventListener('click', (e) => {
               e.stopPropagation();
               const id = card.dataset.id;
               const notif = currentNotifications.find(n => n.id === id);
@@ -1417,10 +1427,22 @@
               }
 
               updateAdminNotificationBadge();
-              renderNotificationsTable();
+              // Update table row DOM directly without complete re-render to avoid lag
+              const row = document.querySelector(`#notificationsBody tr[data-id="${id}"]`);
+              if (row) {
+                const readStyle = newRead ? 'opacity: 0.6; font-weight: normal;' : 'font-weight: 600; opacity: 1;';
+                row.style.cssText = readStyle;
+                const rowBtn = row.querySelector('button[onclick*="adminToggleNotification"]');
+                if (rowBtn) {
+                  const toggleLabel = newRead ? 'Mark Unread' : 'Dismiss';
+                  const toggleIcon = newRead ? 'mark_email_unread' : 'check_circle';
+                  rowBtn.innerHTML = `<span class="material-symbols-outlined" style="font-size:14px; vertical-align:middle;">${toggleIcon}</span> ${toggleLabel}`;
+                  rowBtn.setAttribute('onclick', `adminToggleNotification('${id}', ${newRead ? 0 : 1})`);
+                }
+              }
 
               const endpoint = newRead ? 'read' : 'unread';
-              await fetch('/api/v1/notifications/' + id + '/' + endpoint, { method: 'PATCH', credentials: 'include' });
+              fetch('/api/v1/notifications/' + id + '/' + endpoint, { method: 'PATCH', credentials: 'include' });
             });
           }
 
@@ -1436,7 +1458,16 @@
               card.classList.remove('unread');
               card.style.opacity = '0.7';
               updateAdminNotificationBadge();
-              renderNotificationsTable();
+              // Update table row DOM directly without complete re-render to avoid lag
+              const row = document.querySelector(`#notificationsBody tr[data-id="${nId}"]`);
+              if (row) {
+                row.style.cssText = 'opacity: 0.6; font-weight: normal;';
+                const rowBtn = row.querySelector('button[onclick*="adminToggleNotification"]');
+                if (rowBtn) {
+                  rowBtn.innerHTML = `<span class="material-symbols-outlined" style="font-size:14px; vertical-align:middle;">mark_email_unread</span> Mark Unread`;
+                  rowBtn.setAttribute('onclick', `adminToggleNotification('${nId}', 0)`);
+                }
+              }
               fetch('/api/v1/notifications/' + nId + '/read', { method: 'PATCH', credentials: 'include' });
             }
 
@@ -1468,15 +1499,44 @@
         updateAdminNotificationBadge();
       }
 
-      async function adminToggleNotification(id, newReadState) {
+      function adminToggleNotification(id, newReadState) {
         const notif = currentNotifications.find(n => n.id === id);
         if (!notif) return;
         notif.is_read = newReadState;
         updateAdminNotificationBadge();
-        renderNotificationsTable();
-        renderNotificationsPanel();
+        
+        // Update table row DOM directly
+        const row = document.querySelector(`#notificationsBody tr[data-id="${id}"]`);
+        if (row) {
+          const readStyle = newReadState ? 'opacity: 0.6; font-weight: normal;' : 'font-weight: 600; opacity: 1;';
+          row.style.cssText = readStyle;
+          const btn = row.querySelector('button[onclick*="adminToggleNotification"]');
+          if (btn) {
+            const toggleLabel = newReadState ? 'Mark Unread' : 'Dismiss';
+            const toggleIcon = newReadState ? 'mark_email_unread' : 'check_circle';
+            btn.innerHTML = `<span class="material-symbols-outlined" style="font-size:14px; vertical-align:middle;">${toggleIcon}</span> ${toggleLabel}`;
+            btn.setAttribute('onclick', `adminToggleNotification('${id}', ${newReadState ? 0 : 1})`);
+          }
+        }
+
+        // Update panel card DOM directly
+        const card = document.querySelector(`.notification-item[data-id="${id}"]`);
+        if (card) {
+          card.classList.toggle('unread', !newReadState);
+          card.style.opacity = newReadState ? '0.7' : '1';
+          const toggleBtn = card.querySelector('.btn-notif-toggle');
+          if (toggleBtn) {
+            const iconSpan = toggleBtn.querySelector('.material-symbols-outlined');
+            if (iconSpan) {
+              iconSpan.textContent = newReadState ? 'undo' : 'check_circle';
+              toggleBtn.title = newReadState ? 'Mark as unread' : 'Mark as read';
+              toggleBtn.style.color = newReadState ? 'rgba(255,255,255,0.4)' : 'var(--success)';
+            }
+          }
+        }
+
         const endpoint = newReadState ? 'read' : 'unread';
-        await fetch('/api/v1/notifications/' + id + '/' + endpoint, { method: 'PATCH', credentials: 'include' });
+        fetch('/api/v1/notifications/' + id + '/' + endpoint, { method: 'PATCH', credentials: 'include' });
       }
       async function approveUpgradeFromNotification(id, businessId) {
         const notif = currentNotifications.find(n => n.id === id);
@@ -1805,7 +1865,7 @@
         loadNotifications();
 
         // Poll for notifications periodically
-        setInterval(loadNotifications, 30000);
+        setInterval(loadNotifications, 10000);
 
         // Switch to saved tab (removes early-override, applies .active classes)
         const savedTab = localStorage.getItem('coda_admin_active_view') || 'users';

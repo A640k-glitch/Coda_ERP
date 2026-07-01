@@ -447,6 +447,7 @@ function escapeHTML(str) {
     initCharts();
     initTransactionPreviewTooltip();
     fetchNotifications();
+    setInterval(fetchNotifications, 10000);
     loadSettings();
     fetchBusinessData();
     updateNotificationBadge();
@@ -1473,7 +1474,7 @@ function escapeHTML(str) {
       // Flow 1: Toggle read/unread state manually without navigating
       const toggleBtn = item.querySelector('.btn-notif-toggle');
       if (toggleBtn) {
-        toggleBtn.addEventListener('click', async (e) => {
+        toggleBtn.addEventListener('click', (e) => {
           e.stopPropagation(); // Stop navigation click
           const id = item.dataset.id;
           const notif = notificationsData.find(n => n.id === id);
@@ -1497,12 +1498,12 @@ function escapeHTML(str) {
           updateNotificationBadge();
 
           const endpoint = newRead ? 'read' : 'unread';
-          await fetch(`/api/v1/notifications/${id}/${endpoint}`, { method: 'PATCH', credentials: 'include' });
+          fetch(`/api/v1/notifications/${id}/${endpoint}`, { method: 'PATCH', credentials: 'include' });
         });
       }
 
       // Flow 2: Click to view details, navigate, and highlight target element
-      item.addEventListener('click', async (e) => {
+      item.addEventListener('click', (e) => {
         if (e.target.closest('.btn-notif-toggle')) return;
 
         const id = item.dataset.id;
@@ -1516,7 +1517,7 @@ function escapeHTML(str) {
           item.style.opacity = '0.7';
           notificationCount = Math.max(0, notificationCount - 1);
           updateNotificationBadge();
-          await fetch('/api/v1/notifications/' + id + '/read', { method: 'PATCH', credentials: 'include' });
+          fetch('/api/v1/notifications/' + id + '/read', { method: 'PATCH', credentials: 'include' });
         }
 
         // Actionable Routing with highlight
@@ -1562,6 +1563,16 @@ function escapeHTML(str) {
         panelCount.style.display = 'inline';
       } else {
         panelCount.style.display = 'none';
+      }
+    }
+    const adminNavBadge = document.getElementById('adminNavBadge');
+    if (adminNavBadge && window.__isAdmin) {
+      const unreadCount = notificationsData.filter(n => !n.is_read).length;
+      if (unreadCount > 0) {
+        adminNavBadge.textContent = unreadCount > 9 ? '9+' : unreadCount;
+        adminNavBadge.style.display = 'flex';
+      } else {
+        adminNavBadge.style.display = 'none';
       }
     }
   }
