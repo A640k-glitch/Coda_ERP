@@ -46,6 +46,12 @@ router.get('/customers/:id', (req, res) => {
   if (!c) return res.status(404).json({ error: 'Not found' });
   res.json({ customer: c });
 });
+
+router.get('/customers/:id/transactions', (req, res) => {
+  const result = crm.getCustomerTransactions(req.businessId, req.params.id);
+  if (!result) return res.status(404).json({ error: 'Customer not found' });
+  res.json(result);
+});
 router.patch('/customers/:id', (req, res) => {
   const c = crm.updateCustomer(req.businessId, req.params.id, req.body);
   if (!c) return res.status(404).json({ error: 'Not found' });
@@ -69,6 +75,26 @@ router.patch('/leads/:id', (req, res) => {
 });
 router.delete('/leads/:id', (req, res) => {
   res.json({ ok: crm.deleteLead(req.businessId, req.params.id) });
+});
+
+// ── Communication Log Routes ──────────────────────────
+router.get('/customers/:id/communications', (req, res) => {
+  res.json({ communications: crm.listCommunications(req.businessId, req.params.id) });
+});
+
+router.post('/customers/:id/communications', (req, res) => {
+  const comm = crm.addCommunication(req.businessId, {
+    customer_id: req.params.id,
+    type: req.body.type || 'note',
+    subject: req.body.subject || null,
+    notes: req.body.notes || null,
+    created_by: req.user.id,
+  });
+  res.status(201).json({ communication: comm });
+});
+
+router.delete('/communications/:id', (req, res) => {
+  res.json({ ok: crm.deleteCommunication(req.businessId, req.params.id) });
 });
 
 module.exports = router;

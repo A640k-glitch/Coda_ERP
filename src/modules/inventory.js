@@ -9,8 +9,8 @@ function addProduct(businessId, data) {
   if (!data.name) throw new Error('Product name is required');
   const id = generateId('prod');
   tdb.prepare(
-    `INSERT INTO products (id, business_id, sku, name, cost_price, sell_price, stock_level, reorder_point, category)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)`
+    `INSERT INTO products (id, business_id, sku, name, cost_price, sell_price, stock_level, reorder_point, category, depot)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
   ).run(
     id,
     businessId,
@@ -20,7 +20,8 @@ function addProduct(businessId, data) {
     Number(data.sell_price || 0),
     Number(data.stock_level || 0),
     Number(data.reorder_point || 10),
-    data.category || null
+    data.category || null,
+    data.depot || null
   );
   return getProduct(businessId, id);
 }
@@ -31,7 +32,7 @@ function updateProduct(businessId, id, data) {
   if (!existing) return null;
   tdb.prepare(
     `UPDATE products
-     SET sku = ?, name = ?, cost_price = ?, sell_price = ?, reorder_point = ?, category = ?, updated_at = datetime('now')
+     SET sku = ?, name = ?, cost_price = ?, sell_price = ?, reorder_point = ?, category = ?, depot = ?, updated_at = datetime('now')
      WHERE id = ? AND business_id = ?`
   ).run(
     data.sku ?? existing.sku,
@@ -40,6 +41,7 @@ function updateProduct(businessId, id, data) {
     data.sell_price != null ? Number(data.sell_price) : existing.sell_price,
     data.reorder_point != null ? Number(data.reorder_point) : existing.reorder_point,
     data.category ?? existing.category,
+    data.depot ?? existing.depot,
     id,
     businessId
   );
@@ -51,7 +53,7 @@ function getProduct(businessId, id) {
   return tdb.prepare('SELECT * FROM products WHERE id = ? AND business_id = ?').get(id, businessId);
 }
 
-function listProducts(businessId, { q, lowStockOnly, limit = 100, offset = 0 } = {}) {
+function listProducts(businessId, { q, lowStockOnly, depot, limit = 100, offset = 0 } = {}) {
   const tdb = new TenantDB(businessId);
   const where = ['business_id = ?'];
   const params = [businessId];
@@ -60,11 +62,21 @@ function listProducts(businessId, { q, lowStockOnly, limit = 100, offset = 0 } =
     params.push(`%${q}%`, `%${q}%`);
   }
   if (lowStockOnly) where.push('stock_level <= reorder_point');
+  if (depot) {
+    where.push('depot = ?');
+    params.push(depot);
+  }
   return tdb.prepare(
       `SELECT * FROM products WHERE ${where.join(' AND ')}
        ORDER BY name LIMIT ? OFFSET ?`
     )
     .all(...params, limit, offset);
+}
+
+function listDepots(businessId) {
+  const tdb = new TenantDB(businessId);
+  return tdb.prepare('SELECT DISTINCT depot FROM products WHERE business_id = ? AND depot IS NOT NULL AND depot != \'\' ORDER BY depot')
+    .all(businessId).map(r => r.depot);
 }
 
 function deleteProduct(businessId, id) {

@@ -150,6 +150,7 @@ app.use('/api/v1/admin', require('./src/routes/admin'));
 app.use('/api/v1/notifications', require('./src/routes/notifications'));
 app.use('/api/v1/integrations', require('./src/routes/integrations'));
 app.use('/api/v1/macro', require('./src/routes/macro'));
+app.use('/api/v1/addons', require('./src/routes/addons'));
 app.use('/api/v1/config/public', require('./src/routes/public-config'));
 
 
@@ -264,7 +265,7 @@ app.get('/blocked', (req, res) => {
 app.use(express.static(path.join(__dirname, 'public'), {
   setHeaders: (res, filePath) => {
     if (filePath.endsWith('.js') || filePath.endsWith('.css')) {
-      res.setHeader('Cache-Control', 'public, max-age=86400');
+      res.setHeader('Cache-Control', process.env.NODE_ENV === 'production' ? 'public, max-age=86400' : 'no-cache, no-store, must-revalidate');
     }
   }
 }));

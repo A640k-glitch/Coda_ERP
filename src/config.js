@@ -59,6 +59,75 @@ const config = {
     ],
   },
 
+  // Available add-ons that businesses can purchase (per-tier)
+  addons: {
+    starter_automated_payroll: {
+      name: 'Automated Payroll Run',
+      description: 'Run payroll for your employees with automated PAYE tax calculations, pension deductions, and payslip generation.',
+      price: 2000,
+      tier: 'starter',
+      modules: ['hr'],
+    },
+    starter_vat_wht: {
+      name: 'FIRS VAT/WHT Calculations',
+      description: 'Automatic VAT (7.5%) and WHT calculations on invoices and payments, with pre-filled FIRS filing summaries.',
+      price: 2000,
+      tier: 'starter',
+      modules: ['tax'],
+    },
+    starter_multi_depot: {
+      name: 'Multi-Depot Inventory',
+      description: 'Track stock across multiple warehouses or shop locations with per-depot reporting and transfers.',
+      price: 3000,
+      tier: 'starter',
+      modules: ['inventory'],
+    },
+    pro_multi_entity: {
+      name: 'Multi-Entity Management',
+      description: 'Manage multiple business entities under one account with consolidated reporting and inter-entity transactions.',
+      price: 5000,
+      tier: 'professional',
+      modules: ['accounting', 'reports'],
+    },
+    pro_api_access: {
+      name: 'Custom API & Developer Access',
+      description: 'REST API access for custom integrations, webhooks, and developer sandbox environment.',
+      price: 5000,
+      tier: 'professional',
+      modules: [],
+    },
+    pro_success_manager: {
+      name: 'Dedicated Success Manager',
+      description: 'Personal account manager for onboarding, training, and ongoing support with priority SLA.',
+      price: 10000,
+      tier: 'professional',
+      modules: [],
+    },
+    enterprise_on_prem: {
+      name: 'On-Prem / Private Cloud Deploy',
+      description: 'Deploy Coda on your own infrastructure or private cloud with full data isolation and custom SLAs.',
+      price: 50000,
+      tier: 'enterprise',
+      modules: [],
+    },
+    enterprise_bespoke_modules: {
+      name: 'Bespoke Custom ERP Modules',
+      description: 'Custom-built modules tailored to your specific business workflows with dedicated engineering support.',
+      price: 100000,
+      tier: 'enterprise',
+      modules: [],
+    },
+  },
+
+  // Business-type-specific tax rates
+  businessTaxRates: {
+    'sole-proprietorship': { vat: 0.075, cit: 0.25, wht: { companies: 0.05, individuals: 0.05 } },
+    'partnership': { vat: 0.075, cit: 0.25, wht: { companies: 0.10, individuals: 0.05 } },
+    'limited': { vat: 0.075, cit: 0.30, wht: { companies: 0.10, individuals: 0.05 } },
+    'non-profit': { vat: 0.00, cit: 0.00, wht: { companies: 0.05, individuals: 0.05 } },
+    'default': { vat: 0.075, cit: 0.30, wht: { companies: 0.10, individuals: 0.05 } },
+  },
+
   chartOfAccounts: [
     // Assets
     { code: '1000', name: 'Cash', type: 'asset' },

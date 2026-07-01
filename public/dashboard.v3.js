@@ -15,9 +15,9 @@ function escapeHTML(str) {
   let currentAllowedViews = ['overview'];
 
   const tierModules = {
-    starter: ['overview', 'accounting', 'reconciliation', 'tax', 'reports'],
-    professional: ['overview', 'accounting', 'reconciliation', 'tax', 'reports', 'crm', 'hr'],
-    enterprise: ['overview', 'accounting', 'reconciliation', 'inventory', 'crm', 'hr', 'tax', 'reports']
+    starter: ['overview', 'accounting', 'reconciliation', 'tax', 'reports', 'addons'],
+    professional: ['overview', 'accounting', 'reconciliation', 'tax', 'reports', 'crm', 'hr', 'addons'],
+    enterprise: ['overview', 'accounting', 'reconciliation', 'inventory', 'crm', 'hr', 'tax', 'reports', 'addons']
   };
 
   function normalizeTier(tier) {
@@ -47,6 +47,7 @@ function escapeHTML(str) {
     crm: ['#crmTableBody tr'],
     hr: ['#hrTableBody tr'],
     tax: ['#taxTableBody tr'],
+    addons: [],
     reports: ['#reportsTableBody tr']
   };
 
@@ -349,10 +350,10 @@ function escapeHTML(str) {
     }
 
     // Apply Tier Restrictions
-    function applyTierRestrictions(tier) {
+    async function applyTierRestrictions(tier) {
       const t = normalizeTier(tier);
       const allowed = allowedViewsForTier(t);
-      currentAllowedViews = allowed;
+      currentAllowedViews = allowed.slice();
       
       document.querySelectorAll('.nav-item[data-view]').forEach(el => {
         const view = el.getAttribute('data-view');
@@ -409,10 +410,38 @@ function escapeHTML(str) {
         el.style.display = allowed.includes(moduleName) ? '' : 'none';
       });
 
-      return allowed;
+      // Unlock nav items for add-on subscribers
+      try {
+        const res = await fetch('/api/v1/addons');
+        const data = await res.json();
+        const bizAddons = data.addons || [];
+        const addonViewMap = {
+          starter_automated_payroll: 'hr',
+          starter_vat_wht: 'tax',
+          starter_multi_depot: 'inventory',
+          pro_multi_entity: 'accounting',
+          pro_api_access: null,
+          pro_success_manager: null,
+          enterprise_on_prem: null,
+          enterprise_bespoke_modules: null,
+        };
+        for (const a of bizAddons) {
+          const viewName = addonViewMap[a.addon_key];
+          if (viewName && !allowed.includes(viewName)) {
+            currentAllowedViews.push(viewName);
+            const navItem = document.querySelector('.nav-item[data-view="' + viewName + '"]');
+            if (navItem) navItem.style.display = 'flex';
+            const card = document.getElementById('card-' + viewName);
+            if (card) { card.style.display = ''; card.style.cursor = 'pointer'; }
+            document.querySelectorAll('[data-requires-module="' + viewName + '"]').forEach(el => { el.style.display = ''; });
+          }
+        }
+      } catch (e) { /* silently fail */ }
+
+      return currentAllowedViews.slice();
     }
 
-    const allowedViews = applyTierRestrictions(currentUser.tier);
+    const allowedViews = await applyTierRestrictions(currentUser.tier);
 
     // Initialize components
     initCharts();
@@ -871,6 +900,7 @@ function escapeHTML(str) {
       crm: 'CRM & Customers',
       hr: 'HR & Payroll',
       tax: 'Tax Center',
+      addons: 'Add-ons',
       reports: 'Reports'
     };
     pageTitle.textContent = labels[viewName] || 'Dashboard';
@@ -885,9 +915,10 @@ function escapeHTML(str) {
     if (override) override.remove();
     
     if (viewName === 'reconciliation') currentLoadPromise = loadReconciliation();
-    else if (viewName === 'inventory') currentLoadPromise = loadInventory();
+    else if (viewName === 'inventory') { loadDepotFilter(); currentLoadPromise = loadInventory(); }
     else if (viewName === 'crm') currentLoadPromise = loadCRM();
     else if (viewName === 'hr') currentLoadPromise = loadHR();
+    else if (viewName === 'addons') currentLoadPromise = loadAddons();
     else if (viewName === 'tax') currentLoadPromise = loadTax();
     else if (viewName === 'accounting' || viewName === 'overview') currentLoadPromise = loadAccounting();
     
@@ -1722,7 +1753,7 @@ function escapeHTML(str) {
   });
 
   // ===== Global Action Modal System =====
-  function showModal(title, fields, onSubmit) {
+  function showModal(title, fields, onSubmit, options) {
     const modal = document.getElementById('actionModal');
     const titleEl = document.getElementById('actionModalTitle');
     const fieldsEl = document.getElementById('actionModalFields');
@@ -1730,7 +1761,7 @@ function escapeHTML(str) {
     
     // Reset submit button styles (prevents red button leak from delete account flow)
     const submitBtn = document.getElementById('actionModalSubmit');
-    submitBtn.textContent = 'Save';
+    submitBtn.textContent = (options && options.submitLabel) || 'Save';
     submitBtn.style.background = '';
     submitBtn.style.borderColor = '';
     
@@ -1745,10 +1776,18 @@ function escapeHTML(str) {
           </div>
         `;
       }
+      if (f.type === 'html') {
+        return `
+          <div class="form-group">
+            <label class="form-label">${f.label}</label>
+            ${f.html || ''}
+          </div>
+        `;
+      }
       return `
         <div class="form-group">
           <label class="form-label">${f.label}</label>
-          <input class="form-control" type="${f.type || 'text'}" name="${f.name}" required="${f.required !== false}" ${f.step ? `step="${f.step}"` : ''} ${f.value ? `value="${f.value}"` : ''}>
+          <input class="form-control" type="${f.type || 'text'}" name="${f.name}" ${f.required !== false ? 'required' : ''} ${f.step ? `step="${f.step}"` : ''} ${f.value ? `value="${f.value}"` : ''} ${f.placeholder ? `placeholder="${f.placeholder}"` : ''} ${f.title ? `title="${f.title}"` : ''}>
         </div>
       `;
     }).join('');
@@ -1895,7 +1934,7 @@ function escapeHTML(str) {
         const opts = (f.options || []).map(o => '<option value="' + o + '" ' + (val === o ? 'selected' : '') + '>' + o.charAt(0).toUpperCase() + o.slice(1) + '</option>').join('');
         return '<div class="form-group"><label class="form-label">' + f.label + '</label><select class="form-control" name="' + f.name + '" required>' + opts + '</select></div>';
       }
-      return '<div class="form-group"><label class="form-label">' + f.label + '</label><input class="form-control" type="' + (f.type || 'text') + '" name="' + f.name + '" required="' + (f.required !== false) + '" ' + (f.step ? 'step="' + f.step + '"' : '') + ' value="' + val.replace(/"/g, '&quot;') + '"></div>';
+      return '<div class="form-group"><label class="form-label">' + f.label + '</label><input class="form-control" type="' + (f.type || 'text') + '" name="' + f.name + '" ' + (f.required !== false ? 'required' : '') + ' ' + (f.step ? 'step="' + f.step + '"' : '') + ' value="' + val.replace(/"/g, '&quot;') + '"></div>';
     }).join('');
     modal.style.display = 'flex';
     document.body.classList.add('no-scroll');
@@ -2029,6 +2068,26 @@ function escapeHTML(str) {
 
   // ===== Data Loaders =====
   
+  // Depot Filter Helpers
+  async function loadDepotFilter() {
+    try {
+      const res = await fetch('/api/v1/inventory/products/depots');
+      const data = await res.json();
+      const sel = document.getElementById('depotFilter');
+      if (!sel) return;
+      const current = sel.value;
+      sel.innerHTML = '<option value="">All Depots</option>' + (data.depots || []).map(d => '<option value="' + escapeHTML(d) + '">' + escapeHTML(d) + '</option>').join('');
+      if (current) sel.value = current;
+    } catch (e) { console.error('Failed to load depots', e); }
+  }
+
+  document.addEventListener('change', (e) => {
+    if (e.target.id === 'depotFilter') { loadInventory(); }
+  });
+  document.addEventListener('click', (e) => {
+    if (e.target.id === 'btnRefreshInventory') { loadDepotFilter(); loadInventory(); }
+  });
+
   // Inventory Loader
   async function loadInventory() {
     if (!canUseModule('inventory')) return;
@@ -2038,10 +2097,16 @@ function escapeHTML(str) {
     // 1. Load Products
     if (tbody) {
       try {
-        const res = await fetch('/api/v1/inventory/products');
+        const depotVal = document.getElementById('depotFilter')?.value || '';
+        const searchQ = document.getElementById('productSearchInput')?.value || '';
+        const params = new URLSearchParams();
+        if (depotVal) params.set('depot', depotVal);
+        if (searchQ) params.set('q', searchQ);
+        const queryStr = params.toString();
+        const res = await fetch('/api/v1/inventory/products' + (queryStr ? '?' + queryStr : ''));
         const data = await res.json();
         if (!data.products || data.products.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="9" style="text-align: center; color: var(--text-muted); padding: 24px;">No products found.</td></tr>';
+          tbody.innerHTML = '<tr><td colspan="10" style="text-align: center; color: var(--text-muted); padding: 24px;">No products found.</td></tr>';
         } else {
           tbody.innerHTML = data.products.map((p, i) => `
             <tr data-id="${p.id}" data-idx="${i}">
@@ -2051,6 +2116,7 @@ function escapeHTML(str) {
               <td style="font-weight: 500; color: var(--text-primary);">${escapeHTML(p.name)}</td>
               <td>${formatCurrency(p.cost_price)}</td>
               <td>${formatCurrency(p.sell_price)}</td>
+              <td>${p.depot ? escapeHTML(p.depot) : '<span style="color: var(--text-muted);">—</span>'}</td>
               <td>${p.stock_level} units</td>
               <td>${p.stock_level <= p.reorder_point ? '<span class="status-badge status-pending">Low Stock</span>' : '<span class="status-badge status-active">Optimal</span>'}</td>
               <td class="actions-col">
@@ -2070,7 +2136,7 @@ function escapeHTML(str) {
         }
       } catch (e) {
         console.error(e);
-        tbody.innerHTML = '<tr><td colspan="9" style="text-align: center; color: var(--error); padding: 24px;">Failed to load products.</td></tr>';
+        tbody.innerHTML = '<tr><td colspan="10" style="text-align: center; color: var(--error); padding: 24px;">Failed to load products.</td></tr>';
       }
     }
 
@@ -2105,10 +2171,11 @@ function escapeHTML(str) {
   document.getElementById('btnNewProduct')?.addEventListener('click', () => {
     if (!requireModule('inventory')) return;
     showModal('Add New Product', [
-      { label: 'Product Name', name: 'name' },
-      { label: 'SKU', name: 'sku', required: false },
-      { label: 'Cost Price (' + (typeof getActiveCurrencySymbol === 'function' ? getActiveCurrencySymbol() : '₦') + ')', name: 'cost_price', type: 'number', step: '0.01' },
-      { label: 'Selling Price (' + (typeof getActiveCurrencySymbol === 'function' ? getActiveCurrencySymbol() : '₦') + ')', name: 'sell_price', type: 'number', step: '0.01' },
+      { label: 'Product Name', name: 'name', placeholder: 'e.g. Peak Milk 900g' },
+      { label: 'SKU', name: 'sku', required: false, placeholder: 'e.g. PKM-900-001' },
+      { label: 'Depot/Location', name: 'depot', required: false, placeholder: 'e.g. Main Warehouse, Branch A' },
+      { label: 'Cost Price (' + (typeof getActiveCurrencySymbol === 'function' ? getActiveCurrencySymbol() : '₦') + ')', name: 'cost_price', type: 'number', step: '0.01', placeholder: 'e.g. 3500' },
+      { label: 'Selling Price (' + (typeof getActiveCurrencySymbol === 'function' ? getActiveCurrencySymbol() : '₦') + ')', name: 'sell_price', type: 'number', step: '0.01', placeholder: 'e.g. 4500' },
       { label: 'Initial Stock Level', name: 'stock_level', type: 'number', value: '0' },
       { label: 'Reorder Point', name: 'reorder_point', type: 'number', value: '10' }
     ], async (data) => {
@@ -2145,6 +2212,12 @@ function escapeHTML(str) {
           <td>${escapeHTML(c.tin || 'N/A')}</td>
           <td>${formatDateTime(c.created_at)}</td>
           <td class="actions-col">
+            <button class="btn-icon btn-view" title="View Transactions" onclick="showCustomerTransactions('${c.id}', '${escapeHTML(c.name).replace(/'/g, "\\'")}')">
+              <span class="material-symbols-outlined">receipt_long</span>
+            </button>
+            <button class="btn-icon" title="Communication Log" onclick="showCustomerCommunications('${c.id}', '${escapeHTML(c.name).replace(/'/g, "\\'")}')">
+              <span class="material-symbols-outlined">chat</span>
+            </button>
             <button class="btn-icon btn-edit" title="Edit">
               <span class="material-symbols-outlined">edit</span>
             </button>
@@ -2167,11 +2240,14 @@ function escapeHTML(str) {
   document.getElementById('btnNewCustomer')?.addEventListener('click', () => {
     if (!requireModule('crm')) return;
     showModal('Add New Customer', [
-      { label: 'Company / Name', name: 'name' },
-      { label: 'Email', name: 'email', type: 'email', required: false },
-      { label: 'Phone', name: 'phone', required: false },
-      { label: 'TIN', name: 'tin', required: false },
-      { label: 'Address', name: 'address', required: false }
+      { label: 'Company / Name', name: 'name', placeholder: 'e.g. ABC Nigeria Ltd' },
+      { label: 'Email', name: 'email', type: 'email', required: false, placeholder: 'contact@example.com' },
+      { label: 'Phone', name: 'phone', required: false, placeholder: '+234 801 234 5678' },
+      { label: 'TIN', name: 'tin', required: false, placeholder: '10-12 digit FIRS number', title: 'Tax Identification Number assigned by FIRS (Nigeria Tax Authority)' },
+      { label: 'Address', name: 'address', required: false, placeholder: '23, Awolowo Road, Ikoyi, Lagos' },
+      { label: 'Notes', name: 'notes', required: false, placeholder: 'Key account — contact quarterly' },
+      { label: 'Preferred Payment', name: 'preferred_payment', required: false, placeholder: 'e.g. Bank Transfer, Cheque, Cash' },
+      { label: 'Important Dates', name: 'important_dates', required: false, placeholder: 'e.g. Contract renewal: 31 Dec' }
     ], async (data) => {
       const res = await fetch('/api/v1/crm/customers', {
         method: 'POST',
@@ -2183,6 +2259,142 @@ function escapeHTML(str) {
       loadCRM();
     });
   });
+
+  // ── Customer Communication Log ──────────────────────
+  window.showCustomerCommunications = async function(customerId, customerName) {
+    try {
+      const res = await fetch('/api/v1/crm/customers/' + customerId + '/communications');
+      if (!res.ok) { showToast('Error', 'Failed to load communications', 'error'); return; }
+      const data = await res.json();
+      const comms = data.communications || [];
+
+      const modal = document.getElementById('actionModal');
+      const titleEl = document.getElementById('actionModalTitle');
+      const fieldsEl = document.getElementById('actionModalFields');
+      const form = document.getElementById('actionModalForm');
+
+      titleEl.textContent = 'Communication Log: ' + customerName;
+
+      let html = '<div style="max-height: 350px; overflow-y: auto; margin-bottom: 16px;">';
+      if (comms.length === 0) {
+        html += '<p style="color: var(--text-muted); text-align: center; padding: 16px;">No communications logged yet.</p>';
+      } else {
+        html += comms.map(c => {
+          const typeIcon = c.type === 'call' ? 'phone' : c.type === 'email' ? 'mail' : c.type === 'visit' ? 'person' : 'note';
+          return '<div style="padding: 10px 12px; border: 1px solid var(--slate-800); border-radius: 8px; margin-bottom: 8px;">' +
+            '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 4px;">' +
+            '<span><span class="material-symbols-outlined" style="font-size: 14px; vertical-align: middle; color: var(--teal-600);">' + typeIcon + '</span> ' +
+            '<strong>' + escapeHTML(c.type) + '</strong>' + (c.subject ? ' — ' + escapeHTML(c.subject) : '') + '</span>' +
+            '<span style="font-size: 11px; color: var(--text-muted);">' + formatDateTime(c.created_at) + '</span></div>' +
+            (c.notes ? '<p style="font-size: 13px; color: var(--text-secondary); margin: 4px 0 0;">' + escapeHTML(c.notes) + '</p>' : '') +
+            (c.created_by_name ? '<span style="font-size: 11px; color: var(--text-muted);">by ' + escapeHTML(c.created_by_name) + '</span>' : '') +
+            '</div>';
+        }).join('');
+      }
+      html += '</div>';
+
+      // Add Communication Form
+      html += '<div style="border-top: 1.5px solid var(--slate-800); padding-top: 12px;">' +
+        '<h4 style="font-size: 13px; font-weight: 600; margin-bottom: 8px;">Add Entry</h4>' +
+        '<div class="form-group"><label class="form-label">Type</label>' +
+        '<select class="form-control" id="commType"><option value="note">Note</option><option value="call">Call</option><option value="email">Email</option><option value="visit">Visit</option></select></div>' +
+        '<div class="form-group"><label class="form-label">Subject</label><input class="form-control" id="commSubject" placeholder="Quick summary..."></div>' +
+        '<div class="form-group"><label class="form-label">Notes</label><textarea class="form-control" id="commNotes" rows="2" placeholder="Details..."></textarea></div>' +
+        '<button class="btn btn-primary btn-sm" id="btnAddComm" style="width: 100%;">Log Communication</button>' +
+        '</div>';
+
+      fieldsEl.innerHTML = html;
+      document.getElementById('actionModalSubmit').style.display = 'none';
+      modal.style.display = 'flex';
+      document.body.classList.add('no-scroll');
+
+      document.getElementById('btnAddComm')?.addEventListener('click', async () => {
+        const type = document.getElementById('commType')?.value || 'note';
+        const subject = document.getElementById('commSubject')?.value || '';
+        const notes = document.getElementById('commNotes')?.value || '';
+        const addRes = await fetch('/api/v1/crm/customers/' + customerId + '/communications', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ type, subject, notes })
+        });
+        if (addRes.ok) {
+          showToast('Logged', 'Communication entry added.', 'success');
+          window.showCustomerCommunications(customerId, customerName);
+        } else {
+          const err = await addRes.json().catch(() => ({}));
+          showToast('Error', err.error || 'Failed to log communication', 'error');
+        }
+      });
+
+      const closeHandler = function() {
+        document.getElementById('actionModalSubmit').style.display = '';
+        modal.style.display = 'none';
+        document.body.classList.remove('no-scroll');
+        document.getElementById('closeActionModal')?.removeEventListener('click', closeHandler);
+      };
+      document.getElementById('closeActionModal')?.addEventListener('click', closeHandler);
+    } catch (e) {
+      console.error(e);
+      showToast('Error', 'Failed to load communications', 'error');
+    }
+  };
+
+  // ── Customer Transaction History ──────────────────────────
+  window.showCustomerTransactions = async function(customerId, customerName) {
+    try {
+      const res = await fetch('/api/v1/crm/customers/' + customerId + '/transactions');
+      if (!res.ok) { showToast('Error', 'Failed to load transactions', 'error'); return; }
+      const data = await res.json();
+
+      const modal = document.getElementById('actionModal');
+      const titleEl = document.getElementById('actionModalTitle');
+      const fieldsEl = document.getElementById('actionModalFields');
+      const form = document.getElementById('actionModalForm');
+
+      titleEl.textContent = 'Transactions: ' + customerName;
+
+      let html = '<div style="max-height: 400px; overflow-y: auto;">';
+
+      const allTxns = [
+        ...(data.transactions || []).map(t => ({ ...t, _type: 'Invoice' })),
+        ...(data.sales || []).map(s => ({ ...s, _type: 'Sale' })),
+        ...(data.legacyTransactions || []).map(t => ({ ...t, _type: 'Legacy Entry' }))
+      ];
+
+      if (allTxns.length === 0) {
+        html += '<p style="color: var(--text-muted); text-align: center; padding: 24px;">No transactions found for this customer.</p>';
+      } else {
+        html += '<table class="data-table" style="font-size: 12px;"><thead><tr>' +
+          '<th>Date</th><th>Type</th><th>Description</th><th style="text-align:right;">Amount</th>' +
+          '</tr></thead><tbody>';
+        allTxns.forEach(tx => {
+          const date = formatDate(tx.date || tx.created_at);
+          const desc = tx.description || tx.product_name || 'N/A';
+          const amount = tx.total || 0;
+          html += '<tr><td>' + date + '</td><td>' + tx._type + '</td><td>' + escapeHTML(desc) + '</td><td style="text-align:right;font-weight:600;">' + formatCurrency(amount) + '</td></tr>';
+        });
+        html += '</tbody></table>';
+      }
+      html += '</div>';
+
+      fieldsEl.innerHTML = html;
+      document.getElementById('actionModalSubmit').style.display = 'none';
+      modal.style.display = 'flex';
+      document.body.classList.add('no-scroll');
+
+      // Restore submit button on modal close
+      const closeHandler = function() {
+        document.getElementById('actionModalSubmit').style.display = '';
+        modal.style.display = 'none';
+        document.body.classList.remove('no-scroll');
+        document.getElementById('closeActionModal')?.removeEventListener('click', closeHandler);
+      };
+      document.getElementById('closeActionModal')?.addEventListener('click', closeHandler);
+    } catch (e) {
+      console.error(e);
+      showToast('Error', 'Failed to load customer transactions', 'error');
+    }
+  };
 
   // HR Loader
   async function loadHR() {
@@ -2206,6 +2418,9 @@ function escapeHTML(str) {
           <td>${formatCurrency(e.salary)}</td>
           <td><span class="status-badge status-${e.status === 'active' ? 'active' : 'inactive'}">${e.status.toUpperCase()}</span></td>
           <td class="actions-col">
+            <button class="btn-icon" title="Download Payslip" onclick="downloadPayslip('${e.id}', '${escapeHTML(e.name).replace(/'/g, "\\'")}')">
+              <span class="material-symbols-outlined">description</span>
+            </button>
             <button class="btn-icon btn-edit" title="Edit">
               <span class="material-symbols-outlined">edit</span>
             </button>
@@ -2225,13 +2440,21 @@ function escapeHTML(str) {
     }
   }
 
+  window.downloadPayslip = function(employeeId, employeeName) {
+    const a = document.createElement('a');
+    a.href = '/api/v1/hr/employees/' + employeeId + '/payslip';
+    a.download = 'payslip-' + employeeName.replace(/\s+/g, '_') + '.pdf';
+    a.click();
+    showToast('Downloading', 'Payslip for ' + employeeName, 'success');
+  };
+
   document.getElementById('btnNewEmployee')?.addEventListener('click', () => {
     if (!requireModule('hr')) return;
     showModal('Add New Employee', [
-      { label: 'Full Name', name: 'name' },
-      { label: 'Email', name: 'email', type: 'email', required: false },
-      { label: 'Role / Department', name: 'role', required: false },
-      { label: 'Base Salary (' + (typeof getActiveCurrencySymbol === 'function' ? getActiveCurrencySymbol() : '₦') + ')', name: 'salary', type: 'number', step: '0.01' }
+      { label: 'Full Name', name: 'name', placeholder: 'e.g. Chidi Okonkwo' },
+      { label: 'Email', name: 'email', type: 'email', required: false, placeholder: 'chidi@company.com' },
+      { label: 'Role / Department', name: 'role', required: false, placeholder: 'e.g. Accountant, Sales' },
+      { label: 'Base Salary (' + (typeof getActiveCurrencySymbol === 'function' ? getActiveCurrencySymbol() : '₦') + ')', name: 'salary', type: 'number', step: '0.01', placeholder: 'e.g. 250000' }
     ], async (data) => {
       const res = await fetch('/api/v1/hr/employees', {
         method: 'POST',
@@ -2269,6 +2492,180 @@ function escapeHTML(str) {
       document.getElementById('btnRunPayroll').textContent = 'Disburse Payroll';
     }
   });
+
+  // ── Leave Management ────────────────────────────────
+  async function loadLeaves() {
+    if (!canUseModule('hr')) return;
+    const tbody = document.getElementById('leaveTableBody');
+    if (!tbody) return;
+    try {
+      const res = await fetch('/api/v1/hr/leaves');
+      const data = await res.json();
+      if (!data.leaves || data.leaves.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: var(--text-muted); padding: 24px;">No leave requests found.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = data.leaves.map(l => {
+        const statusClass = l.status === 'approved' ? 'active' : l.status === 'rejected' ? 'inactive' : 'pending';
+        return '<tr data-id="' + l.id + '">' +
+          '<td class="id-col">' + l.id + '</td>' +
+          '<td style="font-weight: 500; color: var(--text-primary);">' + escapeHTML(l.employee_name || 'Unknown') + '</td>' +
+          '<td>' + escapeHTML(l.leave_type) + '</td>' +
+          '<td>' + l.start_date + '</td>' +
+          '<td>' + l.end_date + '</td>' +
+          '<td>' + (l.reason ? escapeHTML(l.reason) : '<span style="color: var(--text-muted);">—</span>') + '</td>' +
+          '<td><span class="status-badge status-' + statusClass + '">' + l.status.toUpperCase() + '</span></td>' +
+          '<td class="actions-col">' +
+            (l.status === 'pending' ?
+              '<button class="btn-icon" style="color: var(--success);" title="Approve" onclick="approveLeave(\'' + l.id + '\')"><span class="material-symbols-outlined">check_circle</span></button>' +
+              '<button class="btn-icon" style="color: var(--error);" title="Reject" onclick="rejectLeave(\'' + l.id + '\')"><span class="material-symbols-outlined">cancel</span></button>'
+              : ''
+            ) +
+            '<button class="btn-icon btn-icon-danger btn-delete" title="Delete"><span class="material-symbols-outlined">delete</span></button>' +
+          '</td></tr>';
+      }).join('');
+    } catch (e) {
+      console.error(e);
+      tbody.innerHTML = '<tr><td colspan="8" style="text-align: center; color: var(--error); padding: 24px;">Failed to load leaves.</td></tr>';
+    }
+  }
+
+  window.approveLeave = async function(id) {
+    try {
+      const res = await fetch('/api/v1/hr/leaves/' + id, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status: 'approved' }) });
+      if (!res.ok) throw new Error('Failed to approve');
+      showToast('Approved', 'Leave request approved.', 'success');
+      loadLeaves();
+    } catch (e) { showToast('Error', e.message, 'error'); }
+  };
+
+  window.rejectLeave = async function(id) {
+    try {
+      const res = await fetch('/api/v1/hr/leaves/' + id, { method: 'PATCH', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status: 'rejected' }) });
+      if (!res.ok) throw new Error('Failed to reject');
+      showToast('Rejected', 'Leave request rejected.', 'error');
+      loadLeaves();
+    } catch (e) { showToast('Error', e.message, 'error'); }
+  };
+
+  document.getElementById('btnNewLeave')?.addEventListener('click', () => {
+    if (!requireModule('hr')) return;
+    showModal('Request Leave', [
+      { label: 'Employee ID', name: 'employee_id' },
+      { label: 'Leave Type', name: 'leave_type', type: 'select', options: ['annual', 'sick', 'maternity', 'paternity', 'unpaid', 'other'] },
+      { label: 'Start Date', name: 'start_date', type: 'date' },
+      { label: 'End Date', name: 'end_date', type: 'date' },
+      { label: 'Reason', name: 'reason', required: false },
+    ], async (data) => {
+      const res = await fetch('/api/v1/hr/leaves', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(data) });
+      if (!res.ok) { const e = await res.json().catch(() => ({})); throw new Error(e.error || 'Failed to create leave request'); }
+      showToast('Success', 'Leave request submitted.', 'success');
+      loadLeaves();
+    });
+  });
+
+  // Call loadLeaves when HR tab is shown
+  const origHRLoader = loadHR;
+  loadHR = function() {
+    const result = origHRLoader.apply(this, arguments);
+    loadLeaves();
+    return result;
+  };
+
+  // ── Add-ons Loader ──────────────────────────────────
+  async function loadAddons() {
+    const catalog = document.getElementById('addonsCatalog');
+    const tbody = document.getElementById('businessAddonsBody');
+    if (!catalog && !tbody) return;
+    try {
+      const [availRes, bizRes] = await Promise.all([
+        fetch('/api/v1/addons/available'),
+        fetch('/api/v1/addons'),
+      ]);
+      if (!availRes.ok || !bizRes.ok) throw new Error('Failed to load add-ons');
+      const availData = await availRes.json();
+      const bizData = await bizRes.json();
+      const allAddons = availData.addons || {};
+      const currentTier = availData.currentTier || 'starter';
+      const bizAddons = bizData.addons || [];
+      const statusMap = {};
+      bizAddons.forEach(a => { statusMap[a.addon_key] = a.status; });
+
+      // Render catalog — show ALL addons, indicate tier eligibility
+      if (catalog) {
+        const entries = Object.entries(allAddons);
+        if (entries.length === 0) {
+          catalog.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:48px;color:var(--text-muted);">' +
+            '<span class="material-symbols-outlined" style="font-size:48px;display:block;margin-bottom:12px;">check_circle</span>' +
+            '<h3 style="margin:0 0 8px;">All Features Included</h3>' +
+            '<p style="margin:0;font-size:14px;">Your current plan already includes all available features.</p></div>';
+        } else {
+          // Tier hierarchy: enterprise(3) > professional(2) > starter(1)
+          const tierHierarchy = { starter: 1, professional: 2, enterprise: 3 };
+          const currentTierLevel = tierHierarchy[currentTier] || 1;
+          
+          catalog.innerHTML = entries.map(([key, a]) => {
+            const st = statusMap[key];
+            const addonTier = a.tier || 'starter';
+            const addonTierLevel = tierHierarchy[addonTier] || 1;
+            const canRequest = addonTierLevel <= currentTierLevel;
+            const tierBadge = '<span style="font-size:10px;font-weight:600;text-transform:uppercase;padding:2px 6px;border-radius:4px;background:var(--slate-100);color:var(--text-muted);">' + addonTier + ' plan</span>';
+            let badge = '';
+            let btn = '';
+            if (st === 'approved') {
+              badge = '<span class="status-badge status-active" style="font-size:12px;">Active</span>';
+            } else if (st === 'requested') {
+              badge = '<span class="status-badge status-pending" style="font-size:12px;">Pending Approval</span>';
+            } else if (st === 'rejected') {
+              badge = '<span class="status-badge status-inactive" style="font-size:12px;">Rejected</span>';
+              if (canRequest) btn = '<button class="btn btn-primary btn-sm" onclick="requestAddon(\'' + key + '\')" style="font-size:12px;">Request Again</button>';
+            } else if (canRequest) {
+              btn = '<button class="btn btn-primary btn-sm" onclick="requestAddon(\'' + key + '\')" style="font-size:12px;">Request</button>';
+            } else {
+              btn = '<button class="btn btn-secondary btn-sm" disabled title="Upgrade to ' + addonTier + ' plan to add this" style="font-size:12px;opacity:.55;cursor:not-allowed;">Requires ' + addonTier.charAt(0).toUpperCase() + addonTier.slice(1) + '</button>';
+            }
+            return '<div style="border:1.5px solid var(--slate-800);border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:12px;">' +
+              '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;">' +
+              '<h3 style="font-size:15px;font-weight:700;margin:0;flex:1;">' + escapeHTML(a.name) + '</h3>' +
+              tierBadge +
+              '</div>' +
+              '<p style="font-size:13px;color:var(--text-secondary);margin:0;line-height:1.5;">' + escapeHTML(a.description) + '</p>' +
+              '<div style="display:flex;align-items:center;justify-content:space-between;margin-top:auto;">' +
+              '<span style="font-size:18px;font-weight:700;color:var(--teal-600);">' + formatCurrency(a.price) + '<span style="font-size:11px;font-weight:400;color:var(--text-muted);">/mo</span></span>' +
+              (badge || btn) +
+              '</div></div>';
+          }).join('');
+        }
+      }
+
+      // Render add-ons history table
+      if (tbody) {
+        if (bizAddons.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--text-muted);padding:32px;">' +
+            '<span class="material-symbols-outlined" style="font-size:32px;display:block;margin-bottom:8px;opacity:.4;">extension_off</span>' +
+            'No add-on requests yet. Request an add-on above to get started.</td></tr>';
+        } else {
+          tbody.innerHTML = bizAddons.map(a => {
+            const info = allAddons[a.addon_key] || { name: a.addon_key };
+            const statusClass = a.status === 'approved' ? 'active' : a.status === 'rejected' ? 'inactive' : 'pending';
+            const statusLabel = a.status.charAt(0).toUpperCase() + a.status.slice(1);
+            const cancelBtn = a.status === 'approved'
+              ? '<button class="btn-icon btn-icon-danger" title="Cancel add-on" onclick="cancelAddon(\'' + a.addon_key + '\')"><span class="material-symbols-outlined">close</span></button>'
+              : '';
+            return '<tr data-id="' + a.id + '">' +
+              '<td style="font-weight:500;color:var(--text-primary);">' + escapeHTML(info.name) + '</td>' +
+              '<td>' + formatDateTime(a.created_at) + '</td>' +
+              '<td><span class="status-badge status-' + statusClass + '">' + statusLabel + '</span></td>' +
+              '<td class="actions-col">' + cancelBtn + '</td></tr>';
+          }).join('');
+        }
+      }
+    } catch (e) {
+      console.error(e);
+      if (tbody) tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;color:var(--error);padding:24px;">Failed to load add-ons. Please refresh.</td></tr>';
+      if (catalog) catalog.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:32px;color:var(--error);">Failed to load catalog. Please refresh.</div>';
+    }
+  }
 
   async function loadTax() {
     const tbody = document.getElementById('taxTableBody');
@@ -2485,17 +2882,20 @@ function escapeHTML(str) {
 
   document.getElementById('btnNewInvoice')?.addEventListener('click', () => {
     showModal('Create New Invoice', [
-      { label: 'Customer Name', name: 'customer' },
       { label: 'Invoice Amount (' + (typeof getActiveCurrencySymbol === 'function' ? getActiveCurrencySymbol() : '₦') + ')', name: 'amount', type: 'number', step: '0.01' },
+      { label: 'Customer Name', name: 'customer_name' },
+      { label: 'Customer ID (optional, for CRM linking)', name: 'customer_id', required: false },
       { label: 'Due Date', name: 'due_date', type: 'date', value: new Date().toISOString().split('T')[0] }
     ], async (data) => {
       const amount = parseFloat(data.amount);
+      const customerId = data.customer_id || null;
       const res = await fetch('/api/v1/accounting/transactions', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           date: new Date(data.due_date).toISOString(),
-          description: `Invoice to ${data.customer}`,
+          description: 'Invoice to ' + data.customer_name,
+          customer_id: customerId,
           lines: [
             { account: '1200', debit: amount, credit: 0 },
             { account: '4000', debit: 0, credit: amount }
@@ -2506,7 +2906,7 @@ function escapeHTML(str) {
         const errData = await res.json().catch(() => ({}));
         throw new Error(errData.error || 'Failed to create invoice transaction');
       }
-      showToast('Invoice Created', `Invoice for ${data.customer} created successfully.`, 'success');
+      showToast('Invoice Created', 'Invoice for ' + data.customer_name + ' created successfully.', 'success');
       loadAccounting();
     });
   });
@@ -2627,24 +3027,47 @@ function escapeHTML(str) {
 
   document.getElementById('btnTryTaxCalc')?.addEventListener('click', () => {
     showModal('Tax Calculator', [
-      { label: 'Amount to Calculate (' + (typeof getActiveCurrencySymbol === 'function' ? getActiveCurrencySymbol() : '₦') + ')', name: 'amount', type: 'number', step: '0.01' },
+      { label: 'Amount (' + (typeof getActiveCurrencySymbol === 'function' ? getActiveCurrencySymbol() : '₦') + ')', name: 'amount', type: 'number', step: '0.01', placeholder: '0.00' },
       { label: 'Tax Type', name: 'taxType', type: 'select', options: ['vat', 'wht', 'paye'], value: 'vat' },
-      { label: 'Payer Type (WHT only)', name: 'payerType', type: 'select', options: ['companies', 'individuals'], value: 'companies' }
+      { label: 'Payer Type (for WHT only)', name: 'payerType', type: 'select', options: ['companies', 'individuals'], value: 'companies' }
     ], async (data) => {
+      if (!data.amount || isNaN(Number(data.amount)) || Number(data.amount) <= 0) {
+        throw new Error('Please enter a valid amount greater than 0');
+      }
       const res = await fetch('/api/v1/tax/calculate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data)
+        body: JSON.stringify({ amount: data.amount, taxType: data.taxType, payerType: data.payerType })
       });
-      if (!res.ok) throw new Error('Calculation failed');
-      const resData = await res.json();
-      showModal('Tax Calculation Result', [
-        { label: 'Gross Amount', name: 'g', value: formatCurrency(resData.amount), type: 'text', required: false },
-        { label: 'Tax Amount', name: 't', value: formatCurrency(resData.taxAmount), type: 'text', required: false },
-        { label: 'Total Net / Grossed', name: 'tot', value: formatCurrency(resData.total), type: 'text', required: false }
-      ], async () => {});
+      if (!res.ok) {
+        const errData = await res.json().catch(() => ({}));
+        throw new Error(errData.error || 'Tax calculation failed');
+      }
+      const d = await res.json();
+      const taxLabel = data.taxType.toUpperCase();
+      const isDeduction = data.taxType === 'paye';
+      // Show results in a new clean modal
+      const resultHtml = `
+        <div style="background:var(--slate-50);border:1.5px solid var(--slate-800);border-radius:10px;padding:16px;display:flex;flex-direction:column;gap:12px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:13px;color:var(--text-muted);">Gross Amount</span>
+            <span style="font-size:15px;font-weight:700;color:var(--text-primary);">${formatCurrency(d.amount)}</span>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:13px;color:var(--text-muted);">${taxLabel} ${isDeduction ? 'Deducted' : 'Added'}</span>
+            <span style="font-size:15px;font-weight:700;color:var(--error);">${isDeduction ? '-' : '+'}${formatCurrency(d.taxAmount)}</span>
+          </div>
+          <div style="border-top:1px solid var(--border-color);padding-top:12px;display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:13px;font-weight:600;color:var(--text-primary);">${isDeduction ? 'Net Take-Home' : 'Total Payable'}</span>
+            <span style="font-size:18px;font-weight:800;color:var(--teal-600);">${formatCurrency(d.total)}</span>
+          </div>
+        </div>`;
+      showModal('Tax Calculation Result — ' + taxLabel, [
+        { label: '', name: '_result', type: 'html', html: resultHtml }
+      ], async () => { /* close */ }, { submitLabel: 'Close' });
     });
   });
+
 
   document.getElementById('btnCustomReport')?.addEventListener('click', () => {
     showModal('Configure Report Export', [
@@ -2711,8 +3134,8 @@ function escapeHTML(str) {
 
   // Delegated click handler for edit/delete buttons in tables
   const tableActionConfig = {
-    'view-inventory': { entity: 'product', editEndpoint: (id) => '/api/v1/inventory/products/' + id, deleteEndpoint: (id) => '/api/v1/inventory/products/' + id, refresh: () => loadInventory(), editFields: [{name:'sku',label:'SKU',type:'text'},{name:'name',label:'Name',type:'text'},{name:'cost_price',label:'Unit Cost',type:'number',step:'0.01'},{name:'sell_price',label:'Selling Price',type:'number',step:'0.01'},{name:'reorder_point',label:'Reorder Point',type:'number',step:'1'}] },
-    'view-crm': { entity: 'customer', editEndpoint: (id) => '/api/v1/crm/customers/' + id, deleteEndpoint: (id) => '/api/v1/crm/customers/' + id, refresh: () => loadCRM(), editFields: [{name:'name',label:'Name',type:'text'},{name:'email',label:'Email',type:'email'},{name:'phone',label:'Phone',type:'text'},{name:'tin',label:'TIN',type:'text'}] },
+    'view-inventory': { entity: 'product', editEndpoint: (id) => '/api/v1/inventory/products/' + id, deleteEndpoint: (id) => '/api/v1/inventory/products/' + id, refresh: () => loadInventory(), editFields: [{name:'sku',label:'SKU',type:'text'},{name:'name',label:'Name',type:'text'},{name:'depot',label:'Depot',type:'text'},{name:'cost_price',label:'Unit Cost',type:'number',step:'0.01'},{name:'sell_price',label:'Selling Price',type:'number',step:'0.01'},{name:'reorder_point',label:'Reorder Point',type:'number',step:'1'}] },
+    'view-crm': { entity: 'customer', editEndpoint: (id) => '/api/v1/crm/customers/' + id, deleteEndpoint: (id) => '/api/v1/crm/customers/' + id, refresh: () => loadCRM(), editFields: [{name:'name',label:'Name',type:'text'},{name:'email',label:'Email',type:'email'},{name:'phone',label:'Phone',type:'text'},{name:'tin',label:'TIN',type:'text'},{name:'notes',label:'Notes',type:'text'},{name:'preferred_payment',label:'Preferred Payment',type:'text'},{name:'important_dates',label:'Important Dates',type:'text'}] },
     'view-hr': { entity: 'employee', editEndpoint: (id) => '/api/v1/hr/employees/' + id, deleteEndpoint: (id) => '/api/v1/hr/employees/' + id, refresh: () => loadHR(), editFields: [{name:'name',label:'Name',type:'text'},{name:'email',label:'Email',type:'email'},{name:'role',label:'Role',type:'text'},{name:'salary',label:'Salary',type:'number',step:'0.01'}] },
   };
   document.addEventListener('click', (e) => {
@@ -2732,6 +3155,15 @@ function escapeHTML(str) {
     } else if (deleteBtn) {
       confirmDelete(cfg.entity, id, cfg.deleteEndpoint(id), cfg.refresh);
     }
+  });
+
+  // Leave table delete handler
+  document.getElementById('leaveTableBody')?.addEventListener('click', (e) => {
+    const deleteBtn = e.target.closest('.btn-delete');
+    if (!deleteBtn) return;
+    const row = deleteBtn.closest('tr');
+    if (!row || !row.dataset.id) return;
+    confirmDelete('leave', row.dataset.id, '/api/v1/hr/leaves/' + row.dataset.id, () => loadLeaves());
   });
 
   // Accounting table action config (separate because accounts use different endpoints)
@@ -2784,4 +3216,32 @@ function escapeHTML(str) {
   document.getElementById('batchStatusInactive')?.addEventListener('click', () => batchSetStatus('inactive'));
 
   // Animations and notification glow are loaded from styles.css
+
+  // Expose addon functions globally for onclick handlers
+  window.requestAddon = async function(key) {
+    console.log('requestAddon called with key:', key);
+    try {
+      const res = await fetch('/api/v1/addons/' + key + '/request', { method: 'POST' });
+      console.log('API response status:', res.status);
+      if (!res.ok) { 
+        const e = await res.json(); 
+        console.error('API error:', e);
+        throw new Error(e.error || 'Failed to request add-on'); 
+      }
+      showToast('Request Submitted', 'Your add-on request has been sent to the admin for approval.', 'success');
+      loadAddons();
+    } catch (e) { 
+      console.error('requestAddon error:', e);
+      showToast('Error', e.message, 'error'); 
+    }
+  };
+
+  window.cancelAddon = async function(key) {
+    try {
+      const res = await fetch('/api/v1/addons/' + key + '/cancel', { method: 'POST' });
+      if (!res.ok) { const e = await res.json(); throw new Error(e.error || 'Failed to cancel'); }
+      showToast('Cancelled', 'Add-on subscription cancelled.', 'info');
+      loadAddons();
+    } catch (e) { showToast('Error', e.message, 'error'); }
+  };
 })();

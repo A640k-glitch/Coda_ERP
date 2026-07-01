@@ -3,12 +3,21 @@ const config = require('../config');
 const { db } = require('../db');
 const TenantDB = require('../tenant-db');
 
-function calculateVAT(amount) {
-  return +(Number(amount) * config.taxRates.vat).toFixed(2);
+function getBusinessTypeRates(businessId) {
+  const tdb = new TenantDB(businessId);
+  const biz = tdb.prepare('SELECT business_type FROM businesses WHERE id = ?').get(businessId);
+  const type = biz?.business_type || 'default';
+  return config.businessTaxRates[type] || config.businessTaxRates.default;
 }
 
-function calculateWHT(amount, payerType = 'companies') {
-  const rate = config.taxRates.wht[payerType] || config.taxRates.wht.companies;
+function calculateVAT(amount, businessId) {
+  const rates = businessId ? getBusinessTypeRates(businessId) : config.businessTaxRates.default;
+  return +(Number(amount) * rates.vat).toFixed(2);
+}
+
+function calculateWHT(amount, payerType = 'companies', businessId) {
+  const rates = businessId ? getBusinessTypeRates(businessId) : config.businessTaxRates.default;
+  const rate = rates.wht[payerType] || rates.wht.companies;
   return +(Number(amount) * rate).toFixed(2);
 }
 
@@ -47,11 +56,12 @@ function getPaymentInstructions() {
 
 function generateTaxReport(businessId, period) {
   const tdb = new TenantDB(businessId);
+  const rates = getBusinessTypeRates(businessId);
   // MVP: synthesize from journal activity in the period
   const from = period?.from || new Date(new Date().getFullYear(), new Date().getMonth(), 1).toISOString();
   const to = period?.to || new Date().toISOString();
 
-  // VAT payable: 7.5% of revenue lines in period
+  // VAT payable: based on business type rate of revenue lines in period
   const revenueAccounts = tdb.prepare("SELECT id FROM accounts WHERE business_id = ? AND type = 'revenue'")
     .all(businessId)
     .map(a => a.id);
@@ -80,9 +90,9 @@ function generateTaxReport(businessId, period) {
     `).get(vatAccount.id, businessId, from, to);
     vatPaid = r.total;
   }
-  const vatPayable = Math.max(0, +(revenue * config.taxRates.vat - vatPaid).toFixed(2));
+  const vatPayable = Math.max(0, +(revenue * rates.vat - vatPaid).toFixed(2));
 
-  // CIT: 30% of net profit
+  // CIT: based on business type rate of net profit
   const expenseAccounts = tdb.prepare("SELECT id FROM accounts WHERE business_id = ? AND type = 'expense'")
     .all(businessId)
     .map(a => a.id);
@@ -100,7 +110,7 @@ function generateTaxReport(businessId, period) {
     expenses = r.total;
   }
   const netProfit = revenue - expenses;
-  const cit = +Math.max(0, netProfit * config.taxRates.cit).toFixed(2);
+  const cit = +Math.max(0, netProfit * rates.cit).toFixed(2);
 
   // PAYE payable: credit balance of account 2300 (credits from payroll disburse - debits from tax pay)
   const payeAccount = tdb.prepare("SELECT id FROM accounts WHERE business_id = ? AND code = '2300'").get(businessId);

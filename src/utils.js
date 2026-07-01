@@ -78,7 +78,8 @@ const htmlCache = new Map();
 // Serve HTML with CSP nonce injection
 function serveHtml(res, filePath) {
   const fs = require('fs');
-  if (!htmlCache.has(filePath)) {
+  const isProd = process.env.NODE_ENV === 'production';
+  if (!isProd || !htmlCache.has(filePath)) {
     htmlCache.set(filePath, fs.readFileSync(filePath, 'utf8'));
   }
   let html = htmlCache.get(filePath);

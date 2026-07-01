@@ -135,7 +135,65 @@ function payrollSummary(businessId) {
   };
 }
 
+function addLeave(businessId, data) {
+  const tdb = new TenantDB(businessId);
+  if (!data.employee_id) throw new Error('employee_id required');
+  if (!data.start_date || !data.end_date) throw new Error('start_date and end_date required');
+  const emp = getEmployee(businessId, data.employee_id);
+  if (!emp) throw new Error('Employee not found');
+  const id = generateId('leave');
+  tdb.prepare(
+    `INSERT INTO employee_leave (id, business_id, employee_id, leave_type, start_date, end_date, reason, status)
+     VALUES (?, ?, ?, ?, ?, ?, ?, ?)`
+  ).run(id, businessId, data.employee_id, data.leave_type || 'annual', data.start_date, data.end_date, data.reason || null, data.status || 'pending');
+  return tdb.prepare('SELECT l.*, e.name AS employee_name FROM employee_leave l LEFT JOIN employees e ON e.id = l.employee_id WHERE l.id = ?').get(id);
+}
+
+function updateLeave(businessId, id, data) {
+  const tdb = new TenantDB(businessId);
+  const existing = tdb.prepare('SELECT * FROM employee_leave WHERE id = ? AND business_id = ?').get(id, businessId);
+  if (!existing) return null;
+  tdb.prepare(
+    `UPDATE employee_leave
+     SET leave_type = ?, start_date = ?, end_date = ?, reason = ?, status = ?, approved_by = ?, updated_at = datetime('now')
+     WHERE id = ? AND business_id = ?`
+  ).run(
+    data.leave_type ?? existing.leave_type,
+    data.start_date ?? existing.start_date,
+    data.end_date ?? existing.end_date,
+    data.reason ?? existing.reason,
+    data.status ?? existing.status,
+    data.approved_by ?? existing.approved_by,
+    id,
+    businessId
+  );
+  return tdb.prepare('SELECT l.*, e.name AS employee_name FROM employee_leave l LEFT JOIN employees e ON e.id = l.employee_id WHERE l.id = ?').get(id);
+}
+
+function listLeaves(businessId, { employee_id, status, limit = 100, offset = 0 } = {}) {
+  const tdb = new TenantDB(businessId);
+  const where = ['l.business_id = ?'];
+  const params = [businessId];
+  if (employee_id) { where.push('l.employee_id = ?'); params.push(employee_id); }
+  if (status) { where.push('l.status = ?'); params.push(status); }
+  return tdb.prepare(
+    `SELECT l.*, e.name AS employee_name
+     FROM employee_leave l
+     LEFT JOIN employees e ON e.id = l.employee_id
+     WHERE ${where.join(' AND ')}
+     ORDER BY l.created_at DESC
+     LIMIT ? OFFSET ?`
+  ).all(...params, limit, offset);
+}
+
+function deleteLeave(businessId, id) {
+  const tdb = new TenantDB(businessId);
+  const r = tdb.prepare('DELETE FROM employee_leave WHERE id = ? AND business_id = ?').run(id, businessId);
+  return r.changes > 0;
+}
+
 module.exports = {
   addEmployee, updateEmployee, getEmployee, listEmployees, deleteEmployee,
   recordAttendance, listAttendance, payrollSummary,
+  addLeave, updateLeave, listLeaves, deleteLeave,
 };

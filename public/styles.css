@@ -5241,28 +5241,29 @@ body.no-scroll .admin-main {
   box-shadow: var(--shadow-lg);
 }
 
-.legal-modal-close, .modal-close-btn {
-  position: absolute;
-  top: 16px;
-  right: 16px;
-  background: #ffffff;
-  border: 1.5px solid var(--slate-800);
-  cursor: pointer;
-  color: var(--teal-600);
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  box-shadow: var(--shadow-sm);
-  transition: all var(--transition);
-  z-index: 10;
+.legal-modal-close, .modal-x-close {
+  position: absolute !important;
+  top: 24px !important;
+  right: 24px !important;
+  background: none !important;
+  border: none !important;
+  cursor: pointer !important;
+  color: #64748b !important;
+  width: auto !important;
+  height: auto !important;
+  padding: 0 !important;
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-shadow: none !important;
+  transition: color 0.2s ease !important;
+  z-index: 10 !important;
 }
 
-.legal-modal-close:hover, .modal-close-btn:hover {
-  background: var(--slate-50);
-  transform: scale(1.05);
+.legal-modal-close:hover, .modal-x-close:hover {
+  color: var(--teal-600) !important;
+  background: none !important;
+  transform: none !important;
 }
 
 .legal-modal-logo {

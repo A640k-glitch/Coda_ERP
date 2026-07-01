@@ -2,10 +2,12 @@
 const express = require('express');
 const router = express.Router();
 const hr = require('../modules/hr');
+const tax = require('../modules/tax');
 const { db } = require('../db');
 const TenantDB = require('../tenant-db');
 const { requireAuth, requireBusiness, logAudit } = require('../auth');
 const { requireTierModule } = require('../entitlements');
+const PDFDocument = require('pdfkit');
 
 router.use(requireAuth, requireBusiness);
 const { generateId } = require('../utils');
@@ -100,6 +102,112 @@ router.post('/payroll/disburse', (req, res) => {
     res.json({ success: true, entry, summary });
   } catch (err) {
     res.status(400).json({ error: err.message });
+  }
+});
+
+router.get('/leaves', (req, res) => {
+  const { employee_id, status, limit, offset } = req.query;
+  res.json({ leaves: hr.listLeaves(req.businessId, { employee_id, status, limit: Number(limit) || 100, offset: Number(offset) || 0 }) });
+});
+router.post('/leaves', (req, res) => {
+  const l = hr.addLeave(req.businessId, { ...req.body, employee_id: req.body.employee_id });
+  logAudit(req.businessId, req.user.id, 'leave.create', { id: l.id, employee_id: l.employee_id });
+  res.status(201).json({ leave: l });
+});
+router.patch('/leaves/:id', (req, res) => {
+  const l = hr.updateLeave(req.businessId, req.params.id, { ...req.body, approved_by: req.body.status === 'approved' ? req.user.id : undefined });
+  if (!l) return res.status(404).json({ error: 'Not found' });
+  res.json({ leave: l });
+});
+router.delete('/leaves/:id', (req, res) => {
+  const ok = hr.deleteLeave(req.businessId, req.params.id);
+  if (!ok) return res.status(404).json({ error: 'Not found' });
+  res.json({ ok: true });
+});
+
+router.get('/employees/:id/payslip', (req, res) => {
+  try {
+    const emp = hr.getEmployee(req.businessId, req.params.id);
+    if (!emp) return res.status(404).json({ error: 'Employee not found' });
+
+    const annualPAYE = tax.calculatePAYE(emp.salary * 12);
+    const monthlyPAYE = annualPAYE / 12;
+    const monthlyNet = emp.salary - monthlyPAYE;
+    const month = req.query.month || new Date().toLocaleDateString('en', { month: 'long', year: 'numeric' });
+
+    const doc = new PDFDocument({ margin: 50, size: 'A4' });
+    res.setHeader('Content-Type', 'application/pdf');
+    res.setHeader('Content-Disposition', `attachment; filename="payslip-${emp.name.replace(/\s+/g, '_')}-${month}.pdf"`);
+    doc.pipe(res);
+
+    // Colors
+    const primary = '#0d9488';
+    const secondary = '#64748b';
+    const light = '#f1f5f9';
+
+    // Header bar
+    doc.rect(0, 0, doc.page.width, 100).fill(primary);
+    doc.fillColor('#fff').fontSize(24).font('Helvetica-Bold').text('PAYSLIP', 50, 30);
+    doc.fontSize(12).font('Helvetica').text(`Period: ${month}`, 50, 65);
+    doc.fontSize(10).text(`Generated: ${new Date().toLocaleDateString('en-NG')}`, 50, 82);
+
+    // Employee info card
+    doc.fillColor('#1e293b').fontSize(14).font('Helvetica-Bold').text('EMPLOYEE DETAILS', 50, 130);
+    doc.moveTo(50, 148).lineTo(545, 148).strokeColor('#e2e8f0').stroke();
+    doc.fillColor('#1e293b').fontSize(11).font('Helvetica');
+    const infoY = 160;
+    doc.text(`Name: ${emp.name}`, 50, infoY);
+    doc.text(`Role: ${emp.role || 'N/A'}`, 250, infoY);
+    doc.text(`Email: ${emp.email || 'N/A'}`, 50, infoY + 20);
+    doc.text(`Status: ${emp.status || 'active'}`, 250, infoY + 20);
+
+    // Earnings table
+    const tableY = 230;
+    doc.fillColor('#1e293b').fontSize(14).font('Helvetica-Bold').text('EARNINGS & DEDUCTIONS', 50, tableY);
+    doc.moveTo(50, tableY + 18).lineTo(545, tableY + 18).strokeColor('#e2e8f0').stroke();
+
+    // Table header
+    doc.rect(50, tableY + 25, 495, 22).fill(light);
+    doc.fillColor('#1e293b').fontSize(10).font('Helvetica-Bold');
+    const col1 = 60, col2 = 340, col3 = 430, col4 = 500;
+    doc.text('Description', col1, tableY + 30);
+    doc.text('Rate', col2, tableY + 30);
+    doc.text('Amount', col3, tableY + 30);
+
+    // Rows
+    let rowY = tableY + 55;
+    doc.fillColor('#1e293b').fontSize(10).font('Helvetica');
+    doc.text('Basic Salary (Monthly)', col1, rowY);
+    doc.text('Monthly', col2, rowY);
+    doc.text(emp.salary.toLocaleString('en-NG', { style: 'currency', currency: 'NGN', minimumFractionDigits: 2 }), col3, rowY, { width: 100, align: 'right' });
+    rowY += 22;
+
+    // PAYE deduction
+    doc.rect(50, rowY - 4, 495, 22).fill('#fef2f2');
+    doc.fillColor('#dc2626').text('PAYE Tax (Monthly)', col1, rowY);
+    doc.text(monthlyPAYE.toLocaleString('en-NG', { style: 'currency', currency: 'NGN', minimumFractionDigits: 2 }), col3, rowY, { width: 100, align: 'right' });
+    rowY += 26;
+
+    // Net pay separator
+    doc.moveTo(50, rowY).lineTo(545, rowY).strokeColor(primary).stroke();
+    rowY += 10;
+
+    // Net Pay
+    doc.fillColor(primary).fontSize(12).font('Helvetica-Bold');
+    doc.text('NET PAY', col1, rowY);
+    doc.text(monthlyNet.toLocaleString('en-NG', { style: 'currency', currency: 'NGN', minimumFractionDigits: 2 }), col3, rowY, { width: 100, align: 'right' });
+
+    // Footer
+    doc.fillColor(secondary).fontSize(8).font('Helvetica').text(
+      'This is a computer-generated payslip and does not require a signature.',
+      50, doc.page.height - 60,
+      { align: 'center', width: 495 }
+    );
+    doc.text(`Employee ID: ${emp.id}`, 50, doc.page.height - 45, { align: 'center', width: 495 });
+
+    doc.end();
+  } catch (err) {
+    res.status(500).json({ error: err.message });
   }
 });
 

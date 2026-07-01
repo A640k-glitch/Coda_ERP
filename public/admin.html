@@ -29,7 +29,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap"
     rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=1.0.5">
+  <link rel="stylesheet" href="styles.css?v=1.0.9">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js" integrity="sha384-vsrfeLOOY6KuIYKDlmVH5UiBmgIdB1oEf7p01YgWHuqmOHfZr374+odEv96n9tNC" crossorigin="anonymous" nonce="__NONCE__"></script>
   <script src="currency.js" nonce="__NONCE__"></script>
 
@@ -597,6 +597,10 @@
               <span class="material-symbols-outlined">notifications</span>
               <span>Requests</span>
             </button>
+            <button class="nav-item" data-tab="addons">
+              <span class="material-symbols-outlined">extension</span>
+              <span>Add-ons</span>
+            </button>
           </div>
           <div class="nav-section">
             <div class="nav-section-title">Analytics</div>
@@ -701,6 +705,7 @@
             <button class="admin-tab" data-tab="users">Users</button>
             <button class="admin-tab" data-tab="businesses">Businesses</button>
             <button class="admin-tab" data-tab="requests">Requests</button>
+            <button class="admin-tab" data-tab="addons">Add-ons</button>
             <button class="admin-tab" data-tab="analytics">Analytics</button>
             <button class="admin-tab" data-tab="audit">Audit Log</button>
           </div>
@@ -839,6 +844,31 @@
               <h3>Revenue Distribution per Tier</h3>
               <div class="chart-canvas-wrap"><canvas id="revenueTierChart"></canvas></div>
             </div>
+          </div>
+        </div>
+
+        <!-- Add-ons Panel -->
+        <div class="admin-panel" id="panel-addons">
+          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;">
+            <h3 style="margin:0;font-size:16px;font-weight:700;">Pending Add-on Requests</h3>
+          </div>
+          <div class="admin-table-wrap">
+            <table class="admin-table">
+              <thead>
+                <tr>
+                  <th>Business</th>
+                  <th>Add-on</th>
+                  <th>Price</th>
+                  <th>Requested</th>
+                  <th style="width:140px;">Actions</th>
+                </tr>
+              </thead>
+              <tbody id="adminAddonsBody">
+                <tr>
+                  <td colspan="5" style="text-align:center;padding:40px;color:var(--text-muted);"><span class="loading-spinner"></span>Loading...</td>
+                </tr>
+              </tbody>
+            </table>
           </div>
         </div>
 
@@ -1076,6 +1106,7 @@
         if (tab === 'analytics') loadAnalytics();
         if (tab === 'audit') loadAuditLog(1);
         if (tab === 'requests') loadNotifications();
+        if (tab === 'addons') loadAddonRequests();
         if (tab === 'users') loadUsers(1);
         if (tab === 'businesses') loadBusinesses(1);
       }
@@ -1087,6 +1118,7 @@
           if (t === 'analytics') loadAnalytics();
           if (t === 'audit') loadAuditLog(1);
           if (t === 'requests') loadNotifications();
+          if (t === 'addons') loadAddonRequests();
         });
       });
 
@@ -1096,6 +1128,7 @@
           if (item.dataset.tab === 'analytics') loadAnalytics();
           if (item.dataset.tab === 'audit') loadAuditLog(1);
           if (item.dataset.tab === 'requests') loadNotifications();
+          if (item.dataset.tab === 'addons') loadAddonRequests();
         });
       });
 
@@ -1472,6 +1505,59 @@
 
 
 
+      // ── Add-on Admin ──────────────────────────────────
+      async function loadAddonRequests() {
+        const tbody = document.getElementById('adminAddonsBody');
+        if (!tbody) return;
+        tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:40px;color:var(--text-muted);"><span class="loading-spinner"></span> Loading...</td></tr>';
+        try {
+          const [data, allAddons] = await Promise.all([
+            fetchWithAuth('/api/v1/addons/admin/pending'),
+            fetchWithAuth('/api/v1/addons/admin/catalog'),
+          ]);
+          if (!data) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:40px;color:var(--text-muted);">Failed to load. Check your session.</td></tr>'; return; }
+          const requests = data.requests || [];
+          const addonCatalog = allAddons?.addons || {};
+          if (!requests.length) {
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:40px;color:var(--text-muted);"><span class="material-symbols-outlined" style="font-size:36px;display:block;margin-bottom:8px;opacity:.4;">check_circle</span>No pending add-on requests.</td></tr>';
+            return;
+          }
+          tbody.innerHTML = requests.map(r => {
+            const info = addonCatalog[r.addon_key] || { name: r.addon_key, price: 0 };
+            return '<tr data-id="' + r.id + '">' +
+              '<td><strong>' + escapeHTML(r.business_name || r.business_id) + '</strong><br><span style="font-size:11px;color:var(--text-muted);">' + escapeHTML(r.business_email || '') + ' (' + (r.business_tier || '?') + ')</span></td>' +
+              '<td>' + escapeHTML(info.name) + '<br><code style="font-size:10px;">' + escapeHTML(r.addon_key) + '</code></td>' +
+              '<td>' + formatCurrency(info.price) + '/mo</td>' +
+              '<td>' + formatDateTime(r.created_at) + '</td>' +
+              '<td><div style="display:flex;gap:4px;">' +
+              '<button class="btn btn-xs btn-outline" style="color:var(--success);border-color:var(--success);" onclick="adminApproveAddon(\'' + r.id + '\')">Approve</button>' +
+              '<button class="btn btn-xs btn-outline" style="color:var(--error);border-color:var(--error);" onclick="adminRejectAddon(\'' + r.id + '\')">Reject</button>' +
+              '</div></td></tr>';
+          }).join('');
+        } catch (e) {
+          console.error(e);
+          tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;padding:40px;color:var(--error);">Error loading requests.</td></tr>';
+        }
+      }
+
+      window.adminApproveAddon = async function(id) {
+        if (!confirm('Approve this add-on request?')) return;
+        try {
+          const res = await fetch('/api/v1/addons/admin/' + id + '/approve', { method: 'POST', credentials: 'include' });
+          if (res.ok) { showToast('Approved', 'Add-on request approved.', 'success'); loadAddonRequests(); }
+          else { const e = await res.json(); showToast('Error', e.error || 'Failed to approve', 'error'); }
+        } catch (e) { showToast('Error', e.message, 'error'); }
+      };
+
+      window.adminRejectAddon = async function(id) {
+        if (!confirm('Reject this add-on request?')) return;
+        try {
+          const res = await fetch('/api/v1/addons/admin/' + id + '/reject', { method: 'POST', credentials: 'include' });
+          if (res.ok) { showToast('Rejected', 'Add-on request rejected.', 'error'); loadAddonRequests(); }
+          else { const e = await res.json(); showToast('Error', e.error || 'Failed to reject', 'error'); }
+        } catch (e) { showToast('Error', e.message, 'error'); }
+      };
+
       async function loadOverview() {
         const data = await fetchWithAuth('/api/v1/admin/analytics/overview');
         if (!data) return;
@@ -1727,6 +1813,9 @@
         if (savedTab === 'analytics') loadAnalytics();
         if (savedTab === 'audit') loadAuditLog(1);
         if (savedTab === 'requests') loadNotifications();
+        if (savedTab === 'addons') loadAddonRequests();
+        if (savedTab === 'users') loadUsers(1);
+        if (savedTab === 'businesses') loadBusinesses(1);
 
         // Safety net: ensure a panel is actually active, fall back to users
         const anyActive = Array.from(document.querySelectorAll('.admin-panel')).some(p => p.classList.contains('active'));
@@ -1898,8 +1987,7 @@
   style="position:fixed;inset:0;background:rgba(15,23,42,0.6);backdrop-filter:blur(4px);display:none;align-items:center;justify-content:center;z-index:1000;">
   <div
     style="background:#fff;width:100%;max-width:500px;border-radius:14px;padding:32px;position:relative;max-height:80vh;overflow-y:auto;box-shadow:0 20px 25px -5px rgba(15,23,42,0.06);">
-    <button class="modal-close-btn"
-      style="position:absolute;top:24px;right:24px;background:none;border:none;cursor:pointer;color:#64748b;"><span
+    <button class="legal-modal-close modal-x-close"><span
         class="material-symbols-outlined">close</span></button>
 
     <div

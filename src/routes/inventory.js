@@ -20,12 +20,17 @@ router.post('/products/batch-delete', (req, res) => {
   res.json({ deleted: result.changes });
 });
 
+router.get('/products/depots', (req, res) => {
+  res.json({ depots: inventory.listDepots(req.businessId) });
+});
+
 router.get('/products', (req, res) => {
-  const { q, lowStockOnly, limit, offset } = req.query;
+  const { q, lowStockOnly, depot, limit, offset } = req.query;
   res.json({
     products: inventory.listProducts(req.businessId, {
       q: q || undefined,
       lowStockOnly: lowStockOnly === 'true',
+      depot: depot || undefined,
       limit: limit ? Number(limit) : 100,
       offset: offset ? Number(offset) : 0,
     }),

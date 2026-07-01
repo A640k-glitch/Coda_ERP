@@ -251,6 +251,59 @@ function migrate() {
   try { db.exec("ALTER TABLE users ADD COLUMN status TEXT NOT NULL DEFAULT 'active';"); } catch(e) {}
   try { db.exec("ALTER TABLE notifications ADD COLUMN target_view TEXT;"); } catch(e) {}
   try { db.exec("ALTER TABLE notifications ADD COLUMN target_item_id TEXT;"); } catch(e) {}
+  try { db.exec("ALTER TABLE journal_entries ADD COLUMN customer_id TEXT;"); } catch(e) {}
+  try { db.exec("CREATE INDEX IF NOT EXISTS idx_journal_entries_customer ON journal_entries(business_id, customer_id);"); } catch(e) {}
+  try { db.exec("ALTER TABLE customers ADD COLUMN notes TEXT;"); } catch(e) {}
+  try { db.exec("ALTER TABLE customers ADD COLUMN preferred_payment TEXT;"); } catch(e) {}
+  try { db.exec("ALTER TABLE customers ADD COLUMN important_dates TEXT;"); } catch(e) {}
+  try { db.exec("ALTER TABLE products ADD COLUMN depot TEXT;"); } catch(e) {}
+  try { db.exec(`
+    CREATE TABLE IF NOT EXISTS employee_leave (
+      id TEXT PRIMARY KEY,
+      business_id TEXT NOT NULL,
+      employee_id TEXT NOT NULL,
+      leave_type TEXT NOT NULL DEFAULT 'annual',
+      start_date TEXT NOT NULL,
+      end_date TEXT NOT NULL,
+      reason TEXT,
+      status TEXT NOT NULL DEFAULT 'pending',
+      approved_by TEXT,
+      created_at TEXT NOT NULL DEFAULT (datetime('now')),
+      updated_at TEXT NOT NULL DEFAULT (datetime('now')),
+      FOREIGN KEY (business_id) REFERENCES businesses(id),
+      FOREIGN KEY (employee_id) REFERENCES employees(id)
+    )
+  `); } catch(e) {}
+  try { db.exec(`
+    CREATE TABLE IF NOT EXISTS business_addons (
+      id TEXT PRIMARY KEY,
+      business_id TEXT NOT NULL,
+      addon_key TEXT NOT NULL,
+      status TEXT NOT NULL DEFAULT 'active',
+      subscribed_at TEXT NOT NULL DEFAULT (datetime('now')),
+      cancelled_at TEXT,
+      created_at TEXT NOT NULL DEFAULT (datetime('now')),
+      updated_at TEXT NOT NULL DEFAULT (datetime('now')),
+      FOREIGN KEY (business_id) REFERENCES businesses(id)
+    )
+  `); } catch(e) {}
+  try { db.exec("CREATE UNIQUE INDEX IF NOT EXISTS idx_business_addons_key ON business_addons(business_id, addon_key);"); } catch(e) {}
+
+  db.exec(`
+    CREATE TABLE IF NOT EXISTS customer_communications (
+      id TEXT PRIMARY KEY,
+      business_id TEXT NOT NULL,
+      customer_id TEXT NOT NULL,
+      type TEXT NOT NULL DEFAULT 'note',
+      subject TEXT,
+      notes TEXT,
+      created_by TEXT,
+      created_at TEXT NOT NULL DEFAULT (datetime('now')),
+      FOREIGN KEY (business_id) REFERENCES businesses(id) ON DELETE CASCADE,
+      FOREIGN KEY (customer_id) REFERENCES customers(id) ON DELETE CASCADE
+    );
+    CREATE INDEX IF NOT EXISTS idx_comm_customer ON customer_communications(business_id, customer_id, created_at);
+  `);
 }
 
 migrate();

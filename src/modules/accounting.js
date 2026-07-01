@@ -48,7 +48,7 @@ function balancesByType(businessId, type, asOf = null, from = null) {
   });
 }
 
-function recordTransaction(businessId, userId, { date, description, reference, lines }) {
+function recordTransaction(businessId, userId, { date, description, reference, lines, customer_id }) {
   const tdb = new TenantDB(businessId);
   if (!lines || !Array.isArray(lines) || lines.length < 2) {
     throw new Error('A transaction needs at least two journal lines');
@@ -74,9 +74,9 @@ function recordTransaction(businessId, userId, { date, description, reference, l
   const entryId = generateId('je');
   const tx = tdb.transaction(() => {
     tdb.prepare(
-      `INSERT INTO journal_entries (id, business_id, date, description, reference, created_by)
-       VALUES (?, ?, ?, ?, ?, ?)`
-    ).run(entryId, businessId, date || new Date().toISOString(), description || null, reference || null, userId || null);
+      `INSERT INTO journal_entries (id, business_id, date, description, reference, created_by, customer_id)
+       VALUES (?, ?, ?, ?, ?, ?, ?)`
+    ).run(entryId, businessId, date || new Date().toISOString(), description || null, reference || null, userId || null, customer_id || null);
     const lineStmt = tdb.prepare(
       'INSERT INTO journal_lines (entry_id, account_id, debit, credit) VALUES (?, ?, ?, ?)'
     );
