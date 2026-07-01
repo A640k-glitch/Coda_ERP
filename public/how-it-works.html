@@ -331,7 +331,7 @@
       top: 0;
       display: flex;
       flex-direction: column;
-      gap: 16px;
+      gap: 10px;
       align-self: start;
     }
 
@@ -427,7 +427,7 @@
     .code-console {
       background: var(--slate-950);
       border-radius: var(--radius);
-      padding: 20px;
+      padding: 16px 20px;
       color: var(--slate-200);
       font-family: var(--font-mono);
       font-size: 12px;
@@ -440,7 +440,7 @@
       background: #ffffff;
       border: 1px solid var(--border-color);
       border-radius: var(--radius);
-      padding: 20px;
+      padding: 16px 20px;
       box-shadow: var(--shadow-sm);
     }
 
@@ -1481,13 +1481,13 @@
         <div class="api-code-panel">
           <div class="try-console">
             <h3>Interactive API Tester</h3>
-            <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 16px;">
+            <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 12px; line-height: 1.4;">
               Test the Enterprise Integration endpoints directly. (Uses simulated mock data if live API keys are absent in backend).
             </p>
 
-            <div class="form-group" style="margin-bottom: 20px;">
-              <label class="form-label" for="global-api-key">Coda API Key (x-api-key)</label>
-              <input class="form-control" type="text" id="global-api-key" placeholder="Enter any string for dev mode..." value="dev_key_123">
+            <div class="form-group" style="margin-bottom: 12px;">
+              <label class="form-label" for="global-api-key" style="margin-bottom: 4px;">Coda API Key (x-api-key)</label>
+              <input class="form-control" type="text" id="global-api-key" placeholder="Enter any string for dev mode..." value="dev_key_123" style="min-height: 32px; padding: 6px 12px;">
             </div>
 
             <div class="api-tabs-nav">
@@ -1498,37 +1498,37 @@
 
             <!-- Tab 1: CAC Verify -->
             <div class="api-tab-content active" id="tab-cac">
-              <div class="form-group">
-                <label class="form-label" for="cac-rc">RC/BN Number</label>
-                <input class="form-control" type="text" id="cac-rc" value="RC1234567">
+              <div class="form-group" style="margin-bottom: 12px;">
+                <label class="form-label" for="cac-rc" style="margin-bottom: 4px;">RC/BN Number</label>
+                <input class="form-control" type="text" id="cac-rc" value="RC1234567" style="min-height: 32px; padding: 6px 12px;">
               </div>
-              <button class="btn btn-primary" id="btnRunCac" style="width: 100%;">
+              <button class="btn btn-primary" id="btnRunCac" style="width: 100%; min-height: 36px; height: 36px;">
                 <span class="material-symbols-outlined" style="font-size: 16px;">verified_user</span> Verify Company
               </button>
             </div>
 
             <!-- Tab 2: Bank Sync -->
             <div class="api-tab-content" id="tab-bank">
-              <div class="form-group">
-                <label class="form-label" for="bank-acc">Mono Account ID</label>
-                <input class="form-control" type="text" id="bank-acc" value="acc_9xjfkd8923">
+              <div class="form-group" style="margin-bottom: 12px;">
+                <label class="form-label" for="bank-acc" style="margin-bottom: 4px;">Mono Account ID</label>
+                <input class="form-control" type="text" id="bank-acc" value="acc_9xjfkd8923" style="min-height: 32px; padding: 6px 12px;">
               </div>
-              <button class="btn btn-primary" id="btnRunBank" style="width: 100%;">
+              <button class="btn btn-primary" id="btnRunBank" style="width: 100%; min-height: 36px; height: 36px;">
                 <span class="material-symbols-outlined" style="font-size: 16px;">sync</span> Sync Statements
               </button>
             </div>
 
             <!-- Tab 3: SMS -->
             <div class="api-tab-content" id="tab-sms">
-              <div class="form-group">
-                <label class="form-label" for="sms-phone">Phone Number</label>
-                <input class="form-control" type="text" id="sms-phone" value="2348012345678">
+              <div class="form-group" style="margin-bottom: 12px;">
+                <label class="form-label" for="sms-phone" style="margin-bottom: 4px;">Phone Number</label>
+                <input class="form-control" type="text" id="sms-phone" value="2348012345678" style="min-height: 32px; padding: 6px 12px;">
               </div>
-              <div class="form-group">
-                <label class="form-label" for="sms-msg">Message</label>
-                <input class="form-control" type="text" id="sms-msg" value="Your invoice #1002 is due.">
+              <div class="form-group" style="margin-bottom: 12px;">
+                <label class="form-label" for="sms-msg" style="margin-bottom: 4px;">Message</label>
+                <input class="form-control" type="text" id="sms-msg" value="Your invoice #1002 is due." style="min-height: 32px; padding: 6px 12px;">
               </div>
-              <button class="btn btn-primary" id="btnRunSms" style="width: 100%;">
+              <button class="btn btn-primary" id="btnRunSms" style="width: 100%; min-height: 36px; height: 36px;">
                 <span class="material-symbols-outlined" style="font-size: 16px;">send</span> Send SMS
               </button>
             </div>
@@ -1541,8 +1541,8 @@
           </div>
 
           <!-- Integration Guide Code block -->
-          <div class="code-console" style="margin-top: 24px;">
-            <div class="code-console-title">Integration Node.js (Axios)</div>
+          <div class="code-console">
+            <div class="code-console-title" style="margin-bottom: 8px;">Integration Node.js (Axios)</div>
             <div style="color: #c084fc;">const</div>
             <div style="color: #e2e8f0; display: inline;">axios =</div>
             <div style="color: #60a5fa; display: inline;">require</div>

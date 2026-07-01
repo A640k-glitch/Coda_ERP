@@ -725,9 +725,33 @@
     }
 
     /* Compact all mockup internal elements */
-    .mockup-view .fusion-grid { gap: 10px; }
-    .mockup-view .fusion-wallet-col,
-    .mockup-view .fusion-ops-col { gap: 8px; }
+    .mockup-view .fusion-grid {
+      display: grid;
+      grid-template-columns: 240px 1fr;
+      gap: 10px;
+      align-items: start;
+    }
+    .mockup-view .fusion-wallet-col {
+      position: static !important;
+      top: 0 !important;
+      margin-top: 0 !important;
+      padding-top: 0 !important;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .mockup-view .fusion-ops-col {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .mockup-view .wallet-card,
+    .mockup-view .fusion-card,
+    .mockup-view .operations-mini-card,
+    .mockup-view .ledger-card,
+    .mockup-view .premium-kpi-card {
+      border-radius: 10px !important;
+    }
     .mockup-view .module-header { margin-bottom: 6px; }
     .mockup-view .module-header h2 { font-size: 15px; }
     .mockup-view .table-card { margin-top: 8px; }
@@ -796,30 +820,17 @@
     #mockup-view-4 .recon-stats-grid {
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
+      gap: 12px;
+      margin-top: 16px;
       margin-bottom: 4px;
     }
-    #mockup-view-4 .recon-stats-grid .premium-kpi-card {
-      padding: 10px 12px;
-      gap: 4px;
+    #mockup-view-4 .recon-stats-grid > .ledger-card {
+      min-height: 90px !important;
+      padding: 12px !important;
+      gap: 4px !important;
     }
-    #mockup-view-4 .recon-stats-grid .premium-kpi-header {
-      margin-bottom: 0;
-    }
-    #mockup-view-4 .recon-stats-grid .premium-kpi-title {
-      font-size: 10px;
-    }
-    #mockup-view-4 .recon-stats-grid .premium-kpi-val {
-      font-size: 16px;
-    }
-    #mockup-view-4 .premium-kpi-header .material-symbols-outlined {
+    #mockup-view-4 .recon-stats-grid .ledger-title .material-symbols-outlined {
       font-size: 16px !important;
-    }
-    #mockup-view-4 .premium-kpi-meta {
-      font-size: 9px;
-    }
-    #mockup-view-4 .mockup-sample-badge {
-      font-size: 7px;
     }
 
     /* Responsive Sidebar within Macbook display */
@@ -2168,7 +2179,7 @@
                   <div class="topbar-right" style="gap: 6px;">
                     <div class="topbar-search" style="position: relative; display: flex; align-items: center;">
                       <span class="material-symbols-outlined" style="position: absolute; left: 8px; top: 8px; font-size: 14px; color: var(--text-muted);">search</span>
-                      <input class="form-control" type="search" placeholder="Search accounts, transactions..." style="padding-left: 28px; height: 30px; width: 180px; border-radius: 100px; font-size: 11px;">
+                      <input id="mockup-search-input" class="form-control" type="search" placeholder="Search accounts, transactions..." style="padding-left: 28px; height: 30px; width: 180px; border-radius: 100px; font-size: 11px;">
                     </div>
                     <button class="btn-icon-only" style="width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--border-color); background: #fff; display: flex; align-items: center; justify-content: center; position: relative;">
                       <span class="material-symbols-outlined" style="font-size: 16px;">notifications</span>
@@ -2177,7 +2188,7 @@
                     <button class="btn-icon-only" style="width: 30px; height: 30px; border-radius: 50%; border: 1px solid var(--border-color); background: #fff; display: flex; align-items: center; justify-content: center;">
                       <span class="material-symbols-outlined" style="font-size: 16px;">settings</span>
                     </button>
-                    <button class="btn btn-primary btn-sm" style="height: 30px; font-size: 11px; padding: 0 12px;">
+                    <button id="mockup-btn-new-transaction" class="btn btn-primary btn-sm" style="height: 30px; font-size: 11px; padding: 0 12px;">
                       <span class="material-symbols-outlined" style="font-size: 14px;">add</span>
                       New transaction
                     </button>
@@ -2263,9 +2274,9 @@
                               <span style="font-size: 11px; color: var(--text-muted);">6 month trend</span>
                             </div>
                             <div class="chart-type-toggle">
-                              <button class="active" aria-label="Line Chart"><span
+                              <button id="mockupBtnChartLine" class="active" aria-label="Line Chart"><span
                                   class="material-symbols-outlined">show_chart</span></button>
-                              <button aria-label="Bar Chart"><span
+                              <button id="mockupBtnChartBar" aria-label="Bar Chart"><span
                                   class="material-symbols-outlined">bar_chart</span></button>
                             </div>
                           </div>
@@ -2717,37 +2728,33 @@
 
                     <!-- 4 Stat Cards -->
                     <div class="recon-stats-grid">
-                      <div class="premium-kpi-card glass-panel hover-lift">
-                        <div class="premium-kpi-header">
-                          <span class="premium-kpi-title">Unreconciled</span>
-                          <span class="material-symbols-outlined" style="color: var(--text-muted);">pending</span>
-                        </div>
-                        <div class="premium-kpi-val">₦1.45M <span class="mockup-sample-badge">Sample</span></div>
-                        <div class="premium-kpi-meta">2 bank feeds pending</div>
+                      <div class="ledger-card">
+                        <h4>
+                          <span class="ledger-title"><span class="material-symbols-outlined" style="color: var(--text-muted);">pending</span>Unreconciled</span>
+                        </h4>
+                        <div class="ledger-metric">₦1.45M <span class="mockup-sample-badge">Sample</span></div>
+                        <div class="text-muted" style="font-size: 11px;">2 bank feeds pending</div>
                       </div>
-                      <div class="premium-kpi-card glass-panel hover-lift">
-                        <div class="premium-kpi-header">
-                          <span class="premium-kpi-title">Reconciled</span>
-                          <span class="material-symbols-outlined" style="color: var(--success);">check_circle</span>
-                        </div>
-                        <div class="premium-kpi-val" style="color: var(--success);">1,048 tx</div>
-                        <div class="premium-kpi-meta">Matched transactions</div>
+                      <div class="ledger-card">
+                        <h4>
+                          <span class="ledger-title"><span class="material-symbols-outlined" style="color: var(--success);">check_circle</span>Reconciled</span>
+                        </h4>
+                        <div class="ledger-metric" style="color: var(--success);">1,048 tx</div>
+                        <div class="text-muted" style="font-size: 11px;">Matched transactions</div>
                       </div>
-                      <div class="premium-kpi-card glass-panel hover-lift">
-                        <div class="premium-kpi-header">
-                          <span class="premium-kpi-title">Ledger Entries</span>
-                          <span class="material-symbols-outlined" style="color: var(--text-muted);">receipt_long</span>
-                        </div>
-                        <div class="premium-kpi-val">1,892</div>
-                        <div class="premium-kpi-meta">Matched journal entries</div>
+                      <div class="ledger-card">
+                        <h4>
+                          <span class="ledger-title"><span class="material-symbols-outlined" style="color: var(--text-muted);">receipt_long</span>Ledger Entries</span>
+                        </h4>
+                        <div class="ledger-metric">1,892</div>
+                        <div class="text-muted" style="font-size: 11px;">Matched journal entries</div>
                       </div>
-                      <div class="premium-kpi-card glass-panel hover-lift">
-                        <div class="premium-kpi-header">
-                          <span class="premium-kpi-title">Match Rate</span>
-                          <span class="material-symbols-outlined" style="color: var(--text-muted);">percent</span>
-                        </div>
-                        <div class="premium-kpi-val" style="color: var(--teal-600);">98.2% <span class="mockup-sample-badge">Sample</span></div>
-                        <div class="premium-kpi-meta">Auto-match accuracy</div>
+                      <div class="ledger-card">
+                        <h4>
+                          <span class="ledger-title"><span class="material-symbols-outlined" style="color: var(--text-muted);">percent</span>Match Rate</span>
+                        </h4>
+                        <div class="ledger-metric" style="color: var(--teal-600);">98.2% <span class="mockup-sample-badge">Sample</span></div>
+                        <div class="text-muted" style="font-size: 11px;">Auto-match accuracy</div>
                       </div>
                     </div>
 
@@ -3780,6 +3787,12 @@
               btnLine.classList.add('active');
               btnBar.classList.remove('active');
               mockRevenueChart.config.type = 'line';
+              mockRevenueChart.data.datasets[0].type = 'line';
+              mockRevenueChart.data.datasets[0].backgroundColor = 'transparent';
+              mockRevenueChart.data.datasets[0].fill = false;
+              mockRevenueChart.data.datasets[0].borderRadius = 0;
+              mockRevenueChart.data.datasets[0].barThickness = undefined;
+              mockRevenueChart.options.scales.x.offset = false;
               mockRevenueChart.update();
             }
           });
@@ -3790,8 +3803,12 @@
               btnBar.classList.add('active');
               btnLine.classList.remove('active');
               mockRevenueChart.config.type = 'bar';
-              mockRevenueChart.data.datasets[0].backgroundColor = '#14b8a6';
+              mockRevenueChart.data.datasets[0].type = 'bar';
+              mockRevenueChart.data.datasets[0].backgroundColor = '#475569';
               mockRevenueChart.data.datasets[0].fill = false;
+              mockRevenueChart.data.datasets[0].borderRadius = 2;
+              mockRevenueChart.data.datasets[0].barThickness = 16;
+              mockRevenueChart.options.scales.x.offset = true;
               mockRevenueChart.update();
             }
           });
@@ -3863,6 +3880,27 @@
         // Update topbar title
         if (topbarTitle) {
           topbarTitle.textContent = titleMapping[idx] || 'Dashboard Overview';
+        }
+
+        // Toggle New Transaction button visibility to match real dashboard (only visible on Overview / idx === 0)
+        const mockupNewTxBtn = document.getElementById('mockup-btn-new-transaction');
+        if (mockupNewTxBtn) {
+          mockupNewTxBtn.style.display = idx === 0 ? 'flex' : 'none';
+        }
+
+        // Reset search filter on tab switch
+        const mockupSearchInput = document.getElementById('mockup-search-input');
+        if (mockupSearchInput) {
+          mockupSearchInput.value = '';
+          const activeView = document.getElementById(`mockup-view-${idx}`);
+          if (activeView) {
+            const activityItems = activeView.querySelectorAll('.activity-item');
+            activityItems.forEach(item => item.style.display = 'flex');
+            const rows = activeView.querySelectorAll('.transactions-table tbody tr, .mockup-table tbody tr');
+            rows.forEach(row => row.style.display = '');
+            const cards = activeView.querySelectorAll('.ledger-card');
+            cards.forEach(card => card.style.display = '');
+          }
         }
 
         // Update views display
@@ -3981,6 +4019,42 @@
 
       // Start autoplay cycle
       cycleTimeout = setTimeout(executeAutoplayCycle, 3000);
+
+      // Search functionality for MacBook mockup
+      const mockupSearchInput = document.getElementById('mockup-search-input');
+      if (mockupSearchInput) {
+        mockupSearchInput.addEventListener('input', (e) => {
+          const query = e.target.value.toLowerCase().trim();
+          const activeView = document.querySelector('.mockup-view.active');
+          if (!activeView) return;
+
+          // 1. If active view is Overview (view 0), filter .activity-item
+          const activityItems = activeView.querySelectorAll('.activity-item');
+          if (activityItems.length > 0) {
+            activityItems.forEach(item => {
+              const text = item.textContent.toLowerCase();
+              item.style.display = text.includes(query) ? 'flex' : 'none';
+            });
+          }
+
+          // 2. Filter table rows for views with tables
+          const tables = activeView.querySelectorAll('.transactions-table, .mockup-table');
+          tables.forEach(table => {
+            const rows = table.querySelectorAll('tbody tr');
+            rows.forEach(row => {
+              const text = row.textContent.toLowerCase();
+              row.style.display = text.includes(query) ? '' : 'none';
+            });
+          });
+
+          // 3. Filter ledger cards (Accounting & Recon tabs)
+          const ledgerCards = activeView.querySelectorAll('.ledger-card');
+          ledgerCards.forEach(card => {
+            const text = card.textContent.toLowerCase();
+            card.style.display = text.includes(query) ? '' : 'none';
+          });
+        });
+      }
     });
   </script>
 
