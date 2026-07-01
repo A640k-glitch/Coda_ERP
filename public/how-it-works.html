@@ -29,7 +29,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap" rel="stylesheet">
   <link rel="stylesheet"
     href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-  <link rel="stylesheet" href="styles.css?v=1.0.4">
+  <link rel="stylesheet" href="styles.css?v=1.0.5">
   <style nonce="__NONCE__">
     /* ── How It Works Layout ─────────────────────────── */
     .hiw-layout {
@@ -125,7 +125,7 @@
       top: 64px;
       z-index: 90;
       background: var(--bg-primary);
-      border-bottom: 1px solid var(--border-color);
+      border-bottom: 1.5px solid var(--slate-800);
       padding: 8px 16px;
       overflow-x: auto;
       -webkit-overflow-scrolling: touch;
@@ -147,7 +147,7 @@
       font-weight: 600;
       color: var(--text-secondary);
       background: var(--surface, #f1f5f9);
-      border: 1px solid var(--border-color);
+      border: 1.5px solid var(--slate-800);
       border-radius: 100px;
       text-decoration: none;
       transition: all 0.2s ease;
@@ -180,7 +180,7 @@
 
     .hiw-section {
       background: #ffffff;
-      border: 1px solid var(--border-color);
+      border: 1.5px solid var(--slate-800);
       border-radius: var(--radius);
       padding: 28px 28px;
       box-shadow: var(--shadow-sm);
@@ -359,7 +359,7 @@
 
     .api-card-wrapper {
       background: #ffffff;
-      border: 1px solid var(--border-color);
+      border: 1.5px solid var(--slate-800);
       border-radius: var(--radius);
       padding: 20px;
       box-shadow: var(--shadow-sm);
@@ -404,7 +404,7 @@
 
     .api-table th {
       padding: 6px 10px 6px 0;
-      border-bottom: 1px solid var(--border-color);
+      border-bottom: 1.5px solid var(--slate-800);
       color: var(--text-muted);
       text-transform: uppercase;
       font-size: 9px;
@@ -438,7 +438,7 @@
 
     .try-console {
       background: #ffffff;
-      border: 1px solid var(--border-color);
+      border: 1.5px solid var(--slate-800);
       border-radius: var(--radius);
       padding: 16px 20px;
       box-shadow: var(--shadow-sm);
@@ -466,7 +466,7 @@
 
     .api-tabs-nav {
       display: flex;
-      border-bottom: 1px solid var(--border-color);
+      border-bottom: none;
       margin-bottom: 12px;
       gap: 12px;
     }
@@ -1199,129 +1199,6 @@
   </div>
 
 
-      window._showSignupView = showSignupView;
-      window._showSigninView = showSigninView;
-
-      let csrfToken = '';
-      async function fetchCsrfToken() {
-        try {
-          const res = await fetch('/api/v1/auth/csrf-token');
-          if (res.ok) { const data = await res.json(); csrfToken = data.csrfToken; }
-        } catch (err) { console.error('Failed to load CSRF token:', err); }
-      }
-      fetchCsrfToken();
-
-      // Login form
-      const loginForm = document.getElementById('popupLoginForm');
-      const loginSubmitBtn = document.getElementById('popupLoginSubmit');
-      const loginResultEl = document.getElementById('popupLoginResult');
-
-      if (loginForm) {
-        loginForm.addEventListener('submit', async e => {
-          e.preventDefault();
-          const email = document.getElementById('popupLoginEmail').value.trim();
-          const password = document.getElementById('popupLoginPassword').value;
-          if (!email || !password) { loginResultEl.textContent = 'Please enter email and password'; loginResultEl.className = 'auth-result show error'; return; }
-          loginSubmitBtn.disabled = true;
-          loginSubmitBtn.innerHTML = 'Signing in...';
-          loginResultEl.classList.remove('show', 'success', 'error');
-          loginResultEl.textContent = '';
-          try {
-            const res = await fetch('/api/v1/auth/login', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-csrf-token': csrfToken }, body: JSON.stringify({ email, password }) });
-            const data = await res.json();
-            if (!res.ok) { if (data.redirect) { window.location.href = data.redirect; return; } loginResultEl.textContent = data.error || 'Invalid email or password'; loginResultEl.className = 'auth-result show error'; return; }
-            loginResultEl.textContent = 'Welcome back! Redirecting...';
-            loginResultEl.className = 'auth-result show success';
-            loginForm.reset();
-            if (data.success && data.user) { localStorage.setItem('coda_user', JSON.stringify(data.user)); const displayName = data.business ? data.business.name : (data.user.name || data.user.email || 'User'); localStorage.setItem('coda_display_name', displayName); }
-            setTimeout(() => window.top.location.href = '/dashboard', 900);
-          } catch (err) { loginResultEl.textContent = 'Network error. Please try again.'; loginResultEl.className = 'auth-result show error'; }
-          finally { loginSubmitBtn.disabled = false; loginSubmitBtn.innerHTML = '<span class="material-symbols-outlined" style="font-size:18px">login</span> Sign In'; }
-        });
-      }
-
-      const overlay = document.getElementById('authPopoutOverlay');
-      const container = document.getElementById('authPopoutContainer');
-      const closeBtn = document.getElementById('authPopoutClose');
-
-      // Signup form
-      const signupForm = document.getElementById('signupForm');
-      const signupSubmit = document.getElementById('signupSubmit');
-      const signupResult = document.getElementById('signupResult');
-
-      if (signupForm) {
-        signupForm.addEventListener('submit', async e => {
-          e.preventDefault();
-          const pwd = document.getElementById('signupPassword').value;
-          const confirm = document.getElementById('signupConfirmPassword').value;
-          if (pwd !== confirm) { signupResult.textContent = 'Passwords do not match'; signupResult.className = 'auth-result show error'; return; }
-          const payload = { tier: document.getElementById('signupTier').value, name: document.getElementById('signupName').value, email: document.getElementById('signupEmail').value, password: pwd, businessName: document.getElementById('signupBusinessName').value, phone: document.getElementById('signupPhone').value, cac: document.getElementById('signupCAC').value, type: document.getElementById('signupType').value };
-          signupSubmit.disabled = true; signupSubmit.innerHTML = 'Creating Account...'; signupResult.classList.remove('show', 'success', 'error');
-          try {
-            const res = await fetch('/api/v1/auth/signup', { method: 'POST', headers: { 'Content-Type': 'application/json', 'x-csrf-token': csrfToken }, body: JSON.stringify(payload) });
-            const data = await res.json();
-            if (!res.ok) { signupResult.textContent = data.error || 'Signup failed'; signupResult.className = 'auth-result show error'; return; }
-            signupResult.textContent = 'Account created successfully! Redirecting...'; signupResult.className = 'auth-result show success'; signupForm.reset();
-            if (data.success && data.user) { localStorage.setItem('coda_user', JSON.stringify(data.user)); const displayName = data.business ? data.business.name : (data.user.name || data.user.email || 'User'); localStorage.setItem('coda_display_name', displayName); }
-            setTimeout(() => window.top.location.href = '/dashboard', 900);
-          } catch (err) { signupResult.textContent = 'Network error. Please try again.'; signupResult.className = 'auth-result show error'; }
-          finally { signupSubmit.disabled = false; signupSubmit.innerHTML = '<span class="material-symbols-outlined" style="font-size:18px">rocket_launch</span> Create Account'; }
-        });
-      }
-
-      // Open auth popout
-      document.addEventListener('click', e => {
-        const btn = e.target.closest('.trigger-auth, .trigger-auth-signin, #btnExpandAuth');
-        if (!btn) return;
-        e.preventDefault();
-        const isSignin = btn.classList.contains('trigger-auth-signin');
-        if (isSignin && window._showSigninView) window._showSigninView();
-        else if (window._showSignupView) window._showSignupView();
-
-        overlay.classList.add('popout-open');
-        container.classList.add('popout-open');
-        const targetWidth = Math.min(window.innerWidth - 48, 1400);
-        const targetHeight = Math.min(window.innerHeight - 48, 900);
-        container.style.top = '50%';
-        container.style.left = '50%';
-        container.style.transform = 'translate(-50%, -50%) scale(0.95)';
-        container.style.width = targetWidth + 'px';
-        container.style.height = targetHeight + 'px';
-        container.style.borderRadius = '24px';
-        container.style.opacity = '0';
-        closeBtn.style.opacity = '0';
-        document.body.style.overflow = 'hidden';
-
-        requestAnimationFrame(() => {
-          requestAnimationFrame(() => {
-            overlay.style.opacity = '1';
-            container.style.opacity = '1';
-            container.style.transform = 'translate(-50%, -50%) scale(1)';
-            setTimeout(() => { closeBtn.style.opacity = '1'; }, 100);
-          });
-        });
-      });
-
-      // Close auth popout
-      closeBtn.addEventListener('click', () => {
-        document.body.style.overflow = '';
-        closeBtn.style.opacity = '0';
-        container.style.opacity = '0';
-        container.style.transform = 'translate(-50%, -50%) scale(0.95)';
-        overlay.style.opacity = '0';
-        setTimeout(() => { container.classList.remove('popout-open'); overlay.classList.remove('popout-open'); }, 300);
-      });
-
-      function togglePasswordVisibility(id, btn) {
-        const input = document.getElementById(id);
-        if (!input) return;
-        const icon = btn.querySelector('.material-symbols-outlined');
-        if (input.type === 'password') { input.type = 'text'; if (icon) icon.textContent = 'visibility_off'; }
-        else { input.type = 'password'; if (icon) icon.textContent = 'visibility'; }
-      }
-
-
-  <!-- API Docs Popout Modal -->
   <div id="apiDocsPopoutOverlay" style="position: fixed; inset: 0; background: rgba(15, 23, 42, 0.4); backdrop-filter: blur(8px); display: none; opacity: 0; transition: opacity 0.4s ease; z-index: 9999;"></div>
   <div id="apiDocsPopoutContainer" style="position: fixed; z-index: 10000; background: var(--bg-card); overflow: hidden; display: none; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); will-change: transform, opacity; transition: transform 0.25s cubic-bezier(0.25, 1, 0.5, 1), opacity 0.25s cubic-bezier(0.25, 1, 0.5, 1);">
     <button id="apiDocsPopoutClose" style="position: absolute; top: 16px; right: 16px; background: rgba(255, 255, 255, 0.1); border: none; color: #0d9488; cursor: pointer; width: 40px; height: 40px; border-radius: 20px; display: flex; align-items: center; justify-content: center; z-index: 10001; opacity: 0; transition: opacity 0.3s ease; backdrop-filter: blur(4px);">

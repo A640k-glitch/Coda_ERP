@@ -182,7 +182,7 @@ h6 {
   font-size: 12px;
   padding: 8px 16px;
   border-radius: var(--radius-sm);
-  border: 1px solid transparent;
+  border: 1.5px solid transparent;
   cursor: pointer;
   transition: all var(--transition);
   white-space: nowrap;
@@ -272,19 +272,19 @@ body.no-scroll {
 .btn-secondary {
   background: #ffffff;
   color: var(--slate-800);
-  border-color: var(--slate-200);
+  border-color: var(--slate-800);
   box-shadow: var(--shadow-sm);
 }
 
 .btn-secondary:hover {
   background: var(--slate-50);
-  border-color: var(--slate-300);
+  border-color: var(--slate-900);
 }
 
 .btn-outline {
   background: transparent;
   color: var(--slate-800);
-  border-color: var(--slate-300);
+  border-color: var(--slate-800);
 }
 
 .btn-outline:hover {
@@ -462,7 +462,7 @@ body.no-scroll {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   gap: 24px;
-  border-top: 1px solid var(--border-color);
+  border-top: 1.5px solid var(--slate-800);
   padding-top: 36px;
   max-width: 720px;
   margin: 0 auto 64px;
@@ -498,9 +498,9 @@ body.no-scroll {
   overflow: hidden;
   background: linear-gradient(to right, #eff6ff, #dbeafe);
   /* blue-50 to blue-100 */
-  border-top: 1px solid #bfdbfe;
+  border-top: none;
   /* blue-200 */
-  border-bottom: 1px solid #bfdbfe;
+  border-bottom: none;
   padding: 8px 0;
   display: flex;
   align-items: center;
@@ -565,7 +565,7 @@ body.no-scroll {
   max-width: 1000px;
   margin: 48px auto 0;
   border-radius: var(--radius-lg);
-  border: 1px solid var(--border-color);
+  border: 1.5px solid var(--slate-800);
   background: var(--bg-card);
   box-shadow: var(--shadow-lg);
   overflow: hidden;
@@ -577,7 +577,7 @@ body.no-scroll {
    ========================================================================== */
 .mockup-card {
   border-radius: var(--radius-md);
-  border: 1px solid var(--border-light);
+  border: 1.5px solid var(--slate-800);
   overflow: hidden;
   display: flex;
   height: 520px;
@@ -667,7 +667,7 @@ body.no-scroll {
 
 .mockup-kpi {
   background: #fff;
-  border: 1px solid var(--border-color);
+  border: 1.5px solid var(--slate-800);
   padding: 16px;
   border-radius: var(--radius);
   display: flex;
@@ -723,7 +723,7 @@ body.no-scroll {
 .mockup-chart {
   height: 120px;
   background: #fff;
-  border: 1px solid var(--border-color);
+  border: 1.5px solid var(--slate-800);
   border-radius: var(--radius);
   padding: 16px;
   display: flex;
@@ -741,7 +741,7 @@ body.no-scroll {
 
 .mockup-tx {
   background: #fff;
-  border: 1px solid var(--border-color);
+  border: 1.5px solid var(--slate-800);
   border-radius: var(--radius-sm);
   padding: 12px 16px;
   display: flex;
@@ -798,7 +798,7 @@ body.no-scroll {
 
 .feature-card {
   background: var(--bg-card);
-  border: 1px solid var(--border-color);
+  border: 1.5px solid var(--slate-800);
   border-radius: var(--radius-lg);
   padding: 32px;
   box-shadow: var(--shadow-sm);
@@ -1291,7 +1291,7 @@ input:checked+.slider:before {
   right: 0;
   height: var(--topbar-h);
   background: var(--bg-card);
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: 1.5px solid var(--slate-800);
   padding: 0 32px;
   display: flex;
   align-items: center;
@@ -1359,7 +1359,7 @@ input:checked+.slider:before {
   justify-content: space-between;
   align-items: center;
   background: var(--bg-card);
-  border: 1px solid var(--border-color);
+  border: 1.5px solid var(--slate-800);
   border-radius: 16px;
   padding: 16px 20px;
   margin-bottom: 24px;
@@ -1514,7 +1514,7 @@ input:checked+.slider:before {
 
 .chart-card {
   background: var(--bg-card);
-  border: 1px solid var(--border-color);
+  border: 1.5px solid var(--slate-800);
   border-radius: var(--radius);
   box-shadow: var(--shadow-sm);
   display: flex;
@@ -1571,7 +1571,7 @@ input:checked+.slider:before {
 /* Modern Business Table */
 .table-card {
   background: #fff;
-  border: 1px solid var(--border-color);
+  border: 1.5px solid var(--slate-800);
   border-radius: var(--radius);
   overflow: hidden;
   box-shadow: var(--shadow-sm);
@@ -1579,7 +1579,7 @@ input:checked+.slider:before {
 
 .table-card-header {
   padding: 16px 20px;
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: 1.5px solid var(--slate-800);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -1633,12 +1633,12 @@ input:checked+.slider:before {
   background: var(--slate-50);
   font-weight: 600;
   color: var(--text-secondary);
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: 1.5px solid var(--slate-800);
 }
 
 .transactions-table td {
-  padding: 8px 12px;
-  border-bottom: 1px solid var(--border-light);
+padding: 8px 12px;
+  border-bottom: 1px solid var(--border-color);
   color: var(--text-secondary);
 }
 
@@ -1659,12 +1659,12 @@ input:checked+.slider:before {
   background: var(--slate-50);
   font-weight: 600;
   color: var(--text-secondary);
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: 1.5px solid var(--slate-800);
 }
 
 .data-table td {
-  padding: 8px 12px;
-  border-bottom: 1px solid var(--border-light);
+padding: 8px 12px;
+  border-bottom: 1px solid var(--border-color);
   color: var(--text-secondary);
 }
 
@@ -1820,7 +1820,7 @@ input:checked+.slider:before {
   padding: 10px 14px;
   font-family: var(--font);
   font-size: 13.5px;
-  border: 1px solid var(--border-color);
+  border: 1.5px solid var(--slate-800);
   border-radius: var(--radius-sm);
   background: #ffffff;
   color: var(--text-main);
@@ -1848,7 +1848,7 @@ input:checked+.slider:before {
 
 .toast {
   background: #ffffff;
-  border: 1px solid var(--border-color);
+  border: 1.5px solid var(--slate-800);
   border-left: 4px solid var(--teal-600);
   border-radius: var(--radius);
   padding: 16px;
@@ -1905,7 +1905,7 @@ input:checked+.slider:before {
 
 .modal {
   background: #ffffff;
-  border: 1px solid var(--border-color);
+  border: 1.5px solid var(--slate-800);
   border-radius: var(--radius-lg);
   padding: 28px;
   width: 100%;
@@ -2275,7 +2275,7 @@ input:checked+.slider:before {
   background: rgba(255, 255, 255, 0.75);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
-  border-left: 1px solid var(--border-color);
+  border-left: 1.5px solid var(--slate-800);
   z-index: 1100;
   display: flex;
   flex-direction: column;
@@ -2337,7 +2337,7 @@ input:checked+.slider:before {
 
 .feature-card-soft {
   background: #ffffff;
-  border: 1px solid var(--border-color);
+  border: 1.5px solid var(--slate-800);
   border-radius: var(--radius-xl);
   padding: 24px;
   box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
@@ -2384,7 +2384,7 @@ input:checked+.slider:before {
   height: 140px;
   background: var(--slate-50);
   border-radius: var(--radius-lg);
-  border: 1px solid var(--border-color);
+  border: 1.5px solid var(--slate-800);
   position: relative;
   display: flex;
   align-items: center;
@@ -2495,12 +2495,12 @@ input:checked+.slider:before {
     -webkit-overflow-scrolling: touch;
     width: 100%;
     border-radius: 14px;
-    border: 1px solid var(--border-color);
+    border: 1.5px solid var(--slate-800);
   }
 
   .transactions-table th,
   .transactions-table td {
-    padding: 10px 12px !important;
+padding: 10px 12px !important;
     font-size: 12px !important;
   }
 
@@ -3190,7 +3190,7 @@ input:checked+.slider:before {
   left: 0;
   right: 0;
   background: #fff;
-  border-top: 1px solid var(--border-color);
+  border-top: 1.5px solid var(--slate-800);
   padding: 10px 24px;
   display: flex;
   align-items: center;
@@ -3234,7 +3234,7 @@ input:checked+.slider:before {
   justify-content: center;
   width: 28px;
   height: 28px;
-  border: 1px solid var(--border-color);
+  border: 1.5px solid var(--slate-800);
   border-radius: 6px;
   background: #fff;
   cursor: pointer;
@@ -3400,7 +3400,7 @@ body.no-scroll .admin-main {
 .fusion-search input {
   width: 100%;
   padding: 10px 48px 10px 44px;
-  border: 1px solid var(--border-color);
+  border: 1.5px solid var(--slate-800);
   border-radius: var(--radius-full);
   background: var(--bg-primary);
   font-family: 'Inter', sans-serif;
@@ -3453,7 +3453,7 @@ body.no-scroll .admin-main {
   align-items: center;
   gap: 6px;
   background: #fff;
-  border: 1px solid var(--border-color);
+  border: 1.5px solid var(--slate-800);
   padding: 8px 14px;
   border-radius: var(--radius-full);
   font-size: 12px;
@@ -3590,7 +3590,7 @@ body.no-scroll .admin-main {
 /* Operations Mini Card */
 .operations-mini-card {
   background: var(--bg-primary);
-  border: 1px solid var(--border-color);
+  border: 1.5px solid var(--slate-800);
   border-radius: var(--radius-xl);
   padding: 16px;
   display: flex;
@@ -3762,7 +3762,7 @@ body.no-scroll .admin-main {
   background: rgba(255, 255, 255, 0.8) !important;
   backdrop-filter: blur(12px) !important;
   -webkit-backdrop-filter: blur(12px) !important;
-  border: 1px solid rgba(226, 232, 240, 0.8) !important;
+  border: 1.5px solid var(--slate-800) !important;
   border-radius: var(--radius-lg, 12px) !important;
   padding: 20px !important;
   box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.03), 0 2px 4px -1px rgba(15, 23, 42, 0.02) !important;
@@ -4147,7 +4147,7 @@ body.no-scroll .admin-main {
       padding: 48px;
       max-width: 620px;
       background: var(--bg-card);
-      border-right: 1px solid var(--border-color);
+      border-right: 1.5px solid var(--slate-800);
       overflow-y: auto;
     }
     .auth-back {
@@ -4327,7 +4327,7 @@ body.no-scroll .admin-main {
       padding: 48px;
       max-width: 620px;
       background: var(--bg-card);
-      border-right: 1px solid var(--border-color);
+      border-right: 1.5px solid var(--slate-800);
       overflow-y: auto;
     }
     .auth-back {
@@ -4609,7 +4609,7 @@ body.no-scroll .admin-main {
   background: rgba(255, 255, 255, 0.8) !important;
   backdrop-filter: blur(12px) !important;
   -webkit-backdrop-filter: blur(12px) !important;
-  border: 1px solid rgba(226, 232, 240, 0.8) !important;
+  border: 1.5px solid var(--slate-800) !important;
   border-radius: var(--radius-lg, 12px) !important;
   padding: 20px !important;
   box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.03), 0 2px 4px -1px rgba(15, 23, 42, 0.02) !important;
@@ -4750,7 +4750,7 @@ body.no-scroll .admin-main {
 
 .fusion-card {
   background: #ffffff;
-  border: 1px solid var(--border-color);
+  border: 1.5px solid var(--slate-800);
   border-radius: var(--radius);
   box-shadow: none;
   transition: border-color 0.15s ease;
@@ -5241,14 +5241,28 @@ body.no-scroll .admin-main {
   box-shadow: var(--shadow-lg);
 }
 
-.legal-modal-close {
+.legal-modal-close, .modal-close-btn {
   position: absolute;
-  top: 24px;
-  right: 24px;
-  background: none;
-  border: none;
+  top: 16px;
+  right: 16px;
+  background: #ffffff;
+  border: 1.5px solid var(--slate-800);
   cursor: pointer;
-  color: var(--text-muted);
+  color: var(--teal-600);
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-sm);
+  transition: all var(--transition);
+  z-index: 10;
+}
+
+.legal-modal-close:hover, .modal-close-btn:hover {
+  background: var(--slate-50);
+  transform: scale(1.05);
 }
 
 .legal-modal-logo {

@@ -1601,7 +1601,7 @@ function escapeHTML(str) {
              <button class="btn btn-secondary btn-sm" style="flex-shrink: 0;" onclick="addAsNewLedger('${(tx.id||'').replace(/'/g,"\\u0027")}', ${tx.amount}, '${(tx.description||'').replace(/'/g,"\\u0027")}', '${(tx.date||'').replace(/'/g,"\\u0027")}')">Create &amp; Match</button>`;
 
         const comparisonHtml = `
-          <div class="recon-comparison-card" data-id="${tx.id}" style="display: grid; grid-template-columns: 1fr 60px 1fr; align-items: center; border: 1px solid var(--border-color); border-radius: var(--radius-lg); background: white; box-shadow: var(--shadow-sm); overflow: hidden; width: 100%; box-sizing: border-box;">
+          <div class="recon-comparison-card" data-id="${tx.id}" style="display: grid; grid-template-columns: 1fr 60px 1fr; align-items: center; border: 1.5px solid var(--slate-800); border-radius: var(--radius-lg); background: white; box-shadow: var(--shadow-sm); overflow: hidden; width: 100%; box-sizing: border-box;">
             <!-- Left Side: Bank Statement -->
             <div style="padding: 16px; border-right: 1px dashed var(--border-color); display: flex; flex-direction: column; gap: 6px; min-width: 0;">
               <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 8px;">
