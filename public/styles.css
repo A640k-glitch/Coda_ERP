@@ -5221,7 +5221,7 @@ body.no-scroll .admin-main {
   background: #fff;
   width: 100%;
   max-width: 500px;
-  border-radius: var(--radius-lg);
+  border-radius: 14px;
   padding: 32px;
   position: relative;
   max-height: 80vh;

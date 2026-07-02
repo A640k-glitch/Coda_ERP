@@ -59,12 +59,12 @@ function getBusinessAddons(businessId, status) {
   ).all(...params);
 }
 
-function addAdminNotification(businessId, title, message) {
+function addAdminNotification(businessId, title, message, targetItemId = null) {
   const notifId = require('crypto').randomUUID();
   db.prepare(`
-    INSERT INTO notifications (id, business_id, title, message, type, is_admin)
-    VALUES (?, ?, ?, ?, 'info', 1)
-  `).run(notifId, businessId, title, message);
+    INSERT INTO notifications (id, business_id, title, message, type, is_admin, target_view, target_item_id)
+    VALUES (?, ?, ?, ?, 'info', 1, 'addons', ?)
+  `).run(notifId, businessId, title, message, targetItemId);
 }
 
 function addUserNotification(businessId, title, message, type = 'info') {
@@ -98,7 +98,7 @@ function requestAddon(businessId, addonKey) {
       tdb.prepare(
         "UPDATE business_addons SET status = 'requested', updated_at = datetime('now'), cancelled_at = NULL WHERE id = ?"
       ).run(existing.id);
-      addAdminNotification(businessId, 'Add-on Request', `Business ${bizName} has requested the ${addonName} add-on.`);
+      addAdminNotification(businessId, 'Add-on Request', `Business ${bizName} has requested the ${addonName} add-on.`, existing.id);
       return tdb.prepare('SELECT * FROM business_addons WHERE id = ?').get(existing.id);
     }
   }
@@ -119,7 +119,7 @@ function requestAddon(businessId, addonKey) {
   tdb.prepare(
     "INSERT INTO business_addons (id, business_id, addon_key, status) VALUES (?, ?, ?, 'requested')"
   ).run(id, businessId, addonKey);
-  addAdminNotification(businessId, 'Add-on Request', `Business ${bizName} has requested the ${addonName} add-on.`);
+  addAdminNotification(businessId, 'Add-on Request', `Business ${bizName} has requested the ${addonName} add-on.`, id);
   return tdb.prepare('SELECT * FROM business_addons WHERE id = ?').get(id);
 }
 
@@ -129,6 +129,9 @@ function approveAddon(addonId) {
   if (!row) throw new Error('No pending request found with that id');
   db.prepare(
     "UPDATE business_addons SET status = 'approved', updated_at = datetime('now') WHERE id = ?"
+  ).run(addonId);
+  db.prepare(
+    "UPDATE notifications SET is_read = 1 WHERE target_item_id = ? AND is_admin = 1"
   ).run(addonId);
   const available = config.addons;
   const addonName = available[row.addon_key]?.name || row.addon_key;
@@ -141,6 +144,9 @@ function rejectAddon(addonId) {
   if (!row) throw new Error('No pending request found with that id');
   db.prepare(
     "UPDATE business_addons SET status = 'rejected', updated_at = datetime('now') WHERE id = ?"
+  ).run(addonId);
+  db.prepare(
+    "UPDATE notifications SET is_read = 1 WHERE target_item_id = ? AND is_admin = 1"
   ).run(addonId);
   const available = config.addons;
   const addonName = available[row.addon_key]?.name || row.addon_key;
@@ -163,7 +169,7 @@ function cancelAddon(businessId, addonKey) {
   const bizName = biz?.name || businessId;
   const available = config.addons;
   const addonName = available[addonKey]?.name || addonKey;
-  addAdminNotification(businessId, 'Add-on Cancelled', `Business ${bizName} has cancelled their subscription to the ${addonName} add-on.`);
+  addAdminNotification(businessId, 'Add-on Cancelled', `Business ${bizName} has cancelled their subscription to the ${addonName} add-on.`, existing.id);
   addUserNotification(businessId, 'Add-on Cancelled', `You have cancelled your subscription to the ${addonName} add-on.`, 'warning');
   return { id: existing.id, status: 'cancelled' };
 }

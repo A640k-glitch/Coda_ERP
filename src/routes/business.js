@@ -40,13 +40,12 @@ router.post('/request-upgrade', requireAuth, requireBusiness, (req, res) => {
   // but it's technically a global query. We'll use db for admin lookup.
   const admin = db.prepare("SELECT * FROM users WHERE email = ?").get(require('../config').adminEmail);
   
-  if (admin) {
-    const id = require('crypto').randomUUID();
-    tdb.prepare(`
-      INSERT INTO notifications (id, business_id, user_id, title, message, type, is_admin)
-      VALUES (?, ?, ?, ?, ?, ?, 1)
-    `).run(id, business.id, admin.id, 'Upgrade Request', `${business.name} requested an upgrade to ${new_tier.toUpperCase()}`, 'info');
-  }
+  const id = require('crypto').randomUUID();
+  tdb.prepare(`
+    INSERT INTO notifications (id, business_id, user_id, title, message, type, is_admin)
+    VALUES (?, ?, ?, ?, ?, ?, 1)
+  `).run(id, business.id, admin ? admin.id : null, 'Upgrade Request', `${business.name} requested an upgrade to ${new_tier.toUpperCase()}`, 'info');
+
   res.json({ success: true });
 });
 

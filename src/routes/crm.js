@@ -66,15 +66,50 @@ router.get('/leads', (req, res) => {
   res.json({ leads: crm.listLeads(req.businessId, { status, limit: Number(limit) || 100, offset: Number(offset) || 0 }) });
 });
 router.post('/leads', (req, res) => {
-  res.status(201).json({ lead: crm.addLead(req.businessId, req.body) });
+  const lead = crm.addLead(req.businessId, req.body);
+  logAudit(req.businessId, req.user.id, 'lead.create', { id: lead.id, name: lead.name });
+  
+  // Create in-app notification for the new lead
+  const notifId = require('../utils').generateId('notif');
+  const tdb = new TenantDB(req.businessId);
+  tdb.prepare(`
+    INSERT INTO notifications (id, business_id, title, message, type, target_view, target_item_id)
+    VALUES (?, ?, 'New Lead', ?, 'info', 'crm', ?)
+  `).run(notifId, req.businessId, `New lead captured: ${lead.name} via ${lead.source || 'direct'}`, lead.id);
+
+  res.status(201).json({ lead });
 });
 router.patch('/leads/:id', (req, res) => {
   const l = crm.updateLead(req.businessId, req.params.id, req.body);
   if (!l) return res.status(404).json({ error: 'Not found' });
+  logAudit(req.businessId, req.user.id, 'lead.update', { id: l.id, status: l.status });
+
+  // Auto-dismiss and audit pending notifications for this lead
+  const tdb = new TenantDB(req.businessId);
+  const affectedNotifs = tdb.prepare("SELECT id FROM notifications WHERE target_item_id = ? AND title = 'New Lead' AND is_read = 0").all(l.id);
+  if (affectedNotifs.length > 0) {
+    tdb.prepare("UPDATE notifications SET is_read = 1 WHERE target_item_id = ? AND title = 'New Lead'").run(l.id);
+    for (const notif of affectedNotifs) {
+      logAudit(req.businessId, req.user.id, 'lead.notification.auto_read', { notification_id: notif.id, reason: `status_changed_to_${l.status}` });
+    }
+  }
+
   res.json({ lead: l });
 });
 router.delete('/leads/:id', (req, res) => {
-  res.json({ ok: crm.deleteLead(req.businessId, req.params.id) });
+  const tdb = new TenantDB(req.businessId);
+  const affectedNotifs = tdb.prepare("SELECT id FROM notifications WHERE target_item_id = ? AND title = 'New Lead' AND is_read = 0").all(req.params.id);
+  const ok = crm.deleteLead(req.businessId, req.params.id);
+  if (ok) {
+    logAudit(req.businessId, req.user.id, 'lead.delete', { id: req.params.id });
+    if (affectedNotifs.length > 0) {
+      tdb.prepare("UPDATE notifications SET is_read = 1 WHERE target_item_id = ? AND title = 'New Lead'").run(req.params.id);
+      for (const notif of affectedNotifs) {
+        logAudit(req.businessId, req.user.id, 'lead.notification.auto_read', { notification_id: notif.id, reason: 'lead_deleted' });
+      }
+    }
+  }
+  res.json({ ok });
 });
 
 // ── Communication Log Routes ──────────────────────────

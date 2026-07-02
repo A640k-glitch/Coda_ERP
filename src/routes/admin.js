@@ -20,6 +20,15 @@ router.delete('/users/:id', (req, res) => {
     const notifId = generateId('notif');
     (new TenantDB(req.user.business_id || req.businessId)).prepare('INSERT INTO notifications (id, business_id, title, message, is_admin) VALUES (?, ?, ?, ?, 1)').run(notifId, req.user.business_id, 'User Deleted', `Admin deleted user ${user.email}.`);
     
+    // Auto-dismiss and audit pending appeal notifications
+    const affectedNotifs = db.prepare("SELECT id FROM notifications WHERE target_item_id = ? AND title LIKE 'Account Appeal%' AND is_read = 0").all(user.id);
+    if (affectedNotifs.length > 0) {
+      db.prepare("UPDATE notifications SET is_read = 1 WHERE target_item_id = ? AND title LIKE 'Account Appeal%'").run(user.id);
+      for (const notif of affectedNotifs) {
+        logAudit(user.business_id, req.user.id, 'admin.notification.auto_read', { notification_id: notif.id, reason: 'user_deleted' });
+      }
+    }
+
     res.json({ success: true });
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -44,6 +53,15 @@ router.patch('/users/:id/status', (req, res) => {
     // Add notification to admin's own business that a user status changed
     const notifId = generateId('notif');
     (new TenantDB(req.user.business_id || req.businessId)).prepare('INSERT INTO notifications (id, business_id, title, message, is_admin) VALUES (?, ?, ?, ?, 1)').run(notifId, req.user.business_id, 'User ' + status.charAt(0).toUpperCase() + status.slice(1), `Admin changed user ${user.email} status to ${status}.`);
+
+    // Auto-dismiss and audit pending appeal notifications
+    const affectedNotifs = db.prepare("SELECT id FROM notifications WHERE target_item_id = ? AND title LIKE 'Account Appeal%' AND is_read = 0").all(user.id);
+    if (affectedNotifs.length > 0) {
+      db.prepare("UPDATE notifications SET is_read = 1 WHERE target_item_id = ? AND title LIKE 'Account Appeal%'").run(user.id);
+      for (const notif of affectedNotifs) {
+        logAudit(user.business_id, req.user.id, 'admin.notification.auto_read', { notification_id: notif.id, reason: `user_status_changed_to_${status}` });
+      }
+    }
 
     res.json({ success: true, userId: user.id, status });
   } catch (err) {
@@ -81,6 +99,15 @@ router.patch('/businesses/:id/tier', (req, res) => {
     (new TenantDB(req.user.business_id || req.businessId)).prepare('UPDATE businesses SET tier = ? WHERE id = ?').run(tier, business.id);
     subscription.upgradeSubscription(business.id, tier);
     logAudit(business.id, req.user.id, 'admin.business.tier_change', { business_id: business.id, new_tier: tier });
+    // Auto-dismiss and audit pending upgrade request notifications for this business
+    const affectedNotifs = db.prepare("SELECT id FROM notifications WHERE business_id = ? AND title = 'Upgrade Request' AND is_read = 0").all(business.id);
+    if (affectedNotifs.length > 0) {
+      db.prepare("UPDATE notifications SET is_read = 1 WHERE business_id = ? AND title = 'Upgrade Request'").run(business.id);
+      for (const notif of affectedNotifs) {
+        logAudit(business.id, req.user.id, 'admin.notification.auto_read', { notification_id: notif.id, reason: `tier_changed_to_${tier}` });
+      }
+    }
+
     res.json({ success: true, businessId: business.id, newTier: tier });
   } catch (err) {
     res.status(500).json({ error: err.message });

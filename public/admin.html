@@ -1455,8 +1455,12 @@
           const iconName = type === 'success' ? 'check_circle' : type === 'error' ? 'error' : type === 'warning' ? 'warning' : 'info';
           const toggleIcon = isRead ? 'undo' : 'check_circle';
           const toggleTitle = isRead ? 'Mark as unread' : 'Mark as read';
-          const toggleColor = isRead ? 'rgba(255,255,255,0.4)' : 'var(--success)';
-          const targetView = n.type === 'upgrade_request' ? 'requests' : null;
+          let targetView = null;
+          if (n.title === 'Upgrade Request' || (n.title && n.title.startsWith('Account Appeal'))) {
+            targetView = 'requests';
+          } else if (n.title && n.title.startsWith('Add-on')) {
+            targetView = 'addons';
+          }
           return `
             <div class="notification-item${isRead ? '' : ' unread'}" data-id="${n.id}" data-target-view="${targetView || ''}" style="cursor: pointer; padding: 16px; margin-bottom: 12px; border-radius: 12px; background: rgba(15, 23, 42, 0.95); display: flex; gap: 14px; opacity: ${isRead ? 0.7 : 1}; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(8px); text-align: left; transition: transform 0.2s ease, box-shadow 0.2s ease;">
               <div class="notification-icon ${type}" style="display:flex;align-items:center;justify-content:center;width:28px;height:28px;flex-shrink:0; border-radius: 50%; background: rgba(255,255,255,0.05);">
@@ -1513,7 +1517,7 @@
               }
 
               const endpoint = newRead ? 'read' : 'unread';
-              fetch('/api/v1/notifications/' + id + '/' + endpoint, { method: 'PATCH', credentials: 'include' });
+              fetch('/api/v1/admin/notifications/' + id + '/' + endpoint, { method: 'PATCH', credentials: 'include' });
             });
           }
 
@@ -1530,7 +1534,8 @@
               card.style.opacity = '0.7';
               updateAdminNotificationBadge();
               // Update table row DOM directly without complete re-render to avoid lag
-              const row = document.querySelector(`#notificationsBody tr[data-id="${nId}"]`);
+              const targetTableId = targetView === 'addons' ? 'adminAddonNotificationsBody' : 'notificationsBody';
+              const row = document.querySelector(`#${targetTableId} tr[data-id="${nId}"]`);
               if (row) {
                 row.style.cssText = 'opacity: 0.6; font-weight: normal;';
                 const rowBtn = row.querySelector('button[onclick*="adminToggleNotification"]');
@@ -1539,7 +1544,7 @@
                   rowBtn.setAttribute('onclick', `adminToggleNotification('${nId}', 0)`);
                 }
               }
-              fetch('/api/v1/notifications/' + nId + '/read', { method: 'PATCH', credentials: 'include' });
+              fetch('/api/v1/admin/notifications/' + nId + '/read', { method: 'PATCH', credentials: 'include' });
             }
 
             const panel = document.getElementById('panelAdminNotifications');
@@ -1549,7 +1554,8 @@
             if (targetView) {
               switchTab(targetView);
               setTimeout(() => {
-                const row = document.querySelector('#notificationsBody tr[data-id="' + nId + '"]');
+                const targetTableId = targetView === 'addons' ? 'adminAddonNotificationsBody' : 'notificationsBody';
+                const row = document.querySelector('#' + targetTableId + ' tr[data-id="' + nId + '"]');
                 if (row) {
                   row.scrollIntoView({ behavior: 'smooth', block: 'center' });
                   row.classList.add('notification-action-glow');
@@ -1676,7 +1682,11 @@
         if (!confirm('Approve this add-on request?')) return;
         try {
           const res = await fetch('/api/v1/addons/admin/' + id + '/approve', { method: 'POST', credentials: 'include' });
-          if (res.ok) { showToast('Approved', 'Add-on request approved.', 'success'); loadAddonRequests(); }
+          if (res.ok) { 
+            showToast('Approved', 'Add-on request approved.', 'success'); 
+            loadAddonRequests(); 
+            loadNotifications(); 
+          }
           else { const e = await res.json(); showToast('Error', e.error || 'Failed to approve', 'error'); }
         } catch (e) { showToast('Error', e.message, 'error'); }
       };
@@ -1685,7 +1695,11 @@
         if (!confirm('Reject this add-on request?')) return;
         try {
           const res = await fetch('/api/v1/addons/admin/' + id + '/reject', { method: 'POST', credentials: 'include' });
-          if (res.ok) { showToast('Rejected', 'Add-on request rejected.', 'error'); loadAddonRequests(); }
+          if (res.ok) { 
+            showToast('Rejected', 'Add-on request rejected.', 'error'); 
+            loadAddonRequests(); 
+            loadNotifications(); 
+          }
           else { const e = await res.json(); showToast('Error', e.error || 'Failed to reject', 'error'); }
         } catch (e) { showToast('Error', e.message, 'error'); }
       };

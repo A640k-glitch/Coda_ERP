@@ -339,16 +339,17 @@ router.post('/appeal', async (req, res) => {
     // Create notification for admin
     const notifId = generateId('notif');
     const adminUser = db.prepare('SELECT * FROM users WHERE email = ?').get(config.adminEmail);
-    if (adminUser) {
-      db.prepare(
-        'INSERT INTO notifications (id, business_id, title, message, is_admin) VALUES (?, ?, ?, ?, 1)'
-      ).run(
-        notifId,
-        adminUser.business_id,
-        `Account Appeal: ${appealStatus}`,
-        `User ${user.name} (${user.email}) has submitted an appeal against their ${appealStatus} status.`
-      );
-    }
+    db.prepare(
+      'INSERT INTO notifications (id, business_id, user_id, title, message, is_admin, target_view, target_item_id) VALUES (?, ?, ?, ?, ?, 1, ?, ?)'
+    ).run(
+      notifId,
+      adminUser ? adminUser.business_id : user.business_id,
+      adminUser ? adminUser.id : null,
+      `Account Appeal: ${appealStatus}`,
+      `User ${user.name} (${user.email}) has submitted an appeal against their ${appealStatus} status.`,
+      'users',
+      user.id
+    );
 
     logAudit(user.business_id, user.id, 'user.appeal', { email: user.email, status: appealStatus });
 

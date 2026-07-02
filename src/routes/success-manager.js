@@ -79,7 +79,56 @@ router.post('/bookings', (req, res) => {
       VALUES (?, ?, ?, ?, ?)
     `).run(id, req.businessId, topic, meeting_date, meeting_time);
 
+    // Create admin notification for booking
+    const notifId = require('../utils').generateId('notif');
+    const adminUser = db.prepare('SELECT * FROM users WHERE email = ?').get(require('../config').adminEmail);
+    db.prepare(`
+      INSERT INTO notifications (id, business_id, user_id, title, message, is_admin, target_view, target_item_id)
+      VALUES (?, ?, ?, ?, ?, 1, 'bookings', ?)
+    `).run(
+      notifId,
+      adminUser ? adminUser.business_id : req.businessId,
+      adminUser ? adminUser.id : null,
+      'Support Booking',
+      `Business ${req.businessId} booked a meeting: ${topic} on ${meeting_date} at ${meeting_time}`,
+      id
+    );
+
+    const { logAudit } = require('../auth');
+    logAudit(req.businessId, req.user.id, 'booking.create', { id, topic, meeting_date, meeting_time });
+
     res.status(201).json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
+// Update booking status (and auto-dismiss notification)
+router.patch('/bookings/:id/status', (req, res) => {
+  try {
+    const { status } = req.body;
+    if (!['scheduled', 'completed', 'cancelled'].includes(status)) {
+      return res.status(400).json({ error: 'Invalid status' });
+    }
+    const tdb = new TenantDB(req.businessId);
+    const booking = tdb.prepare('SELECT * FROM success_manager_bookings WHERE id = ? AND business_id = ?').get(req.params.id, req.businessId);
+    if (!booking) return res.status(404).json({ error: 'Booking not found' });
+    
+    tdb.prepare('UPDATE success_manager_bookings SET status = ? WHERE id = ?').run(status, req.params.id);
+    
+    const { logAudit } = require('../auth');
+    logAudit(req.businessId, req.user.id, 'booking.status_change', { booking_id: req.params.id, status });
+    
+    // Auto-dismiss and audit booking notification
+    const affectedNotifs = db.prepare("SELECT id FROM notifications WHERE target_item_id = ? AND title = 'Support Booking' AND is_read = 0").all(req.params.id);
+    if (affectedNotifs.length > 0) {
+      db.prepare("UPDATE notifications SET is_read = 1 WHERE target_item_id = ? AND title = 'Support Booking'").run(req.params.id);
+      for (const notif of affectedNotifs) {
+        logAudit(req.businessId, req.user.id, 'booking.notification.auto_read', { notification_id: notif.id, reason: `booking_${status}` });
+      }
+    }
+    
+    res.json({ success: true });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
