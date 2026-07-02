@@ -100,6 +100,18 @@ function attachUser(req, res, next) {
   const apiUser = !user && apiKey ? userFromApiKey(apiKey) : null;
   req.user = user || apiUser || null;
   req.sessionId = sid;
+
+  // Sliding session expiration: extend session on active use
+  if (user && sid) {
+    const newExpires = new Date(Date.now() + SESSION_TTL_MS).toISOString();
+    try {
+      db.prepare('UPDATE sessions SET expires_at = ? WHERE id = ?').run(newExpires, sid);
+      setSessionCookie(res, sid, newExpires);
+    } catch (e) {
+      // Ignore database errors during middleware execution
+    }
+  }
+
   next();
 }
 

@@ -262,8 +262,22 @@ function escapeHTML(str) {
             }
           }
           return originalFetch(input, init).then(res => {
-            if ((res.status === 401 || res.status === 403) && currentUser) {
+            if (res.status === 401 && currentUser) {
               redirectAuth();
+            }
+            if (res.status === 403) {
+              res.clone().json().then(data => {
+                if (data && data.code === 'TIER_RESTRICTED') {
+                  showToast('Access Expired', data.error || 'This module is no longer active.', 'warning');
+                  if (typeof switchView === 'function') {
+                    switchView('overview');
+                  }
+                } else if (currentUser) {
+                  redirectAuth();
+                }
+              }).catch(() => {
+                if (currentUser) redirectAuth();
+              });
             }
             const url = typeof input === 'string' ? input : input.url;
             if (res.ok && ['POST', 'PUT', 'DELETE', 'PATCH'].includes(method) && url && url.includes('/api/v1/') && !url.includes('/auth/')) {

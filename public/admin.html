@@ -1455,6 +1455,7 @@
           const iconName = type === 'success' ? 'check_circle' : type === 'error' ? 'error' : type === 'warning' ? 'warning' : 'info';
           const toggleIcon = isRead ? 'undo' : 'check_circle';
           const toggleTitle = isRead ? 'Mark as unread' : 'Mark as read';
+          const toggleColor = isRead ? 'rgba(255,255,255,0.4)' : 'var(--success)';
           let targetView = null;
           if (n.title === 'Upgrade Request' || (n.title && n.title.startsWith('Account Appeal'))) {
             targetView = 'requests';
