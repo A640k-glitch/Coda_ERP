@@ -290,7 +290,8 @@ function migrate() {
       FOREIGN KEY (business_id) REFERENCES businesses(id)
     )
   `); } catch(e) {}
-  try { db.exec("CREATE UNIQUE INDEX IF NOT EXISTS idx_business_addons_key ON business_addons(business_id, addon_key);"); } catch(e) {}
+  try { db.exec("DROP INDEX IF EXISTS idx_business_addons_key;"); } catch(e) {}
+  try { db.exec("CREATE INDEX IF NOT EXISTS idx_business_addons_business ON business_addons(business_id);"); } catch(e) {}
 
   db.exec(`
     CREATE TABLE IF NOT EXISTS customer_communications (

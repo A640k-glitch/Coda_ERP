@@ -86,21 +86,12 @@ function requestAddon(businessId, addonKey) {
   const bizName = biz.name;
   const addonName = available[addonKey].name;
 
-  // Check no existing active/pending entry
-  const existing = tdb.prepare(
-    "SELECT id, status FROM business_addons WHERE business_id = ? AND addon_key = ?"
+  // Check if there's an active subscription - prevent duplicate requests
+  const existingActive = tdb.prepare(
+    "SELECT id FROM business_addons WHERE business_id = ? AND addon_key = ? AND status = 'approved'"
   ).get(businessId, addonKey);
-  if (existing) {
-    if (existing.status === 'approved') throw new Error('Add-on is already active');
-    if (existing.status === 'requested') throw new Error('A pending request already exists for this add-on');
-    // If rejected or cancelled — allow re-requesting by resetting the row
-    if (existing.status === 'rejected' || existing.status === 'cancelled') {
-      tdb.prepare(
-        "UPDATE business_addons SET status = 'requested', updated_at = datetime('now'), cancelled_at = NULL WHERE id = ?"
-      ).run(existing.id);
-      addAdminNotification(businessId, 'Add-on Request', `Business ${bizName} has requested the ${addonName} add-on.`, existing.id);
-      return tdb.prepare('SELECT * FROM business_addons WHERE id = ?').get(existing.id);
-    }
+  if (existingActive) {
+    throw new Error('Add-on is already active');
   }
   
   // Tier hierarchy: enterprise > professional > starter
@@ -115,6 +106,8 @@ function requestAddon(businessId, addonKey) {
   if (addonTierLevel > businessTierLevel) {
     throw new Error('This add-on is not available on your plan tier. Upgrade to ' + available[addonKey].tier + ' to access this add-on.');
   }
+  
+  // Always create a new entry for each request (even after rejection/cancellation)
   const id = generateId('addon');
   tdb.prepare(
     "INSERT INTO business_addons (id, business_id, addon_key, status) VALUES (?, ?, ?, 'requested')"
@@ -127,9 +120,19 @@ function requestAddon(businessId, addonKey) {
 function approveAddon(addonId) {
   const row = db.prepare('SELECT * FROM business_addons WHERE id = ? AND status = ?').get(addonId, 'requested');
   if (!row) throw new Error('No pending request found with that id');
+  
+  // Update the original request to approved
   db.prepare(
     "UPDATE business_addons SET status = 'approved', updated_at = datetime('now') WHERE id = ?"
   ).run(addonId);
+  
+  // Create a new audit log entry for the approval action
+  const tdb = new TenantDB(row.business_id);
+  const approveId = generateId('addon');
+  tdb.prepare(
+    "INSERT INTO business_addons (id, business_id, addon_key, status) VALUES (?, ?, ?, 'approved_log')"
+  ).run(approveId, row.business_id, row.addon_key);
+  
   db.prepare(
     "UPDATE notifications SET is_read = 1 WHERE target_item_id = ? AND is_admin = 1"
   ).run(addonId);
@@ -142,9 +145,19 @@ function approveAddon(addonId) {
 function rejectAddon(addonId) {
   const row = db.prepare('SELECT * FROM business_addons WHERE id = ? AND status = ?').get(addonId, 'requested');
   if (!row) throw new Error('No pending request found with that id');
+  
+  // Update the original request to rejected
   db.prepare(
     "UPDATE business_addons SET status = 'rejected', updated_at = datetime('now') WHERE id = ?"
   ).run(addonId);
+  
+  // Create a new audit log entry for the rejection action
+  const tdb = new TenantDB(row.business_id);
+  const rejectId = generateId('addon');
+  tdb.prepare(
+    "INSERT INTO business_addons (id, business_id, addon_key, status) VALUES (?, ?, ?, 'rejected_log')"
+  ).run(rejectId, row.business_id, row.addon_key);
+  
   db.prepare(
     "UPDATE notifications SET is_read = 1 WHERE target_item_id = ? AND is_admin = 1"
   ).run(addonId);
@@ -152,6 +165,51 @@ function rejectAddon(addonId) {
   const addonName = available[row.addon_key]?.name || row.addon_key;
   addUserNotification(row.business_id, 'Add-on Rejected', `Your request for the ${addonName} add-on was not approved.`, 'error');
   return db.prepare('SELECT * FROM business_addons WHERE id = ?').get(addonId);
+}
+
+function cancelAddonById(businessId, addonId) {
+  const tdb = new TenantDB(businessId);
+  const existing = tdb.prepare(
+    "SELECT * FROM business_addons WHERE id = ? AND business_id = ?"
+  ).get(addonId, businessId);
+  if (!existing) {
+    throw new Error('Add-on request not found');
+  }
+  
+  const available = config.addons;
+  const addonName = available[existing.addon_key]?.name || existing.addon_key;
+  
+  if (existing.status === 'approved') {
+    // Mark the active subscription as cancelled
+    tdb.prepare(
+      "UPDATE business_addons SET status = 'cancelled', cancelled_at = datetime('now'), updated_at = datetime('now') WHERE id = ?"
+    ).run(addonId);
+    
+    // Create a new audit log entry for the cancellation action
+    const cancelId = generateId('addon');
+    tdb.prepare(
+      "INSERT INTO business_addons (id, business_id, addon_key, status) VALUES (?, ?, ?, 'cancelled_log')"
+    ).run(cancelId, businessId, existing.addon_key);
+    
+    const biz = db.prepare('SELECT name FROM businesses WHERE id = ?').get(businessId);
+    const bizName = biz?.name || businessId;
+    addAdminNotification(businessId, 'Add-on Cancelled', `Business ${bizName} has cancelled their subscription to the ${addonName} add-on.`, cancelId);
+    addUserNotification(businessId, 'Add-on Cancelled', `You have cancelled your subscription to the ${addonName} add-on.`, 'warning');
+    return { id: cancelId, status: 'cancelled' };
+  } else if (existing.status === 'requested') {
+    // Cancel the pending request
+    tdb.prepare(
+      "UPDATE business_addons SET status = 'cancelled', cancelled_at = datetime('now'), updated_at = datetime('now') WHERE id = ?"
+    ).run(addonId);
+    
+    const biz = db.prepare('SELECT name FROM businesses WHERE id = ?').get(businessId);
+    const bizName = biz?.name || businessId;
+    addAdminNotification(businessId, 'Add-on Request Cancelled', `Business ${bizName} has cancelled their request for the ${addonName} add-on.`, addonId);
+    addUserNotification(businessId, 'Request Cancelled', `You have cancelled your request for the ${addonName} add-on.`, 'info');
+    return { id: addonId, status: 'cancelled' };
+  } else {
+    throw new Error('Cannot cancel add-on with status: ' + existing.status);
+  }
 }
 
 function cancelAddon(businessId, addonKey) {
@@ -162,16 +220,25 @@ function cancelAddon(businessId, addonKey) {
   if (!existing) {
     throw new Error('No active subscription for add-on: ' + addonKey);
   }
+  
+  // Mark the active subscription as cancelled
   tdb.prepare(
     "UPDATE business_addons SET status = 'cancelled', cancelled_at = datetime('now'), updated_at = datetime('now') WHERE id = ?"
   ).run(existing.id);
+  
+  // Create a new audit log entry for the cancellation action
+  const cancelId = generateId('addon');
+  tdb.prepare(
+    "INSERT INTO business_addons (id, business_id, addon_key, status) VALUES (?, ?, ?, 'cancelled_log')"
+  ).run(cancelId, businessId, addonKey);
+  
   const biz = db.prepare('SELECT name FROM businesses WHERE id = ?').get(businessId);
   const bizName = biz?.name || businessId;
   const available = config.addons;
   const addonName = available[addonKey]?.name || addonKey;
-  addAdminNotification(businessId, 'Add-on Cancelled', `Business ${bizName} has cancelled their subscription to the ${addonName} add-on.`, existing.id);
+  addAdminNotification(businessId, 'Add-on Cancelled', `Business ${bizName} has cancelled their subscription to the ${addonName} add-on.`, cancelId);
   addUserNotification(businessId, 'Add-on Cancelled', `You have cancelled your subscription to the ${addonName} add-on.`, 'warning');
-  return { id: existing.id, status: 'cancelled' };
+  return { id: cancelId, status: 'cancelled' };
 }
 
 function businessHasAddon(businessId, addonKey) {
@@ -200,6 +267,7 @@ module.exports = {
   approveAddon,
   rejectAddon,
   cancelAddon,
+  cancelAddonById,
   businessHasAddon,
   getPendingAddons,
 };

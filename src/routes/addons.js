@@ -75,15 +75,12 @@ router.post('/:key/request', (req, res) => {
   }
 });
 
-// Cancel an approved add-on
-router.post('/:key/cancel', (req, res) => {
-  const key = req.params.key;
-  if (!config.addons[key]) {
-    return res.status(400).json({ error: 'Unknown add-on: ' + key });
-  }
+// Cancel an add-on (by ID - works for both approved and pending requests)
+router.post('/:id/cancel', (req, res) => {
+  const id = req.params.id;
   try {
-    const result = addons.cancelAddon(req.businessId, key);
-    logAudit(req.businessId, req.user.id, 'addon.cancel', { addon_key: key });
+    const result = addons.cancelAddonById(req.businessId, id);
+    logAudit(req.businessId, req.user.id, 'addon.cancel', { addon_id: id });
     res.json(result);
   } catch (err) {
     res.status(400).json({ error: err.message });

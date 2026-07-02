@@ -2716,7 +2716,14 @@ function escapeHTML(str) {
             const tierBadge = '<span style="font-size:10px;font-weight:600;text-transform:uppercase;padding:2px 6px;border-radius:4px;background:var(--slate-100);color:var(--text-muted);">' + addonTier + ' plan</span>';
             let badge = '';
             let btn = '';
-            if (st === 'approved') {
+            // Add-ons that are coming soon with blurred effect
+            const comingSoonAddons = ['pro_multi_entity', 'enterprise_on_prem', 'enterprise_bespoke_modules'];
+            const isComingSoon = comingSoonAddons.includes(key);
+            
+            if (isComingSoon) {
+              badge = '<span class="status-badge status-pending" style="font-size:12px;">Coming Soon</span>';
+              btn = '';
+            } else if (st === 'approved') {
               badge = '<span class="status-badge status-active" style="font-size:12px;">Active</span>';
             } else if (st === 'requested') {
               badge = '<span class="status-badge status-pending" style="font-size:12px;">Pending Approval</span>';
@@ -2728,7 +2735,8 @@ function escapeHTML(str) {
             } else {
               btn = '<button class="btn btn-secondary btn-sm" disabled title="Upgrade to ' + addonTier + ' plan to add this" style="font-size:12px;opacity:.55;cursor:not-allowed;">Requires ' + addonTier.charAt(0).toUpperCase() + addonTier.slice(1) + '</button>';
             }
-            return '<div style="border:1.5px solid var(--slate-800);border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:12px;">' +
+            
+            const cardContent = '<div style="border:1.5px solid var(--slate-800);border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:12px;position:relative;overflow:hidden;' + (isComingSoon ? 'filter:blur(0.5px);opacity:0.7;' : '') + '">' +
               '<div style="display:flex;align-items:flex-start;justify-content:space-between;gap:8px;">' +
               '<h3 style="font-size:15px;font-weight:700;margin:0;flex:1;">' + escapeHTML(a.name) + '</h3>' +
               tierBadge +
@@ -2738,6 +2746,18 @@ function escapeHTML(str) {
               '<span style="font-size:18px;font-weight:700;color:var(--teal-600);">' + formatCurrency(a.price) + '<span style="font-size:11px;font-weight:400;color:var(--text-muted);">/mo</span></span>' +
               (badge || btn) +
               '</div></div>';
+            
+            if (isComingSoon) {
+              return '<div style="position:relative;border:1.5px solid var(--slate-800);border-radius:12px;padding:20px;display:flex;flex-direction:column;gap:12px;">' +
+                cardContent +
+                '<div style="position:absolute;inset:0;background:rgba(15,23,42,0.6);backdrop-filter:blur(4px);display:flex;align-items:center;justify-content:center;border-radius:12px;">' +
+                '<div style="text-align:center;">' +
+                '<span class="material-symbols-outlined" style="font-size:32px;color:#60a5fa;display:block;margin-bottom:8px;">construction</span>' +
+                '<span style="font-size:14px;font-weight:700;color:#fff;text-transform:uppercase;letter-spacing:0.05em;">Coming Soon</span>' +
+                '</div></div></div>';
+            }
+            
+            return cardContent;
           }).join('');
         }
       }
@@ -2751,10 +2771,32 @@ function escapeHTML(str) {
         } else {
           tbody.innerHTML = bizAddons.map(a => {
             const info = allAddons[a.addon_key] || { name: a.addon_key };
-            const statusClass = a.status === 'approved' ? 'active' : a.status === 'rejected' ? 'inactive' : 'pending';
-            const statusLabel = a.status.charAt(0).toUpperCase() + a.status.slice(1);
-            const cancelBtn = a.status === 'approved'
-              ? '<button class="btn-icon btn-icon-danger" title="Cancel add-on" onclick="cancelAddon(\'' + a.addon_key + '\')"><span class="material-symbols-outlined">close</span></button>'
+            let statusClass = 'pending';
+            let statusLabel = a.status.charAt(0).toUpperCase() + a.status.slice(1);
+            
+            if (a.status === 'approved') {
+              statusClass = 'active';
+            } else if (a.status === 'approved_log') {
+              statusClass = 'active';
+              statusLabel = 'Approved';
+            } else if (a.status === 'rejected') {
+              statusClass = 'inactive';
+            } else if (a.status === 'rejected_log') {
+              statusClass = 'inactive';
+              statusLabel = 'Rejected';
+            } else if (a.status === 'cancelled') {
+              statusClass = 'inactive';
+            } else if (a.status === 'cancelled_log') {
+              statusClass = 'inactive';
+              statusLabel = 'Cancelled';
+            } else if (a.status === 'requested') {
+              statusClass = 'pending';
+              statusLabel = 'Pending Approval';
+            }
+            
+            // Allow cancel for approved and pending requests
+            const cancelBtn = (a.status === 'approved' || a.status === 'requested')
+              ? '<button class="btn-icon btn-icon-danger" title="Cancel add-on" onclick="cancelAddon(\'' + a.addon_key + '\', \'' + a.id + '\')"><span class="material-symbols-outlined">close</span></button>'
               : '';
             return '<tr data-id="' + a.id + '">' +
               '<td style="font-weight:500;color:var(--text-primary);">' + escapeHTML(info.name) + '</td>' +
@@ -3433,11 +3475,14 @@ function escapeHTML(str) {
     }
   };
 
-  window.cancelAddon = async function(key) {
+  window.cancelAddon = async function(key, id) {
     try {
-      const res = await fetch('/api/v1/addons/' + key + '/cancel', { method: 'POST' });
+      const res = await fetch('/api/v1/addons/' + id + '/cancel', { method: 'POST' });
       if (!res.ok) { const e = await res.json(); throw new Error(e.error || 'Failed to cancel'); }
       showToast('Cancelled', 'Add-on subscription cancelled.', 'info');
+      // Re-evaluate tier restrictions to instantly hide cancelled add-on navigation
+      await applyTierRestrictions(currentUser.tier);
+      // Reload add-ons table to reflect latest status in real-time
       loadAddons();
     } catch (e) { showToast('Error', e.message, 'error'); }
   };
