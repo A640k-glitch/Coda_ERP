@@ -1555,7 +1555,7 @@ function escapeHTML(str) {
       const toggleTitle = n.is_read ? 'Keep Unread' : 'Done / Mark as Read';
       const toggleColor = n.is_read ? 'rgba(255,255,255,0.4)' : 'var(--success)';
       return `
-      <div class="notification-item${n.is_read ? '' : ' unread'}" data-id="${n.id}" style="cursor: pointer; padding: 16px; margin-bottom: 12px; border-radius: 12px; background: rgba(15, 23, 42, 0.95); display: flex; gap: 14px; opacity: ${n.is_read ? 0.7 : 1}; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(8px); transition: transform 0.2s ease, box-shadow 0.2s ease;">
+      <div class="notification-item${n.is_read ? '' : ' unread'}" data-id="${n.id}" style="cursor: pointer; padding: 16px; margin-bottom: 12px; border-radius: 12px; background: rgba(15, 23, 42, 0.95); display: flex; gap: 14px; opacity: ${n.is_read ? 0.7 : 1}; box-shadow: 0 4px 12px rgba(0,0,0,0.1); backdrop-filter: blur(8px); transition: transform 0.2s ease, box-shadow 0.2s ease;">
         <div class="notification-icon ${n.type}" style="display:flex;align-items:center;justify-content:center;width:28px;height:28px;flex-shrink:0; border-radius: 50%; background: rgba(255,255,255,0.05);">
           <span class="material-symbols-outlined" style="font-size: 18px; color: var(--${n.type === 'error' ? 'error' : n.type === 'warning' ? 'warning' : n.type === 'success' ? 'success' : 'info'});">${n.type === 'success' ? 'check_circle' : n.type === 'error' ? 'error' : n.type === 'warning' ? 'warning' : 'info'}</span>
         </div>

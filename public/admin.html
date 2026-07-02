@@ -1463,7 +1463,7 @@
             targetView = 'addons';
           }
           return `
-            <div class="notification-item${isRead ? '' : ' unread'}" data-id="${n.id}" data-target-view="${targetView || ''}" style="cursor: pointer; padding: 16px; margin-bottom: 12px; border-radius: 12px; background: rgba(15, 23, 42, 0.95); display: flex; gap: 14px; opacity: ${isRead ? 0.7 : 1}; box-shadow: 0 4px 12px rgba(0,0,0,0.1); border: 1px solid rgba(255,255,255,0.08); backdrop-filter: blur(8px); text-align: left; transition: transform 0.2s ease, box-shadow 0.2s ease;">
+            <div class="notification-item${isRead ? '' : ' unread'}" data-id="${n.id}" data-target-view="${targetView || ''}" style="cursor: pointer; padding: 16px; margin-bottom: 12px; border-radius: 12px; background: rgba(15, 23, 42, 0.95); display: flex; gap: 14px; opacity: ${isRead ? 0.7 : 1}; box-shadow: 0 4px 12px rgba(0,0,0,0.1); backdrop-filter: blur(8px); text-align: left; transition: transform 0.2s ease, box-shadow 0.2s ease;">
               <div class="notification-icon ${type}" style="display:flex;align-items:center;justify-content:center;width:28px;height:28px;flex-shrink:0; border-radius: 50%; background: rgba(255,255,255,0.05);">
                 <span class="material-symbols-outlined" style="font-size: 18px; color: ${iconColor};">${iconName}</span>
               </div>
@@ -2091,7 +2091,7 @@
   <!-- Notification Panel -->
   <aside class="panel panel-right" id="panelAdminNotifications" aria-label="Notifications">
     <div class="panel-header"
-      style="padding: 16px 24px; border-bottom: 1.5px solid var(--slate-800); display: flex; justify-content: space-between; align-items: center;">
+      style="padding: 16px 24px; display: flex; justify-content: space-between; align-items: center;">
       <div style="display:flex; align-items:center; gap:10px;">
         <h3 style="font-size: 16px;">Notifications</h3>
         <span id="adminPanelNotificationCount" style="display:none; font-size:11px; font-weight:600; color:var(--error); background:rgba(239,68,68,0.1); padding:2px 8px; border-radius:10px;"></span>
